@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.LogoScreen;
+import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitFactory;
 

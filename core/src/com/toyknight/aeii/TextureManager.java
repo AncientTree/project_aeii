@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.toyknight.aeii.utils.FileProvider;
 
 /**
  * Created by toyknight on 4/2/2015.
@@ -19,10 +20,10 @@ public class TextureManager {
     }
 
     public static void loadTextures() {
-        ms_logo_texture = new Texture(Gdx.files.internal("images/ms_logo.png"));
-        ae_logo_texture = new Texture(Gdx.files.internal("images/ae_logo.png"));
-        ae_logo_mask_texture = new Texture(Gdx.files.internal("images/ae_logo_mask.png"));
-        ae_logo_glow_texture = new Texture(Gdx.files.internal("images/ae_glow.png"));
+        ms_logo_texture = new Texture(FileProvider.getAssetsFile("images/ms_logo.png"));
+        ae_logo_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo.png"));
+        ae_logo_mask_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo_mask.png"));
+        ae_logo_glow_texture = new Texture(FileProvider.getAssetsFile("images/ae_glow.png"));
     }
 
     public static Texture getMSLogoTexture() {

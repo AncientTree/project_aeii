@@ -3,8 +3,7 @@ package com.toyknight.aeii.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.toyknight.aeii.AEIIApplication;
-
-import java.awt.*;
+import com.toyknight.aeii.utils.FileProvider;
 
 public class DesktopLauncher implements Runnable {
 
@@ -23,6 +22,7 @@ public class DesktopLauncher implements Runnable {
 
     @Override
     public void run() {
+        FileProvider.init(FileProvider.Platform.Desktop);
         new LwjglApplication(application, config);
     }
 
@@ -33,7 +33,7 @@ public class DesktopLauncher implements Runnable {
                 int width = Integer.parseInt(args[1]);
                 int height = Integer.parseInt(args[2]);
                 boolean fs = Boolean.parseBoolean(args[3]);
-                EventQueue.invokeLater(new DesktopLauncher(ts, width, height, fs));
+                new Thread(new DesktopLauncher(ts, width, height, fs)).start();
             } catch (NumberFormatException ex) {
                 System.err.println(ex.getClass().toString() + ": " + ex.getMessage());
             }

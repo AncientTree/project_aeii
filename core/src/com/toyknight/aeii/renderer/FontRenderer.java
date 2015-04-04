@@ -3,6 +3,7 @@ package com.toyknight.aeii.renderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.toyknight.aeii.utils.FileProvider;
 
 import java.io.UnsupportedEncodingException;
 
@@ -19,8 +20,9 @@ public class FontRenderer {
     }
 
     public static void loadFonts() {
-        //FileHandle font_yahei_file = Gdx.files.internal("assets/fonts/ms_yahei.fnt");
-        font_yahei = new BitmapFont(Gdx.files.internal("fonts/ms_yahei.fnt"), Gdx.files.internal("fonts/ms_yahei.png"), false);
+        font_yahei = new BitmapFont(
+                FileProvider.getAssetsFile("fonts/ms_yahei.fnt"),
+                FileProvider.getAssetsFile("fonts/ms_yahei.png"), false);
 
         current_font = font_yahei;
     }

@@ -20,7 +20,7 @@ public class TileFactory {
 
     public static void loadTileData() throws AEIIException {
         String tile_data_dir = "data/tiles/";
-        FileHandle tile_config = Gdx.files.internal(tile_data_dir + "tile_config.dat");
+        FileHandle tile_config = FileProvider.getAssetsFile(tile_data_dir + "tile_config.dat");
         if (tile_config.exists()) {
             try {
                 Scanner din = new Scanner(tile_config.read());
@@ -28,7 +28,7 @@ public class TileFactory {
                 din.close();
                 tile_list = new Tile[tile_count];
                 for (int index = 0; index < tile_count; index++) {
-                    FileHandle tile_data = Gdx.files.internal(tile_data_dir + "tile_" + index + ".dat");
+                    FileHandle tile_data = FileProvider.getAssetsFile(tile_data_dir + "tile_" + index + ".dat");
                     if (tile_data.exists()) {
                         loadTileData(tile_data, index);
                     } else {
