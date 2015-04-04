@@ -26,7 +26,7 @@ public class UnitFactory {
     }
 
     public static void loadUnitData() throws AEIIException {
-        String unit_data_dir = "assets/data/units/";
+        String unit_data_dir = "data/units/";
         FileHandle unit_config = Gdx.files.internal(unit_data_dir + "unit_config.dat");
         if (unit_config.exists()) {
             try {

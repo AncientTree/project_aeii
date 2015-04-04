@@ -19,7 +19,7 @@ public class TileFactory {
     }
 
     public static void loadTileData() throws AEIIException {
-        String tile_data_dir = "assets/data/tiles/";
+        String tile_data_dir = "data/tiles/";
         FileHandle tile_config = Gdx.files.internal(tile_data_dir + "tile_config.dat");
         if (tile_config.exists()) {
             try {

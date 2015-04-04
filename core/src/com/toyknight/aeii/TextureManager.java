@@ -19,10 +19,10 @@ public class TextureManager {
     }
 
     public static void loadTextures() {
-        ms_logo_texture = new Texture(Gdx.files.internal("assets/images/ms_logo.png"));
-        ae_logo_texture = new Texture(Gdx.files.internal("assets/images/ae_logo.png"));
-        ae_logo_mask_texture = new Texture(Gdx.files.internal("assets/images/ae_logo_mask.png"));
-        ae_logo_glow_texture = new Texture(Gdx.files.internal("assets/images/ae_glow.png"));
+        ms_logo_texture = new Texture(Gdx.files.internal("images/ms_logo.png"));
+        ae_logo_texture = new Texture(Gdx.files.internal("images/ae_logo.png"));
+        ae_logo_mask_texture = new Texture(Gdx.files.internal("images/ae_logo_mask.png"));
+        ae_logo_glow_texture = new Texture(Gdx.files.internal("images/ae_glow.png"));
     }
 
     public static Texture getMSLogoTexture() {

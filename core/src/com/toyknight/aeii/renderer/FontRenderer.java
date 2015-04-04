@@ -20,7 +20,7 @@ public class FontRenderer {
 
     public static void loadFonts() {
         //FileHandle font_yahei_file = Gdx.files.internal("assets/fonts/ms_yahei.fnt");
-        font_yahei = new BitmapFont(Gdx.files.internal("assets/fonts/ms_yahei.fnt"), Gdx.files.internal("assets/fonts/ms_yahei.png"), false);
+        font_yahei = new BitmapFont(Gdx.files.internal("fonts/ms_yahei.fnt"), Gdx.files.internal("fonts/ms_yahei.png"), false);
 
         current_font = font_yahei;
     }

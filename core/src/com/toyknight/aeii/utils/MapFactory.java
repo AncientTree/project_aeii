@@ -47,7 +47,7 @@ public class MapFactory {
             }
             fis.close();
             return map;
-        } catch(IOException | NoSuchElementException ex) {
+        } catch(IOException ex) {
             throw new AEIIException("broken map file!");
         }
     }
