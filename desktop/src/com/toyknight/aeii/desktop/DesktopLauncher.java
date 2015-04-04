@@ -17,6 +17,7 @@ public class DesktopLauncher implements Runnable {
         config.fullscreen = fs;
         config.width = width;
         config.height = height;
+        config.useHDPI = true;
         application = new AEIIApplication(ts);
     }
 

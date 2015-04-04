@@ -2,9 +2,9 @@ package com.toyknight.aeii;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.LogoScreen;
 
 public class AEIIApplication extends Game {
@@ -25,15 +25,21 @@ public class AEIIApplication extends Game {
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        FontRenderer.loadFonts();
-        TextureManager.loadTextures();
+        try {
+            batch = new SpriteBatch();
+            FontRenderer.loadFonts();
+            TextureManager.loadTextures();
 
+            TileFactory.loadTileData();
+            UnitFactory.loadUnitData();
 
-        logo_screen = new LogoScreen(this);
-        logo_screen.create();
+            logo_screen = new LogoScreen(this);
+            logo_screen.create();
 
-        this.setScreen(logo_screen);
+            this.setScreen(logo_screen);
+        } catch (AEIIException ex) {
+            System.err.println("ERROR: " + ex.getMessage());
+        }
     }
 
     public void gotoMainMenuScreen() {
