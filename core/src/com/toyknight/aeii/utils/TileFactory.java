@@ -1,7 +1,8 @@
-package com.toyknight.aeii;
+package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Tile;
 
 import java.util.NoSuchElementException;

@@ -1,6 +1,5 @@
 package com.toyknight.aeii.utils;
 
-import com.toyknight.aeii.TileFactory;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Map;
 

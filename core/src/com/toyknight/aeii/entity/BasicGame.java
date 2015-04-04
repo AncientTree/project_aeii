@@ -1,6 +1,6 @@
 package com.toyknight.aeii.entity;
 
-import com.toyknight.aeii.UnitFactory;
+import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.event.*;

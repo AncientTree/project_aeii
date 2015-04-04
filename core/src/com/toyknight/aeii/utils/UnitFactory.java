@@ -1,7 +1,8 @@
-package com.toyknight.aeii;
+package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Unit;
 
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class UnitFactory {
     private static int commander_index;
     private static int skeleton_index;
     private static int crystal_index;
+
+    private UnitFactory() {
+    }
 
     public static void loadUnitData() throws AEIIException {
         String unit_data_dir = "assets/data/units/";

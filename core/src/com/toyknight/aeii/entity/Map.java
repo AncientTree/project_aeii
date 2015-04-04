@@ -1,6 +1,6 @@
 package com.toyknight.aeii.entity;
 
-import com.toyknight.aeii.TileFactory;
+import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
@@ -210,6 +210,16 @@ public class Map {
 
     public Point getPosition(int x, int y) {
         return position_map[x][y];
+    }
+
+    public int getPlayerCount() {
+        int count = 0;
+        for (int team = 0; team < 4; team++) {
+            if (getTeamAccess(team) == true) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public boolean getTeamAccess(int team) {
