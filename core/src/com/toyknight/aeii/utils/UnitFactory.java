@@ -1,6 +1,5 @@
 package com.toyknight.aeii.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Unit;
@@ -35,6 +34,7 @@ public class UnitFactory {
                 commander_index = din.nextInt();
                 skeleton_index = din.nextInt();
                 crystal_index = din.nextInt();
+                din.close();
                 units = new Unit[unit_count];
                 for (int index = 0; index < unit_count; index++) {
                     FileHandle unit_data = FileProvider.getAssetsFile(unit_data_dir + "unit_" + index + ".dat", platform);
