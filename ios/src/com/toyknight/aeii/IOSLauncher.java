@@ -1,5 +1,6 @@
 package com.toyknight.aeii;
 
+import com.toyknight.aeii.utils.Platform;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
@@ -11,7 +12,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new AEIIApplication(), config);
+        return new IOSApplication(new AEIIApplication(Platform.iOS, 48), config);
     }
 
     public static void main(String[] argv) {

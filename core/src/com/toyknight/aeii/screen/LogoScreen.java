@@ -24,9 +24,7 @@ public class LogoScreen implements Screen {
 
     public LogoScreen(AEIIApplication context) {
         this.context = context;
-    }
 
-    public void create() {
         batch = new SpriteBatch();
 
         ae_logo_glow_animator = new AELogoGlowAnimation();

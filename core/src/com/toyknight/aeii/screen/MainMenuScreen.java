@@ -7,6 +7,10 @@ import com.badlogic.gdx.Screen;
  */
 public class MainMenuScreen implements Screen {
 
+    public void create() {
+
+    }
+
     @Override
     public void show() {
 
