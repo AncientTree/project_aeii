@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.TextureManager;
+import com.toyknight.aeii.ResourceManager;
 
 /**
  * Created by toyknight on 4/3/2015.
@@ -21,15 +21,15 @@ public class AELogoGlowAnimation extends Animator {
     private float glow_x = 0f;
 
     public AELogoGlowAnimation() {
-        Texture ae_logo_sheet = TextureManager.getAELogoTexture();
+        Texture ae_logo_sheet = ResourceManager.getAELogoTexture();
         TextureRegion ae_logo_texture =
                 new TextureRegion(ae_logo_sheet, ae_logo_sheet.getWidth() - 240, ae_logo_sheet.getHeight() - 85, 240, 85);
         ae_logo = new TextureRegionDrawable(ae_logo_texture);
 
-        TextureRegion ae_logo_mask_texture = new TextureRegion(TextureManager.getAELogoMaskTexture(), 0, 0, 240, 85);
+        TextureRegion ae_logo_mask_texture = new TextureRegion(ResourceManager.getAELogoMaskTexture(), 0, 0, 240, 85);
         ae_logo_mask = new TextureRegionDrawable(ae_logo_mask_texture);
 
-        TextureRegion ae_logo_glow_texture = new TextureRegion(TextureManager.getAELogoGlowTexture(), 0, 0, 67, 78);
+        TextureRegion ae_logo_glow_texture = new TextureRegion(ResourceManager.getAELogoGlowTexture(), 0, 0, 67, 78);
         ae_logo_glow = new TextureRegionDrawable(ae_logo_glow_texture);
 
         shape_renderer = new ShapeRenderer();

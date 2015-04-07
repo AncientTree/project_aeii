@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.TextureManager;
+import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.utils.TileFactory;
 
@@ -24,12 +24,12 @@ public class TileRenderer {
         this.ts = ts;
         tile_texture = new TextureRegionDrawable[TileFactory.getTileCount()];
         for (int i = 0; i < tile_texture.length; i++) {
-            Texture texture = TextureManager.getTileTexture(i);
+            Texture texture = ResourceManager.getTileTexture(i);
             tile_texture[i] = new TextureRegionDrawable(new TextureRegion(texture, texture.getWidth(), texture.getHeight()));
         }
-        top_tile_texture = new TextureRegionDrawable[TextureManager.getTopTileCount()];
+        top_tile_texture = new TextureRegionDrawable[ResourceManager.getTopTileCount()];
         for (int i = 0; i < top_tile_texture.length; i++) {
-            Texture texture = TextureManager.getTopTileTexture(i);
+            Texture texture = ResourceManager.getTopTileTexture(i);
             top_tile_texture[i] = new TextureRegionDrawable(new TextureRegion(texture, texture.getWidth(), texture.getHeight()));
         }
     }

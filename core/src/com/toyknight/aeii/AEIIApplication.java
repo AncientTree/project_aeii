@@ -8,6 +8,7 @@ import com.toyknight.aeii.entity.BasicGame;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
+import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.LogoScreen;
@@ -36,8 +37,9 @@ public class AEIIApplication extends Game {
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json", PLATFORM));
             TileFactory.loadTileData(PLATFORM);
             UnitFactory.loadUnitData(PLATFORM);
+            ResourceManager.loadResources(PLATFORM);
             FontRenderer.loadFonts(PLATFORM);
-            TextureManager.loadTextures(PLATFORM);
+            BorderRenderer.init();
 
             logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen();

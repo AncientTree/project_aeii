@@ -2,6 +2,7 @@ package com.toyknight.aeii;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,7 +17,7 @@ import java.util.Scanner;
 /**
  * Created by toyknight on 4/2/2015.
  */
-public class TextureManager {
+public class ResourceManager {
 
     private static final SuffixFileFilter png_filter = new SuffixFileFilter("png");
 
@@ -28,16 +29,22 @@ public class TextureManager {
     private static Texture[] tile_texture;
     private static Texture[] top_tile_texture;
 
-    private TextureManager() {
+    private static Texture border_texture;
+
+    private static Color aeii_bg_color;
+
+    private ResourceManager() {
     }
 
-    public static void loadTextures(Platform platform) throws AEIIException {
+    public static void loadResources(Platform platform) throws AEIIException {
         try {
             ms_logo_texture = new Texture(FileProvider.getAssetsFile("images/ms_logo.png", platform));
             ae_logo_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo.png", platform));
             ae_logo_mask_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo_mask.png", platform));
             ae_logo_glow_texture = new Texture(FileProvider.getAssetsFile("images/ae_glow.png", platform));
             loadTileTextures(platform);
+            border_texture = new Texture(FileProvider.getAssetsFile("images/border.png", platform));
+            aeii_bg_color = new Color(0.140625f, 0.1640625f, 0.26953125f, 1.0f);
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
         }
@@ -53,7 +60,6 @@ public class TextureManager {
         FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat", platform);
         Scanner din = new Scanner(top_tile_config.read());
         top_tile_texture = new Texture[din.nextInt()];
-        System.out.println(top_tile_texture.length);
         for (int i = 0; i < top_tile_texture.length; i++) {
             FileHandle top_tile_image = FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png", platform);
             top_tile_texture[i] = new Texture(top_tile_image);
@@ -83,6 +89,14 @@ public class TextureManager {
 
     public static Texture getTopTileTexture(int index) {
         return top_tile_texture[index];
+    }
+
+    public static Texture getBorderTexture() {
+        return border_texture;
+    }
+
+    public static Color getAEIIBackgroundColor() {
+        return aeii_bg_color;
     }
 
     public static int getTopTileCount() {

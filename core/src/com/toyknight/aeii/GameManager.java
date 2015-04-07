@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.toyknight.aeii.entity.BasicGame;
 import com.toyknight.aeii.renderer.MapRenderer;
+import com.toyknight.aeii.renderer.StatusBarRenderer;
 
 /**
  * Created by toyknight on 4/4/2015.
@@ -12,6 +13,7 @@ public class GameManager extends Stage {
 
     private final int ts;
     private final MapRenderer map_renderer;
+    private final StatusBarRenderer status_bar_renderer;
 
     private int viewport_x;
     private int viewport_y;
@@ -21,6 +23,7 @@ public class GameManager extends Stage {
     public GameManager(int ts) {
         this.ts = ts;
         this.map_renderer = new MapRenderer(ts);
+        this.status_bar_renderer = new StatusBarRenderer(ts);
         this.viewport_x = 0;
         this.viewport_y = 0;
     }
@@ -97,6 +100,7 @@ public class GameManager extends Stage {
     @Override
     public void draw() {
         map_renderer.render(this);
+        status_bar_renderer.render(this);
         super.draw();
     }
 

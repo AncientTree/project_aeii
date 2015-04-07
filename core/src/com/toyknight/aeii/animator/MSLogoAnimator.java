@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.toyknight.aeii.TextureManager;
+import com.toyknight.aeii.ResourceManager;
 
 /**
  * Created by toyknight on 4/2/2015.
@@ -21,7 +21,7 @@ public class MSLogoAnimator extends Animator {
     private float time_waited = 0f;
 
     public MSLogoAnimator() {
-        animation = TextureManager.createAnimation(TextureManager.getMSLogoTexture(), 8, 5, 0.065f);
+        animation = ResourceManager.createAnimation(ResourceManager.getMSLogoTexture(), 8, 5, 0.065f);
         shape_renderer = new ShapeRenderer();
         shape_renderer.setAutoShapeType(true);
     }

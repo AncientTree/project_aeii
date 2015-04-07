@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.toyknight.aeii.TextureManager;
+import com.toyknight.aeii.ResourceManager;
 
 /**
  * Created by toyknight on 4/3/2015.
@@ -17,7 +17,7 @@ public class AELogoAnimator extends Animator {
     private final Animation animation;
 
     public AELogoAnimator() {
-        animation = TextureManager.createAnimation(TextureManager.getAELogoTexture(), 8, 5, 0.065f);
+        animation = ResourceManager.createAnimation(ResourceManager.getAELogoTexture(), 8, 5, 0.065f);
     }
 
 
