@@ -1,8 +1,11 @@
 package com.toyknight.aeii.renderer;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
+import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.TileFactory;
 
 /**
@@ -11,33 +14,31 @@ import com.toyknight.aeii.utils.TileFactory;
 public class MapRenderer {
 
     private final int ts;
-    private final SpriteBatch batch;
+    private final GameScreen screen;
     private final TileRenderer tile_renderer;
 
-    public MapRenderer(int ts) {
+    public MapRenderer(GameScreen screen, int ts) {
         this.ts = ts;
-        this.batch = new SpriteBatch();
+        this.screen = screen;
         this.tile_renderer = new TileRenderer(ts);
     }
 
-    public void render(GameManager manager) {
-        batch.begin();
-        for (int x = 0; x < manager.getGame().getMap().getWidth(); x++) {
-            for (int y = 0; y < manager.getGame().getMap().getHeight(); y++) {
-                int sx = manager.getXOnScreen(x);
-                int sy = manager.getYOnScreen(y);
-                if (manager.isWithinPaintArea(sx, sy)) {
-                    int index = manager.getGame().getMap().getTileIndex(x, y);
-                    tile_renderer.renderTile(batch, index, sx, sy);
+    public void render(Map map) {
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                int sx = screen.getXOnScreen(x);
+                int sy = screen.getYOnScreen(y);
+                if (screen.isWithinPaintArea(sx, sy)) {
+                    int index = screen.getGame().getMap().getTileIndex(x, y);
+                    tile_renderer.renderTile(index, sx, sy);
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.renderTopTile(batch, top_tile_index, sx, sy + ts);
+                        tile_renderer.renderTopTile(top_tile_index, sx, sy + ts);
                     }
                 }
             }
         }
-        batch.end();
     }
 
     public void update(float delta) {

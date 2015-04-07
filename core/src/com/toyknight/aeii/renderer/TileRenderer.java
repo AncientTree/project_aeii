@@ -14,6 +14,7 @@ import com.toyknight.aeii.utils.TileFactory;
 public class TileRenderer {
 
     private final int ts;
+    private final SpriteBatch batch;
     private final TextureRegionDrawable[] tile_texture;
     private final TextureRegionDrawable[] top_tile_texture;
 
@@ -22,6 +23,7 @@ public class TileRenderer {
 
     public TileRenderer(int ts) {
         this.ts = ts;
+        this.batch = new SpriteBatch();
         tile_texture = new TextureRegionDrawable[TileFactory.getTileCount()];
         for (int i = 0; i < tile_texture.length; i++) {
             Texture texture = ResourceManager.getTileTexture(i);
@@ -34,7 +36,8 @@ public class TileRenderer {
         }
     }
 
-    public void renderTile(SpriteBatch batch, int index, int x, int y) {
+    public void renderTile(int index, int x, int y) {
+        batch.begin();
         Tile tile = TileFactory.getTile(index);
         if (tile.isAnimated()) {
             if (current_frame == 0) {
@@ -45,10 +48,13 @@ public class TileRenderer {
         } else {
             tile_texture[index].draw(batch, x, y, ts, ts);
         }
+        batch.end();
     }
 
-    public void renderTopTile(SpriteBatch batch, int index, int x, int y) {
+    public void renderTopTile(int index, int x, int y) {
+        batch.begin();
         top_tile_texture[index].draw(batch, x, y, ts, ts);
+        batch.end();
     }
 
     public void update(float delta) {
