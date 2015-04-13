@@ -36,7 +36,7 @@ public class OccupyEvent implements GameEvent {
 	@Override
 	public void execute(GameListener listener) {
 		Tile tile = getGame().getMap().getTile(x, y);
-		getGame().changeTile(tile.getCapturedTileIndex(conqueror.getTeam()), x, y);
+		getGame().setTile(tile.getCapturedTileIndex(conqueror.getTeam()), x, y);
 		getGame().standbyUnit(conqueror.getX(), conqueror.getY());
         listener.onOccupy();
 		if(getGame() instanceof SkirmishGame) {

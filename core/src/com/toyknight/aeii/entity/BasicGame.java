@@ -77,7 +77,7 @@ public class BasicGame {
         }
     }
 
-    protected GameListener getGameListener() {
+    public GameListener getGameListener() {
         return game_listener;
     }
 
@@ -182,7 +182,7 @@ public class BasicGame {
         }
     }
 
-    public void changeTile(short index, int x, int y) {
+    public void setTile(short index, int x, int y) {
         getMap().setTile(index, x, y);
     }
 
