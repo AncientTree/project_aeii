@@ -1,41 +1,32 @@
 package com.toyknight.aeii.entity;
 
-import com.toyknight.aeii.utils.UnitFactory;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
-import com.toyknight.aeii.event.*;
 import com.toyknight.aeii.listener.GameListener;
-import com.toyknight.aeii.utils.UnitToolkit;
+import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.utils.UnitFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class BasicGame {
-
-    private final int poison_damage = 10;
+public class GameCore {
 
     private final Map map;
+    private final Rule rule;
     private int current_team;
     private final Player[] player_list;
     private GameListener game_listener;
-    private final Queue<GameEvent> event_queue;
 
     private int turn;
 
     private final Unit[] commanders;
-    private final int max_population;
     private final int[] commander_price_delta;
 
-    public BasicGame(Map map, Player[] players, int max_population) {
+    public GameCore(Map map, Rule rule, Player[] players) {
         this.map = map;
+        this.rule = rule;
         player_list = new Player[4];
         for (int team = 0; team < 4; team++) {
             if (team < players.length) {
@@ -45,9 +36,11 @@ public class BasicGame {
             }
         }
         this.turn = 0;
-        this.max_population = max_population;
         this.commander_price_delta = new int[4];
         this.commanders = new Unit[4];
+    }
+
+    public void init() {
         Set<Point> position_set = new HashSet(getMap().getUnitPositionSet());
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
@@ -55,20 +48,14 @@ public class BasicGame {
                 commanders[unit.getTeam()] = unit;
             }
         }
-        for (int team = 0; team < 4; team++) {
-            if (commanders[team] == null) {
-                commanders[team] = UnitFactory.createUnit(9, team);
-            }
-        }
-        this.event_queue = new LinkedList();
-    }
-
-    public void init() {
         current_team = -1;
         for (int team = 0; team < player_list.length; team++) {
             if (player_list[team] != null) {
                 if (current_team == -1) {
                     current_team = team;
+                }
+                if (commanders[team] == null) {
+                    commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
                 }
                 updatePopulation(team);
             } else {
@@ -77,124 +64,103 @@ public class BasicGame {
         }
     }
 
-    public GameListener getGameListener() {
+    public void setGameListener(GameListener listener) {
+        this.game_listener = listener;
+    }
+
+    private GameListener getGameListener() {
         return game_listener;
     }
 
-    protected void submitGameEvent(GameEvent e) {
-        event_queue.add(e);
+    public final Map getMap() {
+        return map;
     }
 
-    public boolean isLocalPlayer() {
-        return getCurrentPlayer() instanceof LocalPlayer;
-    }
-
-    public Player getCurrentPlayer() {
-        return player_list[current_team];
-    }
-
-    public ArrayList<Integer> getBuyableUnits(int team) {
-        int sketeton = UnitFactory.getSkeletonIndex();
-        int crystal = UnitFactory.getCrystalIndex();
-        ArrayList<Integer> unit_index_list = new ArrayList();
-        for (int i = 0; i < UnitFactory.getUnitCount(); i++) {
-            if (i != sketeton && i != crystal) {
-                unit_index_list.add(i);
-            }
-        }
-        return unit_index_list;
-    }
-
-    public int getCurrentTeam() {
-        return current_team;
+    public final Rule getRule() {
+        return rule;
     }
 
     public Player getPlayer(int team) {
         return player_list[team];
     }
 
-    public int getMaxPopulation() {
-        return max_population;
+    public Player getCurrentPlayer() {
+        return player_list[current_team];
     }
 
-    public void setGameListener(GameListener listener) {
-        this.game_listener = listener;
+    public int getCurrentTeam() {
+        return current_team;
     }
 
-    public void doAttack(int unit_x, int unit_y, int target_x, int target_y) {
-        Unit attacker = getMap().getUnit(unit_x, unit_y);
-        if (attacker != null && UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
-            Unit defender = getMap().getUnit(target_x, target_y);
-            if (defender != null) {
-                submitGameEvent(new UnitAttackEvent(this, attacker, defender));
-                submitGameEvent(new UnitActionFinishEvent(attacker));
-            } else {
-                if (attacker.hasAbility(Ability.DESTROYER)
-                        && getMap().getTile(target_x, target_y).isDestroyable()) {
-                    submitGameEvent(new TileDestroyEvent(this, target_x, target_y));
-                    submitGameEvent(new UnitActionFinishEvent(attacker));
-                }
+    public int getCurrentTurn() {
+        return turn;
+    }
+
+    public int getCommanderPrice(int team) {
+        if (commander_price_delta[team] > 0) {
+            int commander_index = UnitFactory.getCommanderIndex();
+            return UnitFactory.getSample(commander_index).getPrice() + commander_price_delta[team];
+        } else {
+            return -1;
+        }
+    }
+
+    public void increaseUnitExperience(int unit_x, int unit_y, int experience) {
+        Unit target = getMap().getUnit(unit_x, unit_y);
+        if (target != null) {
+            boolean level_up = target.gainExperience(experience);
+            if (level_up == true) {
+                game_listener.onUnitLevelUp(target);
             }
         }
     }
 
-    public void destroyUnit(int unit_x, int unit_y) {
-        Unit unit = getMap().getUnit(unit_x, unit_y);
-        if (unit != null) {
-            submitGameEvent(new UnitDestroyEvent(this, unit));
-        }
-    }
-
-    public void doSummon(int summoner_x, int summoner_y, int target_x, int target_y) {
-        Unit summoner = getMap().getUnit(summoner_x, summoner_y);
-        if (summoner != null
-                && UnitToolkit.isWithinRange(summoner, target_x, target_y)
-                && getMap().isTomb(target_x, target_y)) {
-            submitGameEvent(new UnitSummonEvent(this, summoner, target_x, target_y));
-            submitGameEvent(new UnitActionFinishEvent(summoner));
-        }
-    }
-
-    public void doHeal(int healer_x, int healer_y, int target_x, int target_y) {
-        Unit healer = getMap().getUnit(healer_x, healer_y);
+    public void destroyUnit(int target_x, int target_y) {
         Unit target = getMap().getUnit(target_x, target_y);
-        if (healer != null
-                && UnitToolkit.isWithinRange(healer, target_x, target_y)
-                && !isEnemy(healer.getTeam(), target.getTeam())) {
-            submitGameEvent(new UnitHealEvent(this, healer, target));
-            submitGameEvent(new UnitActionFinishEvent(healer));
+        if (target != null) {
+            getMap().removeUnit(target_x, target_y);
+            updatePopulation(target.getTeam());
+            if (target.getIndex() != UnitFactory.getSkeletonIndex()) {
+                getMap().addTomb(target.getX(), target.getY());
+            }
+            if (target.isCommander()) {
+                changeCommanderPriceDelta(target.getTeam(), getRule().getCommanderPriceGrowth());
+            }
+            game_listener.onUnitDestroyed(target);
         }
     }
 
-    public void doOccupy(int conqueror_x, int conqueror_y, int x, int y) {
-        Unit conqueror = getMap().getUnit(conqueror_x, conqueror_y);
-        if (canOccupy(conqueror, x, y)) {
-            submitGameEvent(new OccupyEvent(this, conqueror, x, y));
-            submitGameEvent(new UnitActionFinishEvent(conqueror));
+    public void summonSkeleton(int target_x, int target_y, int team) {
+        if (getMap().isTomb(target_x, target_y)) {
+            getMap().removeTomb(target_x, target_y);
+            createUnit(UnitFactory.getSkeletonIndex(), team, target_x, target_y);
+            standbyUnit(target_x, target_y);
         }
     }
 
-    public void doRepair(int repairer_x, int repairer_y, int x, int y) {
-        Unit repairer = getMap().getUnit(x, y);
-        if (canRepair(repairer, x, y)) {
-            submitGameEvent(new RepairEvent(this, repairer, x, y));
-            submitGameEvent(new UnitActionFinishEvent(repairer));
+    public void changeUnitHp(int target_x, int target_y, int change) {
+        Unit target = getMap().getUnit(target_x, target_y);
+        if (target != null) {
+            int target_hp = target.getCurrentHp();
+            target_hp += change;
+            if (target_hp > target.getMaxHp()) {
+                target_hp = target.getMaxHp();
+            }
+            if (target_hp < 0) {
+                target_hp = 0;
+            }
+            target.setCurrentHp(target_hp);
+            if (target.getCurrentHp() == 0) {
+                destroyUnit(target_x, target_y);
+            }
         }
-    }
-
-    public void setTile(short index, int x, int y) {
-        getMap().setTile(index, x, y);
     }
 
     public void standbyUnit(int unit_x, int unit_y) {
         Unit unit = getMap().getUnit(unit_x, unit_y);
         if (unit != null && getMap().canStandby(unit)) {
-            standbyUnit(unit);
+            unit.setStandby(true);
         }
-    }
-
-    protected void standbyUnit(Unit unit) {
-        unit.setStandby(true);
     }
 
     public void restoreCommander(int team, int x, int y) {
@@ -208,29 +174,32 @@ public class BasicGame {
         }
     }
 
-    public void buyUnit(int index, int x, int y) {
+    public void buyUnit(int index, int team, int x, int y) {
         int current_cold = getCurrentPlayer().getGold();
-        int unit_price = UnitFactory.getSample(index).getPrice();
+        int unit_price = UnitFactory.getUnitPrice(index);
         if (current_cold >= unit_price) {
             getCurrentPlayer().setGold(current_cold - unit_price);
-            addUnit(index, getCurrentTeam(), x, y);
+            createUnit(index, getCurrentTeam(), x, y);
         }
     }
 
-    public void addUnit(int index, int team, int x, int y) {
+    public void createUnit(int index, int team, int x, int y) {
         Unit unit = UnitFactory.createUnit(index, team);
         unit.setX(x);
         unit.setY(y);
         getMap().addUnit(unit);
-        updatePopulation(getCurrentTeam());
+        updatePopulation(team);
     }
 
-    public void moveUnit(int unit_x, int unit_y, int dest_x, int dest_y) {
-        Unit unit = getMap().getUnit(unit_x, unit_y);
-        if (unit != null && getMap().canMove(dest_x, dest_y)) {
-            submitGameEvent(new UnitMoveEvent(this, unit, dest_x, dest_y));
-            submitGameEvent(new UnitMoveFinishEvent(unit, unit_x, unit_y));
+    public void moveUnit(int target_x, int target_y, int dest_x, int dest_y) {
+        Unit target = getMap().getUnit(target_x, target_y);
+        if (target != null && getMap().canMove(dest_x, dest_y)) {
+            getMap().moveUnit(target, dest_x, dest_y);
         }
+    }
+
+    public void setTile(short index, int x, int y) {
+        getMap().setTile(index, x, y);
     }
 
     protected int getTerrainHeal(Unit unit) {
@@ -255,7 +224,7 @@ public class BasicGame {
         return heal;
     }
 
-    protected void healAllys(Unit healer) {
+   /* protected void healAllys(Unit healer) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx != 0 || dy != 0) {
@@ -270,9 +239,9 @@ public class BasicGame {
                 }
             }
         }
-    }
+    }*/
 
-    public boolean canOccupy(Unit conqueror, int x, int y) {
+    /*public boolean canOccupy(Unit conqueror, int x, int y) {
         if (conqueror == null) {
             return false;
         }
@@ -286,9 +255,9 @@ public class BasicGame {
         } else {
             return false;
         }
-    }
+    }*/
 
-    public boolean canRepair(Unit repairer, int x, int y) {
+    /*public boolean canRepair(Unit repairer, int x, int y) {
         if (repairer == null) {
             return false;
         }
@@ -297,18 +266,10 @@ public class BasicGame {
         }
         Tile tile = getMap().getTile(x, y);
         return repairer.hasAbility(Ability.REPAIRER) && tile.isRepairable();
-    }
+    }*/
 
     public int getAlliance(int team) {
         return getPlayer(team).getAlliance();
-    }
-
-    public int getCommanderPrice(int team) {
-        if (commander_price_delta[team] > 0) {
-            return UnitFactory.getSample(9).getPrice() + commander_price_delta[team];
-        } else {
-            return -1;
-        }
     }
 
     public Unit getCommander(int team) {
@@ -345,7 +306,7 @@ public class BasicGame {
         getPlayer(team).setPopulation(getMap().getUnitCount(team));
     }
 
-    protected int getIncome(int team) {
+    public int getIncome(int team) {
         int income = 0;
         for (int x = 0; x < getMap().getWidth(); x++) {
             for (int y = 0; y < getMap().getHeight(); y++) {
@@ -363,7 +324,7 @@ public class BasicGame {
         return income;
     }
 
-    public Point getTurnStartPosition(int team) {
+    /*public Point getTurnStartPosition(int team) {
         Set<Point> position_set = new HashSet(getMap().getUnitPositionSet());
         Unit first_unit = null;
         for (Point position : position_set) {
@@ -397,14 +358,6 @@ public class BasicGame {
         return getMap().getPosition(0, 0);
     }
 
-    public int getTurn() {
-        return turn;
-    }
-
-    public final Map getMap() {
-        return map;
-    }
-
     public void startTurn() {
         turn++;
         //gain gold
@@ -433,7 +386,7 @@ public class BasicGame {
                 change += getTerrainHeal(unit);
                 //deal with buff issues
                 if (unit.hasBuff(Buff.POISONED)) {
-                    change -= poison_damage;
+                    change -= POISON_DAMAGE;
                 }
                 hp_change_map.put(position, change);
             } else {
@@ -476,20 +429,14 @@ public class BasicGame {
             }
         }
         submitGameEvent(new BuffUpdateEvent(this, unit_position_set));
-    }
+    }*/
 
-    private void restoreUnit(Unit unit) {
+    public void restoreUnit(Unit unit) {
         unit.setCurrentMovementPoint(unit.getMovementPoint());
         unit.setStandby(false);
     }
 
-    public void endTurn() {
-        Collection<Unit> units = getMap().getUnitSet();
-        for (Unit unit : units) {
-            if (unit.getTeam() == getCurrentTeam()) {
-                restoreUnit(unit);
-            }
-        }
+    public void nextTurn() {
         do {
             if (current_team < 3) {
                 current_team++;
@@ -498,33 +445,7 @@ public class BasicGame {
                 getMap().updateTombs();
             }
         } while (getCurrentPlayer() == null);
-        startTurn();
-    }
-
-    public boolean isDispatchingEvents() {
-        return !event_queue.isEmpty();
-    }
-
-    protected void clearGameEvents() {
-        event_queue.clear();
-    }
-
-    public void dispatchGameEvent() {
-        GameEvent event = event_queue.poll();
-        if (event != null) {
-            //skip unexcutable events
-            while (!event.canExecute()) {
-                event = event_queue.poll();
-                if (event == null) {
-                    game_listener.onGameEventCleared();
-                    return;
-                }
-            }
-            event.execute(game_listener);
-            if (event_queue.isEmpty()) {
-                game_listener.onGameEventCleared();
-            }
-        }
+        turn++;
     }
 
 }

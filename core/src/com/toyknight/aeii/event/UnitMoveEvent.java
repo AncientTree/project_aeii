@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.SkirmishGame;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
@@ -10,19 +10,19 @@ import com.toyknight.aeii.listener.GameListener;
  */
 public class UnitMoveEvent implements GameEvent {
 
-    private final BasicGame game;
+    private final GameCore game;
     private final Unit unit;
     private final int dest_x;
     private final int dest_y;
 
-    public UnitMoveEvent(BasicGame game, Unit unit, int dest_x, int dest_y) {
+    public UnitMoveEvent(GameCore game, Unit unit, int dest_x, int dest_y) {
         this.game = game;
         this.unit = unit;
         this.dest_x = dest_x;
         this.dest_y = dest_y;
     }
 
-    protected BasicGame getGame() {
+    protected GameCore getGame() {
         return game;
     }
 

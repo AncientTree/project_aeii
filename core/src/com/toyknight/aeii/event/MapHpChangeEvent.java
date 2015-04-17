@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MapHpChangeEvent implements GameEvent {
 
-    private final BasicGame game;
+    private final GameCore game;
     private final ConcurrentHashMap<Point, Integer> hp_change_map;
 
-    public MapHpChangeEvent(BasicGame game, HashMap<Point, Integer> hp_change_map) {
+    public MapHpChangeEvent(GameCore game, HashMap<Point, Integer> hp_change_map) {
         this.game = game;
         this.hp_change_map = new ConcurrentHashMap(hp_change_map);
     }

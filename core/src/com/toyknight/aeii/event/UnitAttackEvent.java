@@ -2,7 +2,7 @@ package com.toyknight.aeii.event;
 
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.Buff;
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -13,17 +13,17 @@ import com.toyknight.aeii.utils.UnitToolkit;
  */
 public class UnitAttackEvent implements GameEvent {
 
-	private final BasicGame game;
+	private final GameCore game;
 	private final Unit attacker;
 	private final Unit defender;
 
-	public UnitAttackEvent(BasicGame game, Unit attacker, Unit defender) {
+	public UnitAttackEvent(GameCore game, Unit attacker, Unit defender) {
 		this.game = game;
 		this.attacker = attacker;
 		this.defender = defender;
 	}
 
-	protected BasicGame getGame() {
+	protected GameCore getGame() {
 		return game;
 	}
 

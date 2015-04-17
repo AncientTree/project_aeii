@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.SkirmishGame;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
@@ -12,19 +12,19 @@ import com.toyknight.aeii.listener.GameListener;
  */
 public class OccupyEvent implements GameEvent {
 
-	private final BasicGame game;
+	private final GameCore game;
 	private final Unit conqueror;
 	private final int x;
 	private final int y;
 
-	public OccupyEvent(BasicGame game, Unit conqueror, int x, int y) {
+	public OccupyEvent(GameCore game, Unit conqueror, int x, int y) {
 		this.game = game;
 		this.conqueror = conqueror;
 		this.x = x;
 		this.y = y;
 	}
 	
-	protected BasicGame getGame() {
+	protected GameCore getGame() {
 		return game;
 	}
 	

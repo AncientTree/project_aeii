@@ -348,10 +348,6 @@ public class Unit {
         }
     }
 
-    public void learnAbility(int ability) {
-        abilities.add(ability);
-    }
-
     public void attachBuff(Buff buff) {
         if (buff_list.size() < 2 && !buff_list.contains(buff)) {
             buff_list.add(buff);

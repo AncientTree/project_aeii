@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
@@ -13,10 +13,10 @@ import java.util.Set;
  */
 public class BuffUpdateEvent implements GameEvent {
 
-    private final BasicGame game;
+    private final GameCore game;
     private final Set<Point> unit_position_set;
 
-    public BuffUpdateEvent(BasicGame game, Set<Point> unit_position_set) {
+    public BuffUpdateEvent(GameCore game, Set<Point> unit_position_set) {
         this.game = game;
         this.unit_position_set = unit_position_set;
     }

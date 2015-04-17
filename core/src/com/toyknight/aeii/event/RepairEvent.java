@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
@@ -11,19 +11,19 @@ import com.toyknight.aeii.listener.GameListener;
  */
 public class RepairEvent implements GameEvent {
 
-	private final BasicGame game;
+	private final GameCore game;
 	private final Unit repairer;
 	private final int x;
 	private final int y;
 
-	public RepairEvent(BasicGame game, Unit repairer, int x, int y) {
+	public RepairEvent(GameCore game, Unit repairer, int x, int y) {
 		this.game = game;
 		this.repairer = repairer;
 		this.x = x;
 		this.y = y;
 	}
 	
-	protected BasicGame getGame() {
+	protected GameCore getGame() {
 		return game;
 	}
 	

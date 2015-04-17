@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
 
@@ -9,17 +9,17 @@ import com.toyknight.aeii.listener.GameListener;
  */
 public class UnitHealEvent implements GameEvent {
 
-    private final BasicGame game;
+    private final GameCore game;
     private final Unit healer;
     private final Unit target;
 
-    public UnitHealEvent(BasicGame game, Unit healer, Unit target) {
+    public UnitHealEvent(GameCore game, Unit healer, Unit target) {
         this.game = game;
         this.healer = healer;
         this.target = target;
     }
 
-    protected BasicGame getGame() {
+    protected GameCore getGame() {
         return game;
     }
 

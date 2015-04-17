@@ -16,7 +16,7 @@ public class UnitToolkit {
     private int dest_y;
     private Unit current_unit;
 
-    private final BasicGame game;
+    private final GameCore game;
 
     private int[][] move_mark_map;
     private ArrayList<Point> move_path;
@@ -26,7 +26,7 @@ public class UnitToolkit {
     private final int[] x_dir = {1, -1, 0, 0};
     private final int[] y_dir = {0, 0, 1, -1};
 
-    public UnitToolkit(BasicGame game) {
+    public UnitToolkit(GameCore game) {
         this.game = game;
     }
 

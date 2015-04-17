@@ -4,12 +4,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
+import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.LogoScreen;
 import com.toyknight.aeii.screen.MainMenuScreen;
@@ -52,7 +53,7 @@ public class AEIIApplication extends Game {
                 player = new LocalPlayer();
                 player.setGold(1000);
             }
-            BasicGame game = new BasicGame(map, players, 20);
+            GameCore game = new GameCore(map, Rule.getDefaultRule(), players);
             game_screen.setGame(game);
             this.setScreen(game_screen);
 

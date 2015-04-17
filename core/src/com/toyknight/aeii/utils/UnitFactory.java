@@ -98,6 +98,10 @@ public class UnitFactory {
         }
     }
 
+    public static int getCommanderIndex() {
+        return commander_index;
+    }
+
     public static int getSkeletonIndex() {
         return skeleton_index;
     }
@@ -112,6 +116,10 @@ public class UnitFactory {
 
     public static Unit getSample(int index) {
         return cloneUnit(units[index]);
+    }
+
+    public static int getUnitPrice(int index) {
+        return units[index].getPrice();
     }
 
     public static Unit createUnit(int index, int team) {

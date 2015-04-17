@@ -1,6 +1,6 @@
 package com.toyknight.aeii.event;
 
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.listener.GameListener;
 
@@ -10,17 +10,17 @@ import com.toyknight.aeii.listener.GameListener;
  */
 public class UnitHpChangeEvent implements GameEvent {
 
-    private final BasicGame game;
+    private final GameCore game;
     private final Unit unit;
     private final int change;
 
-    public UnitHpChangeEvent(BasicGame game, Unit unit, int change) {
+    public UnitHpChangeEvent(GameCore game, Unit unit, int change) {
         this.game = game;
         this.unit = unit;
         this.change = change;
     }
 
-    protected BasicGame getGame() {
+    protected GameCore getGame() {
         return game;
     }
 

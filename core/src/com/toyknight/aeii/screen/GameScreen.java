@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.entity.BasicGame;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.MapRenderer;
 
@@ -99,12 +99,12 @@ public class GameScreen extends Stage implements Screen {
     }
 
 
-    public void setGame(BasicGame game) {
+    public void setGame(GameCore game) {
         this.manager.setGame(game);
         this.locateViewport(0, 0);
     }
 
-    public BasicGame getGame() {
+    public GameCore getGame() {
         return manager.getGame();
     }
 
