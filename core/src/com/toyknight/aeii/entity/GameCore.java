@@ -4,6 +4,7 @@ import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.listener.GameListener;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
+import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -294,14 +295,6 @@ public class GameCore {
         return false;
     }
 
-    public boolean isEnemy(int team_a, int team_b) {
-        if (team_a >= 0 && team_b >= 0) {
-            return getAlliance(team_a) != getAlliance(team_b);
-        } else {
-            return false;
-        }
-    }
-
     public void updatePopulation(int team) {
         getPlayer(team).setPopulation(getMap().getUnitCount(team));
     }
@@ -434,6 +427,54 @@ public class GameCore {
     public void restoreUnit(Unit unit) {
         unit.setCurrentMovementPoint(unit.getMovementPoint());
         unit.setStandby(false);
+    }
+
+    public boolean isEnemy(Unit unit_a, Unit unit_b) {
+        if (unit_a != null && unit_b != null) {
+            return isEnemy(unit_a.getTeam(), unit_b.getTeam());
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isEnemy(int team_a, int team_b) {
+        if (team_a >= 0 && team_b >= 0) {
+            return getAlliance(team_a) != getAlliance(team_b);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {
+        if (getMap().canMove(dest_x, dest_y)) {
+            Unit dest_unit = getMap().getUnit(dest_x, dest_y);
+            if (dest_unit == null) {
+                return true;
+            } else {
+                return UnitToolkit.isTheSameUnit(unit, dest_unit);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean canMoveThrough(Unit unit, Unit target_unit) {
+        if (target_unit == null) {
+            return true;
+        } else {
+            if (isEnemy(unit, target_unit)) {
+                return unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public boolean isUnitAccessible(Unit unit) {
+        return unit != null
+                && unit.getTeam() == getCurrentTeam()
+                && unit.getCurrentHp() > 0
+                && !unit.isStandby();
     }
 
     public void nextTurn() {
