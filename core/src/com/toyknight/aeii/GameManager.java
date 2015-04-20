@@ -1,9 +1,14 @@
 package com.toyknight.aeii;
 
+import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Step;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.event.GameEvent;
+import com.toyknight.aeii.listener.AnimationListener;
+import com.toyknight.aeii.listener.GameEventListener;
+import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
@@ -14,7 +19,7 @@ import java.util.Queue;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameManager implements AnimationDispatcher {
+public class GameManager implements GameEventDispatcher, AnimationDispatcher {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -24,8 +29,17 @@ public class GameManager implements AnimationDispatcher {
     public static final int STATE_SUMMON = 0x6;
     public static final int STATE_HEAL = 0x7;
 
+    private final Queue<GameEvent> event_queue;
+    private final Queue<Animator> animation_queue;
+    private Animator current_animation = null;
+
     private GameCore game;
+    private GameManagerListener manager_listener;
+    private final ArrayList<GameEventListener> event_listeners;
+    private final ArrayList<AnimationListener> animation_listeners;
+
     private int state;
+    private int last_state;
     private Unit selected_unit;
     private Point last_position;
 
@@ -38,26 +52,51 @@ public class GameManager implements AnimationDispatcher {
     private final int[] y_dir = {0, 0, 1, -1};
 
     public GameManager() {
+        this.event_queue = new LinkedList();
+        this.animation_queue = new LinkedList();
+        this.event_listeners = new ArrayList();
+        this.animation_listeners = new ArrayList();
     }
 
     public void setGame(GameCore game) {
         this.game = game;
         this.state = STATE_SELECT;
+        this.event_listeners.clear();
+        this.animation_listeners.clear();
     }
 
     public GameCore getGame() {
         return game;
     }
 
+    private void setState(int state) {
+        if (state != this.state) {
+            this.last_state = this.state;
+            this.state = state;
+            if (manager_listener != null) {
+                manager_listener.onManagerStateChanged(last_state);
+            }
+        }
+    }
+
     public int getState() {
         return state;
     }
 
+    public void beginMovePhase() {
+        if (getGame().isUnitAccessible(getSelectedUnit())) {
+            createMovablePositions();
+            setState(STATE_MOVE);
+        }
+    }
+
     public void selectUnit(int x, int y) {
-        if(getState() == STATE_SELECT || getState() == STATE_MOVE) {
+        if (getState() == STATE_SELECT || getState() == STATE_MOVE) {
             Unit unit = getGame().getMap().getUnit(x, y);
             if (unit != null) {
-
+                selected_unit = unit;
+                last_position = new Point(x, y);
+                beginMovePhase();
             }
         }
     }
@@ -75,7 +114,7 @@ public class GameManager implements AnimationDispatcher {
             createMovePath(dest_x, dest_y);
         } else {
             Point current_dest = move_path.get(move_path.size() - 1);
-            if(dest_x != current_dest.x || dest_y != current_dest.y) {
+            if (dest_x != current_dest.x || dest_y != current_dest.y) {
                 createMovePath(dest_x, dest_y);
             }
         }
@@ -84,6 +123,75 @@ public class GameManager implements AnimationDispatcher {
 
     public HashSet<Point> getAttackablePositions() {
         return attackable_positions;
+    }
+
+    @Override
+    public void addGameEventListener(GameEventListener listener) {
+        this.event_listeners.add(listener);
+    }
+
+    @Override
+    public void submitGameEvent(GameEvent event) {
+        this.event_queue.add(event);
+    }
+
+    @Override
+    public boolean hasNextEvent() {
+        return !event_queue.isEmpty();
+    }
+
+    @Override
+    public void dispatchEvent() {
+        if (getCurrentAnimation() != null) {
+            GameEvent event = event_queue.poll();
+            if (event != null) {
+                //skip unexcutable events
+                while (!event.canExecute()) {
+                    event = event_queue.poll();
+                    if (event == null) {
+                        return;
+                    }
+                }
+                event.execute();
+                for (GameEventListener listener : event_listeners) {
+                    listener.onEventDispatched(event);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void addAnimationListener(AnimationListener listener) {
+        this.animation_listeners.add(listener);
+    }
+
+    @Override
+    public void submitAnimation(Animator animation) {
+        this.animation_queue.add(animation);
+    }
+
+    @Override
+    public void updateAnimation(float delta) {
+        if (current_animation == null || current_animation.isAnimationFinished()) {
+            if (current_animation != null) {
+                for (AnimationListener listener : animation_listeners) {
+                    listener.animationCompleted(current_animation);
+                }
+            }
+            current_animation = animation_queue.poll();
+            if (current_animation != null) {
+                for (AnimationListener listener : animation_listeners) {
+                    listener.animationStarted(current_animation);
+                }
+            }
+        } else {
+            current_animation.update(delta);
+        }
+    }
+
+    @Override
+    public Animator getCurrentAnimation() {
+        return current_animation;
     }
 
     private void createMoveMarkMap() {
@@ -97,7 +205,7 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
-    public void createMovablePositions() {
+    private void createMovablePositions() {
         createMoveMarkMap();
         movable_positions = new HashSet();
         int unit_x = getSelectedUnit().getX();
@@ -144,7 +252,7 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
-    public void createMovePath(int dest_x, int dest_y) {
+    private void createMovePath(int dest_x, int dest_y) {
         move_path = new ArrayList();
         int start_x = getSelectedUnit().getX();
         int start_y = getSelectedUnit().getY();

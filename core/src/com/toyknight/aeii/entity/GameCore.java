@@ -445,6 +445,41 @@ public class GameCore {
         }
     }
 
+    public boolean canAttack(Unit attacker, int x, int y) {
+        if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
+            Unit defender = getMap().getUnit(x, y);
+            if (defender != null) {
+                return isEnemy(attacker, defender);
+            } else {
+                if (attacker.hasAbility(Ability.DESTROYER)) {
+                    return getMap().getTile(x, y).isDestroyable();
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean canSummon(int x, int y) {
+        if (getMap().isTomb(x, y)) {
+            return getMap().getUnit(x, y) == null;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean canHeal(Unit healer, int x, int y) {
+        Unit target = getMap().getUnit(x, y);
+        if (target != null) {
+            return target.getCurrentHp() < target.getMaxHp()
+                    && target.getIndex() != UnitFactory.getSkeletonIndex() && !isEnemy(healer, target);
+        } else {
+            return false;
+        }
+    }
+
     public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {
         if (getMap().canMove(dest_x, dest_y)) {
             Unit dest_unit = getMap().getUnit(dest_x, dest_y);

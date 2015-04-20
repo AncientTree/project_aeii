@@ -24,9 +24,9 @@ public class UnitFactory {
     private UnitFactory() {
     }
 
-    public static void loadUnitData(Platform platform) throws AEIIException {
+    public static void loadUnitData() throws AEIIException {
         String unit_data_dir = "data/units/";
-        FileHandle unit_config = FileProvider.getAssetsFile(unit_data_dir + "unit_config.dat", platform);
+        FileHandle unit_config = FileProvider.getAssetsFile(unit_data_dir + "unit_config.dat");
         if (unit_config.exists()) {
             try {
                 Scanner din = new Scanner(unit_config.read());
@@ -37,7 +37,7 @@ public class UnitFactory {
                 din.close();
                 units = new Unit[unit_count];
                 for (int index = 0; index < unit_count; index++) {
-                    FileHandle unit_data = FileProvider.getAssetsFile(unit_data_dir + "unit_" + index + ".dat", platform);
+                    FileHandle unit_data = FileProvider.getAssetsFile(unit_data_dir + "unit_" + index + ".dat");
                     if (unit_data.exists()) {
                         loadUnitData(unit_data, index);
                     } else {

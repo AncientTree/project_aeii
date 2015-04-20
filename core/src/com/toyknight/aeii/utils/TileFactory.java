@@ -18,9 +18,9 @@ public class TileFactory {
     private TileFactory() {
     }
 
-    public static void loadTileData(Platform platform) throws AEIIException {
+    public static void loadTileData() throws AEIIException {
         String tile_data_dir = "data/tiles/";
-        FileHandle tile_config = FileProvider.getAssetsFile(tile_data_dir + "tile_config.dat", platform);
+        FileHandle tile_config = FileProvider.getAssetsFile(tile_data_dir + "tile_config.dat");
         if (tile_config.exists()) {
             try {
                 Scanner din = new Scanner(tile_config.read());
@@ -28,7 +28,7 @@ public class TileFactory {
                 din.close();
                 tile_list = new Tile[tile_count];
                 for (int index = 0; index < tile_count; index++) {
-                    FileHandle tile_data = FileProvider.getAssetsFile(tile_data_dir + "tile_" + index + ".dat", platform);
+                    FileHandle tile_data = FileProvider.getAssetsFile(tile_data_dir + "tile_" + index + ".dat");
                     if (tile_data.exists()) {
                         loadTileData(tile_data, index);
                     } else {

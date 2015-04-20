@@ -11,7 +11,7 @@ import com.toyknight.aeii.ResourceManager;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class AELogoGlowAnimation extends Animator {
+public class AELogoGlowAnimator extends Animator {
 
     private final TextureRegionDrawable ae_logo;
     private final TextureRegionDrawable ae_logo_mask;
@@ -20,7 +20,7 @@ public class AELogoGlowAnimation extends Animator {
 
     private float glow_x = 0f;
 
-    public AELogoGlowAnimation() {
+    public AELogoGlowAnimator() {
         Texture ae_logo_sheet = ResourceManager.getAELogoTexture();
         TextureRegion ae_logo_texture =
                 new TextureRegion(ae_logo_sheet, ae_logo_sheet.getWidth() - 240, ae_logo_sheet.getHeight() - 85, 240, 85);
@@ -37,13 +37,13 @@ public class AELogoGlowAnimation extends Animator {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, int x, int y) {
         batch.begin();
-        float x = (Gdx.app.getGraphics().getWidth() - 240) / 2.0f;
-        float y = (Gdx.app.getGraphics().getHeight() - 85) / 2.0f;
-        ae_logo.draw(batch, x, y, 240, 85);
-        ae_logo_glow.draw(batch, glow_x, (Gdx.app.getGraphics().getHeight() - 78) / 2.0f, 67, 78);
-        ae_logo_mask.draw(batch, x, y, 240, 85);
+        int logo_x = (Gdx.app.getGraphics().getWidth() - 240) / 2;
+        int logo_y = (Gdx.app.getGraphics().getHeight() - 85) / 2;
+        ae_logo.draw(batch, logo_x, logo_y, 240, 85);
+        ae_logo_glow.draw(batch, glow_x, (Gdx.app.getGraphics().getHeight() - 78) / 2, 67, 78);
+        ae_logo_mask.draw(batch, logo_x, logo_y, 240, 85);
         batch.end();
 
         shape_renderer.begin();

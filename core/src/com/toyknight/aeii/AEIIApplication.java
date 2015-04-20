@@ -35,11 +35,13 @@ public class AEIIApplication extends Game {
     @Override
     public void create() {
         try {
-            skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json", PLATFORM));
-            TileFactory.loadTileData(PLATFORM);
-            UnitFactory.loadUnitData(PLATFORM);
-            ResourceManager.loadResources(PLATFORM);
-            FontRenderer.loadFonts(PLATFORM);
+            FileProvider.setPlatform(PLATFORM);
+
+            skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
+            TileFactory.loadTileData();
+            UnitFactory.loadUnitData();
+            ResourceManager.loadResources();
+            FontRenderer.loadFonts();
             BorderRenderer.init();
 
             logo_screen = new LogoScreen(this);
@@ -47,7 +49,7 @@ public class AEIIApplication extends Game {
             game_screen = new GameScreen(this);
 
             //for test only
-            Map map = MapFactory.createMap(FileProvider.getAssetsFile("map/Shadowlands.aem", PLATFORM));
+            Map map = MapFactory.createMap(FileProvider.getAssetsFile("map/Shadowlands.aem"));
             Player[] players = new Player[4];
             for (Player player : players) {
                 player = new LocalPlayer();
@@ -57,7 +59,7 @@ public class AEIIApplication extends Game {
             game_screen.setGame(game);
             this.setScreen(game_screen);
 
-            //this.setScreen(logo_screen);
+//            this.setScreen(logo_screen);
         } catch (AEIIException ex) {
             System.err.println("ERROR: " + ex.getMessage());
         }

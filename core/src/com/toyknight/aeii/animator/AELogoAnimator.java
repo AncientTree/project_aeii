@@ -22,7 +22,7 @@ public class AELogoAnimator extends Animator {
 
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, int x, int y) {
         batch.begin();
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
         int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH) / 2;

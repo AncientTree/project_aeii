@@ -27,7 +27,7 @@ public class MSLogoAnimator extends Animator {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, int x, int y) {
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -42,6 +42,7 @@ public class MSLogoAnimator extends Animator {
         batch.end();
     }
 
+    @Override
     public void update(float delta_time) {
         if (time_waited < 1.7f) {
             time_waited += delta_time;

@@ -1,8 +1,6 @@
 package com.toyknight.aeii.renderer;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.screen.GameScreen;
@@ -23,18 +21,18 @@ public class MapRenderer {
         this.tile_renderer = new TileRenderer(ts);
     }
 
-    public void render(Map map) {
+    public void drawMap(SpriteBatch batch, Map map) {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 int sx = screen.getXOnScreen(x);
                 int sy = screen.getYOnScreen(y);
                 if (screen.isWithinPaintArea(sx, sy)) {
-                    int index = screen.getGame().getMap().getTileIndex(x, y);
-                    tile_renderer.renderTile(index, sx, sy);
+                    int index = map.getTileIndex(x, y);
+                    tile_renderer.drawTile(batch, index, sx, sy);
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.renderTopTile(top_tile_index, sx, sy + ts);
+                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts);
                     }
                 }
             }

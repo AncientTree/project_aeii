@@ -20,7 +20,6 @@ public class AudioManager {
     private static final String SE_PATH = "se/";
     private static final String MAIN_THEME = "main_theme.ogg";
 
-    public static Platform platform;
     public static float musicVolume = 1.0f;
     public static float seVolume = 0.8f;
 
@@ -37,7 +36,7 @@ public class AudioManager {
 
         stopMusic();
 
-        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile, platform));
+        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
         music.setVolume(musicVolume);
 
         music.play();
@@ -85,7 +84,7 @@ public class AudioManager {
      */
     public static void playRandomBGM() {
         String path = AUDIO_PATH + MUSIC_PATH;
-        FileHandle[] musicFiles = FileProvider.getAssetsFile(path, platform).list(filterAudioExtensions());
+        FileHandle[] musicFiles = FileProvider.getAssetsFile(path).list(filterAudioExtensions());
         int start = 0;
         int end = musicFiles.length - 1;
 
@@ -114,7 +113,7 @@ public class AudioManager {
 
         stopMusic();
 
-        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile, platform));
+        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
         music.setVolume(musicVolume);
 
         music.play();
@@ -136,7 +135,7 @@ public class AudioManager {
     public static long playSE(String fileName) {
         String pathToFile = AUDIO_PATH + SE_PATH + fileName;
 
-        se = Gdx.audio.newSound(FileProvider.getAssetsFile(pathToFile, platform));
+        se = Gdx.audio.newSound(FileProvider.getAssetsFile(pathToFile));
 
         return se.play(seVolume);
     }

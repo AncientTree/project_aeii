@@ -1,6 +1,5 @@
 package com.toyknight.aeii;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.SuffixFileFilter;
 import com.toyknight.aeii.utils.TileFactory;
 
@@ -29,6 +27,10 @@ public class ResourceManager {
     private static Texture[] tile_texture;
     private static Texture[] top_tile_texture;
 
+    private static Texture[] unit_texture_sheet;
+
+    private static Texture cursor_texture;
+    private static Texture attack_cursor_texture;
     private static Texture border_texture;
 
     private static Color aeii_bg_color;
@@ -36,35 +38,46 @@ public class ResourceManager {
     private ResourceManager() {
     }
 
-    public static void loadResources(Platform platform) throws AEIIException {
+    public static void loadResources() throws AEIIException {
         try {
-            ms_logo_texture = new Texture(FileProvider.getAssetsFile("images/ms_logo.png", platform));
-            ae_logo_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo.png", platform));
-            ae_logo_mask_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo_mask.png", platform));
-            ae_logo_glow_texture = new Texture(FileProvider.getAssetsFile("images/ae_glow.png", platform));
-            loadTileTextures(platform);
-            border_texture = new Texture(FileProvider.getAssetsFile("images/border.png", platform));
-            aeii_bg_color = new Color(0.140625f, 0.1640625f, 0.26953125f, 1.0f);
+            ms_logo_texture = new Texture(FileProvider.getAssetsFile("images/ms_logo.png"));
+            ae_logo_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo.png"));
+            ae_logo_mask_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo_mask.png"));
+            ae_logo_glow_texture = new Texture(FileProvider.getAssetsFile("images/ae_glow.png"));
+            loadTileTextures();
+            loadUnitTextures();
+            cursor_texture = new Texture(FileProvider.getAssetsFile("images/cursor.png"));
+            attack_cursor_texture = new Texture(FileProvider.getAssetsFile("images/attack_cursor.png"));
+            border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
+            aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
         }
     }
 
-    private static void loadTileTextures(Platform platform) throws GdxRuntimeException {
+    private static void loadTileTextures() throws GdxRuntimeException {
         int tile_count = TileFactory.getTileCount();
         tile_texture = new Texture[tile_count];
         for (int i = 0; i < tile_count; i++) {
-            FileHandle tile_image = FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png", platform);
+            FileHandle tile_image = FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png");
             tile_texture[i] = new Texture(tile_image);
         }
-        FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat", platform);
+        FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat");
         Scanner din = new Scanner(top_tile_config.read());
         top_tile_texture = new Texture[din.nextInt()];
         for (int i = 0; i < top_tile_texture.length; i++) {
-            FileHandle top_tile_image = FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png", platform);
+            FileHandle top_tile_image = FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png");
             top_tile_texture[i] = new Texture(top_tile_image);
         }
         din.close();
+    }
+
+    private static void loadUnitTextures() {
+        unit_texture_sheet = new Texture[4];
+        for (int team = 0; team < 4; team++) {
+            FileHandle sheet = FileProvider.getAssetsFile("images/units/unit_sheet_" + team + ".png");
+            unit_texture_sheet[team] = new Texture(sheet);
+        }
     }
 
     public static Texture getMSLogoTexture() {
@@ -89,6 +102,18 @@ public class ResourceManager {
 
     public static Texture getTopTileTexture(int index) {
         return top_tile_texture[index];
+    }
+
+    public static Texture getUnitTextureSheet(int team) {
+        return unit_texture_sheet[team];
+    }
+
+    public static Texture getCursorTexture() {
+        return cursor_texture;
+    }
+
+    public static Texture getAttackCursorTexture() {
+        return attack_cursor_texture;
     }
 
     public static Texture getBorderTexture() {

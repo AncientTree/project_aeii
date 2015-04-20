@@ -14,56 +14,41 @@ import com.toyknight.aeii.utils.TileFactory;
 public class TileRenderer {
 
     private final int ts;
-    private final SpriteBatch batch;
-    private final TextureRegionDrawable[] tile_texture;
-    private final TextureRegionDrawable[] top_tile_texture;
 
     private float state_time = 0f;
-    private int current_frame = 0;
 
     public TileRenderer(int ts) {
         this.ts = ts;
-        this.batch = new SpriteBatch();
-        tile_texture = new TextureRegionDrawable[TileFactory.getTileCount()];
-        for (int i = 0; i < tile_texture.length; i++) {
-            Texture texture = ResourceManager.getTileTexture(i);
-            tile_texture[i] = new TextureRegionDrawable(new TextureRegion(texture, texture.getWidth(), texture.getHeight()));
-        }
-        top_tile_texture = new TextureRegionDrawable[ResourceManager.getTopTileCount()];
-        for (int i = 0; i < top_tile_texture.length; i++) {
-            Texture texture = ResourceManager.getTopTileTexture(i);
-            top_tile_texture[i] = new TextureRegionDrawable(new TextureRegion(texture, texture.getWidth(), texture.getHeight()));
-        }
     }
 
-    public void renderTile(int index, int x, int y) {
+    public void drawTile(SpriteBatch batch, int index, int x, int y) {
         batch.begin();
+        int current_frame = getCurrentFrame();
         Tile tile = TileFactory.getTile(index);
         if (tile.isAnimated()) {
             if (current_frame == 0) {
-                tile_texture[index].draw(batch, x, y, ts, ts);
+                batch.draw(ResourceManager.getTileTexture(index), x, y, ts, ts);
             } else {
-                tile_texture[tile.getAnimationTileIndex()].draw(batch, x, y, ts, ts);
+                batch.draw(ResourceManager.getTileTexture(tile.getAnimationTileIndex()), x, y, ts, ts);
             }
         } else {
-            tile_texture[index].draw(batch, x, y, ts, ts);
+            batch.draw(ResourceManager.getTileTexture(index), x, y, ts, ts);
         }
         batch.end();
     }
 
-    public void renderTopTile(int index, int x, int y) {
+    public void drawTopTile(SpriteBatch batch, int index, int x, int y) {
         batch.begin();
-        top_tile_texture[index].draw(batch, x, y, ts, ts);
+        batch.draw(ResourceManager.getTopTileTexture(index), x, y, ts, ts);
         batch.end();
+    }
+
+    private int getCurrentFrame() {
+        return ((int) (state_time / 0.3f)) % 2;
     }
 
     public void update(float delta) {
-        if (state_time < 0.3f) {
-            state_time += delta;
-        } else {
-            current_frame = current_frame == 0 ? 1 : 0;
-            state_time = 0f;
-        }
+        state_time += delta;
     }
 
 }

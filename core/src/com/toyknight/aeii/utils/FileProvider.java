@@ -8,10 +8,16 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class FileProvider {
 
+    private static Platform platform = Platform.Desktop;
+
     private FileProvider() {
     }
 
-    public static FileHandle getAssetsFile(String path, Platform platform) {
+    public static void setPlatform(Platform platform) {
+        FileProvider.platform = platform;
+    }
+
+    public static FileHandle getAssetsFile(String path) {
         switch (platform) {
             case Android:
                 return Gdx.files.internal(path);

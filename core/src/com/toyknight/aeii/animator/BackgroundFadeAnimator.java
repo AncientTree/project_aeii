@@ -30,7 +30,7 @@ public class BackgroundFadeAnimator extends Animator {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, int x, int y) {
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(r, g, b, 1.0f);

@@ -20,10 +20,10 @@ public class FontRenderer {
     private FontRenderer() {
     }
 
-    public static void loadFonts(Platform platform) {
+    public static void loadFonts() {
         font_yahei = new BitmapFont(
-                FileProvider.getAssetsFile("skin/ms_yahei_shadow.fnt", platform),
-                FileProvider.getAssetsFile("skin/ms_yahei_shadow.png", platform), false);
+                FileProvider.getAssetsFile("skin/ms_yahei_shadow.fnt"),
+                FileProvider.getAssetsFile("skin/ms_yahei_shadow.png"), false);
 
         current_font = font_yahei;
     }
