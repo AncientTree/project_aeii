@@ -200,7 +200,10 @@ public class GameScreen extends Stage implements Screen {
     }
 
     private void onClick(int screen_x, int screen_y) {
-
+        if (isOperatable()) {
+            pointer_x = screen_x;
+            pointer_y = screen_y;
+        }
     }
 
     private void processDragEvent(int drag_x, int drag_y) {
