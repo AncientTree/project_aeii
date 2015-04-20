@@ -32,6 +32,7 @@ public class ResourceManager {
     private static Texture cursor_texture;
     private static Texture attack_cursor_texture;
     private static Texture border_texture;
+    private static Texture alpha_texture;
 
     private static Color aeii_bg_color;
 
@@ -49,6 +50,7 @@ public class ResourceManager {
             cursor_texture = new Texture(FileProvider.getAssetsFile("images/cursor.png"));
             attack_cursor_texture = new Texture(FileProvider.getAssetsFile("images/attack_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
+            alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
             aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
@@ -118,6 +120,10 @@ public class ResourceManager {
 
     public static Texture getBorderTexture() {
         return border_texture;
+    }
+
+    public static Texture getAlphaTexture() {
+        return alpha_texture;
     }
 
     public static Color getAEIIBackgroundColor() {

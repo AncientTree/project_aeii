@@ -28,6 +28,7 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
     public static final int STATE_ATTACK = 0x5;
     public static final int STATE_SUMMON = 0x6;
     public static final int STATE_HEAL = 0x7;
+    public static final int STATE_PREVIEW = 0x8;
 
     private final Queue<GameEvent> event_queue;
     private final Queue<Animator> animation_queue;
@@ -83,20 +84,31 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
         return state;
     }
 
-    public void beginMovePhase() {
+    private void beginMovePhase() {
         if (getGame().isUnitAccessible(getSelectedUnit())) {
             createMovablePositions();
             setState(STATE_MOVE);
         }
     }
 
+    private void beginPreviewPhase() {
+        if (getSelectedUnit() != null) {
+            createMovablePositions();
+            setState(STATE_PREVIEW);
+        }
+    }
+
     public void selectUnit(int x, int y) {
-        if (getState() == STATE_SELECT || getState() == STATE_MOVE) {
+        if (getState() == STATE_SELECT || getState() == STATE_MOVE || getState() == STATE_PREVIEW) {
             Unit unit = getGame().getMap().getUnit(x, y);
             if (unit != null) {
                 selected_unit = unit;
-                last_position = new Point(x, y);
-                beginMovePhase();
+                if (unit.getTeam() == getGame().getCurrentTeam()) {
+                    last_position = new Point(x, y);
+                    beginMovePhase();
+                } else {
+                    beginPreviewPhase();
+                }
             }
         }
     }
@@ -109,6 +121,10 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
         return movable_positions;
     }
 
+    public HashSet<Point> getAttackablePositions() {
+        return attackable_positions;
+    }
+
     public ArrayList<Point> getMovePath(int dest_x, int dest_y) {
         if (move_path == null || move_path.size() == 0) {
             createMovePath(dest_x, dest_y);
@@ -119,10 +135,6 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
             }
         }
         return move_path;
-    }
-
-    public HashSet<Point> getAttackablePositions() {
-        return attackable_positions;
     }
 
     @Override

@@ -51,9 +51,10 @@ public class AEIIApplication extends Game {
             //for test only
             Map map = MapFactory.createMap(FileProvider.getAssetsFile("map/Shadowlands.aem"));
             Player[] players = new Player[4];
-            for (Player player : players) {
-                player = new LocalPlayer();
-                player.setGold(1000);
+            for (int i = 0; i < 4; i++) {
+                players[i] = new LocalPlayer();
+                players[i].setAlliance(i);
+                players[i].setGold(1000);
             }
             GameCore game = new GameCore(map, Rule.getDefaultRule(), players);
             game_screen.setGame(game);
