@@ -17,14 +17,9 @@ import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.animator.AttackCursorAnimator;
 import com.toyknight.aeii.animator.CursorAnimator;
 import com.toyknight.aeii.animator.UnitAnimator;
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.entity.MapViewport;
-import com.toyknight.aeii.renderer.AlphaRenderer;
-import com.toyknight.aeii.renderer.MapRenderer;
-import com.toyknight.aeii.renderer.StatusBarRenderer;
-import com.toyknight.aeii.renderer.UnitRenderer;
+import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.renderer.*;
+import com.toyknight.aeii.utils.TileFactory;
 
 import java.util.Set;
 
@@ -37,7 +32,7 @@ public class GameScreen extends Stage implements Screen {
     private final AEIIApplication context;
 
     private final SpriteBatch batch;
-    private final MapRenderer map_renderer;
+    private final TileRenderer tile_renderer;
     private final UnitRenderer unit_renderer;
     private final AlphaRenderer alpha_renderer;
     private final StatusBarRenderer status_bar_renderer;
@@ -61,7 +56,7 @@ public class GameScreen extends Stage implements Screen {
         this.ts = context.getTileSize();
 
         this.batch = new SpriteBatch();
-        this.map_renderer = new MapRenderer(this, ts);
+        this.tile_renderer = new TileRenderer(ts);
         this.unit_renderer = new UnitRenderer(this, ts);
         this.alpha_renderer = new AlphaRenderer(this, ts);
         this.status_bar_renderer = new StatusBarRenderer(this, ts);
@@ -99,7 +94,7 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void draw() {
-        map_renderer.drawMap(batch, getGame().getMap());
+        drawMap();
         if (manager.getCurrentAnimation() == null /*&& getGame().isLocalPlayer()*/) {
             switch (manager.getState()) {
                 case GameManager.STATE_RMOVE:
@@ -124,6 +119,24 @@ public class GameScreen extends Stage implements Screen {
         status_bar_renderer.drawStatusBar(batch, manager);
 
         super.draw();
+    }
+
+    private void drawMap() {
+        for (int x = 0; x < getGame().getMap().getWidth(); x++) {
+            for (int y = 0; y < getGame().getMap().getHeight(); y++) {
+                int sx = getXOnScreen(x);
+                int sy = getYOnScreen(y);
+                if (isWithinPaintArea(sx, sy)) {
+                    int index = getGame().getMap().getTileIndex(x, y);
+                    tile_renderer.drawTile(batch, index, sx, sy);
+                    Tile tile = TileFactory.getTile(index);
+                    if (tile.getTopTileIndex() != -1) {
+                        int top_tile_index = tile.getTopTileIndex();
+                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts);
+                    }
+                }
+            }
+        }
     }
 
     private void drawUnits() {
@@ -178,11 +191,14 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void act(float delta) {
-        map_renderer.update(delta);
+        tile_renderer.update(delta);
         unit_renderer.update(delta);
         cursor.addStateTime(delta);
         attack_cursor.addStateTime(delta);
         updateViewport();
+
+        manager.updateAnimation(delta);
+        manager.dispatchEvent();
         super.act(delta);
     }
 
@@ -264,9 +280,10 @@ public class GameScreen extends Stage implements Screen {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
         if (!event_handled) {
             if (dragged == false) {
-                onClick(screenX, screenY);
+                onClick();
+            } else {
+                this.dragged = false;
             }
-            this.dragged = false;
         }
         return true;
     }
@@ -300,7 +317,7 @@ public class GameScreen extends Stage implements Screen {
         }
     }
 
-    private void onClick(int screen_x, int screen_y) {
+    private void onClick() {
         if (isOperatable()) {
             int cursor_x = getCursorXOnMap();
             int cursor_y = getCursorYOnMap();

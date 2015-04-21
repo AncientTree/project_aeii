@@ -16,4 +16,6 @@ public interface AnimationDispatcher {
 
     public Animator getCurrentAnimation();
 
+    public boolean isAnimating();
+
 }

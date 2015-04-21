@@ -101,7 +101,7 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
     public void selectUnit(int x, int y) {
         if (getState() == STATE_SELECT || getState() == STATE_MOVE || getState() == STATE_PREVIEW) {
             Unit unit = getGame().getMap().getUnit(x, y);
-            if (unit != null) {
+            if (unit != null && !unit.isStandby()) {
                 selected_unit = unit;
                 if (unit.getTeam() == getGame().getCurrentTeam()) {
                     last_position = new Point(x, y);
@@ -158,13 +158,13 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
             GameEvent event = event_queue.poll();
             if (event != null) {
                 //skip unexcutable events
-                while (!event.canExecute()) {
+                while (!event.canExecute(getGame())) {
                     event = event_queue.poll();
                     if (event == null) {
                         return;
                     }
                 }
-                event.execute();
+                event.execute(getGame(), this);
                 for (GameEventListener listener : event_listeners) {
                     listener.onEventDispatched(event);
                 }
@@ -204,6 +204,11 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
     @Override
     public Animator getCurrentAnimation() {
         return current_animation;
+    }
+
+    @Override
+    public boolean isAnimating() {
+        return getCurrentAnimation() != null;
     }
 
     private void createMoveMarkMap() {
