@@ -6,9 +6,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.animator.AttackCursorAnimator;
 import com.toyknight.aeii.animator.CursorAnimator;
@@ -50,6 +54,7 @@ public class GameScreen extends Stage implements Screen {
     private boolean dragged;
 
     private final TextField command_line;
+    private ImageButton btn_menu;
 
     public GameScreen(AEIIApplication context) {
         this.context = context;
@@ -80,6 +85,12 @@ public class GameScreen extends Stage implements Screen {
         this.command_line.setWidth(Gdx.graphics.getWidth());
         this.command_line.setVisible(false);
         this.addActor(command_line);
+
+
+        int icon_size = ResourceManager.getMenuIconSize(getContext().getScaling());
+        this.btn_menu = new ImageButton(ResourceManager.createDrawable(ResourceManager.getMenuIcon(6), icon_size, icon_size));
+        this.btn_menu.setBounds(viewport.width - icon_size, 0, icon_size, icon_size);
+        this.addActor(btn_menu);
     }
 
     public AEIIApplication getContext() {

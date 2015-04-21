@@ -1,12 +1,9 @@
 package com.toyknight.aeii.renderer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.Platform;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * Created by toyknight on 4/2/2015.
@@ -21,6 +18,7 @@ public class FontRenderer {
     }
 
     public static void loadFonts() {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
         font_yahei = new BitmapFont(
                 FileProvider.getAssetsFile("skin/ms_yahei_shadow.fnt"),
                 FileProvider.getAssetsFile("skin/ms_yahei_shadow.png"), false);

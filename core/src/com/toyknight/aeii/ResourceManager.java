@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.SuffixFileFilter;
@@ -34,6 +35,9 @@ public class ResourceManager {
     private static Texture border_texture;
     private static Texture alpha_texture;
 
+    private static Texture menu_icon_texture;
+    private static TextureRegion[] menu_icons;
+
     private static Color aeii_bg_color;
 
     private ResourceManager() {
@@ -52,6 +56,8 @@ public class ResourceManager {
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
             aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
+            menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
+            createMenuIcons();
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
         }
@@ -79,6 +85,14 @@ public class ResourceManager {
         for (int team = 0; team < 4; team++) {
             FileHandle sheet = FileProvider.getAssetsFile("images/units/unit_sheet_" + team + ".png");
             unit_texture_sheet[team] = new Texture(sheet);
+        }
+    }
+
+    private static void createMenuIcons() {
+        int size = menu_icon_texture.getHeight();
+        menu_icons = new TextureRegion[menu_icon_texture.getWidth() / size];
+        for (int i = 0; i < menu_icons.length; i++) {
+            menu_icons[i] = new TextureRegion(menu_icon_texture, i * size, 0, size, size);
         }
     }
 
@@ -126,6 +140,18 @@ public class ResourceManager {
         return alpha_texture;
     }
 
+    public static Texture getMenuIconTexture() {
+        return menu_icon_texture;
+    }
+
+    public static TextureRegion getMenuIcon(int index) {
+        return menu_icons[index];
+    }
+
+    public static int getMenuIconSize(int scaling) {
+        return menu_icon_texture.getHeight() * scaling;
+    }
+
     public static Color getAEIIBackgroundColor() {
         return aeii_bg_color;
     }
@@ -147,6 +173,13 @@ public class ResourceManager {
             }
         }
         return new Animation(frame_duration, frames);
+    }
+
+    public static TextureRegionDrawable createDrawable(TextureRegion texture, int preferred_width, int preferred_height) {
+        TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
+        drawable.setMinWidth(preferred_width);
+        drawable.setMinHeight(preferred_height);
+        return drawable;
     }
 
 }

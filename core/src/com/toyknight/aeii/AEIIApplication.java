@@ -70,6 +70,10 @@ public class AEIIApplication extends Game {
         return TILE_SIZE;
     }
 
+    public int getScaling() {
+        return TILE_SIZE / 24;
+    }
+
     public Platform getPlatform() {
         return PLATFORM;
     }

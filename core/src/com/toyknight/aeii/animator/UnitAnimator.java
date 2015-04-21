@@ -1,28 +1,26 @@
 package com.toyknight.aeii.animator;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.utils.UnitFactory;
 
 /**
  * Created by toyknight on 4/19/2015.
  */
-public class UnitAnimator extends Animator {
+public class UnitAnimator extends MapAnimator {
 
-    public boolean hasLocation(int x, int y) {
-        return false;
+    private final Unit unit;
+
+    public UnitAnimator(Unit unit, int x, int y) {
+        super(x, y);
+        if (unit != null) {
+            this.unit = UnitFactory.cloneUnit(unit);
+        } else {
+            this.unit = null;
+        }
     }
 
-    @Override
-    public void render(SpriteBatch batch, int x, int y) {
-
+    public Unit getUnit() {
+        return unit;
     }
 
-    @Override
-    public void update(float delta_time) {
-
-    }
-
-    @Override
-    public boolean isAnimationFinished() {
-        return false;
-    }
 }
