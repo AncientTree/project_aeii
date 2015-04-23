@@ -32,6 +32,7 @@ public class ResourceManager {
 
     private static Texture cursor_texture;
     private static Texture attack_cursor_texture;
+    private static Texture move_target_cursor_texture;
     private static Texture border_texture;
     private static Texture alpha_texture;
 
@@ -39,6 +40,7 @@ public class ResourceManager {
     private static TextureRegion[] menu_icons;
 
     private static Color aeii_bg_color;
+    private static Color move_path_color;
 
     private ResourceManager() {
     }
@@ -53,9 +55,11 @@ public class ResourceManager {
             loadUnitTextures();
             cursor_texture = new Texture(FileProvider.getAssetsFile("images/cursor.png"));
             attack_cursor_texture = new Texture(FileProvider.getAssetsFile("images/attack_cursor.png"));
+            move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
             aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
+            move_path_color = new Color(225 / 256f, 0f, 82 / 256f, 1.0f);
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIcons();
         } catch (GdxRuntimeException ex) {
@@ -132,6 +136,10 @@ public class ResourceManager {
         return attack_cursor_texture;
     }
 
+    public static Texture getMoveTargetCursorTexture() {
+        return move_target_cursor_texture;
+    }
+
     public static Texture getBorderTexture() {
         return border_texture;
     }
@@ -154,6 +162,10 @@ public class ResourceManager {
 
     public static Color getAEIIBackgroundColor() {
         return aeii_bg_color;
+    }
+
+    public static Color getMovePathColor() {
+        return move_path_color;
     }
 
     public static int getTopTileCount() {

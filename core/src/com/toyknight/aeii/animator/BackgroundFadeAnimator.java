@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class BackgroundFadeAnimator extends Animator {
+public class BackgroundFadeAnimator extends ScreenAnimator {
 
     private final float start_r;
     private final float start_g;
@@ -30,7 +30,7 @@ public class BackgroundFadeAnimator extends Animator {
     }
 
     @Override
-    public void render(SpriteBatch batch, int x, int y) {
+    public void render(SpriteBatch batch) {
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(r, g, b, 1.0f);

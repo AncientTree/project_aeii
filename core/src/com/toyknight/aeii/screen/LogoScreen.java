@@ -14,28 +14,26 @@ import java.util.Queue;
 public class LogoScreen implements Screen {
 
     private final AEIIApplication context;
-
-    private final Queue<Animator> logo_animator_queue = new LinkedList();
+    private final SpriteBatch batch;
+    private final Queue<ScreenAnimator> logo_animator_queue;
 
     private AELogoGlowAnimator ae_logo_glow_animator;
-    private Animator current_animator;
-
-    private SpriteBatch batch;
+    private ScreenAnimator current_animator;
 
     public LogoScreen(AEIIApplication context) {
         this.context = context;
-
-        batch = new SpriteBatch();
+        this.batch = new SpriteBatch();
+        this.logo_animator_queue = new LinkedList();
 
         ae_logo_glow_animator = new AELogoGlowAnimator();
 
-        Animator ms_logo_animator = new MSLogoAnimator();
+        ScreenAnimator ms_logo_animator = new MSLogoAnimator();
         logo_animator_queue.add(ms_logo_animator);
 
-        Animator bg_fade_animator = new BackgroundFadeAnimator(1.0f, 1.0f, 1.0f);
+        ScreenAnimator bg_fade_animator = new BackgroundFadeAnimator(1.0f, 1.0f, 1.0f);
         logo_animator_queue.add(bg_fade_animator);
 
-        Animator ae_logo_animator = new AELogoAnimator();
+        ScreenAnimator ae_logo_animator = new AELogoAnimator();
         logo_animator_queue.add(ae_logo_animator);
     }
 
@@ -47,14 +45,14 @@ public class LogoScreen implements Screen {
     @Override
     public void render(float delta) {
         if (current_animator != null) {
-            current_animator.render(batch, 0, 0);
+            current_animator.render(batch);
             current_animator.update(delta);
             if(current_animator.isAnimationFinished()) {
                 current_animator = logo_animator_queue.poll();
             }
         } else {
             //context.gotoMainMenuScreen();
-            ae_logo_glow_animator.render(batch, 0, 0);
+            ae_logo_glow_animator.render(batch);
             ae_logo_glow_animator.update(delta);
         }
     }

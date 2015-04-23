@@ -9,7 +9,7 @@ import com.toyknight.aeii.ResourceManager;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class AELogoAnimator extends Animator {
+public class AELogoAnimator extends ScreenAnimator {
 
     private final int WIDTH = 240;
     private final int HEIGHT = 85;
@@ -20,9 +20,8 @@ public class AELogoAnimator extends Animator {
         animation = ResourceManager.createAnimation(ResourceManager.getAELogoTexture(), 8, 5, 0.065f);
     }
 
-
     @Override
-    public void render(SpriteBatch batch, int x, int y) {
+    public void render(SpriteBatch batch) {
         batch.begin();
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
         int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH) / 2;

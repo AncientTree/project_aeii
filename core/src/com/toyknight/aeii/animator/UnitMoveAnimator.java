@@ -10,8 +10,13 @@ import java.util.ArrayList;
  */
 public class UnitMoveAnimator extends UnitAnimator {
 
+    private final int ts;
+    private final ArrayList<Point> path;
+
     public UnitMoveAnimator(Unit unit, ArrayList<Point> path, int ts) {
         super(unit, unit.getX(), unit.getY());
+        this.path = path;
+        this.ts = ts;
     }
 
 }

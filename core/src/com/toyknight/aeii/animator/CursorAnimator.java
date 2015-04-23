@@ -27,7 +27,6 @@ public class CursorAnimator extends Animator {
         this.cursor_animation = ResourceManager.createAnimation(cursor_texture, 2, 1, 0.3f);
     }
 
-    @Override
     public void render(SpriteBatch batch, int map_x, int map_y) {
         batch.begin();
         int screen_x = screen.getXOnScreen(map_x);

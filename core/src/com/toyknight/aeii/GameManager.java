@@ -84,6 +84,19 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
         return state;
     }
 
+    private void beginPreviewPhase() {
+        if (getSelectedUnit() != null) {
+            createMovablePositions();
+            setState(STATE_PREVIEW);
+        }
+    }
+
+    private void cancelPreviewPhase() {
+        if (state == STATE_PREVIEW) {
+            setState(STATE_SELECT);
+        }
+    }
+
     private void beginMovePhase() {
         if (getGame().isUnitAccessible(getSelectedUnit())) {
             createMovablePositions();
@@ -91,10 +104,9 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
         }
     }
 
-    private void beginPreviewPhase() {
-        if (getSelectedUnit() != null) {
-            createMovablePositions();
-            setState(STATE_PREVIEW);
+    public void cancelMovePhase() {
+        if (getState() == STATE_MOVE) {
+            setState(STATE_SELECT);
         }
     }
 
@@ -109,8 +121,26 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
                 } else {
                     beginPreviewPhase();
                 }
+            } else {
+                if (getState() == STATE_PREVIEW) {
+                    cancelPreviewPhase();
+                }
             }
         }
+    }
+
+    public void moveSelectedUnit(int dest_x, int dest_y) {
+        /*Unit unit = getSelectedUnit();
+        if (unit != null && (state == STATE_MOVE || state == STATE_RMOVE)) {
+            int unit_x = unit.getX();
+            int unit_y = unit.getY();
+            if (canSelectedUnitMove(dest_x, dest_y)) {
+                int mp_remains = getUnitToolkit().getMovementPointRemains(unit, dest_x, dest_y);
+                getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
+                unit.setCurrentMovementPoint(mp_remains);
+                is_selected_unit_moved = true;
+            }
+        }*/
     }
 
     public Unit getSelectedUnit() {
@@ -157,7 +187,7 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
         if (getCurrentAnimation() != null) {
             GameEvent event = event_queue.poll();
             if (event != null) {
-                //skip unexcutable events
+                //skip events that cannot be executed
                 while (!event.canExecute(getGame())) {
                     event = event_queue.poll();
                     if (event == null) {

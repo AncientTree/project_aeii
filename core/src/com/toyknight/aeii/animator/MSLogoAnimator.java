@@ -10,7 +10,7 @@ import com.toyknight.aeii.ResourceManager;
 /**
  * Created by toyknight on 4/2/2015.
  */
-public class MSLogoAnimator extends Animator {
+public class MSLogoAnimator extends ScreenAnimator {
 
     private final int WIDTH = 178;
     private final int HEIGHT = 178;
@@ -27,7 +27,7 @@ public class MSLogoAnimator extends Animator {
     }
 
     @Override
-    public void render(SpriteBatch batch, int x, int y) {
+    public void render(SpriteBatch batch) {
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -51,6 +51,7 @@ public class MSLogoAnimator extends Animator {
         }
     }
 
+    @Override
     public boolean isAnimationFinished() {
         return animation.isAnimationFinished(getStateTime());
     }

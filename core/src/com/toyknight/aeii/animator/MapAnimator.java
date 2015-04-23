@@ -2,6 +2,7 @@ package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.screen.GameScreen;
 
 import java.util.HashSet;
 
@@ -29,8 +30,7 @@ public class MapAnimator extends Animator {
         return locations.contains(new Point(x, y));
     }
 
-    @Override
-    public void render(SpriteBatch batch, int x, int y) {
+    public void render(SpriteBatch batch, GameScreen screen) {
     }
 
     @Override

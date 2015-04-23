@@ -20,7 +20,9 @@ import com.toyknight.aeii.animator.UnitAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.utils.TileFactory;
+import com.toyknight.aeii.utils.UnitToolkit;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -35,6 +37,7 @@ public class GameScreen extends Stage implements Screen {
     private final TileRenderer tile_renderer;
     private final UnitRenderer unit_renderer;
     private final AlphaRenderer alpha_renderer;
+    private final MovePathRenderer move_path_renderer;
     private final StatusBarRenderer status_bar_renderer;
     private final ShapeRenderer shape_renderer;
     private final GameManager manager;
@@ -59,6 +62,7 @@ public class GameScreen extends Stage implements Screen {
         this.tile_renderer = new TileRenderer(ts);
         this.unit_renderer = new UnitRenderer(this, ts);
         this.alpha_renderer = new AlphaRenderer(this, ts);
+        this.move_path_renderer = new MovePathRenderer(this, ts);
         this.status_bar_renderer = new StatusBarRenderer(this, ts);
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
@@ -100,7 +104,7 @@ public class GameScreen extends Stage implements Screen {
                 case GameManager.STATE_RMOVE:
                 case GameManager.STATE_MOVE:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
-                    //paintMovePath(g, ts);
+                    move_path_renderer.drawMovePath(batch, shape_renderer, manager.getMovePath(getCursorXOnMap(), getCursorYOnMap()));
                     break;
                 case GameManager.STATE_PREVIEW:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
@@ -321,7 +325,34 @@ public class GameScreen extends Stage implements Screen {
         if (isOperatable()) {
             int cursor_x = getCursorXOnMap();
             int cursor_y = getCursorYOnMap();
-            manager.selectUnit(cursor_x, cursor_y);
+            Unit selected_unit = manager.getSelectedUnit();
+            switch (manager.getState()) {
+                case GameManager.STATE_PREVIEW:
+                case GameManager.STATE_SELECT:
+                    manager.selectUnit(cursor_x, cursor_y);
+                    break;
+                case GameManager.STATE_MOVE:
+                case GameManager.STATE_RMOVE:
+                    if (manager.getMovablePositions().contains(getGame().getMap().getPosition(cursor_x, cursor_y))) {
+
+                    } else {
+                        manager.cancelMovePhase();
+                    }
+                    manager.moveSelectedUnit(cursor_x, cursor_y);
+                    break;
+                case GameManager.STATE_ATTACK:
+                    //UnitToolkit.isWithinRange()
+                    //manager.doAttack(click_x, click_y);
+                    break;
+                case GameManager.STATE_SUMMON:
+                    //manager.doSummon(click_x, click_y);
+                    break;
+                case GameManager.STATE_HEAL:
+                    //manager.doHeal(click_x, click_y);
+                    break;
+                default:
+                    //do nothing
+            }
         }
     }
 

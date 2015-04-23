@@ -11,7 +11,7 @@ import com.toyknight.aeii.ResourceManager;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class AELogoGlowAnimator extends Animator {
+public class AELogoGlowAnimator extends ScreenAnimator {
 
     private final TextureRegionDrawable ae_logo;
     private final TextureRegionDrawable ae_logo_mask;
@@ -37,7 +37,7 @@ public class AELogoGlowAnimator extends Animator {
     }
 
     @Override
-    public void render(SpriteBatch batch, int x, int y) {
+    public void render(SpriteBatch batch) {
         batch.begin();
         int logo_x = (Gdx.app.getGraphics().getWidth() - 240) / 2;
         int logo_y = (Gdx.app.getGraphics().getHeight() - 85) / 2;
