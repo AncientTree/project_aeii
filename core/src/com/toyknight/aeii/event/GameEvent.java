@@ -1,6 +1,7 @@
 package com.toyknight.aeii.event;
 
 import com.toyknight.aeii.AnimationDispatcher;
+import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.entity.GameCore;
 
 /**
@@ -8,8 +9,8 @@ import com.toyknight.aeii.entity.GameCore;
  */
 public interface GameEvent {
 
-    public boolean canExecute(GameCore game);
+    public boolean canExecute(GameManager manager);
 
-    public void execute(GameCore game, AnimationDispatcher dispatcher);
+    public void execute(GameManager manager);
 
 }

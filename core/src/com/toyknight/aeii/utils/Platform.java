@@ -5,6 +5,10 @@ package com.toyknight.aeii.utils;
  */
 public enum Platform {
 
-    Desktop, Android, iOS
+    Desktop, Android, iOS;
+
+    public static boolean isMobileDevice(Platform platform) {
+        return platform == Android || platform == iOS;
+    }
 
 }

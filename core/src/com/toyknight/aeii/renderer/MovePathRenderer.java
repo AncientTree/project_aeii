@@ -48,16 +48,17 @@ public class MovePathRenderer {
                     int sy = screen.getYOnScreen(y);
                     shape_renderer.rect(sx + ts / 3, sy + ts / 3, ts / 3 * 4, ts / 3);
                 }
-            } else {
-                batch.begin();
-                Point dest = move_path.get(i);
-                int sx = screen.getXOnScreen(dest.x);
-                int sy = screen.getYOnScreen(dest.y);
-                batch.draw(ResourceManager.getMoveTargetCursorTexture(), sx - offset, sy - offset, cursor_size, cursor_size);
-                batch.end();
             }
         }
         shape_renderer.end();
+        batch.begin();
+        if(move_path.size() > 0) {
+            Point dest = move_path.get(move_path.size() - 1);
+            int sx = screen.getXOnScreen(dest.x);
+            int sy = screen.getYOnScreen(dest.y);
+            batch.draw(ResourceManager.getMoveTargetCursorTexture(), sx - offset, sy - offset, cursor_size, cursor_size);
+        }
+        batch.end();
     }
 
 }

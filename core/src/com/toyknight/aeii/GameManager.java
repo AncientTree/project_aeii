@@ -1,12 +1,12 @@
 package com.toyknight.aeii;
 
 import com.toyknight.aeii.animator.Animator;
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.Step;
-import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.event.GameEvent;
+import com.toyknight.aeii.event.UnitMoveReversingEvent;
+import com.toyknight.aeii.event.UnitMovingEvent;
 import com.toyknight.aeii.listener.AnimationListener;
+import com.toyknight.aeii.listener.EventDispatcherListener;
 import com.toyknight.aeii.listener.GameEventListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -19,11 +19,11 @@ import java.util.Queue;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameManager implements GameEventDispatcher, AnimationDispatcher {
+public class GameManager implements GameEventDispatcher, AnimationDispatcher, GameEventListener {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
-    public static final int STATE_RMOVE = 0x3;
+    public static final int STATE_REMOVE = 0x3;
     public static final int STATE_ACTION = 0x4;
     public static final int STATE_ATTACK = 0x5;
     public static final int STATE_SUMMON = 0x6;
@@ -36,7 +36,7 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
 
     private GameCore game;
     private GameManagerListener manager_listener;
-    private final ArrayList<GameEventListener> event_listeners;
+    private final ArrayList<EventDispatcherListener> event_dispatcher_listeners;
     private final ArrayList<AnimationListener> animation_listeners;
 
     private int state;
@@ -55,14 +55,14 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
     public GameManager() {
         this.event_queue = new LinkedList();
         this.animation_queue = new LinkedList();
-        this.event_listeners = new ArrayList();
+        this.event_dispatcher_listeners = new ArrayList();
         this.animation_listeners = new ArrayList();
     }
 
     public void setGame(GameCore game) {
         this.game = game;
         this.state = STATE_SELECT;
-        this.event_listeners.clear();
+        this.event_dispatcher_listeners.clear();
         this.animation_listeners.clear();
     }
 
@@ -110,6 +110,20 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
         }
     }
 
+    public void reverseMove() {
+        Unit unit = getSelectedUnit();
+        if (getGame().isUnitAccessible(unit) && getState() == STATE_ACTION) {
+            submitGameEvent(new UnitMoveReversingEvent(unit.getX(), unit.getY(), last_position.x, last_position.y));
+        }
+    }
+
+    @Override
+    public void onUnitMoveReversed(int origin_x, int origin_y) {
+        if(getState() == STATE_ACTION) {
+            beginMovePhase();
+        }
+    }
+
     public void selectUnit(int x, int y) {
         if (getState() == STATE_SELECT || getState() == STATE_MOVE || getState() == STATE_PREVIEW) {
             Unit unit = getGame().getMap().getUnit(x, y);
@@ -130,21 +144,54 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
     }
 
     public void moveSelectedUnit(int dest_x, int dest_y) {
-        /*Unit unit = getSelectedUnit();
-        if (unit != null && (state == STATE_MOVE || state == STATE_RMOVE)) {
+        Unit unit = getSelectedUnit();
+        if (unit != null && getGame().isUnitAccessible(unit) && (state == STATE_MOVE || state == STATE_REMOVE)) {
             int unit_x = unit.getX();
             int unit_y = unit.getY();
             if (canSelectedUnitMove(dest_x, dest_y)) {
-                int mp_remains = getUnitToolkit().getMovementPointRemains(unit, dest_x, dest_y);
-                getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
-                unit.setCurrentMovementPoint(mp_remains);
-                is_selected_unit_moved = true;
+                int mp_remains = getMovementPointRemains(unit, dest_x, dest_y);
+                ArrayList<Point> move_path = getMovePath(dest_x, dest_y);
+                submitGameEvent(new UnitMovingEvent(unit_x, unit_y, dest_x, dest_y, mp_remains, move_path));
             }
-        }*/
+        }
+    }
+
+    @Override
+    public void onUnitMoved(Unit unit, int start_x, int start_y) {
+        switch (state) {
+            case STATE_MOVE:
+                if (unit.hasAbility(Ability.SIEGE_MACHINE) && (start_x != unit.getX() || start_y != unit.getY())) {
+                    getGame().standbyUnit(unit.getX(), unit.getY());
+                    setState(STATE_SELECT);
+                } else {
+                    setState(STATE_ACTION);
+                }
+                break;
+            case STATE_REMOVE:
+                getGame().standbyUnit(unit.getX(), unit.getY());
+                setState(STATE_SELECT);
+                break;
+            default:
+                //do nothing
+        }
+    }
+
+    public boolean canSelectedUnitMove(int dest_x, int dest_y) {
+        Point dest = getGame().getMap().getPosition(dest_x, dest_y);
+        return movable_positions.contains(dest) && getGame().canUnitMove(getSelectedUnit(), dest_x, dest_y);
     }
 
     public Unit getSelectedUnit() {
         return selected_unit;
+    }
+
+    private int getMovementPointRemains(Unit unit, int dest_x, int dest_y) {
+        Point dest_position = new Point(dest_x, dest_y);
+        if (movable_positions.contains(dest_position)) {
+            return move_mark_map[dest_x][dest_y];
+        } else {
+            return -1;
+        }
     }
 
     public HashSet<Point> getMovablePositions() {
@@ -168,8 +215,8 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
     }
 
     @Override
-    public void addGameEventListener(GameEventListener listener) {
-        this.event_listeners.add(listener);
+    public void addGameEventListener(EventDispatcherListener listener) {
+        this.event_dispatcher_listeners.add(listener);
     }
 
     @Override
@@ -184,18 +231,18 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher {
 
     @Override
     public void dispatchEvent() {
-        if (getCurrentAnimation() != null) {
+        if (!isAnimating()) {
             GameEvent event = event_queue.poll();
             if (event != null) {
                 //skip events that cannot be executed
-                while (!event.canExecute(getGame())) {
+                while (!event.canExecute(this)) {
                     event = event_queue.poll();
                     if (event == null) {
                         return;
                     }
                 }
-                event.execute(getGame(), this);
-                for (GameEventListener listener : event_listeners) {
+                event.execute(this);
+                for (EventDispatcherListener listener : event_dispatcher_listeners) {
                     listener.onEventDispatched(event);
                 }
             }

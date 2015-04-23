@@ -38,8 +38,8 @@ public class StatusBarRenderer {
     }
 
     private void drawSelectedTile(SpriteBatch batch, GameManager manager) {
-        int cursor_x = screen.getCursorXOnMap();
-        int cursor_y = screen.getCursorYOnMap();
+        int cursor_x = screen.getCursorMapX();
+        int cursor_y = screen.getCursorMapY();
         if (cursor_x >= 0 && cursor_y >= 0) {
             short tile_index = manager.getGame().getMap().getTileIndex(cursor_x, cursor_y);
             batch.draw(ResourceManager.getTileTexture(tile_index), 0, 0, ts, ts);

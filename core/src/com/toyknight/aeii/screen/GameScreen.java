@@ -8,21 +8,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Scaling;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.animator.Animator;
-import com.toyknight.aeii.animator.AttackCursorAnimator;
-import com.toyknight.aeii.animator.CursorAnimator;
-import com.toyknight.aeii.animator.UnitAnimator;
+import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.renderer.*;
+import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
-import com.toyknight.aeii.utils.UnitToolkit;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -49,6 +43,8 @@ public class GameScreen extends Stage implements Screen {
 
     private int pointer_x;
     private int pointer_y;
+    private int cursor_map_x;
+    private int cursor_map_y;
     private boolean dragged;
 
     private final TextField command_line;
@@ -99,12 +95,12 @@ public class GameScreen extends Stage implements Screen {
     @Override
     public void draw() {
         drawMap();
-        if (manager.getCurrentAnimation() == null /*&& getGame().isLocalPlayer()*/) {
+        if (!manager.isAnimating() /*&& getGame().isLocalPlayer()*/) {
             switch (manager.getState()) {
-                case GameManager.STATE_RMOVE:
+                case GameManager.STATE_REMOVE:
                 case GameManager.STATE_MOVE:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
-                    move_path_renderer.drawMovePath(batch, shape_renderer, manager.getMovePath(getCursorXOnMap(), getCursorYOnMap()));
+                    move_path_renderer.drawMovePath(batch, shape_renderer, manager.getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case GameManager.STATE_PREVIEW:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
@@ -121,7 +117,7 @@ public class GameScreen extends Stage implements Screen {
         drawUnits();
         drawCursor();
         status_bar_renderer.drawStatusBar(batch, manager);
-
+        drawAnimation();
         super.draw();
     }
 
@@ -161,9 +157,9 @@ public class GameScreen extends Stage implements Screen {
     }
 
     private void drawCursor() {
-        if (isOperatable()) {
-            int cursor_x = getCursorXOnMap();
-            int cursor_y = getCursorYOnMap();
+        if (canOperate()) {
+            int cursor_x = getCursorMapX();
+            int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
             switch (manager.getState()) {
                 case GameManager.STATE_ATTACK:
@@ -189,6 +185,18 @@ public class GameScreen extends Stage implements Screen {
                     break;
                 default:
                     cursor.render(batch, cursor_x, cursor_y);
+            }
+        }
+    }
+
+    private void drawAnimation() {
+        if (manager.isAnimating()) {
+            Animator animator = manager.getCurrentAnimation();
+            if (animator instanceof MapAnimator) {
+                ((MapAnimator) animator).render(batch, this);
+            }
+            if (animator instanceof ScreenAnimator) {
+                ((ScreenAnimator) animator).render(batch);
             }
         }
     }
@@ -222,6 +230,10 @@ public class GameScreen extends Stage implements Screen {
             dx += 8;
         }
         dragViewport(dx, dy);
+        if (dx != 0 || dy != 0) {
+            this.cursor_map_x = createCursorMapX(pointer_x);
+            this.cursor_map_y = createCursorMapY(pointer_y);
+        }
     }
 
     @Override
@@ -274,20 +286,22 @@ public class GameScreen extends Stage implements Screen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchDown(screenX, screenY, pointer, button);
         if (!event_handled) {
-            this.pointer_x = screenX;
-            this.pointer_y = screenY;
+            if (Platform.isMobileDevice(getContext().getPlatform())) {
+                this.pointer_x = screenX;
+                this.pointer_y = screenY;
+            } else {
+                onClick(screenX, screenY);
+            }
         }
         return true;
     }
 
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
-        if (!event_handled) {
-            if (dragged == false) {
-                onClick();
-            } else {
-                this.dragged = false;
-            }
+        if (!event_handled && dragged == false && Platform.isMobileDevice(getContext().getPlatform())) {
+            onClick(screenX, screenY);
+        } else {
+            this.dragged = false;
         }
         return true;
     }
@@ -295,7 +309,7 @@ public class GameScreen extends Stage implements Screen {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         boolean event_handled = super.touchDragged(screenX, screenY, pointer);
         if (!event_handled) {
-            processDragEvent(screenX, screenY);
+            onDrag(screenX, screenY);
         }
         return true;
     }
@@ -306,25 +320,49 @@ public class GameScreen extends Stage implements Screen {
         if (!event_handled) {
             this.pointer_x = screenX;
             this.pointer_y = screenY;
+            this.cursor_map_x = createCursorMapX(pointer_x);
+            this.cursor_map_y = createCursorMapY(pointer_y);
         }
         return true;
     }
 
-    private void processDragEvent(int drag_x, int drag_y) {
-        dragged = true;
-        if (isOperatable()) {
-            int delta_x = pointer_x - drag_x;
-            int delta_y = pointer_y - drag_y;
-            dragViewport(delta_x, delta_y);
-            pointer_x = drag_x;
+    private void onDrag(int drag_x, int drag_y) {
+        if (Platform.isMobileDevice(getContext().getPlatform())) {
+            dragged = true;
+            if (canOperate()) {
+                int delta_x = pointer_x - drag_x;
+                int delta_y = pointer_y - drag_y;
+                dragViewport(delta_x, delta_y);
+                pointer_x = drag_x;
+                pointer_y = drag_y;
+            }
+        } else {
+            /*pointer_x = drag_x;
             pointer_y = drag_y;
+            this.cursor_map_x = createCursorMapX(pointer_x);
+            this.cursor_map_y = createCursorMapY(pointer_y);*/
         }
     }
 
-    private void onClick() {
-        if (isOperatable()) {
-            int cursor_x = getCursorXOnMap();
-            int cursor_y = getCursorYOnMap();
+    private void onClick(int screen_x, int screen_y) {
+        if (Platform.isMobileDevice(getContext().getPlatform())) {
+            int new_cursor_map_x = createCursorMapX(screen_x);
+            int new_cursor_map_y = createCursorMapY(screen_y);
+            if (new_cursor_map_x == getCursorMapX() && new_cursor_map_y == getCursorMapY()) {
+                doClick();
+            } else {
+                this.cursor_map_x = new_cursor_map_x;
+                this.cursor_map_y = new_cursor_map_y;
+            }
+        } else {
+            doClick();
+        }
+    }
+
+    private void doClick() {
+        if (canOperate()) {
+            int cursor_x = getCursorMapX();
+            int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
             switch (manager.getState()) {
                 case GameManager.STATE_PREVIEW:
@@ -332,13 +370,15 @@ public class GameScreen extends Stage implements Screen {
                     manager.selectUnit(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_MOVE:
-                case GameManager.STATE_RMOVE:
+                case GameManager.STATE_REMOVE:
                     if (manager.getMovablePositions().contains(getGame().getMap().getPosition(cursor_x, cursor_y))) {
-
+                        manager.moveSelectedUnit(cursor_x, cursor_y);
                     } else {
                         manager.cancelMovePhase();
                     }
-                    manager.moveSelectedUnit(cursor_x, cursor_y);
+                    break;
+                case GameManager.STATE_ACTION:
+                    manager.reverseMove();
                     break;
                 case GameManager.STATE_ATTACK:
                     //UnitToolkit.isWithinRange()
@@ -369,7 +409,7 @@ public class GameScreen extends Stage implements Screen {
         }
     }
 
-    private boolean isOperatable() {
+    private boolean canOperate() {
         return manager.getCurrentAnimation() == null;
     }
 
@@ -377,15 +417,23 @@ public class GameScreen extends Stage implements Screen {
         this.manager.setGame(game);
         this.locateViewport(0, 0);
         this.dragged = false;
-        pointer_x = -1;
-        pointer_y = -1;
+        cursor_map_x = 0;
+        cursor_map_y = 0;
     }
 
     public GameCore getGame() {
         return manager.getGame();
     }
 
-    public int getCursorXOnMap() {
+    public UnitRenderer getUnitRenderer() {
+        return unit_renderer;
+    }
+
+    public int getCursorMapX() {
+        return cursor_map_x;
+    }
+
+    private int createCursorMapX(int pointer_x) {
         int map_width = manager.getGame().getMap().getWidth();
         int cursor_x = (pointer_x + viewport.x) / ts;
         if (cursor_x >= map_width) {
@@ -397,7 +445,11 @@ public class GameScreen extends Stage implements Screen {
         return cursor_x;
     }
 
-    public int getCursorYOnMap() {
+    public int getCursorMapY() {
+        return cursor_map_y;
+    }
+
+    private int createCursorMapY(int pointer_y) {
         int map_height = manager.getGame().getMap().getHeight();
         int cursor_y = (pointer_y + viewport.y) / ts;
         if (cursor_y >= map_height) {

@@ -194,7 +194,7 @@ public class GameCore {
 
     public void moveUnit(int target_x, int target_y, int dest_x, int dest_y) {
         Unit target = getMap().getUnit(target_x, target_y);
-        if (target != null && getMap().canMove(dest_x, dest_y)) {
+        if (target != null && canUnitMove(target, dest_x, dest_y)) {
             getMap().moveUnit(target, dest_x, dest_y);
         }
     }

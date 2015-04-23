@@ -41,16 +41,24 @@ public class UnitRenderer {
     }
 
     public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y) {
+        drawUnit(batch, unit, map_x, map_y, 0, 0);
+    }
+
+    public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         batch.begin();
         TextureRegion unit_texture = unit_textures[unit.getTeam()][unit.getIndex()][unit.getLevel()][getCurrentFrame()];
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);
-        batch.draw(unit_texture, screen_x, screen_y, ts, ts);
+        batch.draw(unit_texture, screen_x + offset_x, screen_y + offset_y, ts, ts);
         batch.end();
     }
 
     public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y) {
-        drawUnit(batch, unit, map_x, map_y);
+        drawUnitWithInformation(batch, unit, map_x, map_y, 0, 0);
+    }
+
+    public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
+        drawUnit(batch, unit, map_x, map_y, offset_x, offset_y);
         //draw information
     }
 

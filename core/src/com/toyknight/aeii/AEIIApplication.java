@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.toyknight.aeii.animator.AnimatorFactory;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.player.LocalPlayer;
@@ -47,6 +48,8 @@ public class AEIIApplication extends Game {
             logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen();
             game_screen = new GameScreen(this);
+
+            AnimatorFactory.init(game_screen, getTileSize());
 
             //for test only
             Map map = MapFactory.createMap(FileProvider.getAssetsFile("map/Shadowlands.aem"));

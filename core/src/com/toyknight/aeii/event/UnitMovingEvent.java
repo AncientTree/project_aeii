@@ -1,0 +1,53 @@
+package com.toyknight.aeii.event;
+
+import com.toyknight.aeii.AnimationDispatcher;
+import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.animator.AnimatorFactory;
+import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Unit;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+/**
+ * Created by toyknight on 4/21/2015.
+ */
+public class UnitMovingEvent implements GameEvent, Serializable {
+
+    private static final long serialVersionUID = 04232015L;
+
+    private final int unit_x;
+    private final int unit_y;
+    private final int dest_x;
+    private final int dest_y;
+    private final int mp_left;
+    private final ArrayList<Point> move_path;
+
+    public UnitMovingEvent(int unit_x, int unit_y, int dest_x, int dest_y, int mp_left, ArrayList<Point> move_path) {
+        this.unit_x = unit_x;
+        this.unit_y = unit_y;
+        this.dest_x = dest_x;
+        this.dest_y = dest_y;
+        this.mp_left = mp_left;
+        this.move_path = move_path;
+    }
+
+    @Override
+    public boolean canExecute(GameManager manager) {
+        GameCore game = manager.getGame();
+        Unit target = game.getMap().getUnit(unit_x, unit_y);
+        return target != null && game.canUnitMove(target, dest_x, dest_y);
+    }
+
+    @Override
+    public void execute(GameManager manager) {
+        GameCore game = manager.getGame();
+        Unit unit = game.getMap().getUnit(unit_x, unit_y);
+        unit.setCurrentMovementPoint(mp_left);
+        game.moveUnit(unit_x, unit_y, dest_x, dest_y);
+        manager.submitAnimation(AnimatorFactory.createUnitMoveAnimator(unit, move_path));
+        manager.onUnitMoved(unit, unit_x, unit_y);
+    }
+
+}
