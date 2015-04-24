@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -209,9 +210,9 @@ public class GameScreen extends Stage implements Screen {
         attack_cursor.addStateTime(delta);
         updateViewport();
 
-        manager.updateAnimation(delta);
-        manager.dispatchEvent();
         super.act(delta);
+        manager.dispatchEvent();
+        manager.updateAnimation(delta);
     }
 
     private void updateViewport() {
@@ -243,6 +244,7 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void render(float delta) {
+
         this.draw();
         this.act(delta);
     }
@@ -290,7 +292,7 @@ public class GameScreen extends Stage implements Screen {
                 this.pointer_x = screenX;
                 this.pointer_y = screenY;
             } else {
-                onClick(screenX, screenY);
+                onClick(screenX, screenY, button);
             }
         }
         return true;
@@ -299,7 +301,7 @@ public class GameScreen extends Stage implements Screen {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
         if (!event_handled && dragged == false && Platform.isMobileDevice(getContext().getPlatform())) {
-            onClick(screenX, screenY);
+            onClick(screenX, screenY, button);
         } else {
             this.dragged = false;
         }
@@ -344,7 +346,7 @@ public class GameScreen extends Stage implements Screen {
         }
     }
 
-    private void onClick(int screen_x, int screen_y) {
+    private void onClick(int screen_x, int screen_y, int button) {
         if (Platform.isMobileDevice(getContext().getPlatform())) {
             int new_cursor_map_x = createCursorMapX(screen_x);
             int new_cursor_map_y = createCursorMapY(screen_y);
@@ -355,7 +357,9 @@ public class GameScreen extends Stage implements Screen {
                 this.cursor_map_y = new_cursor_map_y;
             }
         } else {
-            doClick();
+            if (button == Input.Buttons.LEFT) {
+                doClick();
+            }
         }
     }
 

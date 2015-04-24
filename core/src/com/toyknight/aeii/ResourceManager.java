@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.toyknight.aeii.utils.FileProvider;
@@ -25,10 +26,10 @@ public class ResourceManager {
     private static Texture ae_logo_mask_texture;
     private static Texture ae_logo_glow_texture;
 
-    private static Texture[] tile_texture;
-    private static Texture[] top_tile_texture;
+    private static Texture[] tile_textures;
+    private static Texture[] top_tile_textures;
 
-    private static Texture[] unit_texture_sheet;
+    private static Texture[] unit_texture_sheets;
 
     private static Texture cursor_texture;
     private static Texture attack_cursor_texture;
@@ -36,11 +37,52 @@ public class ResourceManager {
     private static Texture border_texture;
     private static Texture alpha_texture;
 
+    private static Texture[] action_button_textures;
+
     private static Texture menu_icon_texture;
-    private static TextureRegion[] menu_icons;
+    private static TextureRegion[] menu_icon_textures;
 
     private static Color aeii_bg_color;
     private static Color move_path_color;
+
+    private static final String VERT =
+            "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
+                    "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" +
+                    "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" +
+
+                    "uniform mat4 u_projTrans;\n" +
+                    " \n" +
+                    "varying vec4 vColor;\n" +
+                    "varying vec2 vTexCoord;\n" +
+
+                    "void main() {\n" +
+                    "       vColor = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" +
+                    "       vTexCoord = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" +
+                    "       gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
+                    "}";
+
+    private static final String FRAG =
+            //GL ES specific stuff
+            "#ifdef GL_ES\n" //
+                    + "#define LOWP lowp\n" //
+                    + "precision mediump float;\n" //
+                    + "#else\n" //
+                    + "#define LOWP \n" //
+                    + "#endif\n" + //
+                    "varying LOWP vec4 vColor;\n" +
+                    "varying vec2 vTexCoord;\n" +
+                    "uniform sampler2D u_texture;\n" +
+                    "uniform float grayscale;\n" +
+                    "void main() {\n" +
+                    "       vec4 texColor = texture2D(u_texture, vTexCoord);\n" +
+                    "       \n" +
+                    "       float gray = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));\n" +
+                    "       texColor.rgb = mix(vec3(gray), texColor.rgb, grayscale);\n" +
+                    "       \n" +
+                    "       gl_FragColor = texColor * vColor;\n" +
+                    "}";
+
+    private static final ShaderProgram shader = new ShaderProgram(VERT, FRAG);
 
     private ResourceManager() {
     }
@@ -58,10 +100,12 @@ public class ResourceManager {
             move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
+            loadActionButtonTextures();
+            menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
+            createMenuIconTextures();
+
             aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
             move_path_color = new Color(225 / 256f, 0f, 82 / 256f, 1.0f);
-            menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
-            createMenuIcons();
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
         }
@@ -69,34 +113,41 @@ public class ResourceManager {
 
     private static void loadTileTextures() throws GdxRuntimeException {
         int tile_count = TileFactory.getTileCount();
-        tile_texture = new Texture[tile_count];
+        tile_textures = new Texture[tile_count];
         for (int i = 0; i < tile_count; i++) {
             FileHandle tile_image = FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png");
-            tile_texture[i] = new Texture(tile_image);
+            tile_textures[i] = new Texture(tile_image);
         }
         FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat");
         Scanner din = new Scanner(top_tile_config.read());
-        top_tile_texture = new Texture[din.nextInt()];
-        for (int i = 0; i < top_tile_texture.length; i++) {
+        top_tile_textures = new Texture[din.nextInt()];
+        for (int i = 0; i < top_tile_textures.length; i++) {
             FileHandle top_tile_image = FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png");
-            top_tile_texture[i] = new Texture(top_tile_image);
+            top_tile_textures[i] = new Texture(top_tile_image);
         }
         din.close();
     }
 
     private static void loadUnitTextures() {
-        unit_texture_sheet = new Texture[4];
+        unit_texture_sheets = new Texture[4];
         for (int team = 0; team < 4; team++) {
             FileHandle sheet = FileProvider.getAssetsFile("images/units/unit_sheet_" + team + ".png");
-            unit_texture_sheet[team] = new Texture(sheet);
+            unit_texture_sheets[team] = new Texture(sheet);
         }
     }
 
-    private static void createMenuIcons() {
+    private static void loadActionButtonTextures() {
+        action_button_textures = new Texture[9];
+        for (int i = 0; i < 9; i++) {
+            action_button_textures[i] = new Texture(FileProvider.getAssetsFile("images/buttons/action_button_" + i + ".png"));
+        }
+    }
+
+    private static void createMenuIconTextures() {
         int size = menu_icon_texture.getHeight();
-        menu_icons = new TextureRegion[menu_icon_texture.getWidth() / size];
-        for (int i = 0; i < menu_icons.length; i++) {
-            menu_icons[i] = new TextureRegion(menu_icon_texture, i * size, 0, size, size);
+        menu_icon_textures = new TextureRegion[menu_icon_texture.getWidth() / size];
+        for (int i = 0; i < menu_icon_textures.length; i++) {
+            menu_icon_textures[i] = new TextureRegion(menu_icon_texture, i * size, 0, size, size);
         }
     }
 
@@ -117,15 +168,15 @@ public class ResourceManager {
     }
 
     public static Texture getTileTexture(int index) {
-        return tile_texture[index];
+        return tile_textures[index];
     }
 
     public static Texture getTopTileTexture(int index) {
-        return top_tile_texture[index];
+        return top_tile_textures[index];
     }
 
     public static Texture getUnitTextureSheet(int team) {
-        return unit_texture_sheet[team];
+        return unit_texture_sheets[team];
     }
 
     public static Texture getCursorTexture() {
@@ -148,12 +199,16 @@ public class ResourceManager {
         return alpha_texture;
     }
 
+    public static Texture getActionButtonTexture(int index) {
+        return action_button_textures[index];
+    }
+
     public static Texture getMenuIconTexture() {
         return menu_icon_texture;
     }
 
     public static TextureRegion getMenuIcon(int index) {
-        return menu_icons[index];
+        return menu_icon_textures[index];
     }
 
     public static int getMenuIconSize(int scaling) {
@@ -168,8 +223,12 @@ public class ResourceManager {
         return move_path_color;
     }
 
+    public static ShaderProgram getShader() {
+        return shader;
+    }
+
     public static int getTopTileCount() {
-        return top_tile_texture.length;
+        return top_tile_textures.length;
     }
 
     public static Animation createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
