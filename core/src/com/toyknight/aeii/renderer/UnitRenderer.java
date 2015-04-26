@@ -15,29 +15,12 @@ public class UnitRenderer {
 
     private final int ts;
     private final GameScreen screen;
-    private final TextureRegion[][][][] unit_textures;
 
     private float state_time = 0f;
 
     public UnitRenderer(GameScreen screen, int ts) {
         this.ts = ts;
         this.screen = screen;
-        int unit_count = UnitFactory.getUnitCount();
-        this.unit_textures = new TextureRegion[4][unit_count][4][2];
-        createUnitTextures(unit_count);
-    }
-
-    private void createUnitTextures(int unit_count) {
-        for (int team = 0; team < 4; team++) {
-            Texture unit_texture_sheet = ResourceManager.getUnitTextureSheet(team);
-            int texture_size = unit_texture_sheet.getWidth() / unit_count;
-            for (int index = 0; index < unit_count; index++) {
-                for (int level = 0; level < 4; level++) {
-                    unit_textures[team][index][level][0] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2, texture_size, texture_size);
-                    unit_textures[team][index][level][1] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
-                }
-            }
-        }
     }
 
     public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y) {
@@ -45,12 +28,16 @@ public class UnitRenderer {
     }
 
     public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
+        if (unit.isStandby()) {
+            batch.setShader(ResourceManager.getGrayscaleShader());
+        }
         batch.begin();
-        TextureRegion unit_texture = unit_textures[unit.getTeam()][unit.getIndex()][unit.getLevel()][getCurrentFrame()];
+        TextureRegion unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);
         batch.draw(unit_texture, screen_x + offset_x, screen_y + offset_y, ts, ts);
         batch.end();
+        batch.setShader(null);
     }
 
     public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y) {

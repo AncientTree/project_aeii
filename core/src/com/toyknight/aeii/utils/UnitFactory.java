@@ -5,6 +5,7 @@ import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Unit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -13,8 +14,8 @@ import java.util.Scanner;
  */
 public class UnitFactory {
 
-    private static int unit_count;
-    private static Unit[] units;
+    private final static HashMap<String, Unit[]> unit_packages = new HashMap();
+    private static Unit[] default_units;
     private static long current_code;
 
     private static int commander_index;
@@ -30,12 +31,12 @@ public class UnitFactory {
         if (unit_config.exists()) {
             try {
                 Scanner din = new Scanner(unit_config.read());
-                unit_count = din.nextInt();
+                int unit_count = din.nextInt();
                 commander_index = din.nextInt();
                 skeleton_index = din.nextInt();
                 crystal_index = din.nextInt();
                 din.close();
-                units = new Unit[unit_count];
+                default_units = new Unit[unit_count];
                 for (int index = 0; index < unit_count; index++) {
                     FileHandle unit_data = FileProvider.getAssetsFile(unit_data_dir + "unit_" + index + ".dat");
                     if (unit_data.exists()) {
@@ -75,8 +76,7 @@ public class UnitFactory {
                 ability_list.add(din.nextInt());
             }
             din.close();
-            Unit unit =
-                    index == commander_index ? new Unit(index, true) : new Unit(index, false);
+            Unit unit = new Unit(index, "default");
             unit.setPrice(price);
             unit.setMaxHp(max_hp);
             unit.setMovementPoint(mp);
@@ -92,7 +92,7 @@ public class UnitFactory {
             unit.setMaxAttackRange(max_atk_rng);
             unit.setMinAttackRange(min_atk_rng);
             unit.setAbilities(ability_list);
-            units[index] = unit;
+            default_units[index] = unit;
         } catch (java.util.NoSuchElementException ex) {
             throw new AEIIException("bad unit data file!");
         }
@@ -110,21 +110,33 @@ public class UnitFactory {
         return crystal_index;
     }
 
-    public static int getUnitCount() {
-        return units.length;
+    public static int getUnitCount(String package_name) {
+        if (package_name.equals("default")) {
+            return default_units.length;
+        } else {
+            return unit_packages.get(package_name).length;
+        }
     }
 
-    public static Unit getSample(int index) {
-        return cloneUnit(units[index]);
+    public static Unit getSample(int index, String package_name) {
+        if (package_name.equals("default")) {
+            return cloneUnit(default_units[index]);
+        } else {
+            return cloneUnit(unit_packages.get(package_name)[index]);
+        }
     }
 
-    public static int getUnitPrice(int index) {
-        return units[index].getPrice();
+    public static int getUnitPrice(int index, String package_name) {
+        if (package_name.equals("default")) {
+            return default_units[index].getPrice();
+        } else {
+            return unit_packages.get(package_name)[index].getPrice();
+        }
     }
 
-    public static Unit createUnit(int index, int team) {
+    public static Unit createUnit(int index, int team, String package_name) {
         String unit_code = "#" + Long.toString(current_code++);
-        return createUnit(index, team, unit_code);
+        return createUnit(index, team, package_name, unit_code);
     }
 
     public static Unit cloneUnit(Unit unit) {
@@ -132,8 +144,9 @@ public class UnitFactory {
         return new Unit(unit, unit_code);
     }
 
-    public static Unit createUnit(int index, int team, String unit_code) {
-        Unit unit = new Unit(units[index], unit_code);
+    public static Unit createUnit(int index, int team, String package_name, String unit_code) {
+        Unit unit = package_name.equals("default") ?
+                new Unit(default_units[index], unit_code) : new Unit(unit_packages.get(package_name)[index], unit_code);
         unit.setTeam(team);
         unit.setStandby(false);
         unit.setCurrentHp(unit.getMaxHp());

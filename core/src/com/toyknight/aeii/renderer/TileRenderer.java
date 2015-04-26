@@ -1,10 +1,6 @@
 package com.toyknight.aeii.renderer;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.utils.TileFactory;
@@ -23,14 +19,7 @@ public class TileRenderer {
     }
 
     public void drawTile(SpriteBatch batch, int index, int x, int y) {
-        ShaderProgram shader = ResourceManager.getShader();
-        shader.begin();
-
-
-
-        batch.setShader(shader);
         batch.begin();
-        shader.setUniformf("grayscale", 0.6f);
         int current_frame = getCurrentFrame();
         Tile tile = TileFactory.getTile(index);
         if (tile.isAnimated()) {
@@ -43,7 +32,6 @@ public class TileRenderer {
             batch.draw(ResourceManager.getTileTexture(index), x, y, ts, ts);
         }
         batch.end();
-        shader.end();
     }
 
     public void drawTopTile(SpriteBatch batch, int index, int x, int y) {

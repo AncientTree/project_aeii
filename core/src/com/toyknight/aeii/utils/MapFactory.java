@@ -36,11 +36,12 @@ public class MapFactory {
             Map map = new Map(map_data, team_access, author_name);
             int unit_count = fis.readInt();
             for (int i = 0; i < unit_count; i++) {
+                String unit_package = fis.readUTF();
                 int team = fis.readInt();
                 int index = fis.readInt();
                 int x = fis.readInt();
                 int y = fis.readInt();
-                Unit unit = UnitFactory.createUnit(index, team);
+                Unit unit = UnitFactory.createUnit(index, team, unit_package);
                 unit.setX(x);
                 unit.setY(y);
                 map.addUnit(unit);

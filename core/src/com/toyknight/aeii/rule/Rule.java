@@ -109,7 +109,7 @@ public class Rule {
         int skeleton = UnitFactory.getSkeletonIndex();
         int crystal = UnitFactory.getCrystalIndex();
         ArrayList<Integer> unit_list = new ArrayList();
-        for (int i = 0; i < UnitFactory.getUnitCount(); i++) {
+        for (int i = 0; i < UnitFactory.getUnitCount("default"); i++) {
             if (i != skeleton && i != crystal) {
                 unit_list.add(i);
             }

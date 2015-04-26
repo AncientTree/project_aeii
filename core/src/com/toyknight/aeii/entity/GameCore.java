@@ -56,7 +56,7 @@ public class GameCore {
                     current_team = team;
                 }
                 if (commanders[team] == null) {
-                    commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
+                    commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team, "default");
                 }
                 updatePopulation(team);
             } else {
@@ -100,7 +100,7 @@ public class GameCore {
     public int getCommanderPrice(int team) {
         if (commander_price_delta[team] > 0) {
             int commander_index = UnitFactory.getCommanderIndex();
-            return UnitFactory.getSample(commander_index).getPrice() + commander_price_delta[team];
+            return UnitFactory.getSample(commander_index, "default").getPrice() + commander_price_delta[team];
         } else {
             return -1;
         }
@@ -134,7 +134,7 @@ public class GameCore {
     public void summonSkeleton(int target_x, int target_y, int team) {
         if (getMap().isTomb(target_x, target_y)) {
             getMap().removeTomb(target_x, target_y);
-            createUnit(UnitFactory.getSkeletonIndex(), team, target_x, target_y);
+            createUnit(UnitFactory.getSkeletonIndex(), team, "default", target_x, target_y);
             standbyUnit(target_x, target_y);
         }
     }
@@ -175,17 +175,17 @@ public class GameCore {
         }
     }
 
-    public void buyUnit(int index, int team, int x, int y) {
+    public void buyUnit(int index, int team, String package_name, int x, int y) {
         int current_cold = getCurrentPlayer().getGold();
-        int unit_price = UnitFactory.getUnitPrice(index);
+        int unit_price = UnitFactory.getUnitPrice(index, package_name);
         if (current_cold >= unit_price) {
             getCurrentPlayer().setGold(current_cold - unit_price);
-            createUnit(index, getCurrentTeam(), x, y);
+            createUnit(index, getCurrentTeam(), package_name, x, y);
         }
     }
 
-    public void createUnit(int index, int team, int x, int y) {
-        Unit unit = UnitFactory.createUnit(index, team);
+    public void createUnit(int index, int team, String package_name, int x, int y) {
+        Unit unit = UnitFactory.createUnit(index, team, package_name);
         unit.setX(x);
         unit.setY(y);
         getMap().addUnit(unit);

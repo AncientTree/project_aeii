@@ -11,7 +11,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.SuffixFileFilter;
 import com.toyknight.aeii.utils.TileFactory;
+import com.toyknight.aeii.utils.UnitFactory;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -29,7 +31,8 @@ public class ResourceManager {
     private static Texture[] tile_textures;
     private static Texture[] top_tile_textures;
 
-    private static Texture[] unit_texture_sheets;
+    private static TextureRegion[][][][] default_unit_textures;
+    private static HashMap<String, TextureRegion[][][][]> unit_package_textures;
 
     private static Texture cursor_texture;
     private static Texture attack_cursor_texture;
@@ -45,7 +48,7 @@ public class ResourceManager {
     private static Color aeii_bg_color;
     private static Color move_path_color;
 
-    private static final String VERT =
+    private static final String GS_VERT =
             "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
                     "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" +
                     "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" +
@@ -61,7 +64,7 @@ public class ResourceManager {
                     "       gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
                     "}";
 
-    private static final String FRAG =
+    private static final String GS_FRAG =
             //GL ES specific stuff
             "#ifdef GL_ES\n" //
                     + "#define LOWP lowp\n" //
@@ -82,7 +85,7 @@ public class ResourceManager {
                     "       gl_FragColor = texColor * vColor;\n" +
                     "}";
 
-    private static final ShaderProgram shader = new ShaderProgram(VERT, FRAG);
+    private static ShaderProgram grayscale_shader;
 
     private ResourceManager() {
     }
@@ -103,6 +106,7 @@ public class ResourceManager {
             loadActionButtonTextures();
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
+            createGrayscaleShader();
 
             aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
             move_path_color = new Color(225 / 256f, 0f, 82 / 256f, 1.0f);
@@ -129,11 +133,26 @@ public class ResourceManager {
     }
 
     private static void loadUnitTextures() {
-        unit_texture_sheets = new Texture[4];
+        //load default units
+        Texture[] unit_texture_sheets = new Texture[4];
         for (int team = 0; team < 4; team++) {
             FileHandle sheet = FileProvider.getAssetsFile("images/units/unit_sheet_" + team + ".png");
             unit_texture_sheets[team] = new Texture(sheet);
         }
+        int unit_count = UnitFactory.getUnitCount("default");
+        default_unit_textures = new TextureRegion[4][unit_count][4][2];
+        for (int team = 0; team < 4; team++) {
+            Texture unit_texture_sheet = unit_texture_sheets[team];
+            int texture_size = unit_texture_sheet.getWidth() / unit_count;
+            for (int index = 0; index < unit_count; index++) {
+                for (int level = 0; level < 4; level++) {
+                    default_unit_textures[team][index][level][0] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2, texture_size, texture_size);
+                    default_unit_textures[team][index][level][1] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
+                }
+            }
+        }
+
+        unit_package_textures = new HashMap();
     }
 
     private static void loadActionButtonTextures() {
@@ -149,6 +168,13 @@ public class ResourceManager {
         for (int i = 0; i < menu_icon_textures.length; i++) {
             menu_icon_textures[i] = new TextureRegion(menu_icon_texture, i * size, 0, size, size);
         }
+    }
+
+    private static void createGrayscaleShader() {
+        grayscale_shader = new ShaderProgram(GS_VERT, GS_FRAG);
+        grayscale_shader.begin();
+        grayscale_shader.setUniformf("grayscale", 0f);
+        grayscale_shader.end();
     }
 
     public static Texture getMSLogoTexture() {
@@ -175,8 +201,12 @@ public class ResourceManager {
         return top_tile_textures[index];
     }
 
-    public static Texture getUnitTextureSheet(int team) {
-        return unit_texture_sheets[team];
+    public static TextureRegion getUnitTexture(String package_name, int team, int index, int level, int frame) {
+        if (package_name.equals("default")) {
+            return default_unit_textures[team][index][level][frame];
+        } else {
+            return unit_package_textures.get(package_name)[team][index][level][frame];
+        }
     }
 
     public static Texture getCursorTexture() {
@@ -223,8 +253,8 @@ public class ResourceManager {
         return move_path_color;
     }
 
-    public static ShaderProgram getShader() {
-        return shader;
+    public static ShaderProgram getGrayscaleShader() {
+        return grayscale_shader;
     }
 
     public static int getTopTileCount() {

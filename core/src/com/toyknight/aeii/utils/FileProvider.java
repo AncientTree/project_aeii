@@ -25,7 +25,7 @@ public class FileProvider {
                 return Gdx.files.internal(path);
             case Desktop:
             default:
-                return Gdx.files.local("assets/" + path);
+                return Gdx.files.internal("assets/" + path);
         }
     }
 
