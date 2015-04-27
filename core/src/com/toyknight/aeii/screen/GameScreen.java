@@ -6,11 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
-import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.GameManagerListener;
@@ -27,6 +25,7 @@ import java.util.Set;
 public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     private final int ts;
+    private final int RIGHT_PANEL_WIDTH;
     private final AEIIApplication context;
 
     private final SpriteBatch batch;
@@ -35,6 +34,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private final AlphaRenderer alpha_renderer;
     private final MovePathRenderer move_path_renderer;
     private final StatusBarRenderer status_bar_renderer;
+    private final RightPanelRenderer right_panel_renderer;
     private final ShapeRenderer shape_renderer;
     private final GameManager manager;
 
@@ -50,12 +50,12 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private boolean dragged;
 
     private final TextField command_line;
-    private ImageButton btn_menu;
     private ActionButtonBar action_button_bar;
 
     public GameScreen(AEIIApplication context) {
         this.context = context;
         this.ts = context.getTileSize();
+        this.RIGHT_PANEL_WIDTH = 3 * ts;
 
         this.batch = new SpriteBatch();
         this.tile_renderer = new TileRenderer(ts);
@@ -63,6 +63,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.alpha_renderer = new AlphaRenderer(this, ts);
         this.move_path_renderer = new MovePathRenderer(this, ts);
         this.status_bar_renderer = new StatusBarRenderer(this, ts);
+        this.right_panel_renderer = new RightPanelRenderer(this, ts);
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
         this.manager = new GameManager();
@@ -72,7 +73,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.attack_cursor = new AttackCursorAnimator(this, ts);
 
         this.viewport = new MapViewport();
-        this.viewport.width = Gdx.graphics.getWidth();
+        this.viewport.width = Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH;
         this.viewport.height = Gdx.graphics.getHeight() - ts;
 
         this.command_line = new TextField("", getContext().getSkin());
@@ -84,12 +85,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.command_line.setWidth(Gdx.graphics.getWidth());
         this.command_line.setVisible(false);
         this.addActor(command_line);
-
-
-        int icon_size = ResourceManager.getMenuIconSize(getContext().getScaling());
-        this.btn_menu = new ImageButton(ResourceManager.createDrawable(ResourceManager.getMenuIcon(6), icon_size, icon_size));
-        this.btn_menu.setBounds(viewport.width - icon_size, 0, icon_size, icon_size);
-        this.addActor(btn_menu);
 
         this.action_button_bar = new ActionButtonBar(this, manager);
         this.action_button_bar.setPosition(0, ts * 2);
@@ -124,8 +119,9 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         }
         drawUnits();
         drawCursor();
-        status_bar_renderer.drawStatusBar(batch, manager);
         drawAnimation();
+        status_bar_renderer.drawStatusBar(batch, manager);
+        right_panel_renderer.drawStatusBar(batch, manager);
         super.draw();
     }
 
@@ -325,10 +321,12 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public boolean mouseMoved(int screenX, int screenY) {
         boolean event_handled = super.mouseMoved(screenX, screenY);
         if (!event_handled) {
-            this.pointer_x = screenX;
-            this.pointer_y = screenY;
-            this.cursor_map_x = createCursorMapX(pointer_x);
-            this.cursor_map_y = createCursorMapY(pointer_y);
+            if (0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
+                this.pointer_x = screenX;
+                this.pointer_y = screenY;
+                this.cursor_map_x = createCursorMapX(pointer_x);
+                this.cursor_map_y = createCursorMapY(pointer_y);
+            }
         }
         return true;
     }
@@ -352,21 +350,23 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     private void onClick(int screen_x, int screen_y, int button) {
-        if (Platform.isMobileDevice(getContext().getPlatform())) {
-            int new_cursor_map_x = createCursorMapX(screen_x);
-            int new_cursor_map_y = createCursorMapY(screen_y);
-            if (new_cursor_map_x == getCursorMapX() && new_cursor_map_y == getCursorMapY()) {
-                doClick();
+        if (0 <= screen_x && screen_x <= viewport.width && 0 <= screen_y && screen_y <= viewport.height) {
+            if (Platform.isMobileDevice(getContext().getPlatform())) {
+                int new_cursor_map_x = createCursorMapX(screen_x);
+                int new_cursor_map_y = createCursorMapY(screen_y);
+                if (new_cursor_map_x == getCursorMapX() && new_cursor_map_y == getCursorMapY()) {
+                    doClick();
+                } else {
+                    this.cursor_map_x = new_cursor_map_x;
+                    this.cursor_map_y = new_cursor_map_y;
+                }
             } else {
-                this.cursor_map_x = new_cursor_map_x;
-                this.cursor_map_y = new_cursor_map_y;
-            }
-        } else {
-            if (button == Input.Buttons.LEFT) {
-                doClick();
-            }
-            if (button == Input.Buttons.RIGHT) {
-                doCancel();
+                if (button == Input.Buttons.LEFT) {
+                    doClick();
+                }
+                if (button == Input.Buttons.RIGHT) {
+                    doCancel();
+                }
             }
         }
     }
@@ -484,6 +484,10 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         return unit_renderer;
     }
 
+    public int getRightPanelWidth() {
+        return RIGHT_PANEL_WIDTH;
+    }
+
     public int getCursorMapX() {
         return cursor_map_x;
     }
@@ -532,7 +536,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     public boolean isWithinPaintArea(int sx, int sy) {
-        return -ts <= sx && sx <= Gdx.graphics.getWidth() && -ts <= sy && sy <= Gdx.graphics.getHeight();
+        return -ts <= sx && sx <= viewport.width && -ts <= sy && sy <= viewport.height + ts;
     }
 
     public void locateViewport(int map_x, int map_y) {
