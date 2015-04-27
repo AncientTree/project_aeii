@@ -9,8 +9,8 @@ import com.toyknight.aeii.entity.GameCore;
  */
 public interface GameEvent {
 
-    public boolean canExecute(GameManager manager);
+    public boolean canExecute(GameCore game);
 
-    public void execute(GameManager manager);
+    public void execute(GameCore game, AnimationDispatcher animation_dispatcher);
 
 }

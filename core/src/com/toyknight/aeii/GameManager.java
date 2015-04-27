@@ -3,11 +3,11 @@ package com.toyknight.aeii;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.event.GameEvent;
-import com.toyknight.aeii.event.UnitMoveReversingEvent;
-import com.toyknight.aeii.event.UnitMovingEvent;
+import com.toyknight.aeii.event.UnitMoveReverseEvent;
+import com.toyknight.aeii.event.UnitMoveEvent;
+import com.toyknight.aeii.event.UnitStandbyEvent;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.EventDispatcherListener;
-import com.toyknight.aeii.listener.GameEventListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -19,7 +19,7 @@ import java.util.Queue;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameManager implements GameEventDispatcher, AnimationDispatcher, GameEventListener {
+public class GameManager implements AnimationDispatcher {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -70,6 +70,10 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
         return game;
     }
 
+    public void setGameManagerListener(GameManagerListener listener) {
+        this.manager_listener = listener;
+    }
+
     private void setState(int state) {
         if (state != this.state) {
             this.last_state = this.state;
@@ -91,7 +95,7 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
         }
     }
 
-    private void cancelPreviewPhase() {
+    public void cancelPreviewPhase() {
         if (state == STATE_PREVIEW) {
             setState(STATE_SELECT);
         }
@@ -113,14 +117,21 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
     public void reverseMove() {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit) && getState() == STATE_ACTION) {
-            submitGameEvent(new UnitMoveReversingEvent(unit.getX(), unit.getY(), last_position.x, last_position.y));
+            submitGameEvent(new UnitMoveReverseEvent(unit.getX(), unit.getY(), last_position.x, last_position.y));
+            beginMovePhase();
         }
     }
 
-    @Override
-    public void onUnitMoveReversed(int origin_x, int origin_y) {
-        if(getState() == STATE_ACTION) {
-            beginMovePhase();
+    public void beginAttackPhase() {
+        if (getGame().isUnitAccessible(getSelectedUnit()) && getState() == STATE_ACTION) {
+            createAttackablePositions(selected_unit);
+            setState(STATE_ATTACK);
+        }
+    }
+
+    public void cancelActionPhase() {
+        if (getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL) {
+            setState(STATE_ACTION);
         }
     }
 
@@ -135,10 +146,6 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
                 } else {
                     beginPreviewPhase();
                 }
-            } else {
-                if (getState() == STATE_PREVIEW) {
-                    cancelPreviewPhase();
-                }
             }
         }
     }
@@ -146,33 +153,37 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
     public void moveSelectedUnit(int dest_x, int dest_y) {
         Unit unit = getSelectedUnit();
         if (unit != null && getGame().isUnitAccessible(unit) && (state == STATE_MOVE || state == STATE_REMOVE)) {
-            int unit_x = unit.getX();
-            int unit_y = unit.getY();
+            int start_x = unit.getX();
+            int start_y = unit.getY();
             if (canSelectedUnitMove(dest_x, dest_y)) {
                 int mp_remains = getMovementPointRemains(unit, dest_x, dest_y);
                 ArrayList<Point> move_path = getMovePath(dest_x, dest_y);
-                submitGameEvent(new UnitMovingEvent(unit_x, unit_y, dest_x, dest_y, mp_remains, move_path));
+                submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
+                switch (state) {
+                    case STATE_MOVE:
+                        if (unit.hasAbility(Ability.SIEGE_MACHINE) && (start_x != dest_x || start_y != dest_y)) {
+                            submitGameEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
+                            setState(STATE_SELECT);
+                        } else {
+                            setState(STATE_ACTION);
+                        }
+                        break;
+                    case STATE_REMOVE:
+                        submitGameEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
+                        setState(STATE_SELECT);
+                        break;
+                }
             }
         }
     }
 
-    @Override
-    public void onUnitMoved(Unit unit, int start_x, int start_y) {
-        switch (state) {
-            case STATE_MOVE:
-                if (unit.hasAbility(Ability.SIEGE_MACHINE) && (start_x != unit.getX() || start_y != unit.getY())) {
-                    getGame().standbyUnit(unit.getX(), unit.getY());
-                    setState(STATE_SELECT);
-                } else {
-                    setState(STATE_ACTION);
-                }
-                break;
-            case STATE_REMOVE:
-                getGame().standbyUnit(unit.getX(), unit.getY());
+    public void standbySelectedUnit() {
+        if (getState() == STATE_ACTION) {
+            Unit unit = getSelectedUnit();
+            if (getGame().isUnitAccessible(unit)) {
+                submitGameEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
                 setState(STATE_SELECT);
-                break;
-            default:
-                //do nothing
+            }
         }
     }
 
@@ -214,38 +225,24 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
         return move_path;
     }
 
-    @Override
-    public void addGameEventListener(EventDispatcherListener listener) {
-        this.event_dispatcher_listeners.add(listener);
+    private void submitGameEvent(GameEvent event) {
+        if (isAnimating()) {
+            event_queue.add(event);
+        } else {
+            executeGameEvent(event);
+        }
     }
 
-    @Override
-    public void submitGameEvent(GameEvent event) {
-        this.event_queue.add(event);
+    private void dispatchGameEvents() {
+        while (!isAnimating() && !event_queue.isEmpty()) {
+            executeGameEvent(event_queue.poll());
+        }
     }
 
-    @Override
-    public boolean hasNextEvent() {
-        return !event_queue.isEmpty();
-    }
-
-    @Override
-    public void dispatchEvent() {
-        if (!isAnimating()) {
-            GameEvent event = event_queue.poll();
-            if (event != null) {
-                //skip events that cannot be executed
-                while (!event.canExecute(this)) {
-                    event = event_queue.poll();
-                    if (event == null) {
-                        return;
-                    }
-                }
-                event.execute(this);
-                for (EventDispatcherListener listener : event_dispatcher_listeners) {
-                    listener.onEventDispatched(event);
-                }
-            }
+    private void executeGameEvent(GameEvent event) {
+        if (event.canExecute(getGame())) {
+            event.execute(getGame(), this);
+            //more process with this event
         }
     }
 
@@ -256,22 +253,33 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
 
     @Override
     public void submitAnimation(Animator animation) {
-        this.animation_queue.add(animation);
+        if (current_animation == null) {
+            current_animation = animation;
+        } else {
+            this.animation_queue.add(animation);
+        }
     }
 
     @Override
     public void updateAnimation(float delta) {
         if (current_animation == null || current_animation.isAnimationFinished()) {
+            boolean finish_flag = false;
             if (current_animation != null) {
                 for (AnimationListener listener : animation_listeners) {
                     listener.animationCompleted(current_animation);
                 }
+                finish_flag = true;
             }
             current_animation = animation_queue.poll();
             if (current_animation != null) {
                 for (AnimationListener listener : animation_listeners) {
                     listener.animationStarted(current_animation);
                 }
+            } else {
+                if (finish_flag == true) {
+                    manager_listener.onScreenUpdateRequested();
+                }
+                dispatchGameEvents();
             }
         } else {
             current_animation.update(delta);
@@ -285,7 +293,7 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
 
     @Override
     public boolean isAnimating() {
-        return getCurrentAnimation() != null;
+        return getCurrentAnimation() != null || !animation_queue.isEmpty();
     }
 
     private void createMoveMarkMap() {
@@ -350,8 +358,8 @@ public class GameManager implements GameEventDispatcher, AnimationDispatcher, Ga
         move_path = new ArrayList();
         int start_x = getSelectedUnit().getX();
         int start_y = getSelectedUnit().getY();
-        if (start_x != dest_x || start_x != dest_y) {
-            Point dest_position = new Point(dest_x, dest_y);
+        if (start_x != dest_x || start_y != dest_y) {
+            Point dest_position = getGame().getMap().getPosition(dest_x, dest_y);
             if (movable_positions.contains(dest_position)) {
                 int current_x = dest_x;
                 int current_y = dest_y;

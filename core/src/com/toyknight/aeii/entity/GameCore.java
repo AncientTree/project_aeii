@@ -462,6 +462,33 @@ public class GameCore {
         }
     }
 
+    public boolean canOccupy(Unit conqueror, int x, int y) {
+        if (conqueror == null) {
+            return false;
+        }
+        if (conqueror.getTeam() != getCurrentTeam()) {
+            return false;
+        }
+        Tile tile = getMap().getTile(x, y);
+        if (tile.getTeam() != getCurrentTeam()) {
+            return (tile.isCastle() && conqueror.hasAbility(Ability.COMMANDER))
+                    || (tile.isVillage() && conqueror.hasAbility(Ability.CONQUEROR));
+        } else {
+            return false;
+        }
+    }
+
+    public boolean canRepair(Unit repairer, int x, int y) {
+        if (repairer == null) {
+            return false;
+        }
+        if (repairer.getTeam() != getCurrentTeam()) {
+            return false;
+        }
+        Tile tile = getMap().getTile(x, y);
+        return repairer.hasAbility(Ability.REPAIRER) && tile.isRepairable();
+    }
+
     public boolean canSummon(int x, int y) {
         if (getMap().isTomb(x, y)) {
             return getMap().getUnit(x, y) == null;

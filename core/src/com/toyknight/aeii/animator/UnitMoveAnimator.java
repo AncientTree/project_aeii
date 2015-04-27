@@ -3,6 +3,7 @@ package com.toyknight.aeii.animator;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.renderer.UnitRenderer;
 import com.toyknight.aeii.screen.GameScreen;
 
 import java.util.ArrayList;
@@ -12,21 +13,17 @@ import java.util.ArrayList;
  */
 public class UnitMoveAnimator extends UnitAnimator {
 
-    private final int ts;
     private final Unit unit;
-    private final GameScreen screen;
     private final ArrayList<Point> path;
 
     private int current_location;
     private float x_offset;
     private float y_offset;
 
-    public UnitMoveAnimator(Unit unit, ArrayList<Point> path, GameScreen screen, int ts) {
+    public UnitMoveAnimator(Unit unit, ArrayList<Point> path) {
         super(unit, unit.getX(), unit.getY());
-        this.screen = screen;
         this.path = path;
         this.unit = unit;
-        this.ts = ts;
 
         current_location = 0;
         x_offset = 0f;

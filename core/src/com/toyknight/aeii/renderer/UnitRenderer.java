@@ -28,11 +28,14 @@ public class UnitRenderer {
     }
 
     public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
+        TextureRegion unit_texture;
         if (unit.isStandby()) {
             batch.setShader(ResourceManager.getGrayscaleShader());
+            unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), 0);
+        } else {
+            unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         }
         batch.begin();
-        TextureRegion unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);
         batch.draw(unit_texture, screen_x + offset_x, screen_y + offset_y, ts, ts);

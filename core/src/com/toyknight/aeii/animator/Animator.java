@@ -5,6 +5,8 @@ package com.toyknight.aeii.animator;
  */
 public class Animator {
 
+    protected static int ts;
+
     private float state_time = 0f;
 
     public final void addStateTime(float time) {
@@ -21,6 +23,10 @@ public class Animator {
 
     public boolean isAnimationFinished() {
         return false;
+    }
+
+    public static void setTileSize(int ts) {
+        Animator.ts = ts;
     }
 
 }

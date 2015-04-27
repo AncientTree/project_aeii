@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -14,7 +13,9 @@ import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
+import com.toyknight.aeii.screen.internal.ActionButtonBar;
 import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
 
@@ -23,7 +24,7 @@ import java.util.Set;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameScreen extends Stage implements Screen {
+public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     private final int ts;
     private final AEIIApplication context;
@@ -50,6 +51,7 @@ public class GameScreen extends Stage implements Screen {
 
     private final TextField command_line;
     private ImageButton btn_menu;
+    private ActionButtonBar action_button_bar;
 
     public GameScreen(AEIIApplication context) {
         this.context = context;
@@ -64,6 +66,7 @@ public class GameScreen extends Stage implements Screen {
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
         this.manager = new GameManager();
+        this.manager.setGameManagerListener(this);
 
         this.cursor = new CursorAnimator(this, ts);
         this.attack_cursor = new AttackCursorAnimator(this, ts);
@@ -87,6 +90,10 @@ public class GameScreen extends Stage implements Screen {
         this.btn_menu = new ImageButton(ResourceManager.createDrawable(ResourceManager.getMenuIcon(6), icon_size, icon_size));
         this.btn_menu.setBounds(viewport.width - icon_size, 0, icon_size, icon_size);
         this.addActor(btn_menu);
+
+        this.action_button_bar = new ActionButtonBar(this, manager);
+        this.action_button_bar.setPosition(0, ts * 2);
+        this.addActor(action_button_bar);
     }
 
     public AEIIApplication getContext() {
@@ -211,7 +218,6 @@ public class GameScreen extends Stage implements Screen {
         updateViewport();
 
         super.act(delta);
-        manager.dispatchEvent();
         manager.updateAnimation(delta);
     }
 
@@ -244,7 +250,6 @@ public class GameScreen extends Stage implements Screen {
 
     @Override
     public void render(float delta) {
-
         this.draw();
         this.act(delta);
     }
@@ -360,6 +365,9 @@ public class GameScreen extends Stage implements Screen {
             if (button == Input.Buttons.LEFT) {
                 doClick();
             }
+            if (button == Input.Buttons.RIGHT) {
+                doCancel();
+            }
         }
     }
 
@@ -370,8 +378,19 @@ public class GameScreen extends Stage implements Screen {
             Unit selected_unit = manager.getSelectedUnit();
             switch (manager.getState()) {
                 case GameManager.STATE_PREVIEW:
+                    if (selected_unit != null && !selected_unit.isAt(cursor_x, cursor_y)) {
+                        manager.cancelPreviewPhase();
+                    }
                 case GameManager.STATE_SELECT:
-                    manager.selectUnit(cursor_x, cursor_y);
+                    if (getGame().getMap().getUnit(cursor_x, cursor_y) == null) {
+                        Tile target_tile = getGame().getMap().getTile(cursor_x, cursor_y);
+                        if (target_tile.isCastle() && target_tile.getTeam() == getGame().getCurrentTeam()) {
+                            //show unit store
+                            System.out.println("show store");
+                        }
+                    } else {
+                        manager.selectUnit(cursor_x, cursor_y);
+                    }
                     break;
                 case GameManager.STATE_MOVE:
                 case GameManager.STATE_REMOVE:
@@ -400,16 +419,48 @@ public class GameScreen extends Stage implements Screen {
         }
     }
 
+    private void doCancel() {
+        switch (manager.getState()) {
+            case GameManager.STATE_PREVIEW:
+                manager.cancelPreviewPhase();
+                break;
+            case GameManager.STATE_MOVE:
+                manager.cancelMovePhase();
+                break;
+            case GameManager.STATE_ACTION:
+                manager.reverseMove();
+                break;
+            case GameManager.STATE_ATTACK:
+            case GameManager.STATE_SUMMON:
+            case GameManager.STATE_HEAL:
+                manager.cancelActionPhase();
+                break;
+            default:
+                //do nothing
+        }
+    }
+
+    public void onManagerStateChanged(int last_state) {
+        onScreenUpdateRequested();
+    }
+
+    public void onScreenUpdateRequested() {
+        if (!manager.isAnimating()) {
+            action_button_bar.updateButtons();
+        }
+    }
+
     private boolean isOnUnitAnimation(int x, int y) {
-        Animator current_animation = manager.getCurrentAnimation();
-        if (current_animation == null) {
-            return false;
-        } else {
+        if (manager.isAnimating()) {
+            Animator current_animation = manager.getCurrentAnimation();
             if (current_animation instanceof UnitAnimator) {
                 return ((UnitAnimator) current_animation).hasLocation(x, y);
             } else {
                 return false;
             }
+
+        } else {
+            return false;
         }
     }
 
