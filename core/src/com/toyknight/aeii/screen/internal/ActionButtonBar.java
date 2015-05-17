@@ -99,28 +99,22 @@ public class ActionButtonBar extends HorizontalGroup {
         Unit selected_unit = manager.getSelectedUnit();
         switch (manager.getState()) {
             case GameManager.STATE_ACTION:
-                addActor(btn_attack);
-                if (selected_unit.hasAbility(Ability.NECROMANCER)) {
-                    addActor(btn_summon);
-                }
-                if (selected_unit.hasAbility(Ability.HEALER)) {
-                    addActor(btn_heal);
-                }
-                if (manager.getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
-                    addActor(btn_occupy);
-                }
-                if (manager.getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
-                    addActor(btn_repair);
+                if (manager.canSelectUnitAct()) {
+                    addActor(btn_attack);
+                    if (selected_unit.hasAbility(Ability.NECROMANCER)) {
+                        addActor(btn_summon);
+                    }
+                    if (selected_unit.hasAbility(Ability.HEALER)) {
+                        addActor(btn_heal);
+                    }
+                    if (manager.getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        addActor(btn_occupy);
+                    }
+                    if (manager.getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        addActor(btn_repair);
+                    }
                 }
                 addActor(btn_standby);
-                if (selected_unit != null && selected_unit.getTeam() == game.getCurrentTeam()) {
-                    this.addActor(btn_info);
-                }
-                break;
-            case GameManager.STATE_PREVIEW:
-                if (selected_unit != null && selected_unit.getTeam() != game.getCurrentTeam()) {
-                    this.addActor(btn_info);
-                }
                 break;
             default:
                 //do nothing

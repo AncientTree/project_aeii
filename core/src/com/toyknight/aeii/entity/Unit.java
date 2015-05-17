@@ -147,6 +147,10 @@ public class Unit {
         this.current_hp = current_hp;
     }
 
+    public void changeCurrentHp(int change) {
+        this.current_hp += change;
+    }
+
     public int getAttack() {
         return attack;
     }

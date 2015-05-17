@@ -27,11 +27,15 @@ public class RightPanelRenderer {
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(ResourceManager.getAEIIBackgroundColor());
-        shape_renderer.rect(Gdx.graphics.getWidth() - screen.getRightPanelWidth(), 0, screen.getRightPanelWidth(), Gdx.graphics.getHeight());
+        shape_renderer.rect(
+                Gdx.graphics.getWidth() - screen.getRightPanelWidth(), 0,
+                screen.getRightPanelWidth(), Gdx.graphics.getHeight());
         shape_renderer.end();
 
         batch.begin();
-        BorderRenderer.drawBorder(batch, Gdx.graphics.getWidth() - screen.getRightPanelWidth(), 0, screen.getRightPanelWidth(), Gdx.graphics.getHeight());
+        BorderRenderer.drawBorder(batch,
+                Gdx.graphics.getWidth() - screen.getRightPanelWidth(), ts,
+                screen.getRightPanelWidth(), Gdx.graphics.getHeight() - ts * 2);
         batch.end();
     }
 

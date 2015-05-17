@@ -13,7 +13,8 @@ import java.util.ArrayList;
  */
 public class UnitMoveAnimator extends UnitAnimator {
 
-    private final Unit unit;
+    private static final String MOVER_KEY = "mover";
+
     private final ArrayList<Point> path;
 
     private int current_location;
@@ -21,9 +22,8 @@ public class UnitMoveAnimator extends UnitAnimator {
     private float y_offset;
 
     public UnitMoveAnimator(Unit unit, ArrayList<Point> path) {
-        super(unit, unit.getX(), unit.getY());
+        this.addUnit(unit, MOVER_KEY);
         this.path = path;
-        this.unit = unit;
 
         current_location = 0;
         x_offset = 0f;
@@ -34,7 +34,7 @@ public class UnitMoveAnimator extends UnitAnimator {
     public void render(SpriteBatch batch, GameScreen screen) {
         if (path.size() > 0) {
             Point current = path.get(current_location);
-            screen.getUnitRenderer().drawUnitWithInformation(batch, unit, current.x, current.y, x_offset, y_offset);
+            screen.getUnitRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
         }
     }
 

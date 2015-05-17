@@ -33,12 +33,4 @@ public class MapAnimator extends Animator {
     public void render(SpriteBatch batch, GameScreen screen) {
     }
 
-    @Override
-    public void update(float delta_time) {
-    }
-
-    @Override
-    public boolean isAnimationFinished() {
-        return false;
-    }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
@@ -50,6 +51,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private boolean dragged;
 
     private final TextField command_line;
+    private TextButton btn_menu;
+    private TextButton btn_end_turn;
     private ActionButtonBar action_button_bar;
 
     public GameScreen(AEIIApplication context) {
@@ -85,6 +88,13 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.command_line.setWidth(Gdx.graphics.getWidth());
         this.command_line.setVisible(false);
         this.addActor(command_line);
+
+        this.btn_menu = new TextButton("Menu", getContext().getSkin());
+        this.btn_menu.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, Gdx.graphics.getHeight() - ts, RIGHT_PANEL_WIDTH, ts);
+        this.addActor(btn_menu);
+        this.btn_end_turn = new TextButton("End Turn", getContext().getSkin());
+        this.btn_end_turn.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, 0, RIGHT_PANEL_WIDTH, ts);
+        this.addActor(btn_end_turn);
 
         this.action_button_bar = new ActionButtonBar(this, manager);
         this.action_button_bar.setPosition(0, ts * 2);
@@ -394,18 +404,13 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     break;
                 case GameManager.STATE_MOVE:
                 case GameManager.STATE_REMOVE:
-                    if (manager.getMovablePositions().contains(getGame().getMap().getPosition(cursor_x, cursor_y))) {
-                        manager.moveSelectedUnit(cursor_x, cursor_y);
-                    } else {
-                        manager.cancelMovePhase();
-                    }
+                    manager.moveSelectedUnit(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_ACTION:
                     manager.reverseMove();
                     break;
                 case GameManager.STATE_ATTACK:
-                    //UnitToolkit.isWithinRange()
-                    //manager.doAttack(click_x, click_y);
+                    manager.doAttack(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_SUMMON:
                     //manager.doSummon(click_x, click_y);

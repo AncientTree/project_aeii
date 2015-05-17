@@ -45,6 +45,9 @@ public class ResourceManager {
     private static Texture menu_icon_texture;
     private static TextureRegion[] menu_icon_textures;
 
+    private static TextureRegion[] dust_frames;
+    private static TextureRegion[] attack_spark_frames;
+
     private static Color aeii_bg_color;
     private static Color move_path_color;
 
@@ -106,6 +109,7 @@ public class ResourceManager {
             loadActionButtonTextures();
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
+            createAnimationFrames();
             createGrayscaleShader();
 
             aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
@@ -168,6 +172,13 @@ public class ResourceManager {
         for (int i = 0; i < menu_icon_textures.length; i++) {
             menu_icon_textures[i] = new TextureRegion(menu_icon_texture, i * size, 0, size, size);
         }
+    }
+
+    private static void createAnimationFrames() {
+        Texture dust_texture = new Texture(FileProvider.getAssetsFile("images/dust.png"));
+        dust_frames = createFrames(dust_texture, 4, 1);
+        Texture attack_spark_sheet = new Texture(FileProvider.getAssetsFile("images/attack_spark.png"));
+        attack_spark_frames = createFrames(attack_spark_sheet, 6, 1);
     }
 
     private static void createGrayscaleShader() {
@@ -245,6 +256,14 @@ public class ResourceManager {
         return menu_icon_texture.getHeight() * scaling;
     }
 
+    public static TextureRegion[] getAttackSparkFrames() {
+        return attack_spark_frames;
+    }
+
+    public static TextureRegion[] getDustFrames() {
+        return dust_frames;
+    }
+
     public static Color getAEIIBackgroundColor() {
         return aeii_bg_color;
     }
@@ -261,7 +280,7 @@ public class ResourceManager {
         return top_tile_textures.length;
     }
 
-    public static Animation createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
+    public static TextureRegion[] createFrames(Texture sheet, int cols, int rows) {
         TextureRegion[][] tmp = TextureRegion.split(
                 sheet,
                 sheet.getWidth() / cols,
@@ -273,6 +292,11 @@ public class ResourceManager {
                 frames[index++] = tmp[i][j];
             }
         }
+        return frames;
+    }
+
+    public static Animation createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
+        TextureRegion[] frames = createFrames(sheet, cols, rows);
         return new Animation(frame_duration, frames);
     }
 
