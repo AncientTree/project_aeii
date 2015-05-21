@@ -42,9 +42,11 @@ public class UnitMoveEvent implements GameEvent, Serializable {
     @Override
     public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
         Unit unit = game.getMap().getUnit(unit_x, unit_y);
-        unit.setCurrentMovementPoint(mp_left);
         game.moveUnit(unit_x, unit_y, dest_x, dest_y);
-        animation_dispatcher.submitAnimation(new UnitMoveAnimator(unit, move_path));
+        unit.setCurrentMovementPoint(mp_left);
+        if (move_path != null) {
+            animation_dispatcher.submitAnimation(new UnitMoveAnimator(unit, move_path));
+        }
     }
 
 }

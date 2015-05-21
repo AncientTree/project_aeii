@@ -12,6 +12,12 @@ public class UnitToolkit {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
+    public static void attachAttackBuff(Unit attacker, Unit defender) {
+        if (attacker.hasAbility(Ability.POISONER)) {
+            defender.attachBuff(new Buff(Buff.POISONED, 2));
+        }
+    }
+
     public static int getMovementPointCost(Unit unit, Tile tile) {
         int mp_cost = tile.getStepCost();
         int tile_type = tile.getType();
@@ -50,14 +56,17 @@ public class UnitToolkit {
     }
 
     public static boolean isWithinRange(Unit unit, int target_x, int target_y) {
-        int range = Math.abs(target_x - unit.getX()) + Math.abs(target_y - unit.getY());
+        int range = getRange(unit.getX(), unit.getY(), target_x, target_y);
         return unit.getMinAttackRange() <= range && range <= unit.getMaxAttackRange();
     }
 
     public static boolean canCounter(Unit counter, Unit attacker) {
-        return Math.abs(attacker.getX() - counter.getX())
-                + Math.abs(attacker.getY() - counter.getY()) == 1
+        return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) == 1
                 && isWithinRange(counter, attacker.getX(), attacker.getY());
+    }
+
+    private static int getRange(int unit_x, int unit_y, int target_x, int target_y) {
+        return Math.abs(target_x - unit_x) + Math.abs(target_y - unit_y);
     }
 
     public static int getDefenceBonus(Unit unit, int tile_index) {
@@ -120,6 +129,7 @@ public class UnitToolkit {
         int offset = random.nextInt(5) - 2;
         damage = damage * attacker_hp / attacker_max_hp + offset;
         damage = damage > 0 ? damage : 0;
+        damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
         //more process
         return damage;
     }

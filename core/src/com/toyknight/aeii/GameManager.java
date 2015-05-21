@@ -5,8 +5,8 @@ import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.event.*;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.EventDispatcherListener;
-import com.toyknight.aeii.listener.GameListener;
 import com.toyknight.aeii.listener.GameManagerListener;
+import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.Queue;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameManager implements GameListener, AnimationDispatcher {
+public class GameManager implements AnimationDispatcher {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -60,7 +60,6 @@ public class GameManager implements GameListener, AnimationDispatcher {
     public void setGame(GameCore game) {
         this.game = game;
         this.state = STATE_SELECT;
-        this.game.setGameListener(this);
         this.event_dispatcher_listeners.clear();
         this.animation_listeners.clear();
     }
@@ -116,7 +115,7 @@ public class GameManager implements GameListener, AnimationDispatcher {
     public void reverseMove() {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit) && getState() == STATE_ACTION) {
-            submitGameEvent(new UnitMoveReverseEvent(unit.getX(), unit.getY(), last_position.x, last_position.y));
+            submitGameEvent(new UnitMoveEvent(unit.getX(), unit.getY(), last_position.x, last_position.y, unit.getMovementPoint(), null));
             beginMovePhase();
         }
     }
@@ -126,6 +125,11 @@ public class GameManager implements GameListener, AnimationDispatcher {
             createAttackablePositions(selected_unit);
             setState(STATE_ATTACK);
         }
+    }
+
+    private void beginRemovePhase() {
+        createMovablePositions();
+        setState(STATE_REMOVE);
     }
 
     public void cancelActionPhase() {
@@ -156,7 +160,7 @@ public class GameManager implements GameListener, AnimationDispatcher {
                 int start_x = unit.getX();
                 int start_y = unit.getY();
                 if (canSelectedUnitMove(dest_x, dest_y)) {
-                    int mp_remains = getMovementPointRemains(unit, dest_x, dest_y);
+                    int mp_remains = getMovementPointRemains(dest_x, dest_y);
                     ArrayList<Point> move_path = getMovePath(dest_x, dest_y);
                     submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
                     switch (state) {
@@ -180,18 +184,49 @@ public class GameManager implements GameListener, AnimationDispatcher {
     public void doAttack(int target_x, int target_y) {
         Unit attacker = getSelectedUnit();
         if (getState() == STATE_ATTACK && UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
-            Unit target_unit = getGame().getMap().getUnit(target_x, target_y);
-            if (target_unit != null) {
-
-            } else {
+            Unit defender = getGame().getMap().getUnit(target_x, target_y);
+            int kill_experience = getGame().getRule().getKillExperience();
+            int attack_experience = getGame().getRule().getAttackExperience();
+            int counter_experience = getGame().getRule().getCounterExperience();
+            if (defender == null) {
                 if (attacker.hasAbility(Ability.DESTROYER) && getGame().getMap().getTile(target_x, target_y).isDestroyable()) {
-                    int experience = getGame().getRule().getAttackExperience();
-                    submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), target_x, target_y, -1, experience));
-                    submitGameEvent(new UnitStandbyEvent(getSelectedUnit().getX(), getSelectedUnit().getY()));
+                    submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), target_x, target_y, -1, attack_experience));
+                    submitGameEvent(new UnitStandbyEvent(attacker.getX(), attacker.getY()));
                     submitGameEvent(new TileDestroyEvent(target_x, target_y));
-                    setState(STATE_SELECT);
+                }
+            } else {
+                //attack pre-calculation
+                attacker = UnitFactory.cloneUnit(attacker);
+                defender = UnitFactory.cloneUnit(defender);
+                int attack_damage = UnitToolkit.getDamage(attacker, defender, getGame().getMap());
+                UnitToolkit.attachAttackBuff(attacker, defender);
+                defender.changeCurrentHp(-attack_damage);
+                if (defender.getCurrentHp() > 0) {
+                    attacker.gainExperience(attack_experience);
+                    submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, attack_experience));
+                    if (UnitToolkit.canCounter(defender, attacker)) {
+                        int counter_damage = UnitToolkit.getDamage(defender, attacker, getGame().getMap());
+                        attacker.changeCurrentHp(-counter_damage);
+                        if (attacker.getCurrentHp() > 0) {
+                            submitGameEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, counter_experience));
+                        } else {
+                            submitGameEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, kill_experience));
+                        }
+                    }
+                } else {
+                    submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, kill_experience));
                 }
             }
+            onActionFinished(attacker);
+        }
+    }
+
+    private void onActionFinished(Unit unit) {
+        if (UnitToolkit.canMoveAgain(unit)) {
+            beginRemovePhase();
+        } else {
+            submitGameEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
+            setState(STATE_SELECT);
         }
     }
 
@@ -222,7 +257,7 @@ public class GameManager implements GameListener, AnimationDispatcher {
         return selected_unit;
     }
 
-    private int getMovementPointRemains(Unit unit, int dest_x, int dest_y) {
+    private int getMovementPointRemains(int dest_x, int dest_y) {
         Point dest_position = new Point(dest_x, dest_y);
         if (movable_positions.contains(dest_position)) {
             return move_mark_map[dest_x][dest_y];
@@ -249,16 +284,6 @@ public class GameManager implements GameListener, AnimationDispatcher {
             }
         }
         return move_path;
-    }
-
-    @Override
-    public void onUnitDestroyed(Unit unit) {
-
-    }
-
-    @Override
-    public void onUnitLevelUp(Unit unit) {
-
     }
 
     private void submitGameEvent(GameEvent event) {

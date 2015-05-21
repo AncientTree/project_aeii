@@ -1,7 +1,6 @@
 package com.toyknight.aeii.entity;
 
 import com.toyknight.aeii.entity.player.Player;
-import com.toyknight.aeii.listener.GameListener;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -18,7 +17,6 @@ public class GameCore {
     private final Rule rule;
     private int current_team;
     private final Player[] player_list;
-    private GameListener game_listener;
 
     private int turn;
 
@@ -65,14 +63,6 @@ public class GameCore {
         }
     }
 
-    public void setGameListener(GameListener listener) {
-        this.game_listener = listener;
-    }
-
-    private GameListener getGameListener() {
-        return game_listener;
-    }
-
     public final Map getMap() {
         return map;
     }
@@ -106,16 +96,6 @@ public class GameCore {
         }
     }
 
-    public void increaseUnitExperience(int unit_x, int unit_y, int experience) {
-        Unit target = getMap().getUnit(unit_x, unit_y);
-        if (target != null) {
-            boolean level_up = target.gainExperience(experience);
-            if (level_up == true) {
-                game_listener.onUnitLevelUp(target);
-            }
-        }
-    }
-
     public void destroyUnit(int target_x, int target_y) {
         Unit target = getMap().getUnit(target_x, target_y);
         if (target != null) {
@@ -127,7 +107,6 @@ public class GameCore {
             if (target.isCommander()) {
                 changeCommanderPriceDelta(target.getTeam(), getRule().getCommanderPriceGrowth());
             }
-            game_listener.onUnitDestroyed(target);
         }
     }
 
@@ -136,24 +115,6 @@ public class GameCore {
             getMap().removeTomb(target_x, target_y);
             createUnit(UnitFactory.getSkeletonIndex(), team, "default", target_x, target_y);
             standbyUnit(target_x, target_y);
-        }
-    }
-
-    public void changeUnitHp(int target_x, int target_y, int change) {
-        Unit target = getMap().getUnit(target_x, target_y);
-        if (target != null) {
-            int target_hp = target.getCurrentHp();
-            target_hp += change;
-            if (target_hp > target.getMaxHp()) {
-                target_hp = target.getMaxHp();
-            }
-            if (target_hp < 0) {
-                target_hp = 0;
-            }
-            target.setCurrentHp(target_hp);
-            if (target.getCurrentHp() == 0) {
-                destroyUnit(target_x, target_y);
-            }
         }
     }
 

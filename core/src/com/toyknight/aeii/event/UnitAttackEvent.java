@@ -1,11 +1,15 @@
 package com.toyknight.aeii.event;
 
 import com.toyknight.aeii.AnimationDispatcher;
+import com.toyknight.aeii.animator.DustAriseAnimator;
 import com.toyknight.aeii.animator.UnitAttackAnimator;
+import com.toyknight.aeii.animator.UnitDestroyAnimator;
+import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
 
@@ -53,14 +57,23 @@ public class UnitAttackEvent implements GameEvent, Serializable {
     @Override
     public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
         Unit attacker = game.getMap().getUnit(attacker_x, attacker_y);
-        Unit target = game.getMap().getUnit(target_x, target_y);
-        if (target == null) {
+        Unit defender = game.getMap().getUnit(target_x, target_y);
+        if (defender == null) {
             animation_dispatcher.submitAnimation(new UnitAttackAnimator(attacker, target_x, target_y));
         } else {
-            animation_dispatcher.submitAnimation(new UnitAttackAnimator(attacker, target, damage));
-            game.changeUnitHp(target_x, target_y, -damage);
+            defender.changeCurrentHp(-damage);
+            UnitToolkit.attachAttackBuff(attacker, defender);
+            animation_dispatcher.submitAnimation(new UnitAttackAnimator(attacker, defender, damage));
+            if (defender.getCurrentHp() <= 0) {
+                game.destroyUnit(defender.getX(), defender.getY());
+                animation_dispatcher.submitAnimation(new UnitDestroyAnimator(defender));
+                animation_dispatcher.submitAnimation(new DustAriseAnimator(defender.getX(), defender.getY()));
+            }
         }
-        game.increaseUnitExperience(attacker_x, attacker_y, experience);
+        boolean level_up = attacker.gainExperience(experience);
+        if (level_up) {
+            animation_dispatcher.submitAnimation(new UnitLevelUpAnimator(attacker));
+        }
     }
 
 }

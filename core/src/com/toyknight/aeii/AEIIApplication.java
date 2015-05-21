@@ -42,7 +42,7 @@ public class AEIIApplication extends Game {
             TileFactory.loadTileData();
             UnitFactory.loadUnitData();
             ResourceManager.loadResources();
-            FontRenderer.loadFonts();
+            FontRenderer.loadFonts(TILE_SIZE);
             BorderRenderer.init();
 
             logo_screen = new LogoScreen(this);

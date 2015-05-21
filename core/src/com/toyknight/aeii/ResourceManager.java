@@ -28,6 +28,7 @@ public class ResourceManager {
     private static Texture ae_logo_mask_texture;
     private static Texture ae_logo_glow_texture;
 
+    private static Texture tomb_texture;
     private static Texture[] tile_textures;
     private static Texture[] top_tile_textures;
 
@@ -47,6 +48,7 @@ public class ResourceManager {
 
     private static TextureRegion[] dust_frames;
     private static TextureRegion[] attack_spark_frames;
+    private static TextureRegion[] white_spark_frames;
 
     private static Color aeii_bg_color;
     private static Color move_path_color;
@@ -99,6 +101,7 @@ public class ResourceManager {
             ae_logo_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo.png"));
             ae_logo_mask_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo_mask.png"));
             ae_logo_glow_texture = new Texture(FileProvider.getAssetsFile("images/ae_glow.png"));
+            tomb_texture = new Texture(FileProvider.getAssetsFile("images/tombstone.png"));
             loadTileTextures();
             loadUnitTextures();
             cursor_texture = new Texture(FileProvider.getAssetsFile("images/cursor.png"));
@@ -179,6 +182,8 @@ public class ResourceManager {
         dust_frames = createFrames(dust_texture, 4, 1);
         Texture attack_spark_sheet = new Texture(FileProvider.getAssetsFile("images/attack_spark.png"));
         attack_spark_frames = createFrames(attack_spark_sheet, 6, 1);
+        Texture white_spark_sheet = new Texture(FileProvider.getAssetsFile("images/white_spark.png"));
+        white_spark_frames = createFrames(white_spark_sheet, 6, 1);
     }
 
     private static void createGrayscaleShader() {
@@ -198,6 +203,10 @@ public class ResourceManager {
 
     public static Texture getAELogoMaskTexture() {
         return ae_logo_mask_texture;
+    }
+
+    public static Texture getTombTexture() {
+        return tomb_texture;
     }
 
     public static Texture getAELogoGlowTexture() {
@@ -258,6 +267,10 @@ public class ResourceManager {
 
     public static TextureRegion[] getAttackSparkFrames() {
         return attack_spark_frames;
+    }
+
+    public static TextureRegion[] getWhiteSparkFrames() {
+        return white_spark_frames;
     }
 
     public static TextureRegion[] getDustFrames() {

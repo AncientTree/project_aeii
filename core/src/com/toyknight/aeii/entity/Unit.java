@@ -320,7 +320,7 @@ public class Unit {
     }
 
     /**
-     * @param exp
+     * @param exp experience
      * @return returns if unit level is up after gaining exp
      */
     public boolean gainExperience(int exp) {

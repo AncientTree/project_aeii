@@ -2,6 +2,7 @@ package com.toyknight.aeii.event;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.Unit;
 
 /**
  * Created by toyknight on 4/26/2015.
@@ -18,7 +19,8 @@ public class UnitStandbyEvent implements GameEvent {
 
     @Override
     public boolean canExecute(GameCore game) {
-        return !game.getMap().getUnit(unit_x, unit_y).isStandby();
+        Unit target = game.getMap().getUnit(unit_x, unit_y);
+        return !target.isStandby() && target.getCurrentHp() > 0;
     }
 
     @Override

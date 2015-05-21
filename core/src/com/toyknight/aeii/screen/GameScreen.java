@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.GameManagerListener;
@@ -18,6 +19,7 @@ import com.toyknight.aeii.screen.internal.ActionButtonBar;
 import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -127,6 +129,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     //do nothing
             }
         }
+        drawTombs();
         drawUnits();
         drawCursor();
         drawAnimation();
@@ -150,6 +153,17 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     }
                 }
             }
+        }
+    }
+
+    private void drawTombs() {
+        ArrayList<Tomb> tomb_list = getGame().getMap().getTombList();
+        for (Tomb tomb : tomb_list) {
+            int tomb_sx = getXOnScreen(tomb.x);
+            int tomb_sy = getYOnScreen(tomb.y);
+            batch.begin();
+            batch.draw(ResourceManager.getTombTexture(), tomb_sx, tomb_sy, ts, ts);
+            batch.end();
         }
     }
 
