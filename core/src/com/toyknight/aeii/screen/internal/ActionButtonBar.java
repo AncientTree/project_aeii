@@ -77,6 +77,12 @@ public class ActionButtonBar extends HorizontalGroup {
         });
         btn_summon = new ImageButton(button_icons[3][0], button_icons[3][2], button_icons[3][1]);
         btn_summon.padLeft(PADDING_LEFT);
+        btn_summon.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                manager.beginSummonPhase();
+            }
+        });
         btn_move = new ImageButton(button_icons[4][0], button_icons[4][2], button_icons[4][1]);
         btn_move.padLeft(PADDING_LEFT);
         btn_standby = new ImageButton(button_icons[5][0], button_icons[5][2], button_icons[5][1]);

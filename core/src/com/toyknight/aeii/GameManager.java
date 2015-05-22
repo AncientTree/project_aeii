@@ -122,8 +122,15 @@ public class GameManager implements AnimationDispatcher {
 
     public void beginAttackPhase() {
         if (getGame().isUnitAccessible(getSelectedUnit()) && getState() == STATE_ACTION) {
-            createAttackablePositions(selected_unit);
+            createAttackablePositions(getSelectedUnit());
             setState(STATE_ATTACK);
+        }
+    }
+
+    public void beginSummonPhase() {
+        if (getState() == STATE_ACTION) {
+            createAttackablePositions(getSelectedUnit());
+            setState(STATE_SUMMON);
         }
     }
 
@@ -193,31 +200,43 @@ public class GameManager implements AnimationDispatcher {
                     submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), target_x, target_y, -1, attack_experience));
                     submitGameEvent(new UnitStandbyEvent(attacker.getX(), attacker.getY()));
                     submitGameEvent(new TileDestroyEvent(target_x, target_y));
+                    onActionFinished(attacker);
                 }
             } else {
-                //attack pre-calculation
-                attacker = UnitFactory.cloneUnit(attacker);
-                defender = UnitFactory.cloneUnit(defender);
-                int attack_damage = UnitToolkit.getDamage(attacker, defender, getGame().getMap());
-                UnitToolkit.attachAttackBuff(attacker, defender);
-                defender.changeCurrentHp(-attack_damage);
-                if (defender.getCurrentHp() > 0) {
-                    attacker.gainExperience(attack_experience);
-                    submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, attack_experience));
-                    if (UnitToolkit.canCounter(defender, attacker)) {
-                        int counter_damage = UnitToolkit.getDamage(defender, attacker, getGame().getMap());
-                        attacker.changeCurrentHp(-counter_damage);
-                        if (attacker.getCurrentHp() > 0) {
-                            submitGameEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, counter_experience));
-                        } else {
-                            submitGameEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, kill_experience));
+                if (getGame().isEnemy(attacker, defender)) {
+                    //attack pre-calculation
+                    attacker = UnitFactory.cloneUnit(attacker);
+                    defender = UnitFactory.cloneUnit(defender);
+                    int attack_damage = UnitToolkit.getDamage(attacker, defender, getGame().getMap());
+                    UnitToolkit.attachAttackBuff(attacker, defender);
+                    defender.changeCurrentHp(-attack_damage);
+                    if (defender.getCurrentHp() > 0) {
+                        attacker.gainExperience(attack_experience);
+                        submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, attack_experience));
+                        if (UnitToolkit.canCounter(defender, attacker)) {
+                            int counter_damage = UnitToolkit.getDamage(defender, attacker, getGame().getMap());
+                            attacker.changeCurrentHp(-counter_damage);
+                            if (attacker.getCurrentHp() > 0) {
+                                submitGameEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, counter_experience));
+                            } else {
+                                submitGameEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, kill_experience));
+                            }
                         }
+                    } else {
+                        submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, kill_experience));
                     }
-                } else {
-                    submitGameEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, kill_experience));
+                    onActionFinished(attacker);
                 }
             }
-            onActionFinished(attacker);
+        }
+    }
+
+    public void doSummon(int target_x, int target_y) {
+        Unit summoner = getSelectedUnit();
+        if(getState() == STATE_SUMMON && UnitToolkit.isWithinRange(summoner, target_x, target_y)) {
+            int experience = getGame().getRule().getAttackExperience();
+            submitGameEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
+            onActionFinished(summoner);
         }
     }
 

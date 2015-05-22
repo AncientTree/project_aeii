@@ -18,6 +18,7 @@ import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.internal.ActionButtonBar;
 import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
+import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -424,10 +425,18 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     manager.reverseMove();
                     break;
                 case GameManager.STATE_ATTACK:
-                    manager.doAttack(cursor_x, cursor_y);
+                    if (UnitToolkit.isWithinRange(manager.getSelectedUnit(), cursor_x, cursor_y)) {
+                        manager.doAttack(cursor_x, cursor_y);
+                    } else {
+                        manager.cancelActionPhase();
+                    }
                     break;
                 case GameManager.STATE_SUMMON:
-                    //manager.doSummon(click_x, click_y);
+                    if (UnitToolkit.isWithinRange(manager.getSelectedUnit(), cursor_x, cursor_y)) {
+                        manager.doSummon(cursor_x, cursor_y);
+                    } else {
+                        manager.cancelActionPhase();
+                    }
                     break;
                 case GameManager.STATE_HEAL:
                     //manager.doHeal(click_x, click_y);
