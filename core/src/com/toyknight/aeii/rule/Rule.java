@@ -14,8 +14,6 @@ public class Rule {
     private int kill_exp;
     private int attack_exp;
     private int counter_exp;
-    private int occupy_exp;
-    private int repair_exp;
 
     private int commander_price_growth;
 
@@ -55,22 +53,6 @@ public class Rule {
         return counter_exp;
     }
 
-    public void setOccupyExpereince(int exp) {
-        this.occupy_exp = exp;
-    }
-
-    public int getOccupyExperience() {
-        return occupy_exp;
-    }
-
-    public void setRepairExperience(int exp) {
-        this.repair_exp = exp;
-    }
-
-    public int getRepairExperience() {
-        return repair_exp;
-    }
-
     public void setCommanderPriceGrowth(int growth) {
         this.commander_price_growth = growth;
     }
@@ -101,8 +83,6 @@ public class Rule {
         rule.setKillExperience(60);
         rule.setAttackExperience(30);
         rule.setCounterExperience(10);
-        rule.setOccupyExpereince(20);
-        rule.setRepairExperience(10);
         rule.setCommanderPriceGrowth(500);
         rule.setMaxPopulation(20);
 

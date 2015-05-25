@@ -35,4 +35,9 @@ public class BorderRenderer {
         batch.draw(borders[7], x + width - border_size, y, border_size, border_size);
     }
 
+    public static void drawTopBottomBorder(SpriteBatch batch, float x, float y, float width, float height) {
+        batch.draw(borders[1], x, y + height - border_size, width, border_size);
+        batch.draw(borders[6], x, y, width, border_size);
+    }
+
 }

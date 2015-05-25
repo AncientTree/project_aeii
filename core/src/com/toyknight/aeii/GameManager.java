@@ -233,10 +233,26 @@ public class GameManager implements AnimationDispatcher {
 
     public void doSummon(int target_x, int target_y) {
         Unit summoner = getSelectedUnit();
-        if(getState() == STATE_SUMMON && UnitToolkit.isWithinRange(summoner, target_x, target_y)) {
+        if (getState() == STATE_SUMMON && UnitToolkit.isWithinRange(summoner, target_x, target_y)) {
             int experience = getGame().getRule().getAttackExperience();
             submitGameEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
             onActionFinished(summoner);
+        }
+    }
+
+    public void doRepair() {
+        if (getState() == STATE_ACTION) {
+            Unit unit = getSelectedUnit();
+            submitGameEvent(new RepairEvent(unit.getX(), unit.getY()));
+            onActionFinished(unit);
+        }
+    }
+
+    public void doOccupy() {
+        if (getState() == STATE_ACTION) {
+            Unit unit = getSelectedUnit();
+            submitGameEvent(new OccupyEvent(unit.getX(), unit.getY(), unit.getTeam()));
+            onActionFinished(unit);
         }
     }
 
@@ -257,6 +273,10 @@ public class GameManager implements AnimationDispatcher {
                 setState(STATE_SELECT);
             }
         }
+    }
+
+    public void endCurrentTurn() {
+
     }
 
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {

@@ -69,12 +69,12 @@ public class UnitAttackAnimator extends UnitAnimator {
         batch.draw(
                 attack_spark_animation.getKeyFrame(getStateTime(), true),
                 screen.getXOnScreen(target_x) + spark_offset, screen.getYOnScreen(target_y) + spark_offset, spark_size, spark_size);
-        batch.end();
         //paint damage
         if (damage >= 0) {
             int damage_dx = (ts - FontRenderer.getLNumberWidth(damage, true)) / 2;
             FontRenderer.drawNegativeLNumber(batch, damage, target_sx + damage_dx, target_sy);
         }
+        batch.end();
     }
 
     @Override

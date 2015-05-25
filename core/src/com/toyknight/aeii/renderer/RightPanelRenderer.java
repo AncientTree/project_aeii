@@ -14,25 +14,17 @@ public class RightPanelRenderer {
 
     private final int ts;
     private final GameScreen screen;
-    private final ShapeRenderer shape_renderer;
 
     public RightPanelRenderer(GameScreen screen, int ts) {
         this.ts = ts;
         this.screen = screen;
-        this.shape_renderer = new ShapeRenderer();
-        this.shape_renderer.setAutoShapeType(true);
     }
 
     public void drawStatusBar(SpriteBatch batch, GameManager manager) {
-        shape_renderer.begin();
-        shape_renderer.set(ShapeRenderer.ShapeType.Filled);
-        shape_renderer.setColor(ResourceManager.getAEIIBackgroundColor());
-        shape_renderer.rect(
+        batch.begin();
+        batch.draw(ResourceManager.getPanelBackground(),
                 Gdx.graphics.getWidth() - screen.getRightPanelWidth(), 0,
                 screen.getRightPanelWidth(), Gdx.graphics.getHeight());
-        shape_renderer.end();
-
-        batch.begin();
         BorderRenderer.drawBorder(batch,
                 Gdx.graphics.getWidth() - screen.getRightPanelWidth(), ts,
                 screen.getRightPanelWidth(), Gdx.graphics.getHeight() - ts * 2);

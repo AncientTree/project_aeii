@@ -18,7 +18,6 @@ public class Animator {
     }
 
     public void update(float delta_time) {
-
     }
 
     public boolean isAnimationFinished() {

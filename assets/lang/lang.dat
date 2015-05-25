@@ -1,5 +1,8 @@
-#Please do not modify this file manually.
-#Thu Jun 19 15:01:17 CST 2014
+﻿
+LB_MENU=Menu
+LB_END_TURN=End Turn
+LB_REPAIRED=Repaired
+LB_OCCUPIED=Occupied
 UNIT_NAME_0=Soldier
 UNIT_NAME_1=Archer
 UNIT_NAME_2=Water Element

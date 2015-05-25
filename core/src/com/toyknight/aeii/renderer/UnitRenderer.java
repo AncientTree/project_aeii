@@ -49,12 +49,14 @@ public class UnitRenderer {
 
     public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         drawUnit(batch, unit, map_x, map_y, offset_x, offset_y);
+        batch.begin();
         if (unit.getCurrentHp() < unit.getMaxHp()) {
             int screen_x = screen.getXOnScreen(map_x);
             int screen_y = screen.getYOnScreen(map_y);
             FontRenderer.drawSNumber(batch, unit.getCurrentHp(), screen_x, screen_y);
         }
         //draw buff
+        batch.end();
     }
 
     private int getCurrentFrame() {

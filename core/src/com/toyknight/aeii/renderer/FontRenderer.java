@@ -1,12 +1,15 @@
 package com.toyknight.aeii.renderer;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.utils.FileProvider;
+import com.toyknight.aeii.utils.Language;
 
 /**
  * Created by toyknight on 4/2/2015.
@@ -15,9 +18,9 @@ public class FontRenderer {
 
     private static final int[] SIZE_TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE};
 
-    private static BitmapFont font_yahei;
-
-    private static BitmapFont current_font;
+    private static BitmapFont ui_font_title;
+    private static BitmapFont ui_font_label;
+    private static BitmapFont ui_font_text;
 
     private static TextureRegion[] small_chars;
     private static TextureRegion[] large_chars;
@@ -30,12 +33,14 @@ public class FontRenderer {
     }
 
     public static void loadFonts(int ts) {
+        String charset = Language.createCharset();
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
-        font_yahei = new BitmapFont(
-                FileProvider.getAssetsFile("skin/ms_yahei_shadow.fnt"),
-                FileProvider.getAssetsFile("skin/ms_yahei_shadow.png"), false);
+        FreeTypeFontParameter label_parameter = new FreeTypeFontParameter();
+        label_parameter.size = ts / 3;
+        label_parameter.color = Color.WHITE;
+        label_parameter.characters = charset;
+        ui_font_label = generator.generateFont(label_parameter);
 
-        current_font = font_yahei;
         Texture small_char_sheet = new Texture(FileProvider.getAssetsFile("images/small_chars.png"));
         small_chars = ResourceManager.createFrames(small_char_sheet, 12, 1);
         Texture large_char_sheet = new Texture(FileProvider.getAssetsFile("images/large_chars.png"));
@@ -46,59 +51,51 @@ public class FontRenderer {
         lchar_height = ts / 24 * 11;
     }
 
-    public static void setFont(String font) {
-        if (font.equals("YaHei")) {
-            current_font = font_yahei;
-        }
+    public static void drawLabel(Batch batch, String str, float x, float y) {
+        ui_font_label.draw(batch, str, x, y);
     }
 
-    public static void setColor(float r, float g, float b, float a) {
-        current_font.setColor(r, g, b, a);
-    }
-
-    public static void drawString(Batch batch, String str, float x, float y) {
-        current_font.draw(batch, str, x, y);
+    public static void drawLabelCenter(Batch batch, String str, int target_x, int target_y, int target_width, int target_height) {
+        BitmapFont.TextBounds bounds = ui_font_label.getBounds(str);
+        float x = target_x + (target_width - bounds.width) / 2;
+        float y = target_y + (target_height - bounds.height) / 2 + bounds.height;
+        drawLabel(batch, str, x, y);
     }
 
     public static void drawNegativeSNumber(Batch batch, int number, int x, int y) {
-        batch.begin();
         batch.draw(getSMinus(), x, y, schar_width, schar_height);
-        batch.end();
         drawSNumber(batch, number, x + schar_width, y);
     }
 
     public static void drawSNumber(Batch batch, int number, int x, int y) {
-        batch.begin();
         int[] array = getIntArray(number);
         for (int i = 0; i < array.length; i++) {
             int n = array[i];
             batch.draw(small_chars[n], x + schar_width * i, y, schar_width, schar_height);
         }
-        batch.end();
+    }
+
+    public static void drawTileDefenceBonus(Batch batch, int defence_bonus, int x, int y) {
+        batch.draw(small_chars[11], x, y, schar_width, schar_height);
+        drawSNumber(batch, defence_bonus, x + schar_width, y);
     }
 
     public static void drawPositiveLNumber(Batch batch, int number, int x, int y) {
-        batch.begin();
         batch.draw(getLPlus(), x, y, lchar_width, lchar_height);
-        batch.end();
         drawLNumber(batch, number, x + lchar_width, y);
     }
 
     public static void drawNegativeLNumber(Batch batch, int number, int x, int y) {
-        batch.begin();
         batch.draw(getLMinus(), x, y, lchar_width, lchar_height);
-        batch.end();
         drawLNumber(batch, number, x + lchar_width, y);
     }
 
     public static void drawLNumber(Batch batch, int number, int x, int y) {
-        batch.begin();
         int[] array = getIntArray(number);
         for (int i = 0; i < array.length; i++) {
             int n = array[i];
             batch.draw(large_chars[n], x + lchar_width * i, y, lchar_width, lchar_height);
         }
-        batch.end();
     }
 
     public static int getSNumberWidth(int number, boolean signed) {

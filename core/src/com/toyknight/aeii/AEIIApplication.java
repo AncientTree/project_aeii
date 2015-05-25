@@ -39,6 +39,7 @@ public class AEIIApplication extends Game {
             FileProvider.setPlatform(PLATFORM);
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
+            Language.init();
             TileFactory.loadTileData();
             UnitFactory.loadUnitData();
             ResourceManager.loadResources();

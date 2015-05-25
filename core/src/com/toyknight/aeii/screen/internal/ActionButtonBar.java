@@ -65,14 +65,29 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_buy.padLeft(PADDING_LEFT);
         btn_occupy = new ImageButton(button_icons[1][0], button_icons[1][2], button_icons[1][1]);
         btn_occupy.padLeft(PADDING_LEFT);
+        btn_occupy.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                manager.doOccupy();
+                screen.updateButtons();
+            }
+        });
         btn_repair = new ImageButton(button_icons[1][0], button_icons[1][2], button_icons[1][1]);
         btn_repair.padLeft(PADDING_LEFT);
+        btn_repair.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                manager.doRepair();
+                screen.updateButtons();
+            }
+        });
         btn_attack = new ImageButton(button_icons[2][0], button_icons[2][2], button_icons[2][1]);
         btn_attack.padLeft(PADDING_LEFT);
         btn_attack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.beginAttackPhase();
+                screen.updateButtons();
             }
         });
         btn_summon = new ImageButton(button_icons[3][0], button_icons[3][2], button_icons[3][1]);
@@ -81,6 +96,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.beginSummonPhase();
+                screen.updateButtons();
             }
         });
         btn_move = new ImageButton(button_icons[4][0], button_icons[4][2], button_icons[4][1]);
@@ -91,6 +107,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.standbySelectedUnit();
+                screen.updateButtons();
             }
         });
         btn_heal = new ImageButton(button_icons[7][0], button_icons[7][2], button_icons[7][1]);

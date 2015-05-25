@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -50,7 +51,8 @@ public class ResourceManager {
     private static TextureRegion[] attack_spark_frames;
     private static TextureRegion[] white_spark_frames;
 
-    private static Color aeii_bg_color;
+    private static Texture aeii_panel_bg;
+    private static Texture[] team_bg;
     private static Color move_path_color;
 
     private static final String GS_VERT =
@@ -115,7 +117,11 @@ public class ResourceManager {
             createAnimationFrames();
             createGrayscaleShader();
 
-            aeii_bg_color = new Color(36 / 256f, 42 / 256f, 69 / 256f, 1.0f);
+            aeii_panel_bg = new Texture(FileProvider.getAssetsFile("images/panel_bg.png"));
+            team_bg = new Texture[4];
+            for (int team = 0; team < 4; team++) {
+                team_bg[team] = new Texture(FileProvider.getAssetsFile("images/team_bg_" + team + ".png"));
+            }
             move_path_color = new Color(225 / 256f, 0f, 82 / 256f, 1.0f);
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
@@ -277,8 +283,12 @@ public class ResourceManager {
         return dust_frames;
     }
 
-    public static Color getAEIIBackgroundColor() {
-        return aeii_bg_color;
+    public static Texture getPanelBackground() {
+        return aeii_panel_bg;
+    }
+
+    public static Texture getTeamBackground(int team) {
+        return team_bg[team];
     }
 
     public static Color getMovePathColor() {
@@ -318,6 +328,11 @@ public class ResourceManager {
         drawable.setMinWidth(preferred_width);
         drawable.setMinHeight(preferred_height);
         return drawable;
+    }
+
+    public static void setBatchAlpha(Batch batch, float alpha) {
+        Color color = batch.getColor();
+        batch.setColor(color.r, color.g, color.b, alpha);
     }
 
 }

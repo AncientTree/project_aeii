@@ -5,17 +5,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.internal.ActionButtonBar;
+import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -92,11 +96,17 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.command_line.setVisible(false);
         this.addActor(command_line);
 
-        this.btn_menu = new TextButton("Menu", getContext().getSkin());
+        this.btn_menu = new TextButton(Language.getText("LB_MENU"), getContext().getSkin());
         this.btn_menu.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, Gdx.graphics.getHeight() - ts, RIGHT_PANEL_WIDTH, ts);
         this.addActor(btn_menu);
-        this.btn_end_turn = new TextButton("End Turn", getContext().getSkin());
+        this.btn_end_turn = new TextButton(Language.getText("LB_END_TURN"), getContext().getSkin());
         this.btn_end_turn.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, 0, RIGHT_PANEL_WIDTH, ts);
+        this.btn_end_turn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                manager.endCurrentTurn();
+            }
+        });
         this.addActor(btn_end_turn);
 
         this.action_button_bar = new ActionButtonBar(this, manager);
@@ -444,6 +454,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                 default:
                     //do nothing
             }
+            updateButtons();
         }
     }
 
@@ -486,14 +497,13 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             } else {
                 return false;
             }
-
         } else {
             return false;
         }
     }
 
     private boolean canOperate() {
-        return manager.getCurrentAnimation() == null;
+        return manager.getCurrentAnimation() == null && getGame().getCurrentPlayer() instanceof LocalPlayer;
     }
 
     public void setGame(GameCore game) {
@@ -510,6 +520,11 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     public UnitRenderer getUnitRenderer() {
         return unit_renderer;
+    }
+
+    public void updateButtons() {
+        boolean disable_flag = !canOperate();
+        this.btn_end_turn.setDisabled(disable_flag);
     }
 
     public int getRightPanelWidth() {
@@ -627,6 +642,14 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     public int getViewportY() {
         return viewport.y;
+    }
+
+    public int getViewportWidth() {
+        return viewport.width;
+    }
+
+    public int getViewportHeight() {
+        return viewport.height;
     }
 
 }
