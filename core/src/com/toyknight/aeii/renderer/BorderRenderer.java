@@ -1,9 +1,8 @@
 package com.toyknight.aeii.renderer;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.ResourceManager;
 
 /**
@@ -24,7 +23,7 @@ public class BorderRenderer {
         BorderRenderer.border_size = ResourceManager.getBorderTexture().getHeight();
     }
 
-    public static void drawBorder(SpriteBatch batch, float x, float y, float width, float height) {
+    public static void drawBorder(Batch batch, float x, float y, float width, float height) {
         batch.draw(borders[0], x, y + height - border_size, border_size, border_size);
         batch.draw(borders[1], x + border_size, y + height - border_size, width - border_size * 2, border_size);
         batch.draw(borders[2], x + width - border_size, y + height - border_size, border_size, border_size);
@@ -33,11 +32,13 @@ public class BorderRenderer {
         batch.draw(borders[5], x, y, border_size, border_size);
         batch.draw(borders[6], x + border_size, y, width - border_size * 2, border_size);
         batch.draw(borders[7], x + width - border_size, y, border_size, border_size);
+        batch.flush();
     }
 
-    public static void drawTopBottomBorder(SpriteBatch batch, float x, float y, float width, float height) {
+    public static void drawTopBottomBorder(Batch batch, float x, float y, float width, float height) {
         batch.draw(borders[1], x, y + height - border_size, width, border_size);
         batch.draw(borders[6], x, y, width, border_size);
+        batch.flush();
     }
 
 }

@@ -3,6 +3,7 @@ package com.toyknight.aeii.rule;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by toyknight on 4/15/2015.
@@ -19,7 +20,7 @@ public class Rule {
 
     private int max_population;
 
-    private ArrayList<Integer> available_unit_list;
+    private HashMap<String, ArrayList<Integer>> available_unit_list;
 
     public void setPoisonDamage(int damage) {
         this.poison_damage = damage;
@@ -69,11 +70,11 @@ public class Rule {
         return max_population;
     }
 
-    public void setAvailableUnitList(ArrayList<Integer> list) {
-        this.available_unit_list = list;
+    public void addAvailableUnits(String package_name, ArrayList<Integer> list) {
+        this.available_unit_list.put(package_name, list);
     }
 
-    public ArrayList<Integer> getAvailableUnitList() {
+    public HashMap<String, ArrayList<Integer>> getAvailableUnitList() {
         return available_unit_list;
     }
 
@@ -94,7 +95,7 @@ public class Rule {
                 unit_list.add(i);
             }
         }
-        rule.setAvailableUnitList(unit_list);
+        rule.addAvailableUnits("default", unit_list);
         return rule;
     }
 

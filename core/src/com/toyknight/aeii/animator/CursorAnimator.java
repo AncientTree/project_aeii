@@ -28,12 +28,11 @@ public class CursorAnimator extends Animator {
     }
 
     public void render(SpriteBatch batch, int map_x, int map_y) {
-        batch.begin();
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);
         TextureRegion current_frame = cursor_animation.getKeyFrame(getStateTime(), true);
         batch.draw(current_frame, screen_x + dx, screen_y + dy, size, size);
-        batch.end();
+        batch.flush();
     }
 
     @Override

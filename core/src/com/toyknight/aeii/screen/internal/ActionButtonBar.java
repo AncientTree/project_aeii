@@ -69,7 +69,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.doOccupy();
-                screen.updateButtons();
+                screen.onButtonUpdateRequested();
             }
         });
         btn_repair = new ImageButton(button_icons[1][0], button_icons[1][2], button_icons[1][1]);
@@ -78,7 +78,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.doRepair();
-                screen.updateButtons();
+                screen.onButtonUpdateRequested();
             }
         });
         btn_attack = new ImageButton(button_icons[2][0], button_icons[2][2], button_icons[2][1]);
@@ -87,7 +87,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.beginAttackPhase();
-                screen.updateButtons();
+                screen.onButtonUpdateRequested();
             }
         });
         btn_summon = new ImageButton(button_icons[3][0], button_icons[3][2], button_icons[3][1]);
@@ -96,7 +96,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.beginSummonPhase();
-                screen.updateButtons();
+                screen.onButtonUpdateRequested();
             }
         });
         btn_move = new ImageButton(button_icons[4][0], button_icons[4][2], button_icons[4][1]);
@@ -107,7 +107,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.standbySelectedUnit();
-                screen.updateButtons();
+                screen.onButtonUpdateRequested();
             }
         });
         btn_heal = new ImageButton(button_icons[7][0], button_icons[7][2], button_icons[7][1]);
@@ -118,7 +118,6 @@ public class ActionButtonBar extends HorizontalGroup {
 
     public void updateButtons() {
         this.clear();
-        GameCore game = manager.getGame();
         Unit selected_unit = manager.getSelectedUnit();
         switch (manager.getState()) {
             case GameManager.STATE_ACTION:

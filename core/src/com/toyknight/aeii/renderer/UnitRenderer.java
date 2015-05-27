@@ -34,11 +34,10 @@ public class UnitRenderer {
         } else {
             unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         }
-        batch.begin();
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);
         batch.draw(unit_texture, screen_x + offset_x, screen_y + offset_y, ts, ts);
-        batch.end();
+        batch.flush();
         batch.setShader(null);
     }
 
@@ -48,7 +47,6 @@ public class UnitRenderer {
 
     public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         drawUnit(batch, unit, map_x, map_y, offset_x, offset_y);
-        batch.begin();
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);
         //draw health points
@@ -67,7 +65,7 @@ public class UnitRenderer {
                     //do nothing
             }
         }
-        batch.end();
+        batch.flush();
     }
 
     private int getCurrentFrame() {

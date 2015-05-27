@@ -440,10 +440,10 @@ public class GameManager implements AnimationDispatcher {
                     listener.animationStarted(current_animation);
                 }
             } else {
-                if (finish_flag == true) {
-                    manager_listener.onScreenUpdateRequested();
-                }
                 dispatchGameEvents();
+                if (finish_flag == true && current_animation == null) {
+                    manager_listener.onButtonUpdateRequested();
+                }
             }
         } else {
             current_animation.update(delta);

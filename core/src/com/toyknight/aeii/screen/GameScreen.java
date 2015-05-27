@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -19,6 +20,7 @@ import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.internal.ActionButtonBar;
+import com.toyknight.aeii.screen.internal.UnitStore;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
@@ -33,6 +35,8 @@ import java.util.Set;
 public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     private final int ts;
+    private final int UNIT_STORE_WIDTH;
+    private final int UNIT_STORE_HEIGHT;
     private final int RIGHT_PANEL_WIDTH;
     private final AEIIApplication context;
 
@@ -61,10 +65,13 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private TextButton btn_menu;
     private TextButton btn_end_turn;
     private ActionButtonBar action_button_bar;
+    private UnitStore unit_store;
 
     public GameScreen(AEIIApplication context) {
         this.context = context;
         this.ts = context.getTileSize();
+        this.UNIT_STORE_WIDTH = 11 * ts;
+        this.UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
         this.RIGHT_PANEL_WIDTH = 3 * ts;
 
         this.viewport = new MapViewport();
@@ -105,13 +112,23 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 manager.endCurrentTurn();
+                onButtonUpdateRequested();
             }
         });
         this.addActor(btn_end_turn);
 
+        //action button bar
         this.action_button_bar = new ActionButtonBar(this, manager);
         this.action_button_bar.setPosition(0, ts * 2);
         this.addActor(action_button_bar);
+
+        //unit store
+        this.unit_store = new UnitStore(this, getContext().getSkin());
+        this.unit_store.setBounds(
+                (viewport.width - UNIT_STORE_WIDTH) / 2, (viewport.height - UNIT_STORE_HEIGHT) / 2 + ts,
+                UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
+        this.addActor(unit_store);
+        this.unit_store.setVisible(false);
     }
 
     public AEIIApplication getContext() {
@@ -120,13 +137,14 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     @Override
     public void draw() {
+        batch.begin();
         drawMap();
         if (!manager.isAnimating() /*&& getGame().isLocalPlayer()*/) {
             switch (manager.getState()) {
                 case GameManager.STATE_REMOVE:
                 case GameManager.STATE_MOVE:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
-                    move_path_renderer.drawMovePath(batch, shape_renderer, manager.getMovePath(getCursorMapX(), getCursorMapY()));
+                    move_path_renderer.drawMovePath(batch, manager.getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case GameManager.STATE_PREVIEW:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
@@ -146,6 +164,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         drawAnimation();
         status_bar_renderer.drawStatusBar(batch, manager);
         right_panel_renderer.drawStatusBar(batch, manager);
+        batch.end();
         super.draw();
     }
 
@@ -172,9 +191,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         for (Tomb tomb : tomb_list) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
-            batch.begin();
             batch.draw(ResourceManager.getTombTexture(), tomb_sx, tomb_sy, ts, ts);
-            batch.end();
+            batch.flush();
         }
     }
 
@@ -420,8 +438,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     if (getGame().getMap().getUnit(cursor_x, cursor_y) == null) {
                         Tile target_tile = getGame().getMap().getTile(cursor_x, cursor_y);
                         if (target_tile.isCastle() && target_tile.getTeam() == getGame().getCurrentTeam()) {
-                            //show unit store
-                            System.out.println("show store");
+                            unit_store.setVisible(true);
                         }
                     } else {
                         manager.selectUnit(cursor_x, cursor_y);
@@ -454,28 +471,30 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                 default:
                     //do nothing
             }
-            updateButtons();
+            onButtonUpdateRequested();
         }
     }
 
     private void doCancel() {
-        switch (manager.getState()) {
-            case GameManager.STATE_PREVIEW:
-                manager.cancelPreviewPhase();
-                break;
-            case GameManager.STATE_MOVE:
-                manager.cancelMovePhase();
-                break;
-            case GameManager.STATE_ACTION:
-                manager.reverseMove();
-                break;
-            case GameManager.STATE_ATTACK:
-            case GameManager.STATE_SUMMON:
-            case GameManager.STATE_HEAL:
-                manager.cancelActionPhase();
-                break;
-            default:
-                //do nothing
+        if (canOperate()) {
+            switch (manager.getState()) {
+                case GameManager.STATE_PREVIEW:
+                    manager.cancelPreviewPhase();
+                    break;
+                case GameManager.STATE_MOVE:
+                    manager.cancelMovePhase();
+                    break;
+                case GameManager.STATE_ACTION:
+                    manager.reverseMove();
+                    break;
+                case GameManager.STATE_ATTACK:
+                case GameManager.STATE_SUMMON:
+                case GameManager.STATE_HEAL:
+                    manager.cancelActionPhase();
+                    break;
+                default:
+                    //do nothing
+            }
         }
     }
 
@@ -484,12 +503,17 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     public void onManagerStateChanged(int last_state) {
-        onScreenUpdateRequested();
+        onButtonUpdateRequested();
     }
 
-    public void onScreenUpdateRequested() {
+    public void onButtonUpdateRequested() {
         if (!manager.isAnimating()) {
-            action_button_bar.updateButtons();
+            this.action_button_bar.updateButtons();
+        }
+        if (canOperate()) {
+            this.btn_end_turn.setTouchable(Touchable.enabled);
+        } else {
+            this.btn_end_turn.setTouchable(Touchable.disabled);
         }
     }
 
@@ -507,7 +531,9 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     private boolean canOperate() {
-        return manager.getCurrentAnimation() == null && getGame().getCurrentPlayer() instanceof LocalPlayer;
+        return manager.getCurrentAnimation() == null &&
+                !unit_store.isVisible() &&
+                getGame().getCurrentPlayer() instanceof LocalPlayer;
     }
 
     public void setGame(GameCore game) {
@@ -522,13 +548,12 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         return manager.getGame();
     }
 
-    public UnitRenderer getUnitRenderer() {
-        return unit_renderer;
+    public GameManager getGameManager() {
+        return manager;
     }
 
-    public void updateButtons() {
-        boolean disable_flag = !canOperate();
-        this.btn_end_turn.setDisabled(disable_flag);
+    public UnitRenderer getUnitRenderer() {
+        return unit_renderer;
     }
 
     public int getRightPanelWidth() {

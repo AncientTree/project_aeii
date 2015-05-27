@@ -22,11 +22,10 @@ public class UnitDestroyAnimator extends UnitAnimator {
     public void render(SpriteBatch batch, GameScreen screen) {
         Unit unit = getUnit("target");
         screen.getUnitRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
-        batch.begin();
         int screen_x = screen.getXOnScreen(unit.getX());
         int screen_y = screen.getYOnScreen(unit.getY());
         batch.draw(spark_animation.getKeyFrame(getStateTime()), screen_x, screen_y, ts, ts);
-        batch.end();
+        batch.flush();
     }
 
     @Override

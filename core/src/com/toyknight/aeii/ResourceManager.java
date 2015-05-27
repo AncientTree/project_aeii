@@ -57,7 +57,7 @@ public class ResourceManager {
 
     private static Texture aeii_panel_bg;
     private static Texture[] team_bg;
-    private static Color move_path_color;
+    private static Texture move_path_color;
 
     private static final String GS_VERT =
             "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
@@ -128,7 +128,7 @@ public class ResourceManager {
             for (int team = 0; team < 4; team++) {
                 team_bg[team] = new Texture(FileProvider.getAssetsFile("images/team_bg_" + team + ".png"));
             }
-            move_path_color = new Color(225 / 256f, 0f, 82 / 256f, 1.0f);
+            move_path_color = new Texture(FileProvider.getAssetsFile("images/move_path_color.png"));
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
         }
@@ -321,7 +321,7 @@ public class ResourceManager {
         return team_bg[team];
     }
 
-    public static Color getMovePathColor() {
+    public static Texture getMovePathColor() {
         return move_path_color;
     }
 

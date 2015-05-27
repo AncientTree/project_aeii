@@ -27,11 +27,10 @@ public class DustAriseAnimator extends MapAnimator {
         int dust_height = ts / 24 * 20;
         int dust_sx = screen.getXOnScreen(map_x);
         int dust_sy = screen.getYOnScreen(map_y);
-        batch.begin();
         int offset = (int) (getStateTime() / (1f / 15)) * ts / 6;
         batch.draw(dust_animation.getKeyFrame(
                 getStateTime()), dust_sx, dust_sy + ts - dust_height + offset, ts, dust_height);
-        batch.end();
+        batch.flush();
     }
 
     @Override

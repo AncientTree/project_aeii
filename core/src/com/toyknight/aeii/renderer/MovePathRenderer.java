@@ -26,10 +26,7 @@ public class MovePathRenderer {
         this.offset = ts / 24;
     }
 
-    public void drawMovePath(SpriteBatch batch, ShapeRenderer shape_renderer, ArrayList<Point> move_path) {
-        shape_renderer.begin();
-        shape_renderer.set(ShapeRenderer.ShapeType.Filled);
-        shape_renderer.setColor(ResourceManager.getMovePathColor());
+    public void drawMovePath(SpriteBatch batch, ArrayList<Point> move_path) {
         for (int i = 0; i < move_path.size(); i++) {
             if (i < move_path.size() - 1) {
                 Point p1 = move_path.get(i);
@@ -39,26 +36,24 @@ public class MovePathRenderer {
                     int y = p1.y > p2.y ? p1.y : p2.y;
                     int sx = screen.getXOnScreen(x);
                     int sy = screen.getYOnScreen(y);
-                    shape_renderer.rect(sx + ts / 3, sy + ts / 3, ts / 3, ts / 3 * 4);
+                    batch.draw(ResourceManager.getMovePathColor(), sx + ts / 3, sy + ts / 3, ts / 3, ts / 3 * 4);
                 }
                 if (p1.y == p2.y) {
                     int x = p1.x < p2.x ? p1.x : p2.x;
                     int y = p1.y;
                     int sx = screen.getXOnScreen(x);
                     int sy = screen.getYOnScreen(y);
-                    shape_renderer.rect(sx + ts / 3, sy + ts / 3, ts / 3 * 4, ts / 3);
+                    batch.draw(ResourceManager.getMovePathColor(), sx + ts / 3, sy + ts / 3, ts / 3 * 4, ts / 3);
                 }
             }
         }
-        shape_renderer.end();
-        batch.begin();
-        if(move_path.size() > 0) {
+        if (move_path.size() > 0) {
             Point dest = move_path.get(move_path.size() - 1);
             int sx = screen.getXOnScreen(dest.x);
             int sy = screen.getYOnScreen(dest.y);
             batch.draw(ResourceManager.getMoveTargetCursorTexture(), sx - offset, sy - offset, cursor_size, cursor_size);
         }
-        batch.end();
+        batch.flush();
     }
 
 }

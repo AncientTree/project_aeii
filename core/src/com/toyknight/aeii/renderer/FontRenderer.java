@@ -35,13 +35,22 @@ public class FontRenderer {
     public static void loadFonts(int ts) {
         String charset = Language.createCharset();
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
+        FreeTypeFontParameter title_parameter = new FreeTypeFontParameter();
+        title_parameter.size = ts / 2;
+        title_parameter.color = Color.WHITE;
+        title_parameter.borderColor = Color.BLACK;
+        title_parameter.borderWidth = 2;
+        title_parameter.characters = charset;
+        ui_font_title = generator.generateFont(title_parameter);
         FreeTypeFontParameter label_parameter = new FreeTypeFontParameter();
         label_parameter.size = ts / 3;
         label_parameter.color = Color.WHITE;
         label_parameter.borderColor = Color.BLACK;
         label_parameter.borderWidth = 2;
+        label_parameter.borderStraight = true;
         label_parameter.characters = charset;
         ui_font_label = generator.generateFont(label_parameter);
+        generator.dispose();
 
         Texture small_char_sheet = new Texture(FileProvider.getAssetsFile("images/small_chars.png"));
         small_chars = ResourceManager.createFrames(small_char_sheet, 12, 1);
@@ -51,6 +60,24 @@ public class FontRenderer {
         schar_height = ts / 24 * 7;
         lchar_width = ts / 24 * 8;
         lchar_height = ts / 24 * 11;
+    }
+
+    public static BitmapFont getTitleFont() {
+        return ui_font_title;
+    }
+
+    public static BitmapFont getLabelFont() {
+        return ui_font_label;
+    }
+
+    public static void setLabelAlpha(float alpha) {
+        Color color = ui_font_label.getColor();
+        ui_font_label.setColor(color.r, color.g, color.b, alpha);
+    }
+
+    public static void setLabelColor(Color color) {
+        float alpha = ui_font_label.getColor().a;
+        ui_font_label.setColor(color.r, color.g, color.b, alpha);
     }
 
     public static void drawLabel(Batch batch, String str, float x, float y) {
@@ -75,6 +102,7 @@ public class FontRenderer {
             int n = array[i];
             batch.draw(small_chars[n], x + schar_width * i, y, schar_width, schar_height);
         }
+        batch.flush();
     }
 
     public static void drawTileDefenceBonus(Batch batch, int defence_bonus, int x, int y) {
@@ -104,6 +132,7 @@ public class FontRenderer {
             int n = array[i];
             batch.draw(large_chars[n], x + lchar_width * i, y, lchar_width, lchar_height);
         }
+        batch.flush();
     }
 
     public static int getSNumberWidth(int number, boolean signed) {

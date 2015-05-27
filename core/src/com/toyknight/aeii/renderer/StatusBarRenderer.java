@@ -30,15 +30,14 @@ public class StatusBarRenderer {
     }
 
     public void drawStatusBar(SpriteBatch batch, GameManager manager) {
-        batch.begin();
         int current_team = manager.getGame().getCurrentTeam();
         batch.draw(ResourceManager.getTeamBackground(current_team),
                 0, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth(), ts);
+        batch.flush();
         drawSelectedTile(batch, manager);
         drawInformation(batch, manager);
         BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
         BorderRenderer.drawBorder(batch, ts, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth() - ts, ts);
-        batch.end();
     }
 
     private void drawInformation(SpriteBatch batch, GameManager manager) {
@@ -55,6 +54,7 @@ public class StatusBarRenderer {
         } else {
             batch.draw(FontRenderer.getLMinus(), ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
         }
+        batch.flush();
     }
 
     private void drawSelectedTile(SpriteBatch batch, GameManager manager) {
@@ -68,6 +68,7 @@ public class StatusBarRenderer {
                     batch, manager.getGame().getMap().getTile(cursor_x, cursor_y).getDefenceBonus(),
                     (ts - FontRenderer.getSNumberWidth(99, true)) / 2, ts / 12);
         }
+        batch.flush();
     }
 
 }

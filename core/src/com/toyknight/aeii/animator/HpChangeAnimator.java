@@ -40,15 +40,16 @@ public class HpChangeAnimator extends UnitAnimator {
             screen.getUnitRenderer().drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
             int sx = screen.getXOnScreen(unit.getX());
             int sy = screen.getYOnScreen(unit.getY());
-            int dx = (ts - FontRenderer.getLNumberWidth(Math.abs(change), true)) / 2;
-            batch.begin();
-            if (change > 0) {
-                FontRenderer.drawPositiveLNumber(batch, change, sx + dx, sy + dy - y_offset[current_frame] * ts / 24);
+            if (screen.isWithinPaintArea(sx, sy)) {
+                int dx = (ts - FontRenderer.getLNumberWidth(Math.abs(change), true)) / 2;
+                if (change > 0) {
+                    FontRenderer.drawPositiveLNumber(batch, change, sx + dx, sy + dy - y_offset[current_frame] * ts / 24);
+                }
+                if (change < 0) {
+                    FontRenderer.drawNegativeLNumber(batch, Math.abs(change), sx + dx, sy + dy - y_offset[current_frame] * ts / 24);
+                }
+                batch.flush();
             }
-            if (change < 0) {
-                FontRenderer.drawNegativeLNumber(batch, Math.abs(change), sx + dx, sy + dy - y_offset[current_frame] * ts / 24);
-            }
-            batch.end();
         }
     }
 

@@ -9,6 +9,6 @@ public interface GameManagerListener {
 
     public void onManagerStateChanged(int last_state);
 
-    public void onScreenUpdateRequested();
+    public void onButtonUpdateRequested();
 
 }

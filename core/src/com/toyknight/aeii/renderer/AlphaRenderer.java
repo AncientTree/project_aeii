@@ -29,23 +29,21 @@ public class AlphaRenderer {
     }
 
     public void drawMoveAlpha(SpriteBatch batch, HashSet<Point> movable_positions) {
-        batch.begin();
         for (Point point : movable_positions) {
             int screen_x = screen.getXOnScreen(point.x);
             int screen_y = screen.getYOnScreen(point.y);
             batch.draw(move_alpha, screen_x, screen_y, ts, ts);
         }
-        batch.end();
+        batch.flush();
     }
 
     public void drawAttackAlpha(SpriteBatch batch, HashSet<Point> attackable_positions) {
-        batch.begin();
         for (Point point : attackable_positions) {
             int screen_x = screen.getXOnScreen(point.x);
             int screen_y = screen.getYOnScreen(point.y);
             batch.draw(attack_alpha, screen_x, screen_y, ts, ts);
         }
-        batch.end();
+        batch.flush();
     }
 
 }

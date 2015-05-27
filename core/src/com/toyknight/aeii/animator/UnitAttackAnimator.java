@@ -53,16 +53,13 @@ public class UnitAttackAnimator extends UnitAnimator {
         int target_sx = screen.getXOnScreen(target_x);
         int target_sy = screen.getYOnScreen(target_y);
         //paint tile
-        batch.begin();
         int tile_index = screen.getGame().getMap().getTileIndex(target_x, target_y);
         batch.draw(ResourceManager.getTileTexture(tile_index), target_sx, target_sy, ts, ts);
-        batch.end();
         //paint units
         screen.getUnitRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
         if (target != null) {
             screen.getUnitRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
         }
-        batch.begin();
         //paint spark
         int spark_size = ts / 24 * 20;
         int spark_offset = (ts - spark_size) / 2;
@@ -74,7 +71,7 @@ public class UnitAttackAnimator extends UnitAnimator {
             int damage_dx = (ts - FontRenderer.getLNumberWidth(damage, true)) / 2;
             FontRenderer.drawNegativeLNumber(batch, damage, target_sx + damage_dx, target_sy);
         }
-        batch.end();
+        batch.flush();
     }
 
     @Override

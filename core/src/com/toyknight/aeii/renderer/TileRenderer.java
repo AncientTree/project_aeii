@@ -19,7 +19,6 @@ public class TileRenderer {
     }
 
     public void drawTile(SpriteBatch batch, int index, int x, int y) {
-        batch.begin();
         int current_frame = getCurrentFrame();
         Tile tile = TileFactory.getTile(index);
         if (tile.isAnimated()) {
@@ -31,14 +30,12 @@ public class TileRenderer {
         } else {
             batch.draw(ResourceManager.getTileTexture(index), x, y, ts, ts);
         }
-        batch.end();
+        batch.flush();
     }
 
     public void drawTopTile(SpriteBatch batch, int index, int x, int y) {
-        batch.begin();
         batch.draw(ResourceManager.getTopTileTexture(index), x, y, ts, ts);
-        batch.end();
-
+        batch.flush();
     }
 
     private int getCurrentFrame() {

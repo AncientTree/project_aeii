@@ -3,7 +3,9 @@ package com.toyknight.aeii;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
@@ -38,13 +40,14 @@ public class AEIIApplication extends Game {
         try {
             FileProvider.setPlatform(PLATFORM);
 
-            skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             Language.init();
             TileFactory.loadTileData();
             UnitFactory.loadUnitData();
             ResourceManager.loadResources();
             FontRenderer.loadFonts(TILE_SIZE);
             BorderRenderer.init();
+            skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
+            skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getLabelFont();
 
             logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen();

@@ -21,14 +21,13 @@ public class RightPanelRenderer {
     }
 
     public void drawStatusBar(SpriteBatch batch, GameManager manager) {
-        batch.begin();
         batch.draw(ResourceManager.getPanelBackground(),
                 Gdx.graphics.getWidth() - screen.getRightPanelWidth(), 0,
                 screen.getRightPanelWidth(), Gdx.graphics.getHeight());
         BorderRenderer.drawBorder(batch,
                 Gdx.graphics.getWidth() - screen.getRightPanelWidth(), ts,
                 screen.getRightPanelWidth(), Gdx.graphics.getHeight() - ts * 2);
-        batch.end();
+        batch.flush();
     }
 
 }

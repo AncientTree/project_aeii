@@ -33,13 +33,12 @@ public class SummonAnimator extends UnitAnimator {
         int target_sx = screen.getXOnScreen(target_x);
         int target_sy = screen.getYOnScreen(target_y);
         screen.getUnitRenderer().drawUnitWithInformation(batch, summoner, summoner.getX(), summoner.getY());
-        batch.begin();
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy - offset, ts, ts);
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy + offset, ts, ts);
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy - offset, ts, ts);
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy + offset, ts, ts);
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx, target_sy, ts, ts);
-        batch.end();
+        batch.flush();
     }
 
     @Override
