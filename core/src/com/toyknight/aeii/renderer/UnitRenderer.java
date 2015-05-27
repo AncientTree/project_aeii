@@ -1,12 +1,11 @@
 package com.toyknight.aeii.renderer;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.Status;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.utils.UnitFactory;
 
 /**
  * Created by toyknight on 4/19/2015.
@@ -50,12 +49,24 @@ public class UnitRenderer {
     public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         drawUnit(batch, unit, map_x, map_y, offset_x, offset_y);
         batch.begin();
+        int screen_x = screen.getXOnScreen(map_x);
+        int screen_y = screen.getYOnScreen(map_y);
+        //draw health points
         if (unit.getCurrentHp() < unit.getMaxHp()) {
-            int screen_x = screen.getXOnScreen(map_x);
-            int screen_y = screen.getYOnScreen(map_y);
             FontRenderer.drawSNumber(batch, unit.getCurrentHp(), screen_x, screen_y);
         }
-        //draw buff
+        //draw status
+        int sw = ts / 24 * ResourceManager.getStatusTexture(0).getRegionWidth();
+        int sh = ts / 24 * ResourceManager.getStatusTexture(0).getRegionHeight();
+        if (unit.getStatus() != null) {
+            switch (unit.getStatus().getType()) {
+                case Status.POISONED:
+                    batch.draw(ResourceManager.getStatusTexture(0), screen_x, screen_y + ts - sh, sw, sh);
+                    break;
+                default:
+                    //do nothing
+            }
+        }
         batch.end();
     }
 

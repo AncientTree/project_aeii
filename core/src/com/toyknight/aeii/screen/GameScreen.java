@@ -67,6 +67,10 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.ts = context.getTileSize();
         this.RIGHT_PANEL_WIDTH = 3 * ts;
 
+        this.viewport = new MapViewport();
+        this.viewport.width = Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH;
+        this.viewport.height = Gdx.graphics.getHeight() - ts;
+
         this.batch = new SpriteBatch();
         this.tile_renderer = new TileRenderer(ts);
         this.unit_renderer = new UnitRenderer(this, ts);
@@ -81,10 +85,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
         this.cursor = new CursorAnimator(this, ts);
         this.attack_cursor = new AttackCursorAnimator(this, ts);
-
-        this.viewport = new MapViewport();
-        this.viewport.width = Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH;
-        this.viewport.height = Gdx.graphics.getHeight() - ts;
 
         this.command_line = new TextField("", getContext().getSkin());
         initComponents();
@@ -477,6 +477,10 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             default:
                 //do nothing
         }
+    }
+
+    public void onMapFocusRequired(int map_x, int map_y) {
+        locateViewport(map_x, map_y);
     }
 
     public void onManagerStateChanged(int last_state) {

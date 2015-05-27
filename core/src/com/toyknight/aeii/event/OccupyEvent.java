@@ -3,6 +3,7 @@ package com.toyknight.aeii.event;
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.utils.Language;
 
@@ -23,6 +24,11 @@ public class OccupyEvent implements GameEvent, Serializable {
         this.target_x = target_x;
         this.target_y = target_y;
         this.team = team;
+    }
+
+    @Override
+    public Point getFocus() {
+        return new Point(target_x, target_y);
     }
 
     @Override

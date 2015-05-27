@@ -2,6 +2,7 @@ package com.toyknight.aeii.event;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 
 /**
@@ -15,6 +16,11 @@ public class UnitStandbyEvent implements GameEvent {
     public UnitStandbyEvent(int unit_x, int unit_y) {
         this.unit_x = unit_x;
         this.unit_y = unit_y;
+    }
+
+    @Override
+    public Point getFocus() {
+        return new Point(unit_x, unit_y);
     }
 
     @Override

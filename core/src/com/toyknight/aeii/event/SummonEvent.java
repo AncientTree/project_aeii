@@ -4,6 +4,7 @@ import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.SummonAnimator;
 import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.utils.UnitFactory;
 
@@ -28,6 +29,11 @@ public class SummonEvent implements GameEvent, Serializable {
         this.target_x = target_x;
         this.target_y = target_y;
         this.experience = experience;
+    }
+
+    @Override
+    public Point getFocus() {
+        return new Point(summoner_x, summoner_y);
     }
 
     @Override

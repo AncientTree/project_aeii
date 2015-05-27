@@ -3,14 +3,14 @@ package com.toyknight.aeii.entity;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class Buff {
+public class Status {
 
     public static final int POISONED = 0x1;
 
     private final int type;
     private int remaining_turn;
 
-    public Buff(int type, int turn) {
+    public Status(int type, int turn) {
         this.type = type;
         this.remaining_turn = turn;
     }
@@ -28,9 +28,9 @@ public class Buff {
     }
 
     @Override
-    public boolean equals(Object buff) {
-        if (buff instanceof Buff) {
-            return ((Buff) buff).getType() == this.type;
+    public boolean equals(Object status) {
+        if (status instanceof Status) {
+            return ((Status) status).getType() == this.type;
         } else {
             return false;
         }

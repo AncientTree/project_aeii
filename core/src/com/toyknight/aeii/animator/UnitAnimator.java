@@ -24,4 +24,8 @@ public class UnitAnimator extends MapAnimator {
         return units.get(key);
     }
 
+    public int getUnitCount() {
+        return units.values().size();
+    }
+
 }

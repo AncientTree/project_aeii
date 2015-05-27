@@ -1,9 +1,13 @@
 package com.toyknight.aeii.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class Point {
+public class Point implements Serializable {
+
+    private static final long serialVersionUID = 05262015L;
 
     public int x;
     public int y;
@@ -33,7 +37,7 @@ public class Point {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Point) {
-            Point pt = (Point)obj;
+            Point pt = (Point) obj;
             return (x == pt.x) && (y == pt.y);
         }
         return super.equals(obj);

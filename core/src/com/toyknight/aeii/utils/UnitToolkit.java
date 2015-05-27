@@ -12,10 +12,31 @@ public class UnitToolkit {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
-    public static void attachAttackBuff(Unit attacker, Unit defender) {
+    public static void attachAttackStatus(Unit attacker, Unit defender) {
         if (attacker.hasAbility(Ability.POISONER)) {
-            defender.attachBuff(new Buff(Buff.POISONED, 2));
+            defender.attachStatus(new Status(Status.POISONED, 2));
         }
+    }
+
+    public static int getTerrainHeal(Unit unit, Tile tile) {
+        int heal = 0;
+        if (tile.getTeam() == -1) {
+            heal += tile.getHpRecovery();
+        } else {
+            if (unit.getTeam() == tile.getTeam()) {
+                heal += tile.getHpRecovery();
+            }
+        }
+        if (unit.hasAbility(Ability.SON_OF_THE_MOUNTAIN) && tile.getType() == Tile.TYPE_MOUNTAIN) {
+            heal += 10;
+        }
+        if (unit.hasAbility(Ability.SON_OF_THE_FOREST) && tile.getType() == Tile.TYPE_FOREST) {
+            heal += 10;
+        }
+        if (unit.hasAbility(Ability.SON_OF_THE_SEA) && tile.getType() == Tile.TYPE_WATER) {
+            heal += 10;
+        }
+        return heal;
     }
 
     public static int getMovementPointCost(Unit unit, Tile tile) {

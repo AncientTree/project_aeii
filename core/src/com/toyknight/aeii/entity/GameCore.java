@@ -5,6 +5,7 @@ import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class GameCore {
                 break;
             }
         }
-        this.turn = 0;
+        this.turn = 1;
         this.commander_price_delta = new int[4];
         this.commanders = new Unit[4];
     }
@@ -164,72 +165,6 @@ public class GameCore {
         getMap().setTile(index, x, y);
     }
 
-    protected int getTerrainHeal(Unit unit) {
-        int heal = 0;
-        Tile tile = getMap().getTile(unit.getX(), unit.getY());
-        if (tile.getTeam() == -1) {
-            heal += tile.getHpRecovery();
-        } else {
-            if (tile.getTeam() == getCurrentTeam()) {
-                heal += tile.getHpRecovery();
-            }
-        }
-        if (unit.hasAbility(Ability.SON_OF_THE_MOUNTAIN) && tile.getType() == Tile.TYPE_MOUNTAIN) {
-            heal += 10;
-        }
-        if (unit.hasAbility(Ability.SON_OF_THE_FOREST) && tile.getType() == Tile.TYPE_FOREST) {
-            heal += 10;
-        }
-        if (unit.hasAbility(Ability.SON_OF_THE_SEA) && tile.getType() == Tile.TYPE_WATER) {
-            heal += 10;
-        }
-        return heal;
-    }
-
-   /* protected void healAllys(Unit healer) {
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                if (dx != 0 || dy != 0) {
-                    int x = healer.getX() + dx;
-                    int y = healer.getY() + dy;
-                    if (getMap().isWithinMap(x, y)) {
-                        Unit unit = getMap().getUnit(x, y);
-                        if (unit != null && unit.getTeam() == healer.getTeam()) {
-                            submitGameEvent(new UnitHpChangeEvent(this, unit, 10));
-                        }
-                    }
-                }
-            }
-        }
-    }*/
-
-    /*public boolean canOccupy(Unit conqueror, int x, int y) {
-        if (conqueror == null) {
-            return false;
-        }
-        if (conqueror.getTeam() != getCurrentTeam()) {
-            return false;
-        }
-        Tile tile = getMap().getTile(x, y);
-        if (tile.getTeam() != getCurrentTeam()) {
-            return (tile.isCastle() && conqueror.hasAbility(Ability.COMMANDER))
-                    || (tile.isVillage() && conqueror.hasAbility(Ability.CONQUEROR));
-        } else {
-            return false;
-        }
-    }*/
-
-    /*public boolean canRepair(Unit repairer, int x, int y) {
-        if (repairer == null) {
-            return false;
-        }
-        if (repairer.getTeam() != getCurrentTeam()) {
-            return false;
-        }
-        Tile tile = getMap().getTile(x, y);
-        return repairer.hasAbility(Ability.REPAIRER) && tile.isRepairable();
-    }*/
-
     public int getAlliance(int team) {
         return getPlayer(team).getAlliance();
     }
@@ -260,7 +195,7 @@ public class GameCore {
         getPlayer(team).setPopulation(getMap().getUnitCount(team));
     }
 
-    public int getIncome(int team) {
+    private int calcIncome(int team) {
         int income = 0;
         for (int x = 0; x < getMap().getWidth(); x++) {
             for (int y = 0; y < getMap().getHeight(); y++) {
@@ -275,6 +210,12 @@ public class GameCore {
                 }
             }
         }
+        return income;
+    }
+
+    public int gainIncome(int team) {
+        int income = calcIncome(team);
+        getPlayer(team).addGold(income);
         return income;
     }
 
@@ -310,79 +251,6 @@ public class GameCore {
             return first_tile_position;
         }
         return getMap().getPosition(0, 0);
-    }
-
-    public void startTurn() {
-        turn++;
-        //gain gold
-        int income = getIncome(getCurrentTeam());
-        getCurrentPlayer().addGold(income);
-
-        game_listener.onTurnStart(turn, income, getCurrentTeam());
-
-        //posit viewport
-        Point team_start_position = getTurnStartPosition(getCurrentTeam());
-        game_listener.onMapFocused(team_start_position.x, team_start_position.y);
-
-        updateUnits(getCurrentTeam());
-    }
-
-    private void updateUnits(int team) {
-        Set<Point> unit_position_set = new HashSet(getMap().getUnitPositionSet());
-        HashMap<Point, Integer> hp_change_map = new HashMap();
-
-        Set<Point> temp_unit_position_set = new HashSet(unit_position_set);
-        for (Point position : temp_unit_position_set) {
-            Unit unit = getMap().getUnit(position.x, position.y);
-            if (unit.getTeam() == team) {
-                int change = 0;
-                //deal with terrain heal issues
-                change += getTerrainHeal(unit);
-                //deal with buff issues
-                if (unit.hasBuff(Buff.POISONED)) {
-                    change -= POISON_DAMAGE;
-                }
-                hp_change_map.put(position, change);
-            } else {
-                //remove other teams' unit position
-                unit_position_set.remove(position);
-            }
-        }
-        //healing aura
-        for (Point position : unit_position_set) {
-            Unit unit = getMap().getUnit(position.x, position.y);
-            if (unit.hasAbility(Ability.HEALING_AURA)) {
-                for (int x = unit.getX() - 1; x <= unit.getX() + 1; x++) {
-                    for (int y = unit.getY() - 1; y <= unit.getY() + 1; y++) {
-                        //not healer himself
-                        if ((x != unit.getX() || y != unit.getY()) && getMap().isWithinMap(x, y)) {
-                            Point target_position = getMap().getPosition(x, y);
-                            //there's a unit at the position
-                            if (unit_position_set.contains(target_position)) {
-                                //see if this unit already has hp change
-                                if (hp_change_map.keySet().contains(target_position)) {
-                                    int change = hp_change_map.get(target_position) + 15;
-                                    hp_change_map.put(target_position, change);
-                                } else {
-                                    hp_change_map.put(target_position, 15);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        submitGameEvent(new MapHpChangeEvent(this, hp_change_map));
-        //check for dead units after hp change
-        for (Point position : hp_change_map.keySet()) {
-            Unit unit = getMap().getUnit(position.x, position.y);
-            int change = hp_change_map.get(position);
-            int unit_hp = unit.getCurrentHp();
-            if (unit_hp + change <= 0) {
-                submitGameEvent(new UnitDestroyEvent(this, unit));
-            }
-        }
-        submitGameEvent(new BuffUpdateEvent(this, unit_position_set));
     }*/
 
     public void restoreUnit(Unit unit) {
@@ -500,7 +368,29 @@ public class GameCore {
                 && !unit.isStandby();
     }
 
+    public boolean isGameOver() {
+        return false;
+    }
+
+    public int getNextTeam() {
+        int team = current_team;
+        do {
+            if (team < 3) {
+                team++;
+            } else {
+                team = 0;
+            }
+        } while (getPlayer(team) == null);
+        return team;
+    }
+
     public void nextTurn() {
+        Collection<Unit> units = getMap().getUnitSet();
+        for (Unit unit : units) {
+            if (unit.getTeam() == getCurrentTeam()) {
+                restoreUnit(unit);
+            }
+        }
         do {
             if (current_team < 3) {
                 current_team++;

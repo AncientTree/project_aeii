@@ -34,7 +34,7 @@ public class Unit {
     private int current_movement_point;
 
     private ArrayList<Integer> abilities;
-    private ArrayList<Buff> buff_list;
+    private Status status;
 
     private int hp_growth;
     private int attack_growth;
@@ -56,7 +56,6 @@ public class Unit {
         this.index = index;
         this.unit_package = unit_package;
         this.abilities = new ArrayList();
-        this.buff_list = new ArrayList();
         this.unit_code = unit_code;
     }
 
@@ -88,7 +87,7 @@ public class Unit {
         this.max_attack_range = unit.getMaxAttackRange();
         this.min_attack_range = unit.getMinAttackRange();
         this.abilities = new ArrayList(unit.getAbilities());
-        this.buff_list = new ArrayList(unit.getBuffList());
+        this.status = unit.getStatus();
     }
 
     public int getIndex() {
@@ -219,20 +218,8 @@ public class Unit {
         this.abilities = abilities;
     }
 
-    public int getBuffCount() {
-        return buff_list.size();
-    }
-
-    public Buff getBuff(int index) {
-        if (0 <= index && index <= buff_list.size()) {
-            return buff_list.get(index);
-        } else {
-            return null;
-        }
-    }
-
-    public ArrayList<Buff> getBuffList() {
-        return buff_list;
+    public Status getStatus() {
+        return status;
     }
 
     public int getHpGrowth() {
@@ -357,29 +344,19 @@ public class Unit {
         }
     }
 
-    public void attachBuff(Buff buff) {
-        if (buff_list.size() < 2 && !buff_list.contains(buff)) {
-            buff_list.add(buff);
+    public void attachStatus(Status status) {
+        if (getStatus() == null) {
+            this.status = status;
         }
     }
 
-    public void updateBuff() {
-        ArrayList<Buff> tmp_buff_list = new ArrayList(buff_list);
-        for (Buff buff : tmp_buff_list) {
-            buff.update();
-            if (buff.getRemainingTurn() < 0) {
-                buff_list.remove(buff);
+    public void updateStatus() {
+        if (status != null) {
+            status.update();
+            if (status.getRemainingTurn() < 0) {
+                status = null;
             }
         }
-    }
-
-    public boolean hasBuff(int type) {
-        for (Buff buff : buff_list) {
-            if (buff.getType() == type) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean isAt(int x, int y) {

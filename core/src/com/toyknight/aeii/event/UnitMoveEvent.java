@@ -34,6 +34,11 @@ public class UnitMoveEvent implements GameEvent, Serializable {
     }
 
     @Override
+    public Point getFocus() {
+        return new Point(unit_x, unit_y);
+    }
+
+    @Override
     public boolean canExecute(GameCore game) {
         Unit target = game.getMap().getUnit(unit_x, unit_y);
         return target != null && game.canUnitMove(target, dest_x, dest_y);

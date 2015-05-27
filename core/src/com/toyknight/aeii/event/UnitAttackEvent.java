@@ -7,7 +7,7 @@ import com.toyknight.aeii.animator.UnitDestroyAnimator;
 import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Tile;
+import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -40,6 +40,11 @@ public class UnitAttackEvent implements GameEvent, Serializable {
     }
 
     @Override
+    public Point getFocus() {
+        return new Point(attacker_x, attacker_y);
+    }
+
+    @Override
     public boolean canExecute(GameCore game) {
         Unit attacker = game.getMap().getUnit(attacker_x, attacker_y);
         Unit target = game.getMap().getUnit(target_x, target_y);
@@ -62,7 +67,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
             animation_dispatcher.submitAnimation(new UnitAttackAnimator(attacker, target_x, target_y));
         } else {
             defender.changeCurrentHp(-damage);
-            UnitToolkit.attachAttackBuff(attacker, defender);
+            UnitToolkit.attachAttackStatus(attacker, defender);
             animation_dispatcher.submitAnimation(new UnitAttackAnimator(attacker, defender, damage));
             if (defender.getCurrentHp() <= 0) {
                 game.destroyUnit(defender.getX(), defender.getY());

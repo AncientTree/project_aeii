@@ -2,6 +2,7 @@ package com.toyknight.aeii;
 
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.event.*;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.EventDispatcherListener;
@@ -9,10 +10,7 @@ import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by toyknight on 4/4/2015.
@@ -59,6 +57,7 @@ public class GameManager implements AnimationDispatcher {
 
     public void setGame(GameCore game) {
         this.game = game;
+        this.game.init();
         this.state = STATE_SELECT;
         this.event_dispatcher_listeners.clear();
         this.animation_listeners.clear();
@@ -208,7 +207,7 @@ public class GameManager implements AnimationDispatcher {
                     attacker = UnitFactory.cloneUnit(attacker);
                     defender = UnitFactory.cloneUnit(defender);
                     int attack_damage = UnitToolkit.getDamage(attacker, defender, getGame().getMap());
-                    UnitToolkit.attachAttackBuff(attacker, defender);
+                    UnitToolkit.attachAttackStatus(attacker, defender);
                     defender.changeCurrentHp(-attack_damage);
                     if (defender.getCurrentHp() > 0) {
                         attacker.gainExperience(attack_experience);
@@ -276,7 +275,64 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public void endCurrentTurn() {
-
+        if (getState() == STATE_SELECT || getState() == STATE_PREVIEW) {
+            submitGameEvent(new TurnEndEvent());
+            //calculate hp change at turn start
+            int team = getGame().getCurrentTeam();
+            HashSet<Point> unit_position_set = new HashSet(getGame().getMap().getUnitPositionSet());
+            HashMap<Point, Integer> hp_change_map = new HashMap();
+            Set<Point> unit_position_set_copy = new HashSet(unit_position_set);
+            for (Point position : unit_position_set_copy) {
+                Unit unit = getGame().getMap().getUnit(position.x, position.y);
+                if (unit.getTeam() == team) {
+                    int change = 0;
+                    //deal with terrain heal issues
+                    change += UnitToolkit.getTerrainHeal(unit, getGame().getMap().getTile(unit.getX(), unit.getY()));
+                    //deal with buff issues
+                    if (unit.getStatus() != null && unit.getStatus().getType() == Status.POISONED) {
+                        change -= getGame().getRule().getPoisonDamage();
+                    }
+                    hp_change_map.put(position, change);
+                } else {
+                    //remove other teams' unit position
+                    unit_position_set.remove(position);
+                }
+            }
+            //the healing aura
+            for (Point position : unit_position_set) {
+                Unit unit = getGame().getMap().getUnit(position.x, position.y);
+                if (unit.hasAbility(Ability.HEALING_AURA)) {
+                    for (int x = unit.getX() - 1; x <= unit.getX() + 1; x++) {
+                        for (int y = unit.getY() - 1; y <= unit.getY() + 1; y++) {
+                            //not healer himself
+                            if ((x != unit.getX() || y != unit.getY()) && getGame().getMap().isWithinMap(x, y)) {
+                                Point target_position = getGame().getMap().getPosition(x, y);
+                                //there's a unit at the position
+                                if (unit_position_set.contains(target_position)) {
+                                    //see if this unit already has hp change
+                                    if (hp_change_map.keySet().contains(target_position)) {
+                                        int change = hp_change_map.get(target_position) + 15;
+                                        hp_change_map.put(target_position, change);
+                                    } else {
+                                        hp_change_map.put(target_position, 15);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            submitGameEvent(new HpChangeEvent(hp_change_map));
+            // pre-calculate unit that will be destroyed
+            for (Point position : hp_change_map.keySet()) {
+                Unit unit = getGame().getMap().getUnit(position.x, position.y);
+                if (unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
+                    submitGameEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
+                }
+            }
+            submitGameEvent(new UnitStatusUpdateEvent(team));
+            setState(STATE_SELECT);
+        }
     }
 
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {
@@ -339,9 +395,17 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
-    private void executeGameEvent(GameEvent event) {
+    public void executeGameEvent(GameEvent event) {
         if (event.canExecute(getGame())) {
             event.execute(getGame(), this);
+            if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
+
+            } else {
+                Point focus = event.getFocus();
+                if (focus.x >= 0 && focus.y >= 0) {
+                    manager_listener.onMapFocusRequired(focus.x, focus.y);
+                }
+            }
             //more process with this event
         }
     }

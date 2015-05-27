@@ -35,6 +35,7 @@ public class ResourceManager {
 
     private static TextureRegion[][][][] default_unit_textures;
     private static HashMap<String, TextureRegion[][][][]> unit_package_textures;
+    private static TextureRegion[] status_textures;
 
     private static Texture cursor_texture;
     private static Texture attack_cursor_texture;
@@ -43,6 +44,9 @@ public class ResourceManager {
     private static Texture alpha_texture;
 
     private static Texture[] action_button_textures;
+
+    private static TextureRegion[] hud_icons_battle;
+    private static TextureRegion[] hud_icons_status;
 
     private static Texture menu_icon_texture;
     private static TextureRegion[] menu_icon_textures;
@@ -106,12 +110,14 @@ public class ResourceManager {
             tomb_texture = new Texture(FileProvider.getAssetsFile("images/tombstone.png"));
             loadTileTextures();
             loadUnitTextures();
+            loadStatusTextures();
             cursor_texture = new Texture(FileProvider.getAssetsFile("images/cursor.png"));
             attack_cursor_texture = new Texture(FileProvider.getAssetsFile("images/attack_cursor.png"));
             move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
             loadActionButtonTextures();
+            loadHudIcons();
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
             createAnimationFrames();
@@ -168,11 +174,23 @@ public class ResourceManager {
         unit_package_textures = new HashMap();
     }
 
+    private static void loadStatusTextures() {
+        Texture status_sheet = new Texture(FileProvider.getAssetsFile("images/status.png"));
+        status_textures = createFrames(status_sheet, 2, 1);
+    }
+
     private static void loadActionButtonTextures() {
         action_button_textures = new Texture[9];
         for (int i = 0; i < 9; i++) {
             action_button_textures[i] = new Texture(FileProvider.getAssetsFile("images/buttons/action_button_" + i + ".png"));
         }
+    }
+
+    private static void loadHudIcons() {
+        Texture hud_icon_status_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_status.png"));
+        hud_icons_status = createFrames(hud_icon_status_sheet, 2, 1);
+        Texture hud_icon_battle_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_battle.png"));
+        hud_icons_battle = createFrames(hud_icon_battle_sheet, 4, 1);
     }
 
     private static void createMenuIconTextures() {
@@ -235,6 +253,10 @@ public class ResourceManager {
         }
     }
 
+    public static TextureRegion getStatusTexture(int index) {
+        return status_textures[index];
+    }
+
     public static Texture getCursorTexture() {
         return cursor_texture;
     }
@@ -257,6 +279,14 @@ public class ResourceManager {
 
     public static Texture getActionButtonTexture(int index) {
         return action_button_textures[index];
+    }
+
+    public static TextureRegion getStatusHudIcon(int index) {
+        return hud_icons_status[index];
+    }
+
+    public static TextureRegion getBattleHudIcon(int index) {
+        return hud_icons_battle[index];
     }
 
     public static Texture getMenuIconTexture() {

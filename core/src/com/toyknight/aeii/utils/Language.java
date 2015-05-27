@@ -13,7 +13,7 @@ import java.io.Reader;
  */
 public class Language {
 
-    private static ObjectMap<String, String> languageMap = new ObjectMap<String, String>();
+    private static ObjectMap<String, String> languageMap = new ObjectMap();
 
     public static void init() throws AEIIException {
         try {
@@ -35,7 +35,7 @@ public class Language {
         for (String text : values) {
             charset += text;
         }
-        return removeDuplicate(charset);
+        return removeDuplicate(charset + "0123456789" + "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*");
     }
 
     private static String removeDuplicate(String s) {

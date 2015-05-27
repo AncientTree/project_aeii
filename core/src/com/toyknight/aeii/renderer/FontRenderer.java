@@ -38,6 +38,8 @@ public class FontRenderer {
         FreeTypeFontParameter label_parameter = new FreeTypeFontParameter();
         label_parameter.size = ts / 3;
         label_parameter.color = Color.WHITE;
+        label_parameter.borderColor = Color.BLACK;
+        label_parameter.borderWidth = 2;
         label_parameter.characters = charset;
         ui_font_label = generator.generateFont(label_parameter);
 
@@ -80,6 +82,12 @@ public class FontRenderer {
         drawSNumber(batch, defence_bonus, x + schar_width, y);
     }
 
+    public static void drawLFraction(Batch batch, int molecule, int denominator, int x, int y) {
+        drawLNumber(batch, molecule, x, y);
+        batch.draw(large_chars[10], x + getLNumberWidth(molecule, false), y, lchar_width, lchar_height);
+        drawLNumber(batch, denominator, x + getLNumberWidth(molecule, false) + lchar_width, y);
+    }
+
     public static void drawPositiveLNumber(Batch batch, int number, int x, int y) {
         batch.draw(getLPlus(), x, y, lchar_width, lchar_height);
         drawLNumber(batch, number, x + lchar_width, y);
@@ -110,6 +118,10 @@ public class FontRenderer {
         return schar_height;
     }
 
+    public static int getLFractionWidth(int molecule, int denominator) {
+        return getLNumberWidth(molecule, false) + getLNumberWidth(denominator, false) + lchar_width;
+    }
+
     public static int getLNumberWidth(int number, boolean signed) {
         if (signed) {
             return lchar_width * getDigitsOfInt(number) + lchar_width;
@@ -122,15 +134,15 @@ public class FontRenderer {
         return lchar_height;
     }
 
-    private static TextureRegion getSMinus() {
+    public static TextureRegion getSMinus() {
         return small_chars[10];
     }
 
-    private static TextureRegion getLMinus() {
+    public static TextureRegion getLMinus() {
         return large_chars[11];
     }
 
-    private static TextureRegion getLPlus() {
+    public static TextureRegion getLPlus() {
         return large_chars[12];
     }
 

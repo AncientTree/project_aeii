@@ -35,6 +35,9 @@ public class UnitMoveAnimator extends UnitAnimator {
         if (path.size() > 0) {
             Point current = path.get(current_location);
             screen.getUnitRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
+//            int sx = (int) (screen.getXOnScreen(current.x) + x_offset);
+//            int sy = (int) (screen.getYOnScreen(current.y) + y_offset);
+//            validateViewport(screen, sx, sy);
         }
     }
 
@@ -62,6 +65,10 @@ public class UnitMoveAnimator extends UnitAnimator {
                 current_location++;
             }
         }
+    }
+
+    private void validateViewport(GameScreen screen, int sx, int sy) {
+
     }
 
     @Override
