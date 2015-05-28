@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.entity.GameCore;
@@ -32,7 +32,8 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
+    public void execute(GameManager manager) {
+        GameCore game = manager.getGame();
         HashSet<Point> unit_position_set = new HashSet(game.getMap().getUnitPositionSet());
         for (Point position : unit_position_set) {
             Unit unit = game.getMap().getUnit(position.x, position.y);

@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.MessageAnimator;
@@ -12,18 +12,16 @@ import java.io.Serializable;
 /**
  * Created by toyknight on 5/25/2015.
  */
-public class OccupyEvent implements GameEvent, Serializable {
+public class RepairEvent implements GameEvent, Serializable {
 
     private static final long serialVersionUID = 05252015L;
 
     private final int target_x;
     private final int target_y;
-    private final int team;
 
-    public OccupyEvent(int target_x, int target_y, int team) {
+    public RepairEvent(int target_x, int target_y) {
         this.target_x = target_x;
         this.target_y = target_y;
-        this.team = team;
     }
 
     @Override
@@ -33,14 +31,14 @@ public class OccupyEvent implements GameEvent, Serializable {
 
     @Override
     public boolean canExecute(GameCore game) {
-        return game.getMap().getTile(target_x, target_y).isCapturable();
+        return game.getMap().getTile(target_x, target_y).isRepairable();
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
-        Tile target_tile = game.getMap().getTile(target_x, target_y);
-        game.setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
-        animation_dispatcher.submitAnimation(new MessageAnimator(Language.getText("LB_OCCUPIED"), 0.5f));
+    public void execute(GameManager manager) {
+        Tile target_tile = manager.getGame().getMap().getTile(target_x, target_y);
+        manager.getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
+        manager.submitAnimation(new MessageAnimator(Language.getText("LB_REPAIRED"), 0.5f));
     }
 
 }

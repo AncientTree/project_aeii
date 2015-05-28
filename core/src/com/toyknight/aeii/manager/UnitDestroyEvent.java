@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.DustAriseAnimator;
@@ -35,10 +35,11 @@ public class UnitDestroyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
+    public void execute(GameManager manager) {
+        GameCore game = manager.getGame();
         Unit unit = game.getMap().getUnit(target_x, target_y);
-        animation_dispatcher.submitAnimation(new UnitDestroyAnimator(unit));
-        animation_dispatcher.submitAnimation(new DustAriseAnimator(unit.getX(), unit.getY()));
+        manager.submitAnimation(new UnitDestroyAnimator(unit));
+        manager.submitAnimation(new DustAriseAnimator(unit.getX(), unit.getY()));
         game.destroyUnit(unit.getX(), unit.getY());
     }
 

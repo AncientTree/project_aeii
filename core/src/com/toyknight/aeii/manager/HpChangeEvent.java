@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.HpChangeAnimator;
@@ -29,7 +29,7 @@ public class HpChangeEvent implements GameEvent, Serializable {
                 return location;
             }
         }
-        return new Point(-1, -1);
+        return null;
     }
 
     @Override
@@ -38,11 +38,11 @@ public class HpChangeEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
+    public void execute(GameManager manager) {
         int change_count = 0;
         HashSet<Unit> units = new HashSet();
         for (Point position : change_map.keySet()) {
-            Unit unit = game.getMap().getUnit(position.x, position.y);
+            Unit unit = manager.getGame().getMap().getUnit(position.x, position.y);
             int change = validateChange(unit, change_map.get(position));
             if (change != 0) {
                 change_count++;
@@ -52,7 +52,7 @@ public class HpChangeEvent implements GameEvent, Serializable {
             }
         }
         if (change_count > 0) {
-            animation_dispatcher.submitAnimation(new HpChangeAnimator(change_map, units));
+            manager.submitAnimation(new HpChangeAnimator(change_map, units));
         }
     }
 

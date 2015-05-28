@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.SummonAnimator;
@@ -33,7 +33,7 @@ public class SummonEvent implements GameEvent, Serializable {
 
     @Override
     public Point getFocus() {
-        return new Point(summoner_x, summoner_y);
+        return new Point(target_x, target_y);
     }
 
     @Override
@@ -42,15 +42,16 @@ public class SummonEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
+    public void execute(GameManager manager) {
+        GameCore game = manager.getGame();
         Unit summoner = game.getMap().getUnit(summoner_x, summoner_y);
         game.getMap().removeTomb(target_x, target_y);
         game.createUnit(UnitFactory.getSkeletonIndex(), summoner.getTeam(), "default", target_x, target_y);
         game.standbyUnit(target_x, target_y);
-        animation_dispatcher.submitAnimation(new SummonAnimator(summoner, target_x, target_y));
+        manager.submitAnimation(new SummonAnimator(summoner, target_x, target_y));
         boolean level_up = summoner.gainExperience(experience);
         if (level_up) {
-            animation_dispatcher.submitAnimation(new UnitLevelUpAnimator(summoner));
+            manager.submitAnimation(new UnitLevelUpAnimator(summoner));
         }
     }
 }

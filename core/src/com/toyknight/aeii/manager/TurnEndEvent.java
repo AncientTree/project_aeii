@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.MessageAnimator;
@@ -26,17 +26,18 @@ public class TurnEndEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
+    public void execute(GameManager manager) {
+        GameCore game = manager.getGame();
         game.nextTurn();
         int income = game.gainIncome(game.getCurrentTeam());
         if (game.getCurrentPlayer() instanceof LocalPlayer) {
-            animation_dispatcher.submitAnimation(new MessageAnimator(
+            manager.submitAnimation(new MessageAnimator(
                     Language.getText("LB_CURRENT_TURN") + ": " + game.getCurrentTurn(),
                     Language.getText("LB_INCOME") + ": " + income,
                     0.8f
             ));
         } else {
-            animation_dispatcher.submitAnimation(new MessageAnimator(
+            manager.submitAnimation(new MessageAnimator(
                     Language.getText("LB_CURRENT_TURN") + ": " + game.getCurrentTurn(),
                     Language.getText("LB_INCOME") + ": ?",
                     0.8f

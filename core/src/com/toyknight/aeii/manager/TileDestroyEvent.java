@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.DustAriseAnimator;
@@ -34,10 +34,11 @@ public class TileDestroyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
+    public void execute(GameManager manager) {
+        GameCore game = manager.getGame();
         Tile tile = game.getMap().getTile(target_x, target_y);
         game.setTile(tile.getDestroyedTileIndex(), target_x, target_y);
-        animation_dispatcher.submitAnimation(new DustAriseAnimator(target_x, target_y));
+        manager.submitAnimation(new DustAriseAnimator(target_x, target_y));
     }
 
 }

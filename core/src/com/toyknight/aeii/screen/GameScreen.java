@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.LocalGameManager;
+import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
@@ -147,12 +147,16 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     move_path_renderer.drawMovePath(batch, manager.getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case LocalGameManager.STATE_PREVIEW:
-                    alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
+                    if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
+                        alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
+                    }
                     break;
                 case LocalGameManager.STATE_ATTACK:
                 case LocalGameManager.STATE_SUMMON:
                 case LocalGameManager.STATE_HEAL:
-                    alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
+                    if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
+                        alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
+                    }
                     break;
                 default:
                     //do nothing
@@ -499,6 +503,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     public void onMapFocusRequired(int map_x, int map_y) {
+        cursor_map_x = map_x;
+        cursor_map_y = map_y;
         locateViewport(map_x, map_y);
     }
 
@@ -507,9 +513,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     public void onButtonUpdateRequested() {
-        if (!manager.isAnimating()) {
-            this.action_button_bar.updateButtons();
-        }
+        this.action_button_bar.updateButtons();
         if (canOperate()) {
             this.btn_end_turn.setTouchable(Touchable.enabled);
         } else {

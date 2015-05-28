@@ -1,6 +1,5 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
-import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 
@@ -13,6 +12,6 @@ public interface GameEvent {
 
     public boolean canExecute(GameCore game);
 
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher);
+    public void execute(GameManager manager);
 
 }

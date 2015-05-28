@@ -1,4 +1,4 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.entity.GameCore;
@@ -30,7 +30,8 @@ public class UnitStandbyEvent implements GameEvent {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
-        game.standbyUnit(unit_x, unit_y);
+    public void execute(GameManager manager) {
+        manager.getGame().standbyUnit(unit_x, unit_y);
+        manager.setState(GameManager.STATE_SELECT);
     }
 }

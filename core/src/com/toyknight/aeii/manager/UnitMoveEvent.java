@@ -1,10 +1,11 @@
-package com.toyknight.aeii.event;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.UnitMoveAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.player.LocalPlayer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,7 +35,8 @@ public class UnitMoveEvent implements GameEvent, Serializable {
 
     @Override
     public Point getFocus() {
-        return new Point(unit_x, unit_y);
+        Point dest = move_path.get(move_path.size() - 1);
+        return new Point(dest.x, dest.y);
     }
 
     @Override
@@ -44,13 +46,21 @@ public class UnitMoveEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public void execute(GameCore game, AnimationDispatcher animation_dispatcher) {
-        Unit unit = game.getMap().getUnit(unit_x, unit_y);
-        game.moveUnit(unit_x, unit_y, dest_x, dest_y);
+    public void execute(GameManager manager) {
+        Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
+        manager.getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
         unit.setCurrentMovementPoint(mp_left);
-        if (move_path != null) {
-            animation_dispatcher.submitAnimation(new UnitMoveAnimator(unit, move_path));
+        manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
+        switch (manager.getState()) {
+            case GameManager.STATE_MOVE:
+                manager.setState(GameManager.STATE_ACTION);
+                break;
+            case GameManager.STATE_REMOVE:
+                manager.setState(GameManager.STATE_SELECT);
+                unit.setStandby(true);
+                break;
         }
     }
 
 }
+

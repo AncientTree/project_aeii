@@ -9,7 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.LocalGameManager;
+import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.Unit;
@@ -116,30 +117,32 @@ public class ActionButtonBar extends HorizontalGroup {
 
     public void updateButtons() {
         this.clear();
-        Unit selected_unit = manager.getSelectedUnit();
-        switch (manager.getState()) {
-            case LocalGameManager.STATE_ACTION:
-                if (manager.canSelectUnitAct()) {
-                    addActor(btn_attack);
-                    if (selected_unit.hasAbility(Ability.NECROMANCER)) {
-                        addActor(btn_summon);
+        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer && !manager.isAnimating()) {
+            Unit selected_unit = manager.getSelectedUnit();
+            switch (manager.getState()) {
+                case LocalGameManager.STATE_ACTION:
+                    if (manager.canSelectUnitAct()) {
+                        addActor(btn_attack);
+                        if (selected_unit.hasAbility(Ability.NECROMANCER)) {
+                            addActor(btn_summon);
+                        }
+                        if (selected_unit.hasAbility(Ability.HEALER)) {
+                            addActor(btn_heal);
+                        }
+                        if (manager.getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                            addActor(btn_occupy);
+                        }
+                        if (manager.getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                            addActor(btn_repair);
+                        }
                     }
-                    if (selected_unit.hasAbility(Ability.HEALER)) {
-                        addActor(btn_heal);
-                    }
-                    if (manager.getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
-                        addActor(btn_occupy);
-                    }
-                    if (manager.getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
-                        addActor(btn_repair);
-                    }
-                }
-                addActor(btn_standby);
-                break;
-            default:
-                //do nothing
+                    addActor(btn_standby);
+                    break;
+                default:
+                    //do nothing
+            }
+            this.layout();
         }
-        this.layout();
     }
 
     @Override
