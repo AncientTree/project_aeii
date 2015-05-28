@@ -1,6 +1,5 @@
 package com.toyknight.aeii.screen.internal;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,10 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
-import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.GameScreen;
 
@@ -23,7 +21,7 @@ import com.toyknight.aeii.screen.GameScreen;
 public class ActionButtonBar extends HorizontalGroup {
 
     private final GameScreen screen;
-    private final GameManager manager;
+    private final LocalGameManager manager;
     private final int PADDING_LEFT;
     private final ShapeRenderer shape_renderer;
 
@@ -37,7 +35,7 @@ public class ActionButtonBar extends HorizontalGroup {
     private ImageButton btn_heal;
     private ImageButton btn_info;
 
-    public ActionButtonBar(GameScreen screen, GameManager manager) {
+    public ActionButtonBar(GameScreen screen, LocalGameManager manager) {
         this.screen = screen;
         this.manager = manager;
         this.PADDING_LEFT = screen.getContext().getTileSize() / 4;
@@ -120,7 +118,7 @@ public class ActionButtonBar extends HorizontalGroup {
         this.clear();
         Unit selected_unit = manager.getSelectedUnit();
         switch (manager.getState()) {
-            case GameManager.STATE_ACTION:
+            case LocalGameManager.STATE_ACTION:
                 if (manager.canSelectUnitAct()) {
                     addActor(btn_attack);
                     if (selected_unit.hasAbility(Ability.NECROMANCER)) {

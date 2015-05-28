@@ -2,8 +2,7 @@ package com.toyknight.aeii.renderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.screen.GameScreen;
 
@@ -20,7 +19,7 @@ public class RightPanelRenderer {
         this.screen = screen;
     }
 
-    public void drawStatusBar(SpriteBatch batch, GameManager manager) {
+    public void drawStatusBar(SpriteBatch batch, LocalGameManager manager) {
         batch.draw(ResourceManager.getPanelBackground(),
                 Gdx.graphics.getWidth() - screen.getRightPanelWidth(), 0,
                 screen.getRightPanelWidth(), Gdx.graphics.getHeight());

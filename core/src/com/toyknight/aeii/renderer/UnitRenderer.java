@@ -51,7 +51,7 @@ public class UnitRenderer {
         int screen_y = screen.getYOnScreen(map_y);
         //draw health points
         if (unit.getCurrentHp() < unit.getMaxHp()) {
-            FontRenderer.drawSNumber(batch, unit.getCurrentHp(), screen_x, screen_y);
+            FontRenderer.drawSNumber(batch, unit.getCurrentHp(), (int) (screen_x + offset_x), (int) (screen_y + offset_y));
         }
         //draw status
         int sw = ts / 24 * ResourceManager.getStatusTexture(0).getRegionWidth();
@@ -59,7 +59,7 @@ public class UnitRenderer {
         if (unit.getStatus() != null) {
             switch (unit.getStatus().getType()) {
                 case Status.POISONED:
-                    batch.draw(ResourceManager.getStatusTexture(0), screen_x, screen_y + ts - sh, sw, sh);
+                    batch.draw(ResourceManager.getStatusTexture(0), screen_x + offset_x, screen_y + ts - sh + offset_y, sw, sh);
                     break;
                 default:
                     //do nothing

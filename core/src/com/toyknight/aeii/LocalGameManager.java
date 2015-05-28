@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameManager implements AnimationDispatcher {
+public class LocalGameManager implements AnimationDispatcher {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -48,7 +48,7 @@ public class GameManager implements AnimationDispatcher {
     private final int[] x_dir = {1, -1, 0, 0};
     private final int[] y_dir = {0, 0, 1, -1};
 
-    public GameManager() {
+    public LocalGameManager() {
         this.event_queue = new LinkedList();
         this.animation_queue = new LinkedList();
         this.event_dispatcher_listeners = new ArrayList();

@@ -20,7 +20,7 @@ public class Rule {
 
     private int max_population;
 
-    private HashMap<String, ArrayList<Integer>> available_unit_list;
+    private HashMap<String, ArrayList<Integer>> available_unit_list = new HashMap();
 
     public void setPoisonDamage(int damage) {
         this.poison_damage = damage;

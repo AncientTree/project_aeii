@@ -2,7 +2,7 @@ package com.toyknight.aeii.renderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.screen.GameScreen;
@@ -29,7 +29,7 @@ public class StatusBarRenderer {
         this.screen = screen;
     }
 
-    public void drawStatusBar(SpriteBatch batch, GameManager manager) {
+    public void drawStatusBar(SpriteBatch batch, LocalGameManager manager) {
         int current_team = manager.getGame().getCurrentTeam();
         batch.draw(ResourceManager.getTeamBackground(current_team),
                 0, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth(), ts);
@@ -40,7 +40,7 @@ public class StatusBarRenderer {
         BorderRenderer.drawBorder(batch, ts, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth() - ts, ts);
     }
 
-    private void drawInformation(SpriteBatch batch, GameManager manager) {
+    private void drawInformation(SpriteBatch batch, LocalGameManager manager) {
         int gold = manager.getGame().getCurrentPlayer().getGold();
         int current_pop = manager.getGame().getCurrentPlayer().getPopulation();
         int max_pop = manager.getGame().getRule().getMaxPopulation();
@@ -57,7 +57,7 @@ public class StatusBarRenderer {
         batch.flush();
     }
 
-    private void drawSelectedTile(SpriteBatch batch, GameManager manager) {
+    private void drawSelectedTile(SpriteBatch batch, LocalGameManager manager) {
         int cursor_x = screen.getCursorMapX();
         int cursor_y = screen.getCursorMapY();
         if (cursor_x >= 0 && cursor_y >= 0) {

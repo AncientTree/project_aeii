@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.GameManager;
+import com.toyknight.aeii.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
@@ -48,7 +48,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private final StatusBarRenderer status_bar_renderer;
     private final RightPanelRenderer right_panel_renderer;
     private final ShapeRenderer shape_renderer;
-    private final GameManager manager;
+    private final LocalGameManager manager;
 
     private final CursorAnimator cursor;
     private final AttackCursorAnimator attack_cursor;
@@ -87,7 +87,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.right_panel_renderer = new RightPanelRenderer(this, ts);
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
-        this.manager = new GameManager();
+        this.manager = new LocalGameManager();
         this.manager.setGameManagerListener(this);
 
         this.cursor = new CursorAnimator(this, ts);
@@ -141,17 +141,17 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         drawMap();
         if (!manager.isAnimating() /*&& getGame().isLocalPlayer()*/) {
             switch (manager.getState()) {
-                case GameManager.STATE_REMOVE:
-                case GameManager.STATE_MOVE:
+                case LocalGameManager.STATE_REMOVE:
+                case LocalGameManager.STATE_MOVE:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
                     move_path_renderer.drawMovePath(batch, manager.getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
-                case GameManager.STATE_PREVIEW:
+                case LocalGameManager.STATE_PREVIEW:
                     alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
                     break;
-                case GameManager.STATE_ATTACK:
-                case GameManager.STATE_SUMMON:
-                case GameManager.STATE_HEAL:
+                case LocalGameManager.STATE_ATTACK:
+                case LocalGameManager.STATE_SUMMON:
+                case LocalGameManager.STATE_HEAL:
                     alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
                     break;
                 default:
@@ -219,21 +219,21 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
             switch (manager.getState()) {
-                case GameManager.STATE_ATTACK:
+                case LocalGameManager.STATE_ATTACK:
                     if (getGame().canAttack(selected_unit, cursor_x, cursor_y)) {
                         attack_cursor.render(batch, cursor_x, cursor_y);
                     } else {
                         cursor.render(batch, cursor_x, cursor_y);
                     }
                     break;
-                case GameManager.STATE_SUMMON:
+                case LocalGameManager.STATE_SUMMON:
                     if (getGame().canSummon(cursor_x, cursor_y)) {
                         attack_cursor.render(batch, cursor_x, cursor_y);
                     } else {
                         cursor.render(batch, cursor_x, cursor_y);
                     }
                     break;
-                case GameManager.STATE_HEAL:
+                case LocalGameManager.STATE_HEAL:
                     if (getGame().canHeal(selected_unit, cursor_x, cursor_y)) {
                         attack_cursor.render(batch, cursor_x, cursor_y);
                     } else {
@@ -430,11 +430,11 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
             switch (manager.getState()) {
-                case GameManager.STATE_PREVIEW:
+                case LocalGameManager.STATE_PREVIEW:
                     if (selected_unit != null && !selected_unit.isAt(cursor_x, cursor_y)) {
                         manager.cancelPreviewPhase();
                     }
-                case GameManager.STATE_SELECT:
+                case LocalGameManager.STATE_SELECT:
                     if (getGame().getMap().getUnit(cursor_x, cursor_y) == null) {
                         Tile target_tile = getGame().getMap().getTile(cursor_x, cursor_y);
                         if (target_tile.isCastle() && target_tile.getTeam() == getGame().getCurrentTeam()) {
@@ -444,28 +444,28 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                         manager.selectUnit(cursor_x, cursor_y);
                     }
                     break;
-                case GameManager.STATE_MOVE:
-                case GameManager.STATE_REMOVE:
+                case LocalGameManager.STATE_MOVE:
+                case LocalGameManager.STATE_REMOVE:
                     manager.moveSelectedUnit(cursor_x, cursor_y);
                     break;
-                case GameManager.STATE_ACTION:
+                case LocalGameManager.STATE_ACTION:
                     manager.reverseMove();
                     break;
-                case GameManager.STATE_ATTACK:
+                case LocalGameManager.STATE_ATTACK:
                     if (UnitToolkit.isWithinRange(manager.getSelectedUnit(), cursor_x, cursor_y)) {
                         manager.doAttack(cursor_x, cursor_y);
                     } else {
                         manager.cancelActionPhase();
                     }
                     break;
-                case GameManager.STATE_SUMMON:
+                case LocalGameManager.STATE_SUMMON:
                     if (UnitToolkit.isWithinRange(manager.getSelectedUnit(), cursor_x, cursor_y)) {
                         manager.doSummon(cursor_x, cursor_y);
                     } else {
                         manager.cancelActionPhase();
                     }
                     break;
-                case GameManager.STATE_HEAL:
+                case LocalGameManager.STATE_HEAL:
                     //manager.doHeal(click_x, click_y);
                     break;
                 default:
@@ -478,18 +478,18 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private void doCancel() {
         if (canOperate()) {
             switch (manager.getState()) {
-                case GameManager.STATE_PREVIEW:
+                case LocalGameManager.STATE_PREVIEW:
                     manager.cancelPreviewPhase();
                     break;
-                case GameManager.STATE_MOVE:
+                case LocalGameManager.STATE_MOVE:
                     manager.cancelMovePhase();
                     break;
-                case GameManager.STATE_ACTION:
+                case LocalGameManager.STATE_ACTION:
                     manager.reverseMove();
                     break;
-                case GameManager.STATE_ATTACK:
-                case GameManager.STATE_SUMMON:
-                case GameManager.STATE_HEAL:
+                case LocalGameManager.STATE_ATTACK:
+                case LocalGameManager.STATE_SUMMON:
+                case LocalGameManager.STATE_HEAL:
                     manager.cancelActionPhase();
                     break;
                 default:
@@ -548,7 +548,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         return manager.getGame();
     }
 
-    public GameManager getGameManager() {
+    public LocalGameManager getGameManager() {
         return manager;
     }
 

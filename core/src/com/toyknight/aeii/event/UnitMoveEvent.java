@@ -1,7 +1,6 @@
 package com.toyknight.aeii.event;
 
 import com.toyknight.aeii.AnimationDispatcher;
-import com.toyknight.aeii.GameManager;
 import com.toyknight.aeii.animator.UnitMoveAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;

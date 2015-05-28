@@ -5,6 +5,7 @@ LB_REPAIRED=Repaired
 LB_OCCUPIED=Occupied
 LB_INCOME=Income
 LB_CURRENT_TURN=Current Turn
+LB_BUY=Buy
 LB_CLOSE=Close
 UNIT_NAME_0=Soldier
 UNIT_NAME_1=Archer
