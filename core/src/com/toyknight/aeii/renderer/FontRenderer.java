@@ -84,7 +84,7 @@ public class FontRenderer {
         ui_font_label.draw(batch, str, x, y);
     }
 
-    public static void drawLabelCenter(Batch batch, String str, int target_x, int target_y, int target_width, int target_height) {
+    public static void drawLabelCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
         BitmapFont.TextBounds bounds = ui_font_label.getBounds(str);
         float x = target_x + (target_width - bounds.width) / 2;
         float y = target_y + (target_height - bounds.height) / 2 + bounds.height;

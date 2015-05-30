@@ -35,30 +35,45 @@ public class UnitMoveEvent implements GameEvent, Serializable {
 
     @Override
     public Point getFocus() {
-        Point dest = move_path.get(move_path.size() - 1);
-        return new Point(dest.x, dest.y);
+        if (move_path == null) {
+            return new Point(unit_x, unit_y);
+        } else {
+            Point dest = move_path.get(move_path.size() - 1);
+            return new Point(dest.x, dest.y);
+        }
     }
 
     @Override
     public boolean canExecute(GameCore game) {
-        Unit target = game.getMap().getUnit(unit_x, unit_y);
-        return target != null && game.canUnitMove(target, dest_x, dest_y);
+        if (move_path == null) {
+            return true;
+        } else {
+            Unit target = game.getMap().getUnit(unit_x, unit_y);
+            return target != null && game.canUnitMove(target, dest_x, dest_y);
+        }
     }
 
     @Override
     public void execute(GameManager manager) {
-        Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
-        manager.getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
-        unit.setCurrentMovementPoint(mp_left);
-        manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
-        switch (manager.getState()) {
-            case GameManager.STATE_MOVE:
-                manager.setState(GameManager.STATE_ACTION);
-                break;
-            case GameManager.STATE_REMOVE:
-                manager.setState(GameManager.STATE_SELECT);
-                unit.setStandby(true);
-                break;
+        if (move_path == null) {
+            //unable to move, cancel move phase
+            if (manager.getState() == GameManager.STATE_MOVE) {
+                manager.cancelMovePhase();
+            }
+        } else {
+            Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
+            manager.getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
+            unit.setCurrentMovementPoint(mp_left);
+            manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
+            switch (manager.getState()) {
+                case GameManager.STATE_MOVE:
+                    manager.setState(GameManager.STATE_ACTION);
+                    break;
+                case GameManager.STATE_REMOVE:
+                    manager.setState(GameManager.STATE_SELECT);
+                    unit.setStandby(true);
+                    break;
+            }
         }
     }
 

@@ -442,7 +442,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     if (getGame().getMap().getUnit(cursor_x, cursor_y) == null) {
                         Tile target_tile = getGame().getMap().getTile(cursor_x, cursor_y);
                         if (target_tile.isCastle() && target_tile.getTeam() == getGame().getCurrentTeam()) {
-                            unit_store.setVisible(true);
+                            unit_store.display();
                         }
                     } else {
                         manager.selectUnit(cursor_x, cursor_y);

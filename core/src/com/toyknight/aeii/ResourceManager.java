@@ -2,6 +2,7 @@ package com.toyknight.aeii;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -43,6 +44,7 @@ public class ResourceManager {
     private static Texture border_texture;
     private static Texture alpha_texture;
 
+    private static Texture[] big_circle_texture;
     private static Texture[] action_button_textures;
 
     private static TextureRegion[] hud_icons_battle;
@@ -55,6 +57,8 @@ public class ResourceManager {
     private static TextureRegion[] attack_spark_frames;
     private static TextureRegion[] white_spark_frames;
 
+    private static Texture list_selected_bg;
+    private static Texture list_unselected_bg;
     private static Texture aeii_panel_bg;
     private static Texture[] team_bg;
     private static Texture move_path_color;
@@ -116,19 +120,17 @@ public class ResourceManager {
             move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
+            big_circle_texture = new Texture[2];
+            for (int i = 0; i < 2; i++) {
+                big_circle_texture[i] = new Texture(FileProvider.getAssetsFile("images/big_circle_" + i + ".png"));
+            }
             loadActionButtonTextures();
             loadHudIcons();
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
             createAnimationFrames();
             createGrayscaleShader();
-
-            aeii_panel_bg = new Texture(FileProvider.getAssetsFile("images/panel_bg.png"));
-            team_bg = new Texture[4];
-            for (int team = 0; team < 4; team++) {
-                team_bg[team] = new Texture(FileProvider.getAssetsFile("images/team_bg_" + team + ".png"));
-            }
-            move_path_color = new Texture(FileProvider.getAssetsFile("images/move_path_color.png"));
+            createColors();
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
         }
@@ -210,6 +212,18 @@ public class ResourceManager {
         white_spark_frames = createFrames(white_spark_sheet, 6, 1);
     }
 
+    private static void createColors() {
+        list_selected_bg = new Texture(createColoredPixmap(Color.GRAY));
+        list_unselected_bg = new Texture(createColoredPixmap(Color.DARK_GRAY));
+        aeii_panel_bg = new Texture(createColoredPixmap(new Color(36 / 256f, 42 / 256f, 69 / 256f, 1f)));
+        team_bg = new Texture[4];
+        team_bg[0] = new Texture(createColoredPixmap(new Color(0f, 100 / 256f, 198 / 256f, 1f)));
+        team_bg[1] = new Texture(createColoredPixmap(new Color(161 / 256f, 0f, 112 / 256f, 1f)));
+        team_bg[2] = new Texture(createColoredPixmap(new Color(0f, 153 / 256f, 55 / 256f, 1f)));
+        team_bg[3] = new Texture(createColoredPixmap(new Color(0f, 65 / 256f, 114 / 256f, 1f)));
+        move_path_color = new Texture(createColoredPixmap(new Color(225 / 256f, 0f, 82 / 256f, 1f)));
+    }
+
     private static void createGrayscaleShader() {
         grayscale_shader = new ShaderProgram(GS_VERT, GS_FRAG);
         grayscale_shader.begin();
@@ -277,6 +291,10 @@ public class ResourceManager {
         return alpha_texture;
     }
 
+    public static Texture getBigCircleTexture(int index) {
+        return big_circle_texture[index];
+    }
+
     public static Texture getActionButtonTexture(int index) {
         return action_button_textures[index];
     }
@@ -311,6 +329,14 @@ public class ResourceManager {
 
     public static TextureRegion[] getDustFrames() {
         return dust_frames;
+    }
+
+    public static Texture getListSelectedBackground() {
+        return list_selected_bg;
+    }
+
+    public static Texture getListBackground() {
+        return list_unselected_bg;
     }
 
     public static Texture getPanelBackground() {
@@ -363,6 +389,13 @@ public class ResourceManager {
     public static void setBatchAlpha(Batch batch, float alpha) {
         Color color = batch.getColor();
         batch.setColor(color.r, color.g, color.b, alpha);
+    }
+
+    public static Pixmap createColoredPixmap(Color color) {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(color);
+        pixmap.fill();
+        return pixmap;
     }
 
 }

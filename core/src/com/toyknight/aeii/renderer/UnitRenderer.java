@@ -1,6 +1,6 @@
 package com.toyknight.aeii.renderer;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Status;
@@ -22,11 +22,7 @@ public class UnitRenderer {
         this.screen = screen;
     }
 
-    public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y) {
-        drawUnit(batch, unit, map_x, map_y, 0, 0);
-    }
-
-    public void drawUnit(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
+    public void drawUnit(Batch batch, Unit unit, float screen_x, float screen_y) {
         TextureRegion unit_texture;
         if (unit.isStandby()) {
             batch.setShader(ResourceManager.getGrayscaleShader());
@@ -34,18 +30,26 @@ public class UnitRenderer {
         } else {
             unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         }
-        int screen_x = screen.getXOnScreen(map_x);
-        int screen_y = screen.getYOnScreen(map_y);
-        batch.draw(unit_texture, screen_x + offset_x, screen_y + offset_y, ts, ts);
+        batch.draw(unit_texture, screen_x, screen_y, ts, ts);
         batch.flush();
         batch.setShader(null);
     }
 
-    public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y) {
+    public void drawUnit(Batch batch, Unit unit, int map_x, int map_y) {
+        drawUnit(batch, unit, map_x, map_y, 0, 0);
+    }
+
+    public void drawUnit(Batch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
+        int screen_x = screen.getXOnScreen(map_x);
+        int screen_y = screen.getYOnScreen(map_y);
+        drawUnit(batch, unit, screen_x + offset_x, screen_y + offset_y);
+    }
+
+    public void drawUnitWithInformation(Batch batch, Unit unit, int map_x, int map_y) {
         drawUnitWithInformation(batch, unit, map_x, map_y, 0, 0);
     }
 
-    public void drawUnitWithInformation(SpriteBatch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
+    public void drawUnitWithInformation(Batch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         drawUnit(batch, unit, map_x, map_y, offset_x, offset_y);
         int screen_x = screen.getXOnScreen(map_x);
         int screen_y = screen.getYOnScreen(map_y);

@@ -31,21 +31,19 @@ public class LocalGameManager extends GameManager {
 
     @Override
     public void moveSelectedUnit(int dest_x, int dest_y) {
+        Unit unit = getSelectedUnit();
+        int start_x = unit.getX();
+        int start_y = unit.getY();
         if (getMovablePositions().contains(getGame().getMap().getPosition(dest_x, dest_y))) {
-            Unit unit = getSelectedUnit();
-            if (unit != null && getGame().isUnitAccessible(unit) && (getState() == STATE_MOVE || getState() == STATE_REMOVE)) {
-                int start_x = unit.getX();
-                int start_y = unit.getY();
-                if (canSelectedUnitMove(dest_x, dest_y)) {
-                    int mp_remains = getMovementPointRemains(dest_x, dest_y);
-                    ArrayList<Point> move_path = getMovePath(dest_x, dest_y);
-                    submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
-                }
+            if (unit != null && getGame().isUnitAccessible(unit) &&
+                    (getState() == STATE_MOVE || getState() == STATE_REMOVE) &&
+                    canSelectedUnitMove(dest_x, dest_y)) {
+                int mp_remains = getMovementPointRemains(dest_x, dest_y);
+                ArrayList<Point> move_path = getMovePath(dest_x, dest_y);
+                submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
             }
         } else {
-            if (getState() == STATE_MOVE) {
-                cancelMovePhase();
-            }
+            submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, unit.getMovementPoint(), null));
         }
     }
 

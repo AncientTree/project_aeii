@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.toyknight.aeii.animator.Animator;
@@ -48,6 +50,7 @@ public class AEIIApplication extends Game {
             BorderRenderer.init();
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getLabelFont();
+            skin.get(List.ListStyle.class).font = FontRenderer.getLabelFont();
 
             logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen();
