@@ -153,6 +153,8 @@ public abstract class GameManager implements AnimationDispatcher {
 
     abstract public void doOccupy();
 
+    abstract public void buyUnit(String package_name, int index, int x, int y);
+
     abstract public void standbySelectedUnit();
 
     abstract public void endCurrentTurn();

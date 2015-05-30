@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.listener.UnitListListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;
@@ -35,8 +36,7 @@ public class AvailableUnitList extends Widget implements Cullable {
 
     private int selected_index = 0;
 
-    private int selected_unit_index;
-    private String selected_package;
+    private UnitListListener listener;
 
     public AvailableUnitList(GameManager manager, int ts) {
         this.ts = ts;
@@ -69,13 +69,18 @@ public class AvailableUnitList extends Widget implements Cullable {
         for (String package_name : available_units.keySet()) {
             for (Integer unit_index : available_units.get(package_name)) {
                 if (index == selected_index) {
-                    selected_unit_index = unit_index;
-                    selected_package = package_name;
+                    if (listener != null) {
+                        listener.onUnitSelected(package_name, unit_index);
+                    }
                     return;
                 }
                 index++;
             }
         }
+    }
+
+    public void setUnitListListener(UnitListListener listener) {
+        this.listener = listener;
     }
 
     public void setAvailableUnits(HashMap<String, ArrayList<Integer>> list) {
@@ -87,6 +92,7 @@ public class AvailableUnitList extends Widget implements Cullable {
             }
         }
         this.selected_index = 0;
+        this.updateSelection();
         this.prefWidth = getWidth();
         this.prefHeight = count * item_height;
     }

@@ -127,6 +127,14 @@ public class LocalGameManager extends GameManager {
     }
 
     @Override
+    public void buyUnit(String package_name, int index, int x, int y) {
+        if (getGame().getMap().getUnit(x, y) == null) {
+            int team = getGame().getCurrentTeam();
+            submitGameEvent(new UnitBuyEvent(package_name, index, team, x, y, getGame().getUnitPrice(package_name, index, team)));
+        }
+    }
+
+    @Override
     public void standbySelectedUnit() {
         if (getState() == STATE_ACTION) {
             Unit unit = getSelectedUnit();

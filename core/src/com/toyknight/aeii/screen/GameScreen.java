@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
@@ -359,7 +360,32 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
         if (!event_handled && dragged == false && Platform.isMobileDevice(getContext().getPlatform())) {
-            onClick(screenX, screenY, button);
+            boolean processed = false;
+            int map_x = createCursorMapX(screenX);
+            int map_y = createCursorMapY(screenY);
+            switch (manager.getState()) {
+                case GameManager.STATE_MOVE:
+                    if (!manager.getMovablePositions().contains(getGame().getMap().getPosition(map_x, map_y))) {
+                        manager.moveSelectedUnit(map_x, map_y);
+                        processed = true;
+                    }
+                    break;
+                case GameManager.STATE_ACTION:
+                    manager.reverseMove();
+                    processed = true;
+                    break;
+                case GameManager.STATE_ATTACK:
+                case GameManager.STATE_SUMMON:
+                case GameManager.STATE_HEAL:
+                    if (!UnitToolkit.isWithinRange(manager.getSelectedUnit(), map_x, map_y)) {
+                        manager.cancelActionPhase();
+                        processed = true;
+                    }
+                    break;
+            }
+            if (!processed) {
+                onClick(screenX, screenY, button);
+            }
         } else {
             this.dragged = false;
         }
@@ -442,7 +468,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                     if (getGame().getMap().getUnit(cursor_x, cursor_y) == null) {
                         Tile target_tile = getGame().getMap().getTile(cursor_x, cursor_y);
                         if (target_tile.isCastle() && target_tile.getTeam() == getGame().getCurrentTeam()) {
-                            unit_store.display();
+                            unit_store.display(cursor_x, cursor_y);
                         }
                     } else {
                         manager.selectUnit(cursor_x, cursor_y);

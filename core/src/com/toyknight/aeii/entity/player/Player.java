@@ -21,8 +21,8 @@ public class Player {
         this.gold = gold;
     }
 
-    public void addGold(int addition) {
-        this.gold += addition;
+    public void changeGold(int change) {
+        this.gold += change;
     }
 
     public void reduceGold(int reduction) {

@@ -1,5 +1,6 @@
 package com.toyknight.aeii.entity;
 
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -173,6 +174,19 @@ public class GameCore {
         return commanders[team];
     }
 
+    public int getUnitPrice(String package_name, int index, int team) {
+        Unit unit = UnitFactory.getSample(index, package_name);
+        if (unit.isCommander()) {
+            if (isCommanderAlive(current_team)) {
+                return getCommanderPrice(team);
+            } else {
+                return -1;
+            }
+        } else {
+            return unit.getPrice();
+        }
+    }
+
     public void changeCommanderPriceDelta(int team, int change) {
         commander_price_delta[team] += change;
         if (commander_price_delta[team] < 0) {
@@ -215,7 +229,7 @@ public class GameCore {
 
     public int gainIncome(int team) {
         int income = calcIncome(team);
-        getPlayer(team).addGold(income);
+        getPlayer(team).changeGold(income);
         return income;
     }
 
