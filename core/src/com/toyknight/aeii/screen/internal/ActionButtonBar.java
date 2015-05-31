@@ -4,17 +4,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.widgets.CircleButton;
 
 /**
  * Created by toyknight on 4/26/2015.
@@ -24,22 +27,26 @@ public class ActionButtonBar extends HorizontalGroup {
     private final GameScreen screen;
     private final LocalGameManager manager;
     private final int PADDING_LEFT;
+    private final int BUTTON_WIDTH;
+    private final int BUTTON_HEIGHT;
     private final ShapeRenderer shape_renderer;
 
-    private ImageButton btn_buy;
-    private ImageButton btn_standby;
-    private ImageButton btn_attack;
-    private ImageButton btn_move;
-    private ImageButton btn_occupy;
-    private ImageButton btn_repair;
-    private ImageButton btn_summon;
-    private ImageButton btn_heal;
-    private ImageButton btn_info;
+    private CircleButton btn_buy;
+    private CircleButton btn_standby;
+    private CircleButton btn_attack;
+    private CircleButton btn_move;
+    private CircleButton btn_occupy;
+    private CircleButton btn_repair;
+    private CircleButton btn_summon;
+    private CircleButton btn_heal;
+    //private ImageButton btn_info;
 
     public ActionButtonBar(GameScreen screen, LocalGameManager manager) {
         this.screen = screen;
         this.manager = manager;
         this.PADDING_LEFT = screen.getContext().getTileSize() / 4;
+        this.BUTTON_WIDTH = screen.getContext().getTileSize() / 24 * 20;
+        this.BUTTON_HEIGHT = screen.getContext().getTileSize() / 24 * 21;
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
         initComponents();
@@ -47,23 +54,8 @@ public class ActionButtonBar extends HorizontalGroup {
 
     private void initComponents() {
         int ts = screen.getContext().getTileSize();
-        TextureRegionDrawable[][] button_icons = new TextureRegionDrawable[9][3];
-        for (int index = 0; index < 9; index++) {
-            Texture button_texture = ResourceManager.getActionButtonTexture(index);
-            int width = button_texture.getWidth() / 3;
-            int height = button_texture.getHeight();
-            for (int state = 0; state < 3; state++) {
-                TextureRegion button_icon =
-                        new TextureRegion(ResourceManager.getActionButtonTexture(index), width * state, 0, width, height);
-                button_icons[index][state] = new TextureRegionDrawable(button_icon);
-                button_icons[index][state].setMinWidth(ts / 24 * 20);
-                button_icons[index][state].setMinHeight(ts / 24 * 21);
-            }
-        }
-        btn_buy = new ImageButton(button_icons[0][0], button_icons[0][2], button_icons[0][1]);
-        btn_buy.padLeft(PADDING_LEFT);
-        btn_occupy = new ImageButton(button_icons[1][0], button_icons[1][2], button_icons[1][1]);
-        btn_occupy.padLeft(PADDING_LEFT);
+        btn_buy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(0), ts);
+        btn_occupy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
         btn_occupy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -71,8 +63,7 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_repair = new ImageButton(button_icons[1][0], button_icons[1][2], button_icons[1][1]);
-        btn_repair.padLeft(PADDING_LEFT);
+        btn_repair = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
         btn_repair.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -80,8 +71,7 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_attack = new ImageButton(button_icons[2][0], button_icons[2][2], button_icons[2][1]);
-        btn_attack.padLeft(PADDING_LEFT);
+        btn_attack = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(2), ts);
         btn_attack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -89,8 +79,7 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_summon = new ImageButton(button_icons[3][0], button_icons[3][2], button_icons[3][1]);
-        btn_summon.padLeft(PADDING_LEFT);
+        btn_summon = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(3), ts);
         btn_summon.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,10 +87,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_move = new ImageButton(button_icons[4][0], button_icons[4][2], button_icons[4][1]);
-        btn_move.padLeft(PADDING_LEFT);
-        btn_standby = new ImageButton(button_icons[5][0], button_icons[5][2], button_icons[5][1]);
-        btn_standby.padLeft(PADDING_LEFT);
+        btn_move = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(4), ts);
+        btn_standby = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(5), ts);
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -109,10 +96,7 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_heal = new ImageButton(button_icons[7][0], button_icons[7][2], button_icons[7][1]);
-        btn_heal.padLeft(PADDING_LEFT);
-        btn_info = new ImageButton(button_icons[8][0], button_icons[8][2], button_icons[8][1]);
-        btn_info.padLeft(PADDING_LEFT);
+        btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
     }
 
     public void updateButtons() {
@@ -142,6 +126,15 @@ public class ActionButtonBar extends HorizontalGroup {
                     //do nothing
             }
             this.layout();
+        }
+    }
+
+    @Override
+    public void layout() {
+        SnapshotArray<Actor> children = getChildren();
+        for (int i = 0; i < children.size; i++) {
+            children.get(i).setBounds(
+                    PADDING_LEFT + i * (BUTTON_WIDTH + PADDING_LEFT), 0, BUTTON_WIDTH, BUTTON_HEIGHT);
         }
     }
 

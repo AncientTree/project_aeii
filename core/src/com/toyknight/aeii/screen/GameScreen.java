@@ -219,7 +219,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     private void drawCursor() {
-        if (canOperate()) {
+        if (!getGameManager().isAnimating()) {
             int cursor_x = getCursorMapX();
             int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
@@ -404,7 +404,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public boolean mouseMoved(int screenX, int screenY) {
         boolean event_handled = super.mouseMoved(screenX, screenY);
         if (!event_handled) {
-            if (0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
+            if (canOperate() && 0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
                 this.pointer_x = screenX;
                 this.pointer_y = screenY;
                 this.cursor_map_x = createCursorMapX(pointer_x);

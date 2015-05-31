@@ -96,7 +96,7 @@ public class FontRenderer {
         drawSNumber(batch, number, x + schar_width, y);
     }
 
-    public static void drawSNumber(Batch batch, int number, int x, int y) {
+    public static void drawSNumber(Batch batch, int number, float x, float y) {
         int[] array = getIntArray(number);
         for (int i = 0; i < array.length; i++) {
             int n = array[i];
@@ -126,7 +126,7 @@ public class FontRenderer {
         drawLNumber(batch, number, x + lchar_width, y);
     }
 
-    public static void drawLNumber(Batch batch, int number, int x, int y) {
+    public static void drawLNumber(Batch batch, int number, float x, float y) {
         int[] array = getIntArray(number);
         for (int i = 0; i < array.length; i++) {
             int n = array[i];

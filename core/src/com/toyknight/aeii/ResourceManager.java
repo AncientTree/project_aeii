@@ -44,9 +44,10 @@ public class ResourceManager {
     private static Texture border_texture;
     private static Texture alpha_texture;
 
-    private static Texture[] big_circle_texture;
-    private static Texture[] action_button_textures;
+    private static TextureRegion[] big_circle_texture;
+    private static TextureRegion[] small_circle_texture;
 
+    private static TextureRegion[] action_icons;
     private static TextureRegion[] hud_icons_battle;
     private static TextureRegion[] hud_icons_status;
 
@@ -62,6 +63,10 @@ public class ResourceManager {
     private static Texture aeii_panel_bg;
     private static Texture[] team_bg;
     private static Texture move_path_color;
+    private static Texture white_color;
+    private static Texture text_background;
+    private static Color p_attack_color;
+    private static Color m_attack_color;
 
     private static final String GS_VERT =
             "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
@@ -120,12 +125,8 @@ public class ResourceManager {
             move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
-            big_circle_texture = new Texture[2];
-            for (int i = 0; i < 2; i++) {
-                big_circle_texture[i] = new Texture(FileProvider.getAssetsFile("images/big_circle_" + i + ".png"));
-            }
-            loadActionButtonTextures();
-            loadHudIcons();
+            loadCircles();
+            loadIcons();
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
             createAnimationFrames();
@@ -181,14 +182,16 @@ public class ResourceManager {
         status_textures = createFrames(status_sheet, 2, 1);
     }
 
-    private static void loadActionButtonTextures() {
-        action_button_textures = new Texture[9];
-        for (int i = 0; i < 9; i++) {
-            action_button_textures[i] = new Texture(FileProvider.getAssetsFile("images/buttons/action_button_" + i + ".png"));
-        }
+    private static void loadCircles() {
+        Texture big_circle_sheet = new Texture(FileProvider.getAssetsFile("images/big_circle.png"));
+        big_circle_texture = createFrames(big_circle_sheet, 2, 1);
+        Texture small_circle_sheet = new Texture(FileProvider.getAssetsFile("images/small_circle.png"));
+        small_circle_texture = createFrames(small_circle_sheet, 2, 1);
     }
 
-    private static void loadHudIcons() {
+    private static void loadIcons() {
+        Texture action_icon_sheet = new Texture(FileProvider.getAssetsFile("images/action_icons.png"));
+        action_icons = createFrames(action_icon_sheet, 8, 1);
         Texture hud_icon_status_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_status.png"));
         hud_icons_status = createFrames(hud_icon_status_sheet, 2, 1);
         Texture hud_icon_battle_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_battle.png"));
@@ -222,6 +225,10 @@ public class ResourceManager {
         team_bg[2] = new Texture(createColoredPixmap(new Color(0f, 153 / 256f, 55 / 256f, 1f)));
         team_bg[3] = new Texture(createColoredPixmap(new Color(0f, 65 / 256f, 114 / 256f, 1f)));
         move_path_color = new Texture(createColoredPixmap(new Color(225 / 256f, 0f, 82 / 256f, 1f)));
+        white_color = new Texture(createColoredPixmap(Color.WHITE));
+        text_background = new Texture(createColoredPixmap(new Color(206 / 256f, 206 / 256f, 206 / 256f, 1f)));
+        p_attack_color = new Color(227 / 256f, 0, 117 / 256f, 1f);
+        m_attack_color = new Color(0, 0, 255 / 256f, 1f);
     }
 
     private static void createGrayscaleShader() {
@@ -291,12 +298,16 @@ public class ResourceManager {
         return alpha_texture;
     }
 
-    public static Texture getBigCircleTexture(int index) {
+    public static TextureRegion getBigCircleTexture(int index) {
         return big_circle_texture[index];
     }
 
-    public static Texture getActionButtonTexture(int index) {
-        return action_button_textures[index];
+    public static TextureRegion getSmallCircleTexture(int index) {
+        return small_circle_texture[index];
+    }
+
+    public static TextureRegion getActionIcon(int index) {
+        return action_icons[index];
     }
 
     public static TextureRegion getStatusHudIcon(int index) {
@@ -313,10 +324,6 @@ public class ResourceManager {
 
     public static TextureRegion getMenuIcon(int index) {
         return menu_icon_textures[index];
-    }
-
-    public static int getMenuIconSize(int scaling) {
-        return menu_icon_texture.getHeight() * scaling;
     }
 
     public static TextureRegion[] getAttackSparkFrames() {
@@ -349,6 +356,22 @@ public class ResourceManager {
 
     public static Texture getMovePathColor() {
         return move_path_color;
+    }
+
+    public static Texture getWhiteColor() {
+        return white_color;
+    }
+
+    public static Texture getTextBackground() {
+        return text_background;
+    }
+
+    public static Color getPhysicalAttackColor() {
+        return p_attack_color;
+    }
+
+    public static Color getMagicalAttackColor() {
+        return m_attack_color;
     }
 
     public static ShaderProgram getGrayscaleShader() {

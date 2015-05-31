@@ -1,5 +1,6 @@
 package com.toyknight.aeii.screen.internal;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -9,10 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.listener.UnitListListener;
+import com.toyknight.aeii.renderer.FontRenderer;
+import com.toyknight.aeii.screen.widgets.UnitListListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.widgets.AvailableUnitList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 
@@ -32,7 +35,9 @@ public class UnitStore extends Table implements UnitListListener {
 
     private int castle_x;
     private int castle_y;
+
     private Unit selected_unit;
+    private int price;
 
     public UnitStore(final GameScreen screen, Skin skin) {
         this.screen = screen;
@@ -86,6 +91,7 @@ public class UnitStore extends Table implements UnitListListener {
         screen.onButtonUpdateRequested();
     }
 
+    @Override
     public void onUnitSelected(String package_name, int index) {
         selected_unit = UnitFactory.getSample(index, package_name);
         if (selected_unit.isCommander()) {
@@ -99,7 +105,7 @@ public class UnitStore extends Table implements UnitListListener {
         int current_team = manager.getGame().getCurrentTeam();
         if (selected_unit != null
                 && manager.getGame().getCurrentPlayer().getPopulation() < manager.getGame().getRule().getMaxPopulation()) {
-            int price = screen.getGame().getUnitPrice(selected_unit.getPackage(), selected_unit.getIndex(), current_team);
+            price = screen.getGame().getUnitPrice(selected_unit.getPackage(), selected_unit.getIndex(), current_team);
             if (price >= 0) {
                 if (manager.getGame().getCurrentPlayer().getGold() >= selected_unit.getPrice()) {
                     btn_buy.setTouchable(Touchable.enabled);
@@ -114,10 +120,131 @@ public class UnitStore extends Table implements UnitListListener {
         }
     }
 
+    @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+        float x = getX(), y = getY(), width = getWidth(), height = getHeight();
+        batch.draw(ResourceManager.getPanelBackground(), x, y, width, height);
+        BorderRenderer.drawBorder(batch, x, y, width, height);
         batch.flush();
+
+        int interval = ts / 24 * 13;
+        int lw = FontRenderer.getLNumberWidth(0, false);
+        int lh = FontRenderer.getLCharHeight();
+        //price
+        batch.draw(ResourceManager.getStatusHudIcon(1),
+                x + ts * 10 + ts / 2 - lw * 4 - ts / 24 * 11,
+                y + height - ts / 2 - lh,
+                ts / 24 * 11,
+                ts / 24 * 11);
+        if (price >= 0) {
+            FontRenderer.drawLNumber(batch,
+                    price,
+                    x + ts * 10 + ts / 2 - lw * 4,
+                    y + height - (ts / 2 + (interval - lh) / 2 + lh));
+        } else {
+            batch.draw(FontRenderer.getLMinus(),
+                    x + ts * 10 + ts / 2 - lw * 2 - lw / 2,
+                    y + height - (ts / 2 + (interval - lh) / 2 + lh),
+                    lw, lh);
+        }
+        //split line
+        batch.draw(ResourceManager.getWhiteColor(),
+                x + ts * 6,
+                y + height - (ts / 2 + interval),
+                ts * 4 + ts / 2,
+                1);
+        int scw = ts / 24 * 20;
+        int sch = ts / 24 * 21;
+        int acs = ts / 24 * 16;
+        int hw = ts / 24 * 13;
+        int hh = ts / 24 * 16;
+        int itemh = sch + ts / 6;
+        int tfh = sch - ts / 4;
+        float lbh = FontRenderer.getLabelFont().getCapHeight();
+        //attack
+        batch.draw(ResourceManager.getTextBackground(),
+                x + ts * 6 + scw / 2,
+                y + height - (ts / 2 + interval + (itemh - tfh) / 2 + tfh),
+                ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
+        if (selected_unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
+            FontRenderer.setLabelColor(ResourceManager.getPhysicalAttackColor());
+        } else {
+            FontRenderer.setLabelColor(ResourceManager.getMagicalAttackColor());
+        }
+        FontRenderer.drawLabel(batch,
+                Integer.toString(selected_unit.getAttack()),
+                x + ts * 6 + scw + ts / 12,
+                y + height - (ts / 2 + interval + (itemh - lbh) / 2));
+        batch.draw(ResourceManager.getSmallCircleTexture(0),
+                x + ts * 6,
+                y + height - (ts / 2 + interval + (itemh - sch) / 2 + sch),
+                ts / 24 * 20,
+                ts / 24 * 21);
+        batch.draw(ResourceManager.getBattleHudIcon(0),
+                x + ts * 6 + (scw - hw) / 2,
+                y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                hw, hh);
+        FontRenderer.setLabelColor(Color.WHITE);
+        //movement point
+        batch.draw(ResourceManager.getTextBackground(),
+                x + ts * 8 + ts / 4 + scw / 2,
+                y + height - (ts / 2 + interval + (itemh - tfh) / 2 + tfh),
+                ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
+        FontRenderer.drawLabel(batch,
+                Integer.toString(selected_unit.getMovementPoint()),
+                x + ts * 8 + ts / 4 + scw + ts / 12,
+                y + height - (ts / 2 + interval + (itemh - lbh) / 2));
+        batch.draw(ResourceManager.getSmallCircleTexture(0),
+                x + ts * 8 + ts / 4,
+                y + height - (ts / 2 + interval + (itemh - sch) / 2 + sch),
+                ts / 24 * 20,
+                ts / 24 * 21);
+        batch.draw(ResourceManager.getActionIcon(4),
+                x + ts * 8 + ts / 4 + (scw - acs) / 2,
+                y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                acs, acs);
+        //physical defence
+        batch.draw(ResourceManager.getTextBackground(),
+                x + ts * 6 + scw / 2,
+                y + height - (ts / 2 + interval + itemh + (itemh - tfh) / 2 + tfh),
+                ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
+        FontRenderer.drawLabel(batch,
+                Integer.toString(selected_unit.getPhysicalDefence()),
+                x + ts * 6 + scw + ts / 12,
+                y + height - (ts / 2 + interval + itemh + (itemh - lbh) / 2));
+        batch.draw(ResourceManager.getSmallCircleTexture(0),
+                x + ts * 6,
+                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + sch),
+                ts / 24 * 20,
+                ts / 24 * 21);
+        batch.draw(ResourceManager.getBattleHudIcon(1),
+                x + ts * 6 + (scw - hw) / 2,
+                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                hw, hh);
+        //magical defence
+        batch.draw(ResourceManager.getTextBackground(),
+                x + ts * 8 + ts / 4 + scw / 2,
+                y + height - (ts / 2 + interval + itemh + (itemh - tfh) / 2 + tfh),
+                ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
+        FontRenderer.drawLabel(batch,
+                Integer.toString(selected_unit.getMagicalDefence()),
+                x + ts * 8 + ts / 4 + scw + ts / 12,
+                y + height - (ts / 2 + interval + itemh + (itemh - lbh) / 2));
+        batch.draw(ResourceManager.getSmallCircleTexture(0),
+                x + ts * 8 + ts / 4,
+                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + sch),
+                ts / 24 * 20,
+                ts / 24 * 21);
+        batch.draw(ResourceManager.getBattleHudIcon(2),
+                x + ts * 8 + ts / 4 + (scw - hw) / 2,
+                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                hw, hh);
+        //split line
+        batch.draw(ResourceManager.getWhiteColor(),
+                x + ts * 6,
+                y + height - (ts / 2 + interval + itemh * 2),
+                ts * 4 + ts / 2,
+                1);
         super.draw(batch, parentAlpha);
     }
 
