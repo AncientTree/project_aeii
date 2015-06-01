@@ -68,44 +68,8 @@ public class ResourceManager {
     private static Color p_attack_color;
     private static Color m_attack_color;
 
-    private static final String GS_VERT =
-            "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
-                    "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" +
-                    "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" +
-
-                    "uniform mat4 u_projTrans;\n" +
-                    " \n" +
-                    "varying vec4 vColor;\n" +
-                    "varying vec2 vTexCoord;\n" +
-
-                    "void main() {\n" +
-                    "       vColor = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" +
-                    "       vTexCoord = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" +
-                    "       gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
-                    "}";
-
-    private static final String GS_FRAG =
-            //GL ES specific stuff
-            "#ifdef GL_ES\n" //
-                    + "#define LOWP lowp\n" //
-                    + "precision mediump float;\n" //
-                    + "#else\n" //
-                    + "#define LOWP \n" //
-                    + "#endif\n" + //
-                    "varying LOWP vec4 vColor;\n" +
-                    "varying vec2 vTexCoord;\n" +
-                    "uniform sampler2D u_texture;\n" +
-                    "uniform float grayscale;\n" +
-                    "void main() {\n" +
-                    "       vec4 texColor = texture2D(u_texture, vTexCoord);\n" +
-                    "       \n" +
-                    "       float gray = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));\n" +
-                    "       texColor.rgb = mix(vec3(gray), texColor.rgb, grayscale);\n" +
-                    "       \n" +
-                    "       gl_FragColor = texColor * vColor;\n" +
-                    "}";
-
     private static ShaderProgram grayscale_shader;
+    private static ShaderProgram color_filter_shader;
 
     private ResourceManager() {
     }
@@ -130,7 +94,7 @@ public class ResourceManager {
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
             createAnimationFrames();
-            createGrayscaleShader();
+            createShaders();
             createColors();
         } catch (GdxRuntimeException ex) {
             throw new AEIIException(ex.getMessage());
@@ -231,11 +195,13 @@ public class ResourceManager {
         m_attack_color = new Color(0, 0, 255 / 256f, 1f);
     }
 
-    private static void createGrayscaleShader() {
-        grayscale_shader = new ShaderProgram(GS_VERT, GS_FRAG);
-        grayscale_shader.begin();
-        grayscale_shader.setUniformf("grayscale", 0f);
-        grayscale_shader.end();
+    private static void createShaders() {
+        grayscale_shader = new ShaderProgram(
+                FileProvider.getAssetsFile("shaders/Shader.VERT").readString(),
+                FileProvider.getAssetsFile("shaders/Grayscale.FRAG").readString());
+        color_filter_shader = new ShaderProgram(
+                FileProvider.getAssetsFile("shaders/Shader.VERT").readString(),
+                FileProvider.getAssetsFile("shaders/WhiteMask.FRAG").readString());
     }
 
     public static Texture getMSLogoTexture() {
@@ -374,8 +340,18 @@ public class ResourceManager {
         return m_attack_color;
     }
 
-    public static ShaderProgram getGrayscaleShader() {
+    public static ShaderProgram getGrayscaleShader(float scale) {
+        grayscale_shader.begin();
+        grayscale_shader.setUniformf("grayscale", scale);
+        grayscale_shader.end();
         return grayscale_shader;
+    }
+
+    public static ShaderProgram getWhiteMaskShader(float scale) {
+        color_filter_shader.begin();
+        grayscale_shader.setUniformf("grayscale", scale);
+        color_filter_shader.end();
+        return color_filter_shader;
     }
 
     public static int getTopTileCount() {

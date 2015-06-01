@@ -11,6 +11,7 @@ public class Unit {
 
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGICAL = 1;
+    private static final int[] level_up_experience = {100, 150, 300};
 
     private final int index;
     private final String unit_package;
@@ -19,7 +20,6 @@ public class Unit {
 
     private int level;     //????????0????????3??
     private int experience = 0;
-    private final int[] level_up_experience = {100, 150, 300};
 
     private final String unit_code;
     private int team;

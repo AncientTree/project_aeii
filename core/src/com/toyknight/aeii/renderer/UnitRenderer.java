@@ -1,5 +1,6 @@
 package com.toyknight.aeii.renderer;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
@@ -25,14 +26,14 @@ public class UnitRenderer {
     public void drawUnit(Batch batch, Unit unit, float screen_x, float screen_y) {
         TextureRegion unit_texture;
         if (unit.isStandby()) {
-            batch.setShader(ResourceManager.getGrayscaleShader());
+            batch.setShader(ResourceManager.getGrayscaleShader(0f));
             unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), 0);
         } else {
             unit_texture = ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         }
         batch.draw(unit_texture, screen_x, screen_y, ts, ts);
-        batch.flush();
         batch.setShader(null);
+        batch.flush();
     }
 
     public void drawUnit(Batch batch, Unit unit, int map_x, int map_y) {
