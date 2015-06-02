@@ -33,7 +33,9 @@ public class ResourceManager {
     private static Texture tomb_texture;
     private static Texture[] tile_textures;
     private static Texture[] top_tile_textures;
+    private static Texture[] stile_textures;
 
+    private static TextureRegion[] mini_icon_textures;
     private static TextureRegion[][][][] default_unit_textures;
     private static HashMap<String, TextureRegion[][][][]> unit_package_textures;
     private static TextureRegion[] status_textures;
@@ -65,6 +67,8 @@ public class ResourceManager {
     private static Texture move_path_color;
     private static Texture white_color;
     private static Texture text_background;
+    private static Texture border_dark_color;
+    private static Texture border_light_color;
     private static Color p_attack_color;
     private static Color m_attack_color;
 
@@ -105,17 +109,20 @@ public class ResourceManager {
         int tile_count = TileFactory.getTileCount();
         tile_textures = new Texture[tile_count];
         for (int i = 0; i < tile_count; i++) {
-            FileHandle tile_image = FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png");
-            tile_textures[i] = new Texture(tile_image);
+            tile_textures[i] = new Texture(FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png"));
         }
         FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat");
         Scanner din = new Scanner(top_tile_config.read());
         top_tile_textures = new Texture[din.nextInt()];
         for (int i = 0; i < top_tile_textures.length; i++) {
-            FileHandle top_tile_image = FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png");
-            top_tile_textures[i] = new Texture(top_tile_image);
+            top_tile_textures[i] = new Texture(FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png"));
         }
         din.close();
+        int stile_count = FileProvider.getAssetsFile("images/stiles").list().length;
+        stile_textures = new Texture[stile_count];
+        for (int i = 0; i < stile_count; i++) {
+            stile_textures[i] = new Texture(FileProvider.getAssetsFile("images/stiles/stiles" + i + ".png"));
+        }
     }
 
     private static void loadUnitTextures() {
@@ -137,7 +144,8 @@ public class ResourceManager {
                 }
             }
         }
-
+        Texture mini_icon_sheet = new Texture(FileProvider.getAssetsFile("images/mini_icons.png"));
+        mini_icon_textures = createFrames(mini_icon_sheet, 4, 1);
         unit_package_textures = new HashMap();
     }
 
@@ -191,6 +199,8 @@ public class ResourceManager {
         move_path_color = new Texture(createColoredPixmap(new Color(225 / 256f, 0f, 82 / 256f, 1f)));
         white_color = new Texture(createColoredPixmap(Color.WHITE));
         text_background = new Texture(createColoredPixmap(new Color(206 / 256f, 206 / 256f, 206 / 256f, 1f)));
+        border_dark_color = new Texture(createColoredPixmap(new Color(66 / 256f, 73 / 256f, 99 / 256f, 1f)));
+        border_light_color = new Texture(createColoredPixmap(new Color(173 / 256f, 182 / 256f, 173 / 256f, 1f)));
         p_attack_color = new Color(227 / 256f, 0, 117 / 256f, 1f);
         m_attack_color = new Color(0, 0, 255 / 256f, 1f);
     }
@@ -230,6 +240,14 @@ public class ResourceManager {
 
     public static Texture getTopTileTexture(int index) {
         return top_tile_textures[index];
+    }
+
+    public static Texture getSTileTexture(int index) {
+        return stile_textures[index];
+    }
+
+    public static TextureRegion getMiniIcon(int team) {
+        return mini_icon_textures[team];
     }
 
     public static TextureRegion getUnitTexture(String package_name, int team, int index, int level, int frame) {
@@ -330,6 +348,14 @@ public class ResourceManager {
 
     public static Texture getTextBackground() {
         return text_background;
+    }
+
+    public static Texture getBorderDarkColor() {
+        return border_dark_color;
+    }
+
+    public static Texture getBorderLightColor() {
+        return border_light_color;
     }
 
     public static Color getPhysicalAttackColor() {

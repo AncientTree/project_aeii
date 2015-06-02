@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -108,15 +109,15 @@ public class UnitStore extends Table implements UnitListListener {
             price = screen.getGame().getUnitPrice(selected_unit.getPackage(), selected_unit.getIndex(), current_team);
             if (price >= 0) {
                 if (manager.getGame().getCurrentPlayer().getGold() >= selected_unit.getPrice()) {
-                    btn_buy.setTouchable(Touchable.enabled);
+                    AEIIApplication.setButtonEnabled(btn_buy, true);
                 } else {
-                    btn_buy.setTouchable(Touchable.disabled);
+                    AEIIApplication.setButtonEnabled(btn_buy, false);
                 }
             } else {
-                btn_buy.setTouchable(Touchable.disabled);
+                AEIIApplication.setButtonEnabled(btn_buy, false);
             }
         } else {
-            btn_buy.setTouchable(Touchable.disabled);
+            AEIIApplication.setButtonEnabled(btn_buy, false);
         }
     }
 

@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -21,6 +20,8 @@ import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.internal.ActionButtonBar;
+import com.toyknight.aeii.screen.internal.GameMenu;
+import com.toyknight.aeii.screen.internal.MiniMap;
 import com.toyknight.aeii.screen.internal.UnitStore;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Platform;
@@ -67,6 +68,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private TextButton btn_end_turn;
     private ActionButtonBar action_button_bar;
     private UnitStore unit_store;
+    private MiniMap mini_map;
+    private GameMenu menu;
 
     public GameScreen(AEIIApplication context) {
         this.context = context;
@@ -106,6 +109,14 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
         this.btn_menu = new TextButton(Language.getText("LB_MENU"), getContext().getSkin());
         this.btn_menu.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, Gdx.graphics.getHeight() - ts, RIGHT_PANEL_WIDTH, ts);
+        this.btn_menu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeAllWindows();
+                menu.display();
+                onButtonUpdateRequested();
+            }
+        });
         this.addActor(btn_menu);
         this.btn_end_turn = new TextButton(Language.getText("LB_END_TURN"), getContext().getSkin());
         this.btn_end_turn.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, 0, RIGHT_PANEL_WIDTH, ts);
@@ -130,6 +141,16 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                 UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
         this.addActor(unit_store);
         this.unit_store.setVisible(false);
+
+        //game menu
+        this.menu = new GameMenu(this);
+        this.addActor(menu);
+        this.menu.setVisible(false);
+
+        //mini map
+        this.mini_map = new MiniMap(this);
+        this.addActor(mini_map);
+        this.mini_map.setVisible(false);
     }
 
     public AEIIApplication getContext() {
@@ -265,9 +286,10 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     @Override
     public void act(float delta) {
+        mini_map.update(delta);
+        cursor.addStateTime(delta);
         tile_renderer.update(delta);
         unit_renderer.update(delta);
-        cursor.addStateTime(delta);
         attack_cursor.addStateTime(delta);
         updateViewport();
 
@@ -275,31 +297,23 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         manager.updateAnimation(delta);
     }
 
-    private void updateViewport() {
-        int dx = 0;
-        int dy = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            dy -= 8;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            dy += 8;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            dx -= 8;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            dx += 8;
-        }
-        dragViewport(dx, dy);
-        if (dx != 0 || dy != 0) {
-            this.cursor_map_x = createCursorMapX(pointer_x);
-            this.cursor_map_y = createCursorMapY(pointer_y);
-        }
-    }
-
     @Override
     public void show() {
         Gdx.input.setInputProcessor(this);
+        onButtonUpdateRequested();
+        mini_map.updateBounds();
+        unit_store.setVisible(false);
+        mini_map.setVisible(false);
+        menu.setVisible(false);
+    }
+
+    public void show(GameCore game) {
+        this.manager.setGame(game);
+        this.locateViewport(0, 0);
+        this.dragged = false;
+        cursor_map_x = 0;
+        cursor_map_y = 0;
+        show();
     }
 
     @Override
@@ -347,11 +361,16 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchDown(screenX, screenY, pointer, button);
         if (!event_handled) {
-            if (Platform.isMobileDevice(getContext().getPlatform())) {
-                this.pointer_x = screenX;
-                this.pointer_y = screenY;
+            if (mini_map.isVisible()) {
+                mini_map.setVisible(false);
+                onButtonUpdateRequested();
             } else {
-                onClick(screenX, screenY, button);
+                if (Platform.isMobileDevice(getContext().getPlatform())) {
+                    this.pointer_x = screenX;
+                    this.pointer_y = screenY;
+                } else {
+                    onClick(screenX, screenY, button);
+                }
             }
         }
         return true;
@@ -528,6 +547,18 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         }
     }
 
+    public void showMiniMap() {
+        closeAllWindows();
+        mini_map.setVisible(true);
+        onButtonUpdateRequested();
+    }
+
+    public void closeAllWindows() {
+        unit_store.setVisible(false);
+        mini_map.setVisible(false);
+        menu.setVisible(false);
+    }
+
     public void onMapFocusRequired(int map_x, int map_y) {
         cursor_map_x = map_x;
         cursor_map_y = map_y;
@@ -540,11 +571,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     public void onButtonUpdateRequested() {
         this.action_button_bar.updateButtons();
-        if (canOperate()) {
-            this.btn_end_turn.setTouchable(Touchable.enabled);
-        } else {
-            this.btn_end_turn.setTouchable(Touchable.disabled);
-        }
+        AEIIApplication.setButtonEnabled(btn_end_turn, canOperate());
+        AEIIApplication.setButtonEnabled(btn_menu, !menu.isVisible());
     }
 
     private boolean isOnUnitAnimation(int x, int y) {
@@ -563,15 +591,9 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private boolean canOperate() {
         return manager.getCurrentAnimation() == null &&
                 !unit_store.isVisible() &&
+                !mini_map.isVisible() &&
+                !menu.isVisible() &&
                 getGame().getCurrentPlayer() instanceof LocalPlayer;
-    }
-
-    public void setGame(GameCore game) {
-        this.manager.setGame(game);
-        this.locateViewport(0, 0);
-        this.dragged = false;
-        cursor_map_x = 0;
-        cursor_map_y = 0;
     }
 
     public GameCore getGame() {
@@ -639,6 +661,28 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     public boolean isWithinPaintArea(int sx, int sy) {
         return -ts <= sx && sx <= viewport.width && -ts <= sy && sy <= viewport.height + ts;
+    }
+
+    private void updateViewport() {
+        int dx = 0;
+        int dy = 0;
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            dy -= 8;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            dy += 8;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            dx -= 8;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            dx += 8;
+        }
+        dragViewport(dx, dy);
+        if (dx != 0 || dy != 0) {
+            this.cursor_map_x = createCursorMapX(pointer_x);
+            this.cursor_map_y = createCursorMapY(pointer_y);
+        }
     }
 
     public void locateViewport(int map_x, int map_y) {

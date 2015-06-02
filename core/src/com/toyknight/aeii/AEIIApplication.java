@@ -4,10 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
@@ -67,7 +65,7 @@ public class AEIIApplication extends Game {
                 players[i].setGold(1000);
             }
             GameCore game = new GameCore(map, Rule.getDefaultRule(), players);
-            game_screen.setGame(game);
+            game_screen.show(game);
             this.setScreen(game_screen);
 
 //            this.setScreen(logo_screen);
@@ -93,7 +91,8 @@ public class AEIIApplication extends Game {
     }
 
     public void gotoMainMenuScreen() {
-
+        main_menu_screen.show();
+        this.setScreen(main_menu_screen);
     }
 
     @Override
@@ -105,7 +104,15 @@ public class AEIIApplication extends Game {
 
     @Override
     public void dispose() {
+    }
 
+    public static void setButtonEnabled(Button button, boolean enabled) {
+        button.setDisabled(!enabled);
+        if (enabled) {
+            button.setTouchable(Touchable.enabled);
+        } else {
+            button.setTouchable(Touchable.disabled);
+        }
     }
 
 }
