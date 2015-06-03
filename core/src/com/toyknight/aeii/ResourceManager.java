@@ -52,6 +52,7 @@ public class ResourceManager {
     private static TextureRegion[] action_icons;
     private static TextureRegion[] hud_icons_battle;
     private static TextureRegion[] hud_icons_status;
+    private static TextureRegion[] arrow_icons;
 
     private static Texture menu_icon_texture;
     private static TextureRegion[] menu_icon_textures;
@@ -168,6 +169,8 @@ public class ResourceManager {
         hud_icons_status = createFrames(hud_icon_status_sheet, 2, 1);
         Texture hud_icon_battle_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_battle.png"));
         hud_icons_battle = createFrames(hud_icon_battle_sheet, 4, 1);
+        Texture arrow_icon_sheet = new Texture(FileProvider.getAssetsFile("images/arrow_icons.png"));
+        arrow_icons = createFrames(arrow_icon_sheet, 3, 1);
     }
 
     private static void createMenuIconTextures() {
@@ -300,6 +303,10 @@ public class ResourceManager {
 
     public static TextureRegion getBattleHudIcon(int index) {
         return hud_icons_battle[index];
+    }
+
+    public static TextureRegion getArrowIcon(int index) {
+        return arrow_icons[index];
     }
 
     public static Texture getMenuIconTexture() {

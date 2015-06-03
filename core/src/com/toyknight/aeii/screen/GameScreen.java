@@ -49,6 +49,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private final MovePathRenderer move_path_renderer;
     private final StatusBarRenderer status_bar_renderer;
     private final RightPanelRenderer right_panel_renderer;
+    private final AttackInformationRenderer attack_info_renderer;
     private final ShapeRenderer shape_renderer;
     private final LocalGameManager manager;
 
@@ -89,6 +90,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.move_path_renderer = new MovePathRenderer(this, ts);
         this.status_bar_renderer = new StatusBarRenderer(this, ts);
         this.right_panel_renderer = new RightPanelRenderer(this, ts);
+        this.attack_info_renderer = new AttackInformationRenderer(this);
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
         this.manager = new LocalGameManager();
@@ -188,6 +190,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         drawUnits();
         drawCursor();
         drawAnimation();
+        attack_info_renderer.render(batch);
         status_bar_renderer.drawStatusBar(batch, manager);
         right_panel_renderer.drawStatusBar(batch, manager);
         batch.end();
