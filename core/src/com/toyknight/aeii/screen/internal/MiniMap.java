@@ -1,7 +1,10 @@
 package com.toyknight.aeii.screen.internal;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Point;
@@ -20,6 +23,7 @@ public class MiniMap extends Table {
     private final int sts;
 
     private final GameScreen screen;
+    private final Button btn_close;
 
     private float state_time;
 
@@ -27,6 +31,14 @@ public class MiniMap extends Table {
         this.screen = screen;
         this.ts = screen.getContext().getTileSize();
         this.sts = ts / 24 * 10;
+        this.btn_close = new Button(screen.getContext().getSkin());
+        this.btn_close.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                MiniMap.this.setVisible(false);
+            }
+        });
+        this.addActor(btn_close);
     }
 
     private Map getMap() {
@@ -41,6 +53,7 @@ public class MiniMap extends Table {
                 (screen.getViewportWidth() - width) / 2,
                 (screen.getViewportHeight() - height) / 2 + ts,
                 width, height);
+        this.btn_close.setBounds(0, 0, getWidth(), getHeight());
     }
 
     public void update(float delta) {
@@ -49,6 +62,7 @@ public class MiniMap extends Table {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
         batch.draw(ResourceManager.getBorderDarkColor(), x, y, width, height);
         batch.draw(ResourceManager.getBorderLightColor(), x + 1, y + 1, width - 2, height - 2);
@@ -71,7 +85,6 @@ public class MiniMap extends Table {
             }
         }
         batch.flush();
-        super.draw(batch, parentAlpha);
     }
 
 }

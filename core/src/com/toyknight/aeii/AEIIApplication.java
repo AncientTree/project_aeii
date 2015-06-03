@@ -2,6 +2,7 @@ package com.toyknight.aeii;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -25,6 +26,8 @@ public class AEIIApplication extends Game {
     private final Platform PLATFORM;
 
     private Skin skin;
+
+    private Screen previous_screen;
 
     private LogoScreen logo_screen;
     private MainMenuScreen main_menu_screen;
@@ -91,8 +94,13 @@ public class AEIIApplication extends Game {
     }
 
     public void gotoMainMenuScreen() {
+        gotoScreen(main_menu_screen);
         main_menu_screen.show();
-        this.setScreen(main_menu_screen);
+    }
+
+    public void gotoScreen(Screen screen) {
+        this.previous_screen = getScreen();
+        this.setScreen(screen);
     }
 
     @Override

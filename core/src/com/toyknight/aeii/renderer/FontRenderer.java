@@ -18,7 +18,6 @@ public class FontRenderer {
 
     private static final int[] SIZE_TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE};
 
-    private static BitmapFont ui_font_title;
     private static BitmapFont ui_font_label;
     private static BitmapFont ui_font_text;
 
@@ -35,20 +34,13 @@ public class FontRenderer {
     public static void loadFonts(int ts) {
         String charset = Language.createCharset();
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
-        FreeTypeFontParameter title_parameter = new FreeTypeFontParameter();
-        title_parameter.size = ts / 2;
-        title_parameter.color = Color.WHITE;
-        title_parameter.borderColor = Color.BLACK;
-        title_parameter.borderWidth = 2;
-        title_parameter.characters = charset;
-        ui_font_title = generator.generateFont(title_parameter);
         FreeTypeFontParameter label_parameter = new FreeTypeFontParameter();
         label_parameter.size = ts / 3;
         label_parameter.color = Color.WHITE;
         label_parameter.borderColor = Color.BLACK;
-        label_parameter.borderWidth = 2;
+        label_parameter.borderWidth = ts / 24;
         label_parameter.borderStraight = true;
-        label_parameter.characters = charset;
+        //label_parameter.characters = charset;
         ui_font_label = generator.generateFont(label_parameter);
         generator.dispose();
 
@@ -60,10 +52,6 @@ public class FontRenderer {
         schar_height = ts / 24 * 7;
         lchar_width = ts / 24 * 8;
         lchar_height = ts / 24 * 11;
-    }
-
-    public static BitmapFont getTitleFont() {
-        return ui_font_title;
     }
 
     public static BitmapFont getLabelFont() {

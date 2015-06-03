@@ -191,8 +191,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         drawCursor();
         drawAnimation();
         attack_info_renderer.render(batch);
-        status_bar_renderer.drawStatusBar(batch, manager);
-        right_panel_renderer.drawStatusBar(batch, manager);
+        status_bar_renderer.drawStatusBar(batch);
+        right_panel_renderer.drawStatusBar(batch);
         batch.end();
         super.draw();
     }
@@ -364,16 +364,11 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchDown(screenX, screenY, pointer, button);
         if (!event_handled) {
-            if (mini_map.isVisible()) {
-                mini_map.setVisible(false);
-                onButtonUpdateRequested();
+            if (Platform.isMobileDevice(getContext().getPlatform())) {
+                this.pointer_x = screenX;
+                this.pointer_y = screenY;
             } else {
-                if (Platform.isMobileDevice(getContext().getPlatform())) {
-                    this.pointer_x = screenX;
-                    this.pointer_y = screenY;
-                } else {
-                    onClick(screenX, screenY, button);
-                }
+                onClick(screenX, screenY, button);
             }
         }
         return true;

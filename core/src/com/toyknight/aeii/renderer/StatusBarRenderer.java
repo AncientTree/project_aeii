@@ -2,6 +2,7 @@ package com.toyknight.aeii.renderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.player.LocalPlayer;
@@ -29,27 +30,31 @@ public class StatusBarRenderer {
         this.screen = screen;
     }
 
-    public void drawStatusBar(SpriteBatch batch, LocalGameManager manager) {
-        int current_team = manager.getGame().getCurrentTeam();
+    private GameManager getManager() {
+        return screen.getGameManager();
+    }
+
+    public void drawStatusBar(SpriteBatch batch) {
+        int current_team = getManager().getGame().getCurrentTeam();
         batch.draw(ResourceManager.getTeamBackground(current_team),
                 0, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth(), ts);
         batch.flush();
-        drawSelectedTile(batch, manager);
-        drawInformation(batch, manager);
+        drawSelectedTile(batch);
+        drawInformation(batch);
         BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
         BorderRenderer.drawBorder(batch, ts, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth() - ts, ts);
     }
 
-    private void drawInformation(SpriteBatch batch, LocalGameManager manager) {
-        int gold = manager.getGame().getCurrentPlayer().getGold();
-        int current_pop = manager.getGame().getCurrentPlayer().getPopulation();
-        int max_pop = manager.getGame().getRule().getMaxPopulation();
+    private void drawInformation(SpriteBatch batch) {
+        int gold = getManager().getGame().getCurrentPlayer().getGold();
+        int current_pop = getManager().getGame().getCurrentPlayer().getPopulation();
+        int max_pop = getManager().getGame().getRule().getMaxPopulation();
         //draw population
         batch.draw(ResourceManager.getStatusHudIcon(0), ts + margin_left, margin_bottom, hud_size, hud_size);
         FontRenderer.drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);
         //draw gold
         batch.draw(ResourceManager.getStatusHudIcon(1), ts + margin_left * 2 + hud_size + max_pop_width, margin_bottom, hud_size, hud_size);
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer) {
+        if (getManager().getGame().getCurrentPlayer() instanceof LocalPlayer) {
             FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
         } else {
             batch.draw(FontRenderer.getLMinus(), ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
@@ -57,15 +62,15 @@ public class StatusBarRenderer {
         batch.flush();
     }
 
-    private void drawSelectedTile(SpriteBatch batch, LocalGameManager manager) {
+    private void drawSelectedTile(SpriteBatch batch) {
         int cursor_x = screen.getCursorMapX();
         int cursor_y = screen.getCursorMapY();
         if (cursor_x >= 0 && cursor_y >= 0) {
-            short tile_index = manager.getGame().getMap().getTileIndex(cursor_x, cursor_y);
+            short tile_index = getManager().getGame().getMap().getTileIndex(cursor_x, cursor_y);
             batch.draw(ResourceManager.getTileTexture(tile_index), 0, 0, ts, ts);
             //draw defence bonus
             FontRenderer.drawTileDefenceBonus(
-                    batch, manager.getGame().getMap().getTile(cursor_x, cursor_y).getDefenceBonus(),
+                    batch, getManager().getGame().getMap().getTile(cursor_x, cursor_y).getDefenceBonus(),
                     (ts - FontRenderer.getSNumberWidth(99, true)) / 2, ts / 12);
         }
         batch.flush();
