@@ -29,17 +29,21 @@ public class UnitActionFinishEvent implements GameEvent, Serializable {
 
     @Override
     public boolean canExecute(GameCore game) {
-        return game.getMap().getUnit(target_x, target_y) != null;
+        return true;
     }
 
     @Override
     public void execute(GameManager manager) {
         Unit unit = manager.getGame().getMap().getUnit(target_x, target_y);
-        if (UnitToolkit.canMoveAgain(unit)) {
-            manager.beginRemovePhase();
-        } else {
+        if(unit == null) {
             manager.setState(GameManager.STATE_SELECT);
-            unit.setStandby(true);
+        } else {
+            if (UnitToolkit.canMoveAgain(unit)) {
+                manager.beginRemovePhase();
+            } else {
+                manager.setState(GameManager.STATE_SELECT);
+                unit.setStandby(true);
+            }
         }
     }
 

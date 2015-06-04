@@ -239,6 +239,8 @@ public abstract class GameManager implements AnimationDispatcher {
     }
 
     private void createMoveMarkMap() {
+        this.move_path = null;
+        this.movable_positions = null;
         int width = getGame().getMap().getWidth();
         int height = getGame().getMap().getHeight();
         move_mark_map = new int[width][height];

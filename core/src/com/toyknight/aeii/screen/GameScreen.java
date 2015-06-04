@@ -62,7 +62,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private int pointer_y;
     private int cursor_map_x;
     private int cursor_map_y;
-    private boolean dragged;
+    private int press_map_x;
+    private int press_map_y;
 
     private final TextField command_line;
     private TextButton btn_menu;
@@ -313,7 +314,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public void show(GameCore game) {
         this.manager.setGame(game);
         this.locateViewport(0, 0);
-        this.dragged = false;
         cursor_map_x = 0;
         cursor_map_y = 0;
         show();
@@ -367,6 +367,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             if (Platform.isMobileDevice(getContext().getPlatform())) {
                 this.pointer_x = screenX;
                 this.pointer_y = screenY;
+                this.press_map_x = createCursorMapX(screenX);
+                this.press_map_y = createCursorMapY(screenY);
             } else {
                 onClick(screenX, screenY, button);
             }
@@ -376,7 +378,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
-        if (!event_handled && dragged == false && Platform.isMobileDevice(getContext().getPlatform())) {
+        if (!event_handled && Platform.isMobileDevice(getContext().getPlatform())) {
             boolean processed = false;
             int map_x = createCursorMapX(screenX);
             int map_y = createCursorMapY(screenY);
@@ -403,8 +405,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             if (!processed) {
                 onClick(screenX, screenY, button);
             }
-        } else {
-            this.dragged = false;
         }
         return true;
     }
@@ -433,7 +433,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     private void onDrag(int drag_x, int drag_y) {
         if (Platform.isMobileDevice(getContext().getPlatform())) {
-            dragged = true;
             if (canOperate()) {
                 int delta_x = pointer_x - drag_x;
                 int delta_y = pointer_y - drag_y;
@@ -452,13 +451,23 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private void onClick(int screen_x, int screen_y, int button) {
         if (0 <= screen_x && screen_x <= viewport.width && 0 <= screen_y && screen_y <= viewport.height) {
             if (Platform.isMobileDevice(getContext().getPlatform())) {
-                int new_cursor_map_x = createCursorMapX(screen_x);
-                int new_cursor_map_y = createCursorMapY(screen_y);
-                if (new_cursor_map_x == getCursorMapX() && new_cursor_map_y == getCursorMapY()) {
-                    doClick();
-                } else {
-                    this.cursor_map_x = new_cursor_map_x;
-                    this.cursor_map_y = new_cursor_map_y;
+                int release_map_x = createCursorMapX(screen_x);
+                int release_map_y = createCursorMapY(screen_y);
+                if (press_map_x == release_map_x && press_map_y == release_map_y) {
+                    if (getGameManager().getState() == GameManager.STATE_MOVE ||
+                            getGameManager().getState() == GameManager.STATE_REMOVE ||
+                            getGameManager().getState() == GameManager.STATE_ATTACK) {
+                        if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
+                            doClick();
+                        } else {
+                            this.cursor_map_x = release_map_x;
+                            this.cursor_map_y = release_map_y;
+                        }
+                    } else {
+                        this.cursor_map_x = release_map_x;
+                        this.cursor_map_y = release_map_y;
+                        doClick();
+                    }
                 }
             } else {
                 if (button == Input.Buttons.LEFT) {
@@ -716,21 +725,21 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         int map_width = getGame().getMap().getWidth() * ts;
         int map_height = getGame().getMap().getHeight() * ts;
         if (viewport.width < map_width) {
-            if (0 <= viewport.x + delta_x
-                    && viewport.x + delta_x <= map_width - viewport.width) {
+            if (-ts <= viewport.x + delta_x
+                    && viewport.x + delta_x <= map_width - viewport.width + ts) {
                 viewport.x += delta_x;
             } else {
-                viewport.x = viewport.x + delta_x < 0 ? 0 : map_width - viewport.width;
+                viewport.x = viewport.x + delta_x < -ts ? -ts : map_width - viewport.width + ts;
             }
         } else {
             viewport.x = (map_width - viewport.width) / 2;
         }
         if (viewport.height < map_height) {
-            if (0 <= viewport.y + delta_y
-                    && viewport.y + delta_y <= map_height - viewport.height) {
+            if (-ts <= viewport.y + delta_y
+                    && viewport.y + delta_y <= map_height - viewport.height + ts) {
                 viewport.y += delta_y;
             } else {
-                viewport.y = viewport.y + delta_y < 0 ? 0 : map_height - viewport.height;
+                viewport.y = viewport.y + delta_y < -ts ? -ts : map_height - viewport.height + ts;
             }
         } else {
             viewport.y = (map_height - viewport.height) / 2;

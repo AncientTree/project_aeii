@@ -29,10 +29,9 @@ public class AndroidLauncher extends AndroidApplication {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
-
-        if (height <= 800) {
+        if (height <= 540) {
             return 48;
-        } else if (height >= 1920) {
+        } else if (height >= 1080) {
             return 96;
         } else {
             return 72;
