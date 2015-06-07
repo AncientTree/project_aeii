@@ -30,6 +30,8 @@ public class UnitStore extends Table implements UnitListListener {
 
     private final int ts;
     private final GameScreen screen;
+    private final int UNIT_STORE_WIDTH;
+    private final int UNIT_STORE_HEIGHT;
 
     private TextButton btn_buy;
     private AvailableUnitList unit_list;
@@ -43,10 +45,16 @@ public class UnitStore extends Table implements UnitListListener {
     public UnitStore(final GameScreen screen, Skin skin) {
         this.screen = screen;
         this.ts = screen.getContext().getTileSize();
+        this.UNIT_STORE_WIDTH = 11 * ts;
+        this.UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
         this.initComponents(skin);
     }
 
     private void initComponents(Skin skin) {
+        this.setBounds(
+                (screen.getViewportWidth() - UNIT_STORE_WIDTH) / 2,
+                (screen.getViewportHeight() - UNIT_STORE_HEIGHT) / 2 + ts,
+                UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
         this.btn_buy = new TextButton(Language.getText("LB_BUY"), skin);
         this.btn_buy.setBounds(ts * 6, ts / 2, ts * 2, ts / 2);
         this.btn_buy.addListener(new ClickListener() {

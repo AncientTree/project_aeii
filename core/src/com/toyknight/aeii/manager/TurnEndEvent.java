@@ -27,6 +27,7 @@ public class TurnEndEvent implements GameEvent, Serializable {
 
     @Override
     public void execute(GameManager manager) {
+        manager.setState(GameManager.STATE_SELECT);
         GameCore game = manager.getGame();
         game.nextTurn();
         int income = game.gainIncome(game.getCurrentTeam());

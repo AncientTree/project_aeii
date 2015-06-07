@@ -6,6 +6,7 @@ import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +14,9 @@ import java.util.Set;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class GameCore {
+public class GameCore implements Serializable {
+
+    private static final long serialVersionUID = 04032015L;
 
     private final Map map;
     private final Rule rule;

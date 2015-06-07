@@ -1,9 +1,13 @@
 package com.toyknight.aeii.entity.player;
 
+import java.io.Serializable;
+
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class Player {
+public class Player implements Serializable {
+
+    private static final long serialVersionUID = 04032015L;
 
     private int alliance = 0;
     private int gold = 0;

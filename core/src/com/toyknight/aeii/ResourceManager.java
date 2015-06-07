@@ -49,6 +49,11 @@ public class ResourceManager {
     private static TextureRegion[] big_circle_texture;
     private static TextureRegion[] small_circle_texture;
 
+    private static TextureRegion up_arrow;
+    private static TextureRegion down_arrow;
+    private static TextureRegion left_arrow;
+    private static TextureRegion right_arrow;
+
     private static TextureRegion[] action_icons;
     private static TextureRegion[] hud_icons_battle;
     private static TextureRegion[] hud_icons_status;
@@ -95,6 +100,7 @@ public class ResourceManager {
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
             loadCircles();
+            loadArrows();
             loadIcons();
             menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
@@ -160,6 +166,15 @@ public class ResourceManager {
         big_circle_texture = createFrames(big_circle_sheet, 2, 1);
         Texture small_circle_sheet = new Texture(FileProvider.getAssetsFile("images/small_circle.png"));
         small_circle_texture = createFrames(small_circle_sheet, 2, 1);
+    }
+
+    private static void loadArrows() {
+        TextureRegion[] up_down_arrows = createFrames(new Texture(FileProvider.getAssetsFile("images/arrow_updown.png")), 2, 1);
+        up_arrow = up_down_arrows[0];
+        down_arrow = up_down_arrows[1];
+        TextureRegion[] left_right_arrows = createFrames(new Texture(FileProvider.getAssetsFile("images/arrow_leftright.png")), 1, 2);
+        right_arrow = left_right_arrows[0];
+        left_arrow = left_right_arrows[1];
     }
 
     private static void loadIcons() {
@@ -291,6 +306,22 @@ public class ResourceManager {
 
     public static TextureRegion getSmallCircleTexture(int index) {
         return small_circle_texture[index];
+    }
+
+    public static TextureRegion getUpArrow() {
+        return up_arrow;
+    }
+
+    public static TextureRegion getDownArrow() {
+        return down_arrow;
+    }
+
+    public static TextureRegion getLeftArrow() {
+        return left_arrow;
+    }
+
+    public static TextureRegion getRightArrow() {
+        return right_arrow;
     }
 
     public static TextureRegion getActionIcon(int index) {

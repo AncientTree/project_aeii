@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Point implements Serializable {
 
-    private static final long serialVersionUID = 05262015L;
+    private static final long serialVersionUID = 04032015L;
 
     public int x;
     public int y;

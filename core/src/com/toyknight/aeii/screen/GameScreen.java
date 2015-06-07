@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -19,12 +20,8 @@ import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
-import com.toyknight.aeii.screen.internal.ActionButtonBar;
-import com.toyknight.aeii.screen.internal.GameMenu;
-import com.toyknight.aeii.screen.internal.MiniMap;
-import com.toyknight.aeii.screen.internal.UnitStore;
+import com.toyknight.aeii.screen.internal.*;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.utils.Platform;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -37,8 +34,7 @@ import java.util.Set;
 public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     private final int ts;
-    private final int UNIT_STORE_WIDTH;
-    private final int UNIT_STORE_HEIGHT;
+
     private final int RIGHT_PANEL_WIDTH;
     private final AEIIApplication context;
 
@@ -69,6 +65,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private TextButton btn_menu;
     private TextButton btn_end_turn;
     private ActionButtonBar action_button_bar;
+    private SaveLoadDialog save_load_dialog;
     private UnitStore unit_store;
     private MiniMap mini_map;
     private GameMenu menu;
@@ -76,8 +73,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public GameScreen(AEIIApplication context) {
         this.context = context;
         this.ts = context.getTileSize();
-        this.UNIT_STORE_WIDTH = 11 * ts;
-        this.UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
         this.RIGHT_PANEL_WIDTH = 3 * ts;
 
         this.viewport = new MapViewport();
@@ -137,11 +132,14 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.action_button_bar.setPosition(0, ts * 2);
         this.addActor(action_button_bar);
 
+        //save load dialog
+        this.save_load_dialog =
+                new SaveLoadDialog(getContext(), new Rectangle(0, ts, getViewportWidth(), getViewportHeight()));
+        this.addActor(save_load_dialog);
+        this.save_load_dialog.setVisible(false);
+
         //unit store
         this.unit_store = new UnitStore(this, getContext().getSkin());
-        this.unit_store.setBounds(
-                (viewport.width - UNIT_STORE_WIDTH) / 2, (viewport.height - UNIT_STORE_HEIGHT) / 2 + ts,
-                UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
         this.addActor(unit_store);
         this.unit_store.setVisible(false);
 
@@ -311,7 +309,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         menu.setVisible(false);
     }
 
-    public void show(GameCore game) {
+    public void prepare(GameCore game) {
         this.manager.setGame(game);
         this.locateViewport(0, 0);
         cursor_map_x = 0;
@@ -363,47 +361,51 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchDown(screenX, screenY, pointer, button);
-        if (!event_handled) {
-            if (Platform.isMobileDevice(getContext().getPlatform())) {
-                this.pointer_x = screenX;
-                this.pointer_y = screenY;
-                this.press_map_x = createCursorMapX(screenX);
-                this.press_map_y = createCursorMapY(screenY);
-            } else {
-                onClick(screenX, screenY, button);
-            }
+        if (!event_handled && canOperate()) {
+            this.pointer_x = screenX;
+            this.pointer_y = screenY;
+            this.press_map_x = createCursorMapX(screenX);
+            this.press_map_y = createCursorMapY(screenY);
         }
         return true;
     }
 
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
-        if (!event_handled && Platform.isMobileDevice(getContext().getPlatform())) {
-            boolean processed = false;
-            int map_x = createCursorMapX(screenX);
-            int map_y = createCursorMapY(screenY);
-            switch (manager.getState()) {
-                case GameManager.STATE_MOVE:
-                    if (!manager.getMovablePositions().contains(getGame().getMap().getPosition(map_x, map_y))) {
-                        manager.moveSelectedUnit(map_x, map_y);
+        if (!event_handled && canOperate()) {
+            if (button == Input.Buttons.LEFT) {
+                boolean processed = false;
+                int map_x = createCursorMapX(screenX);
+                int map_y = createCursorMapY(screenY);
+                switch (manager.getState()) {
+                    case GameManager.STATE_MOVE:
+                        if (!manager.getMovablePositions().contains(getGame().getMap().getPosition(map_x, map_y))) {
+                            manager.moveSelectedUnit(map_x, map_y);
+                            processed = true;
+                        }
+                        break;
+                    case GameManager.STATE_ACTION:
+                        manager.reverseMove();
                         processed = true;
-                    }
-                    break;
-                case GameManager.STATE_ACTION:
-                    manager.reverseMove();
-                    processed = true;
-                    break;
-                case GameManager.STATE_ATTACK:
-                case GameManager.STATE_SUMMON:
-                case GameManager.STATE_HEAL:
-                    if (!UnitToolkit.isWithinRange(manager.getSelectedUnit(), map_x, map_y)) {
-                        manager.cancelActionPhase();
-                        processed = true;
-                    }
-                    break;
+                        break;
+                    case GameManager.STATE_ATTACK:
+                    case GameManager.STATE_SUMMON:
+                    case GameManager.STATE_HEAL:
+                        if (!UnitToolkit.isWithinRange(manager.getSelectedUnit(), map_x, map_y)) {
+                            manager.cancelActionPhase();
+                            processed = true;
+                        }
+                        break;
+                }
+                if (!processed) {
+                    onClick(screenX, screenY);
+                }
+            } else {
+                doCancel();
             }
-            if (!processed) {
-                onClick(screenX, screenY, button);
+        } else {
+            if (!event_handled && isWindowOpened()) {
+                closeAllWindows();
             }
         }
         return true;
@@ -421,7 +423,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     public boolean mouseMoved(int screenX, int screenY) {
         boolean event_handled = super.mouseMoved(screenX, screenY);
         if (!event_handled) {
-            if (canOperate() && 0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
+            if (canOperate() && getGameManager().getState() != GameManager.STATE_ACTION &&
+                    0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
                 this.pointer_x = screenX;
                 this.pointer_y = screenY;
                 this.cursor_map_x = createCursorMapX(pointer_x);
@@ -432,49 +435,33 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     private void onDrag(int drag_x, int drag_y) {
-        if (Platform.isMobileDevice(getContext().getPlatform())) {
-            if (canOperate()) {
-                int delta_x = pointer_x - drag_x;
-                int delta_y = pointer_y - drag_y;
-                dragViewport(delta_x, delta_y);
-                pointer_x = drag_x;
-                pointer_y = drag_y;
-            }
-        } else {
-            /*pointer_x = drag_x;
+        if (canOperate()) {
+            int delta_x = pointer_x - drag_x;
+            int delta_y = pointer_y - drag_y;
+            dragViewport(delta_x, delta_y);
+            pointer_x = drag_x;
             pointer_y = drag_y;
-            this.cursor_map_x = createCursorMapX(pointer_x);
-            this.cursor_map_y = createCursorMapY(pointer_y);*/
         }
     }
 
-    private void onClick(int screen_x, int screen_y, int button) {
+    private void onClick(int screen_x, int screen_y) {
         if (0 <= screen_x && screen_x <= viewport.width && 0 <= screen_y && screen_y <= viewport.height) {
-            if (Platform.isMobileDevice(getContext().getPlatform())) {
-                int release_map_x = createCursorMapX(screen_x);
-                int release_map_y = createCursorMapY(screen_y);
-                if (press_map_x == release_map_x && press_map_y == release_map_y) {
-                    if (getGameManager().getState() == GameManager.STATE_MOVE ||
-                            getGameManager().getState() == GameManager.STATE_REMOVE ||
-                            getGameManager().getState() == GameManager.STATE_ATTACK) {
-                        if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
-                            doClick();
-                        } else {
-                            this.cursor_map_x = release_map_x;
-                            this.cursor_map_y = release_map_y;
-                        }
+            int release_map_x = createCursorMapX(screen_x);
+            int release_map_y = createCursorMapY(screen_y);
+            if (press_map_x == release_map_x && press_map_y == release_map_y) {
+                if (getGameManager().getState() == GameManager.STATE_MOVE ||
+                        getGameManager().getState() == GameManager.STATE_REMOVE ||
+                        getGameManager().getState() == GameManager.STATE_ATTACK) {
+                    if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
+                        doClick();
                     } else {
                         this.cursor_map_x = release_map_x;
                         this.cursor_map_y = release_map_y;
-                        doClick();
                     }
-                }
-            } else {
-                if (button == Input.Buttons.LEFT) {
+                } else {
+                    this.cursor_map_x = release_map_x;
+                    this.cursor_map_y = release_map_y;
                     doClick();
-                }
-                if (button == Input.Buttons.RIGHT) {
-                    doCancel();
                 }
             }
         }
@@ -560,10 +547,28 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         onButtonUpdateRequested();
     }
 
+    public void showSaveDialog() {
+        closeAllWindows();
+        save_load_dialog.display(SaveLoadDialog.MODE_SAVE);
+        onButtonUpdateRequested();
+    }
+
+    public void showLoadDialog() {
+        closeAllWindows();
+        save_load_dialog.display(SaveLoadDialog.MODE_LOAD);
+        onButtonUpdateRequested();
+    }
+
+    public boolean isWindowOpened() {
+        return save_load_dialog.isVisible() || unit_store.isVisible() || mini_map.isVisible() || menu.isVisible();
+    }
+
     public void closeAllWindows() {
+        save_load_dialog.setVisible(false);
         unit_store.setVisible(false);
         mini_map.setVisible(false);
         menu.setVisible(false);
+        onButtonUpdateRequested();
     }
 
     public void onMapFocusRequired(int map_x, int map_y) {
@@ -577,8 +582,10 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     public void onButtonUpdateRequested() {
+        int state = getGameManager().getState();
         this.action_button_bar.updateButtons();
-        AEIIApplication.setButtonEnabled(btn_end_turn, canOperate());
+        AEIIApplication.setButtonEnabled(btn_end_turn,
+                canOperate() && (state == GameManager.STATE_SELECT || state == GameManager.STATE_PREVIEW));
         AEIIApplication.setButtonEnabled(btn_menu, !menu.isVisible());
     }
 
@@ -597,6 +604,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
 
     private boolean canOperate() {
         return manager.getCurrentAnimation() == null &&
+                !save_load_dialog.isVisible() &&
                 !unit_store.isVisible() &&
                 !mini_map.isVisible() &&
                 !menu.isVisible() &&

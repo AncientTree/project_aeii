@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.toyknight.aeii.animator.Animator;
@@ -68,10 +67,9 @@ public class AEIIApplication extends Game {
                 players[i].setGold(1000);
             }
             GameCore game = new GameCore(map, Rule.getDefaultRule(), players);
-            game_screen.show(game);
-            this.setScreen(game_screen);
+            gotoGameScreen(game);
 
-//            this.setScreen(logo_screen);
+            //this.setScreen(logo_screen);
         } catch (AEIIException ex) {
             System.err.println("ERROR: " + ex.getMessage());
         }
@@ -96,6 +94,15 @@ public class AEIIApplication extends Game {
     public void gotoMainMenuScreen() {
         gotoScreen(main_menu_screen);
         main_menu_screen.show();
+    }
+
+    public void gotoGameScreen(GameCore game) {
+        game_screen.prepare(game);
+        gotoScreen(game_screen);
+    }
+
+    public void gotoPreviousScreen() {
+        this.gotoScreen(previous_screen);
     }
 
     public void gotoScreen(Screen screen) {

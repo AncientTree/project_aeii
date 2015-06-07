@@ -64,8 +64,8 @@ public class CircleButton extends Button {
                 batch.draw(ResourceManager.getBigCircleTexture(circle_index), x, y, width, height);
                 break;
         }
-        int icon_height = ts / 24 * 16;
-        int icon_width = icon_height * icon.getRegionWidth() / icon.getRegionHeight();
+        float icon_height = height / 21 * 16;
+        float icon_width = icon_height * icon.getRegionWidth() / icon.getRegionHeight();
         float dx = (width - icon_width) / 2;
         float dy = (height - icon_height) / 2;
         batch.draw(icon, x + dx, y + dy, icon_width, icon_height);

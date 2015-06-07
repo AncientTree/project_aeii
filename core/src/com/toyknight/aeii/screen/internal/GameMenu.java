@@ -58,10 +58,22 @@ public class GameMenu extends Table {
         this.btn_objective = new TextButton(Language.getText("LB_OBJECTIVE"), getContext().getSkin());
         this.add(btn_objective).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
+        this.btn_load.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                screen.showLoadDialog();
+            }
+        });
         this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
+        this.btn_save.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                screen.showSaveDialog();
+            }
+        });
         this.add(btn_save).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        this.btn_exit = new TextButton(Language.getText("LB_EXIT_TO_MAIN_MENU"), getContext().getSkin());
+        this.btn_exit = new TextButton(Language.getText("LB_EXIT_GAME"), getContext().getSkin());
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_resume = new TextButton(Language.getText("LB_RESUME"), getContext().getSkin());
         this.btn_resume.addListener(new ClickListener() {

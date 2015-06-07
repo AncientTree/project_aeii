@@ -36,6 +36,7 @@ public class MiniMap extends Table {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 MiniMap.this.setVisible(false);
+                MiniMap.this.screen.onButtonUpdateRequested();
             }
         });
         this.addActor(btn_close);

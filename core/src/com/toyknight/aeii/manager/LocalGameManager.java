@@ -101,7 +101,7 @@ public class LocalGameManager extends GameManager {
     @Override
     public void doSummon(int target_x, int target_y) {
         Unit summoner = getSelectedUnit();
-        if (isActionPhase() && UnitToolkit.isWithinRange(summoner, target_x, target_y)) {
+        if (isActionPhase() && UnitToolkit.isWithinRange(summoner, target_x, target_y) && getGame().canSummon(target_x, target_y)) {
             int experience = getGame().getRule().getAttackExperience();
             submitGameEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
             submitGameEvent(new UnitActionFinishEvent(summoner.getX(), summoner.getY()));

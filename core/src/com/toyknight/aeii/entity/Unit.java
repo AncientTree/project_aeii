@@ -2,12 +2,15 @@ package com.toyknight.aeii.entity;
 
 import com.toyknight.aeii.utils.UnitFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class Unit {
+public class Unit implements Serializable {
+
+    private static final long serialVersionUID = 04032015L;
 
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGICAL = 1;
@@ -18,7 +21,7 @@ public class Unit {
 
     private int price;
 
-    private int level;     //????????0????????3??
+    private int level;
     private int experience = 0;
 
     private final String unit_code;
@@ -27,7 +30,7 @@ public class Unit {
     private int max_hp;
     private int current_hp;
     private int attack;
-    private int attack_type;  //???????0?????????1????????
+    private int attack_type;
     private int physical_defence;
     private int magical_defence;
     private int movement_point;
@@ -45,12 +48,11 @@ public class Unit {
     private int x_position;
     private int y_position;
 
-    private int max_attack_range;  //??????
-    private int min_attack_range;   //??????
+    private int max_attack_range;
+    private int min_attack_range;
 
     private boolean is_standby;
 
-    //private final Object BUFF_LOCK = new Object();
     public Unit(int index, String unit_package, String unit_code) {
         this.level = 0;
         this.index = index;

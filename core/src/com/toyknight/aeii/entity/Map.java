@@ -3,6 +3,7 @@ package com.toyknight.aeii.entity;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +12,9 @@ import java.util.Set;
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class Map {
+public class Map implements Serializable {
+
+    private static final long serialVersionUID = 04032015L;
 
     private final String author;
     private final boolean[] team_access;

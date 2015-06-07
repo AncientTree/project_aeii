@@ -18,12 +18,14 @@ import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.widgets.CircleButton;
+import com.toyknight.aeii.utils.Platform;
 
 /**
  * Created by toyknight on 4/26/2015.
  */
 public class ActionButtonBar extends HorizontalGroup {
 
+    private final int ts;
     private final GameScreen screen;
     private final LocalGameManager manager;
     private final int PADDING_LEFT;
@@ -44,16 +46,17 @@ public class ActionButtonBar extends HorizontalGroup {
     public ActionButtonBar(GameScreen screen, LocalGameManager manager) {
         this.screen = screen;
         this.manager = manager;
+        this.ts = screen.getContext().getTileSize();
         this.PADDING_LEFT = screen.getContext().getTileSize() / 4;
-        this.BUTTON_WIDTH = screen.getContext().getTileSize() / 24 * 20;
-        this.BUTTON_HEIGHT = screen.getContext().getTileSize() / 24 * 21;
+        this.BUTTON_WIDTH = getPlatform() == Platform.Desktop ? ts / 24 * 20 : ts / 24 * 40;
+        this.BUTTON_HEIGHT = getPlatform() == Platform.Desktop ? ts / 24 * 21 : ts / 24 * 42;
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
         initComponents();
     }
 
     private void initComponents() {
-        int ts = screen.getContext().getTileSize();
+
         btn_buy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(0), ts);
         btn_occupy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
         btn_occupy.addListener(new ClickListener() {
@@ -97,6 +100,10 @@ public class ActionButtonBar extends HorizontalGroup {
             }
         });
         btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
+    }
+
+    private Platform getPlatform() {
+        return screen.getContext().getPlatform();
     }
 
     public void updateButtons() {

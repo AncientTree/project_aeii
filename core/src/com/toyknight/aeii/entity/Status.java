@@ -1,9 +1,13 @@
 package com.toyknight.aeii.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by toyknight on 4/3/2015.
  */
-public class Status {
+public class Status implements Serializable {
+
+    private static final long serialVersionUID = 04032015L;
 
     public static final int POISONED = 0x1;
 

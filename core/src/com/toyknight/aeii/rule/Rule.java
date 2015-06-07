@@ -2,13 +2,16 @@ package com.toyknight.aeii.rule;
 
 import com.toyknight.aeii.utils.UnitFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by toyknight on 4/15/2015.
  */
-public class Rule {
+public class Rule implements Serializable {
+
+    private static final long serialVersionUID = 04152015L;
 
     private int poison_damage;
 
