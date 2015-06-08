@@ -229,4 +229,8 @@ public class Map implements Serializable {
         return team_access[team];
     }
 
+    public void setTeamAccess(int team, boolean access) {
+        team_access[team] = access;
+    }
+
 }
