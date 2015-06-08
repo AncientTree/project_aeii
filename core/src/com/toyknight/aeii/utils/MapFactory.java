@@ -48,9 +48,13 @@ public class MapFactory {
             }
             fis.close();
             return map;
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             throw new AEIIException("broken map file!");
         }
+    }
+
+    public static void writeMap(Map map, String file_name) {
+
     }
 
 }
