@@ -25,7 +25,7 @@ public class AELogoAnimator extends ScreenAnimator {
         batch.begin();
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
         int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH) / 2;
-        int draw_y = (Gdx.app.getGraphics().getHeight() - HEIGHT) / 2;
+        int draw_y = Gdx.app.getGraphics().getHeight() - HEIGHT;
         batch.draw(current_frame, draw_x, draw_y);
         batch.end();
     }

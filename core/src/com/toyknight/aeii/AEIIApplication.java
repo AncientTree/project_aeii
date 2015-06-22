@@ -17,6 +17,7 @@ import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.LogoScreen;
 import com.toyknight.aeii.screen.MainMenuScreen;
+import com.toyknight.aeii.screen.TestScreen;
 import com.toyknight.aeii.utils.*;
 
 public class AEIIApplication extends Game {
@@ -30,6 +31,7 @@ public class AEIIApplication extends Game {
 
     private LogoScreen logo_screen;
     private MainMenuScreen main_menu_screen;
+    private TestScreen test_screen;
     private GameScreen game_screen;
 
     public AEIIApplication(Platform platform, int ts) {
@@ -53,23 +55,13 @@ public class AEIIApplication extends Game {
             skin.get(List.ListStyle.class).font = FontRenderer.getLabelFont();
 
             logo_screen = new LogoScreen(this);
-            main_menu_screen = new MainMenuScreen();
+            main_menu_screen = new MainMenuScreen(this);
+            test_screen = new TestScreen(this);
             game_screen = new GameScreen(this);
 
             Animator.setTileSize(getTileSize());
 
-            //for test only
-            Map map = MapFactory.createMap(FileProvider.getAssetsFile("map/test.aem"));
-            Player[] players = new Player[4];
-            for (int i = 0; i < 4; i++) {
-                players[i] = new LocalPlayer();
-                players[i].setAlliance(i);
-                players[i].setGold(1000);
-            }
-            GameCore game = new GameCore(map, Rule.getDefaultRule(), players);
-            gotoGameScreen(game);
-
-            //this.setScreen(logo_screen);
+            this.setScreen(logo_screen);
         } catch (AEIIException ex) {
             System.err.println("ERROR: " + ex.getMessage());
         }
@@ -97,8 +89,13 @@ public class AEIIApplication extends Game {
     }
 
     public void gotoGameScreen(GameCore game) {
+        AudioManager.stopCurrentBGM();
         game_screen.prepare(game);
         gotoScreen(game_screen);
+    }
+
+    public void gotoTestScreen() {
+        gotoScreen(test_screen);
     }
 
     public void gotoPreviousScreen() {

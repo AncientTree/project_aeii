@@ -101,6 +101,7 @@ public class AvailableUnitList extends Widget implements Cullable {
         this.cullingArea = cullingArea;
     }
 
+    @Override
     public float getPrefWidth() {
         validate();
         return prefWidth;

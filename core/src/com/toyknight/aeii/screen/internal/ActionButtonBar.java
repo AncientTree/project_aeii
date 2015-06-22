@@ -113,11 +113,16 @@ public class ActionButtonBar extends HorizontalGroup {
             switch (manager.getState()) {
                 case LocalGameManager.STATE_ACTION:
                     if (manager.canSelectUnitAct()) {
-                        addActor(btn_attack);
-                        if (selected_unit.hasAbility(Ability.NECROMANCER)) {
+                        manager.createAttackablePositions(selected_unit);
+                        if (manager.hasEnemyWithinRange(selected_unit)) {
+                            addActor(btn_attack);
+                        }
+                        if (selected_unit.hasAbility(Ability.NECROMANCER)
+                                && manager.hasTombWithinRange(selected_unit)) {
                             addActor(btn_summon);
                         }
-                        if (selected_unit.hasAbility(Ability.HEALER)) {
+                        if (selected_unit.hasAbility(Ability.HEALER)
+                                && manager.hasAllyWithinRange(selected_unit)) {
                             addActor(btn_heal);
                         }
                         if (manager.getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {

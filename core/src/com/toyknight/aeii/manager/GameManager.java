@@ -373,7 +373,7 @@ public abstract class GameManager implements AnimationDispatcher {
         }
     }
 
-    private void createAttackablePositions(Unit unit) {
+    public void createAttackablePositions(Unit unit) {
         int unit_x = unit.getX();
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
@@ -392,6 +392,35 @@ public abstract class GameManager implements AnimationDispatcher {
                 }
             }
         }
+    }
+
+    public boolean hasEnemyWithinRange(Unit unit) {
+        for (Point point : attackable_positions) {
+            Unit target = getGame().getMap().getUnit(point.x, point.y);
+            if (getGame().isEnemy(unit, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAllyWithinRange(Unit unit) {
+        for (Point point : attackable_positions) {
+            Unit target = getGame().getMap().getUnit(point.x, point.y);
+            if (target != null && !getGame().isEnemy(unit, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasTombWithinRange(Unit unit) {
+        for (Point point : attackable_positions) {
+            if (getGame().getMap().isTomb(point.x, point.y)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

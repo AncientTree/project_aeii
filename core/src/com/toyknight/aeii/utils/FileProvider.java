@@ -25,7 +25,21 @@ public class FileProvider {
                 return Gdx.files.internal(path);
             case Desktop:
             default:
-                return Gdx.files.internal("assets/" + path);
+                return Gdx.files.local("assets/" + path);
+        }
+    }
+
+    public static FileHandle getUserFile(String path) {
+        return Gdx.files.local("user/" + path);
+    }
+
+    public static FileHandle getUserDir(String path) {
+        FileHandle dir = Gdx.files.local("user/" + path);
+        if (dir.exists() && dir.isDirectory()) {
+            return dir;
+        } else {
+            dir.mkdirs();
+            return dir;
         }
     }
 

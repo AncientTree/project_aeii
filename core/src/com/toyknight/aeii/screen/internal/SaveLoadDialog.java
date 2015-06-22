@@ -20,8 +20,9 @@ public class SaveLoadDialog extends Table {
     public static final int MODE_LOAD = 0x2;
 
     private final int ts;
+    private final int SLOT_WIDTH;
     private final int SLOT_HEIGHT;
-    private final int TOP_BAR_HEIGHT;
+    private final int RIGHT_PANEL_WIDTH;
     private final AEIIApplication context;
 
     private int mode;
@@ -31,14 +32,15 @@ public class SaveLoadDialog extends Table {
     public SaveLoadDialog(AEIIApplication context, Rectangle parent_bounds) {
         this.context = context;
         this.ts = getContext().getTileSize();
-        this.SLOT_HEIGHT = ts * 3;
-        this.TOP_BAR_HEIGHT = ts / 24 * 14 / 2 * 3;
+        this.SLOT_WIDTH = ts * 3;
+        this.SLOT_HEIGHT = ts * 2;
+        this.RIGHT_PANEL_WIDTH = ts * 5;
         this.initComponents(parent_bounds);
     }
 
     private void initComponents(Rectangle parent_bounds) {
-        int width = ts * 6;
-        int height = TOP_BAR_HEIGHT + SLOT_HEIGHT;
+        int width = SLOT_WIDTH + RIGHT_PANEL_WIDTH;
+        int height = SLOT_HEIGHT * 3;
         this.setBounds(
                 parent_bounds.x + (parent_bounds.width - width) / 2,
                 parent_bounds.y + (parent_bounds.height - height) / 2,
@@ -78,9 +80,9 @@ public class SaveLoadDialog extends Table {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(ResourceManager.getPanelBackground(), x, y, width, TOP_BAR_HEIGHT + SLOT_HEIGHT);
-        BorderRenderer.drawBorder(batch, x, y + SLOT_HEIGHT, width, TOP_BAR_HEIGHT);
-        BorderRenderer.drawBorder(batch, x, y, width, SLOT_HEIGHT);
+//        batch.draw(ResourceManager.getPanelBackground(), x, y, width, TOP_BAR_HEIGHT + SLOT_HEIGHT);
+//        BorderRenderer.drawBorder(batch, x, y + SLOT_HEIGHT, width, TOP_BAR_HEIGHT);
+//        BorderRenderer.drawBorder(batch, x, y, width, SLOT_HEIGHT);
         batch.flush();
         super.draw(batch, parentAlpha);
     }

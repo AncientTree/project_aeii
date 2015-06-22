@@ -61,7 +61,7 @@ public class GameMenu extends Table {
         this.btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                screen.showLoadDialog();
+                //screen.showLoadDialog();
             }
         });
         this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -69,11 +69,17 @@ public class GameMenu extends Table {
         this.btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                screen.showSaveDialog();
+                //screen.showSaveDialog();
             }
         });
         this.add(btn_save).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_exit = new TextButton(Language.getText("LB_EXIT_GAME"), getContext().getSkin());
+        this.btn_exit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().gotoMainMenuScreen();
+            }
+        });
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_resume = new TextButton(Language.getText("LB_RESUME"), getContext().getSkin());
         this.btn_resume.addListener(new ClickListener() {

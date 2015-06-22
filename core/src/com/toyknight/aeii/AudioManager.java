@@ -31,30 +31,36 @@ public class AudioManager {
      *
      * @param fileName the music file name(with extension)
      */
-    public static void playBGM(String fileName) {
+    public static void playBGM(String fileName, boolean loop) {
         String pathToFile = AUDIO_PATH + MUSIC_PATH + fileName;
 
         stopMusic();
 
         music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
         music.setVolume(musicVolume);
+        music.setLooping(loop);
 
-        music.play();
-
-        // Dispose after playing.
         music.setOnCompletionListener(new Music.OnCompletionListener() {
             @Override
             public void onCompletion(Music music) {
-                music.dispose();
+                if (!music.isLooping()) {
+                    music.dispose();
+                }
             }
         });
+
+        music.play();
     }
 
     /**
      * Play main theme music.
      */
     public static void playMainTheme() {
-        playBGM(MAIN_THEME);
+        playBGM(MAIN_THEME, false);
+    }
+
+    public static void loopMainTheme() {
+        playBGM(MAIN_THEME, true);
     }
 
     /**

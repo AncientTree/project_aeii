@@ -40,9 +40,9 @@ public class AELogoGlowAnimator extends ScreenAnimator {
     public void render(SpriteBatch batch) {
         batch.begin();
         int logo_x = (Gdx.app.getGraphics().getWidth() - 240) / 2;
-        int logo_y = (Gdx.app.getGraphics().getHeight() - 85) / 2;
+        int logo_y = Gdx.app.getGraphics().getHeight() - 85;
         ae_logo.draw(batch, logo_x, logo_y, 240, 85);
-        ae_logo_glow.draw(batch, glow_x, (Gdx.app.getGraphics().getHeight() - 78) / 2, 67, 78);
+        ae_logo_glow.draw(batch, glow_x, Gdx.app.getGraphics().getHeight() - 78, 67, 78);
         ae_logo_mask.draw(batch, logo_x, logo_y, 240, 85);
         batch.end();
 

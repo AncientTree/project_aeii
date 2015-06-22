@@ -60,6 +60,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     private int cursor_map_y;
     private int press_map_x;
     private int press_map_y;
+    private int drag_distance_x;
+    private int drag_distance_y;
 
     private final TextField command_line;
     private TextButton btn_menu;
@@ -366,6 +368,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
             this.pointer_y = screenY;
             this.press_map_x = createCursorMapX(screenX);
             this.press_map_y = createCursorMapY(screenY);
+            this.drag_distance_x = 0;
+            this.drag_distance_y = 0;
         }
         return true;
     }
@@ -404,9 +408,9 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                 doCancel();
             }
         } else {
-            if (!event_handled && isWindowOpened()) {
-                closeAllWindows();
-            }
+//            if (!event_handled && isWindowOpened()) {
+//                closeAllWindows();
+//            }
         }
         return true;
     }
@@ -438,6 +442,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         if (canOperate()) {
             int delta_x = pointer_x - drag_x;
             int delta_y = pointer_y - drag_y;
+            this.drag_distance_x += Math.abs(delta_x);
+            this.drag_distance_y += Math.abs(delta_y);
             dragViewport(delta_x, delta_y);
             pointer_x = drag_x;
             pointer_y = drag_y;
@@ -448,7 +454,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         if (0 <= screen_x && screen_x <= viewport.width && 0 <= screen_y && screen_y <= viewport.height) {
             int release_map_x = createCursorMapX(screen_x);
             int release_map_y = createCursorMapY(screen_y);
-            if (press_map_x == release_map_x && press_map_y == release_map_y) {
+            if (press_map_x == release_map_x && press_map_y == release_map_y && drag_distance_x < ts && drag_distance_y < ts) {
                 if (getGameManager().getState() == GameManager.STATE_MOVE ||
                         getGameManager().getState() == GameManager.STATE_REMOVE ||
                         getGameManager().getState() == GameManager.STATE_ATTACK) {
