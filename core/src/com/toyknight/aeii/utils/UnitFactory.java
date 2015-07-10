@@ -4,10 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Unit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by toyknight on 4/3/2015.
@@ -108,6 +105,12 @@ public class UnitFactory {
 
     public static int getCrystalIndex() {
         return crystal_index;
+    }
+
+    public static Set<String> getPackageNameList() {
+        HashSet<String> names = new HashSet(unit_packages.keySet());
+        names.add("default");
+        return names;
     }
 
     public static int getUnitCount(String package_name) {

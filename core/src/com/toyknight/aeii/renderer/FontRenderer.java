@@ -39,7 +39,7 @@ public class FontRenderer {
         label_parameter.color = Color.WHITE;
         label_parameter.borderColor = Color.BLACK;
         label_parameter.borderWidth = ts / 24;
-        //label_parameter.characters = charset;
+        label_parameter.characters += charset;
         ui_font_label = generator.generateFont(label_parameter);
         generator.dispose();
 

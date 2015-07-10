@@ -68,6 +68,12 @@ public class MainMenu extends Table {
         this.btn_multiplayer = new TextButton(Language.getText("LB_MULTIPLAYER"), getContext().getSkin());
         this.add(btn_multiplayer).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_map_editor = new TextButton(Language.getText("LB_MAP_EDITOR"), getContext().getSkin());
+        this.btn_map_editor.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().gotoMapEditorScreen();
+            }
+        });
         this.add(btn_map_editor).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
         this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -86,6 +92,7 @@ public class MainMenu extends Table {
         this.layout();
     }
 
+    @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());

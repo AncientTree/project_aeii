@@ -1,8 +1,9 @@
-package com.toyknight.aeii.manager;
+package com.toyknight.aeii.manager.events;
 
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
@@ -24,7 +25,7 @@ public class UnitActionFinishEvent implements GameEvent, Serializable {
 
     @Override
     public Point getFocus() {
-        return new Point(-1, -1);
+        return null;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class UnitActionFinishEvent implements GameEvent, Serializable {
     @Override
     public void execute(GameManager manager) {
         Unit unit = manager.getGame().getMap().getUnit(target_x, target_y);
-        if(unit == null) {
+        if (unit == null) {
             manager.setState(GameManager.STATE_SELECT);
         } else {
             if (UnitToolkit.canMoveAgain(unit)) {

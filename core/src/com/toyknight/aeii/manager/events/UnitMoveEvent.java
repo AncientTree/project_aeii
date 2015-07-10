@@ -1,11 +1,10 @@
-package com.toyknight.aeii.manager;
+package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.UnitMoveAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,22 +44,13 @@ public class UnitMoveEvent implements GameEvent, Serializable {
 
     @Override
     public boolean canExecute(GameCore game) {
-        if (move_path == null) {
-            return true;
-        } else {
-            Unit target = game.getMap().getUnit(unit_x, unit_y);
-            return target != null && game.canUnitMove(target, dest_x, dest_y);
-        }
+        Unit target = game.getMap().getUnit(unit_x, unit_y);
+        return move_path != null && target != null && game.canUnitMove(target, dest_x, dest_y);
     }
 
     @Override
     public void execute(GameManager manager) {
-        if (move_path == null) {
-            //unable to move, cancel move phase
-            if (manager.getState() == GameManager.STATE_MOVE) {
-                manager.cancelMovePhase();
-            }
-        } else {
+        if (move_path != null) {
             Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
             manager.getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
             unit.setCurrentMovementPoint(mp_left);

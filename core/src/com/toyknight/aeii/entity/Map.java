@@ -16,7 +16,7 @@ public class Map implements Serializable {
 
     private static final long serialVersionUID = 04032015L;
 
-    private final String author;
+    private String author;
     private final boolean[] team_access;
 
     private final short[][] map_data;
@@ -39,6 +39,10 @@ public class Map implements Serializable {
                 position_map[x][y] = new Point(x, y);
             }
         }
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getAuthor() {
@@ -223,6 +227,10 @@ public class Map implements Serializable {
             }
         }
         return count;
+    }
+
+    public boolean[] getTeamAccessTable() {
+        return team_access;
     }
 
     public boolean getTeamAccess(int team) {

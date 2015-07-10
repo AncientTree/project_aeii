@@ -1,10 +1,10 @@
-package com.toyknight.aeii.manager;
+package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.Language;
 
 import java.io.Serializable;

@@ -1,12 +1,11 @@
 package com.toyknight.aeii.renderer;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Status;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.MapCanvas;
 
 /**
  * Created by toyknight on 4/19/2015.
@@ -14,13 +13,13 @@ import com.toyknight.aeii.screen.GameScreen;
 public class UnitRenderer {
 
     private final int ts;
-    private final GameScreen screen;
+    private final MapCanvas canvas;
 
     private float state_time = 0f;
 
-    public UnitRenderer(GameScreen screen, int ts) {
+    public UnitRenderer(MapCanvas canvas, int ts) {
         this.ts = ts;
-        this.screen = screen;
+        this.canvas = canvas;
     }
 
     public void drawUnit(Batch batch, Unit unit, float screen_x, float screen_y, boolean is_static) {
@@ -45,8 +44,8 @@ public class UnitRenderer {
     }
 
     public void drawUnit(Batch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
-        int screen_x = screen.getXOnScreen(map_x);
-        int screen_y = screen.getYOnScreen(map_y);
+        int screen_x = canvas.getXOnScreen(map_x);
+        int screen_y = canvas.getYOnScreen(map_y);
         drawUnit(batch, unit, screen_x + offset_x, screen_y + offset_y, false);
     }
 
@@ -56,8 +55,8 @@ public class UnitRenderer {
 
     public void drawUnitWithInformation(Batch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         drawUnit(batch, unit, map_x, map_y, offset_x, offset_y);
-        int screen_x = screen.getXOnScreen(map_x);
-        int screen_y = screen.getYOnScreen(map_y);
+        int screen_x = canvas.getXOnScreen(map_x);
+        int screen_y = canvas.getYOnScreen(map_y);
         //draw health points
         if (unit.getCurrentHp() < unit.getMaxHp()) {
             FontRenderer.drawSNumber(batch, unit.getCurrentHp(), (int) (screen_x + offset_x), (int) (screen_y + offset_y));

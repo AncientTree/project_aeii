@@ -54,6 +54,11 @@ public class MapList extends Widget implements Cullable {
         return maps[selected_index];
     }
 
+    public String getSelectedMapName() {
+        String name = map_names[selected_index];
+        return name.substring(0, name.lastIndexOf("."));
+    }
+
     public void setMaps(FileHandle[] map_files) {
         this.maps = new Map[map_files.length];
         this.map_names = new String[map_files.length];

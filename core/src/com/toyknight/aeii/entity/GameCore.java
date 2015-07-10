@@ -385,6 +385,10 @@ public class GameCore implements Serializable {
                 && !unit.isStandby();
     }
 
+    public boolean isCastleAccessible(Tile tile) {
+        return tile.isCastle() && tile.getTeam() == getCurrentTeam();
+    }
+
     public boolean isGameOver() {
         return false;
     }

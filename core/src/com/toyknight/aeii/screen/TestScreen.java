@@ -61,9 +61,11 @@ public class TestScreen extends Stage implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Player[] players = new Player[4];
                 for (int i = 0; i < 4; i++) {
-                    players[i] = new LocalPlayer();
-                    players[i].setAlliance(i);
-                    players[i].setGold(1000);
+                    if (map_list.getSelectedMap().getTeamAccess(i) == true) {
+                        players[i] = new LocalPlayer();
+                        players[i].setAlliance(i);
+                        players[i].setGold(1000);
+                    }
                 }
                 GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), players);
                 getContext().gotoGameScreen(game);

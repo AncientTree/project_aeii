@@ -3,11 +3,17 @@ package com.toyknight.aeii.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Created by toyknight on 4/3/2015.
@@ -53,8 +59,48 @@ public class MapFactory {
         }
     }
 
-    public static void writeMap(Map map, String file_name) {
+    public static void writeMap(Map map, FileHandle map_file) throws IOException {
+        DataOutputStream fos = new DataOutputStream(map_file.write(false));
+        fos.writeUTF(map.getAuthor());
+        for (boolean b : map.getTeamAccessTable()) {
+            fos.writeBoolean(b);
+        }
+        fos.writeInt(map.getWidth());
+        fos.writeInt(map.getHeight());
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                fos.writeShort(map.getTileIndex(x, y));
+            }
+        }
+        Collection<Unit> unit_list = map.getUnitSet();
+        fos.writeInt(unit_list.size());
+        for (Unit unit : unit_list) {
+            fos.writeUTF(unit.getPackage());
+            fos.writeInt(unit.getTeam());
+            fos.writeInt(unit.getIndex());
+            fos.writeInt(unit.getX());
+            fos.writeInt(unit.getY());
+        }
+        fos.flush();
+        fos.close();
+    }
 
+    public static void createTeamAccess(Map map) {
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                Tile tile = map.getTile(x, y);
+                if (tile.isCastle() && tile.getTeam() >= 0) {
+                    map.setTeamAccess(tile.getTeam(), true);
+                }
+            }
+        }
+        Set<Point> unit_positions = map.getUnitPositionSet();
+        for (Point position : unit_positions) {
+            Unit unit = map.getUnit(position.x, position.y);
+            if (!map.getTeamAccess(unit.getTeam())) {
+                map.setTeamAccess(unit.getTeam(), true);
+            }
+        }
     }
 
 }

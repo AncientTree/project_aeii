@@ -1,9 +1,10 @@
-package com.toyknight.aeii.manager;
+package com.toyknight.aeii.manager.events;
 
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
 
@@ -39,9 +40,9 @@ public class UnitSelectEvent implements GameEvent, Serializable {
 
     @Override
     public void execute(GameManager manager) {
-        manager.selected_unit = manager.getGame().getMap().getUnit(target_x, target_y);
+        manager.setSelectedUnit(manager.getGame().getMap().getUnit(target_x, target_y));
         if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer) {
-            manager.last_position = new Point(target_x, target_y);
+            manager.setLastPosition(new Point(target_x, target_y));
             manager.beginMovePhase();
         }
     }

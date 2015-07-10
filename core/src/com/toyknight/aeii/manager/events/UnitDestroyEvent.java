@@ -1,11 +1,11 @@
-package com.toyknight.aeii.manager;
+package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.DustAriseAnimator;
 import com.toyknight.aeii.animator.UnitDestroyAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
 

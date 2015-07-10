@@ -14,10 +14,7 @@ import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.rule.Rule;
-import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.screen.LogoScreen;
-import com.toyknight.aeii.screen.MainMenuScreen;
-import com.toyknight.aeii.screen.TestScreen;
+import com.toyknight.aeii.screen.*;
 import com.toyknight.aeii.utils.*;
 
 public class AEIIApplication extends Game {
@@ -31,6 +28,7 @@ public class AEIIApplication extends Game {
 
     private LogoScreen logo_screen;
     private MainMenuScreen main_menu_screen;
+    private MapEditorScreen map_editor_screen;
     private TestScreen test_screen;
     private GameScreen game_screen;
 
@@ -52,10 +50,13 @@ public class AEIIApplication extends Game {
             BorderRenderer.init();
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getLabelFont();
+            skin.get(TextField.TextFieldStyle.class).font = FontRenderer.getLabelFont();
+            skin.get(Label.LabelStyle.class).font = FontRenderer.getLabelFont();
             skin.get(List.ListStyle.class).font = FontRenderer.getLabelFont();
 
             logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen(this);
+            map_editor_screen = new MapEditorScreen(this);
             test_screen = new TestScreen(this);
             game_screen = new GameScreen(this);
 
@@ -86,6 +87,12 @@ public class AEIIApplication extends Game {
     public void gotoMainMenuScreen() {
         gotoScreen(main_menu_screen);
         main_menu_screen.show();
+    }
+
+    public void gotoMapEditorScreen() {
+        AudioManager.stopCurrentBGM();
+        gotoScreen(map_editor_screen);
+        map_editor_screen.show();
     }
 
     public void gotoGameScreen(GameCore game) {

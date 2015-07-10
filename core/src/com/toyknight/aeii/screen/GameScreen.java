@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameScreen extends Stage implements Screen, GameManagerListener {
+public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerListener {
 
     private final int ts;
 
@@ -316,7 +316,6 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         this.locateViewport(0, 0);
         cursor_map_x = 0;
         cursor_map_y = 0;
-        show();
     }
 
     @Override
@@ -374,6 +373,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         return true;
     }
 
+    @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchUp(screenX, screenY, pointer, button);
         if (!event_handled && canOperate()) {
@@ -404,7 +404,8 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                 if (!processed) {
                     onClick(screenX, screenY);
                 }
-            } else {
+            }
+            if (button == Input.Buttons.RIGHT) {
                 doCancel();
             }
         } else {
@@ -415,6 +416,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
         return true;
     }
 
+    @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         boolean event_handled = super.touchDragged(screenX, screenY, pointer);
         if (!event_handled) {
@@ -484,13 +486,19 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
                         manager.cancelPreviewPhase();
                     }
                 case LocalGameManager.STATE_SELECT:
-                    if (getGame().getMap().getUnit(cursor_x, cursor_y) == null) {
-                        Tile target_tile = getGame().getMap().getTile(cursor_x, cursor_y);
-                        if (target_tile.isCastle() && target_tile.getTeam() == getGame().getCurrentTeam()) {
+                    Unit target_unit = getGame().getMap().getUnit(cursor_x, cursor_y);
+                    if (target_unit == null) {
+                        if (getGame().isCastleAccessible(getGame().getMap().getTile(cursor_x, cursor_y))) {
                             unit_store.display(cursor_x, cursor_y);
                         }
                     } else {
-                        manager.selectUnit(cursor_x, cursor_y);
+                        if (getGame().isUnitAccessible(target_unit)) {
+                            manager.selectUnit(cursor_x, cursor_y);
+                        } else {
+                            if (target_unit.getTeam() != getGame().getCurrentTeam()) {
+                                getGameManager().beginPreviewPhase(target_unit);
+                            }
+                        }
                     }
                     break;
                 case LocalGameManager.STATE_MOVE:
@@ -638,7 +646,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     private int createCursorMapX(int pointer_x) {
-        int map_width = manager.getGame().getMap().getWidth();
+        int map_width = getGame().getMap().getWidth();
         int cursor_x = (pointer_x + viewport.x) / ts;
         if (cursor_x >= map_width) {
             return map_width - 1;
@@ -654,7 +662,7 @@ public class GameScreen extends Stage implements Screen, GameManagerListener {
     }
 
     private int createCursorMapY(int pointer_y) {
-        int map_height = manager.getGame().getMap().getHeight();
+        int map_height = getGame().getMap().getHeight();
         int cursor_y = (pointer_y + viewport.y) / ts;
         if (cursor_y >= map_height) {
             return map_height - 1;

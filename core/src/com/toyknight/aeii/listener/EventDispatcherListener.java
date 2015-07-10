@@ -1,6 +1,6 @@
 package com.toyknight.aeii.listener;
 
-import com.toyknight.aeii.manager.GameEvent;
+import com.toyknight.aeii.manager.events.GameEvent;
 
 /**
  * Created by toyknight on 4/18/2015.

@@ -59,6 +59,8 @@ public class ResourceManager {
     private static TextureRegion[] hud_icons_status;
     private static TextureRegion[] arrow_icons;
 
+    private static HashMap<String, Texture> editor_textures;
+
     private static Texture menu_icon_texture;
     private static TextureRegion[] menu_icon_textures;
 
@@ -99,6 +101,7 @@ public class ResourceManager {
             move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
             border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
             alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
+            loadEditorTextures();
             loadCircles();
             loadArrows();
             loadIcons();
@@ -186,6 +189,19 @@ public class ResourceManager {
         hud_icons_battle = createFrames(hud_icon_battle_sheet, 4, 1);
         Texture arrow_icon_sheet = new Texture(FileProvider.getAssetsFile("images/arrow_icons.png"));
         arrow_icons = createFrames(arrow_icon_sheet, 3, 1);
+    }
+
+    private static void loadEditorTextures() {
+        editor_textures = new HashMap();
+        editor_textures.put("button_square_active", new Texture(FileProvider.getAssetsFile("images/editor/button_square_active.png")));
+        editor_textures.put("button_square_pressed", new Texture(FileProvider.getAssetsFile("images/editor/button_square_pressed.png")));
+        editor_textures.put("icon_brush", new Texture(FileProvider.getAssetsFile("images/editor/icon_brush.png")));
+        editor_textures.put("icon_hand", new Texture(FileProvider.getAssetsFile("images/editor/icon_hand.png")));
+        editor_textures.put("icon_eraser", new Texture(FileProvider.getAssetsFile("images/editor/icon_eraser.png")));
+        editor_textures.put("icon_load", new Texture(FileProvider.getAssetsFile("images/editor/icon_load.png")));
+        editor_textures.put("icon_save", new Texture(FileProvider.getAssetsFile("images/editor/icon_save.png")));
+        editor_textures.put("icon_resize", new Texture(FileProvider.getAssetsFile("images/editor/icon_resize.png")));
+        editor_textures.put("icon_exit", new Texture(FileProvider.getAssetsFile("images/editor/icon_exit.png")));
     }
 
     private static void createMenuIconTextures() {
@@ -346,6 +362,10 @@ public class ResourceManager {
 
     public static TextureRegion getMenuIcon(int index) {
         return menu_icon_textures[index];
+    }
+
+    public static Texture getEditorTexture(String key) {
+        return editor_textures.get(key);
     }
 
     public static TextureRegion[] getAttackSparkFrames() {

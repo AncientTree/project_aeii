@@ -1,9 +1,7 @@
 package com.toyknight.aeii.manager;
 
-import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.entity.player.LocalPlayer;
-import com.toyknight.aeii.listener.AnimationListener;
+import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -15,16 +13,42 @@ import java.util.*;
 public class LocalGameManager extends GameManager {
 
     @Override
+    public void beginMovePhase() {
+        submitGameEvent(new PhaseBeginEvent(PhaseBeginEvent.PHASE_MOVE));
+    }
+
+    @Override
+    public void cancelMovePhase() {
+        submitGameEvent(new PhaseCancelEvent(PhaseCancelEvent.PHASE_MOVE));
+    }
+
+    @Override
+    public void beginAttackPhase() {
+        submitGameEvent(new PhaseBeginEvent(PhaseBeginEvent.PHASE_ATTACK));
+    }
+
+    @Override
+    public void beginSummonPhase() {
+        submitGameEvent(new PhaseBeginEvent(PhaseBeginEvent.PHASE_SUMMON));
+    }
+
+    @Override
+    public void beginRemovePhase() {
+        submitGameEvent(new PhaseBeginEvent(PhaseBeginEvent.PHASE_REMOVE));
+    }
+
+    @Override
+    public void cancelActionPhase() {
+        submitGameEvent(new PhaseCancelEvent(PhaseCancelEvent.PHASE_ACTION));
+    }
+
+    @Override
     public void selectUnit(int x, int y) {
-        if (getState() == STATE_SELECT || getState() == STATE_PREVIEW || getState() == STATE_MOVE) {
+        if (getState() == STATE_SELECT || getState() == STATE_PREVIEW) {
             Unit unit = getGame().getMap().getUnit(x, y);
-            if (unit != null && !unit.isStandby()) {
+            if (getGame().isUnitAccessible(unit)) {
                 selected_unit = unit;
-                if (unit.getTeam() == getGame().getCurrentTeam()) {
-                    submitGameEvent(new UnitSelectEvent(unit.getX(), unit.getY()));
-                } else {
-                    beginPreviewPhase();
-                }
+                submitGameEvent(new UnitSelectEvent(unit.getX(), unit.getY()));
             }
         }
     }
@@ -43,7 +67,7 @@ public class LocalGameManager extends GameManager {
                 submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
             }
         } else {
-            submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, unit.getMovementPoint(), null));
+            cancelMovePhase();
         }
     }
 

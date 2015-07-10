@@ -7,6 +7,7 @@ import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.EventDispatcherListener;
 import com.toyknight.aeii.listener.GameManagerListener;
+import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.*;
@@ -70,7 +71,7 @@ public abstract class GameManager implements AnimationDispatcher {
         this.manager_listener = listener;
     }
 
-    protected void setState(int state) {
+    public void setState(int state) {
         if (state != this.state) {
             this.last_state = this.state;
             this.state = state;
@@ -84,8 +85,17 @@ public abstract class GameManager implements AnimationDispatcher {
         return state;
     }
 
-    public void beginPreviewPhase() {
+    public void setSelectedUnit(Unit unit) {
+        this.selected_unit = unit;
+    }
+
+    public void setLastPosition(Point position) {
+        this.last_position = position;
+    }
+
+    public void beginPreviewPhase(Unit target) {
         if (getSelectedUnit() != null) {
+            this.selected_unit = target;
             createMovablePositions();
             setState(STATE_PREVIEW);
         }
@@ -97,47 +107,17 @@ public abstract class GameManager implements AnimationDispatcher {
         }
     }
 
-    protected void beginMovePhase() {
-        if (getGame().isUnitAccessible(getSelectedUnit())) {
-            createMovablePositions();
-            setState(STATE_MOVE);
-        }
-    }
+    abstract public void beginMovePhase();
 
-    public void cancelMovePhase() {
-        if (getState() == STATE_MOVE) {
-            setState(STATE_SELECT);
-        }
-    }
+    abstract public void cancelMovePhase();
 
-    public void beginAttackPhase() {
-        if (getGame().isUnitAccessible(getSelectedUnit()) && getState() == STATE_ACTION) {
-            createAttackablePositions(getSelectedUnit());
-            setState(STATE_ATTACK);
-        }
-    }
+    abstract public void beginAttackPhase();
 
-    public void beginSummonPhase() {
-        if (getState() == STATE_ACTION) {
-            createAttackablePositions(getSelectedUnit());
-            setState(STATE_SUMMON);
-        }
-    }
+    abstract public void beginSummonPhase();
 
-    protected void beginRemovePhase() {
-        createMovablePositions();
-        setState(STATE_REMOVE);
-    }
+    abstract public void beginRemovePhase();
 
-    public void cancelActionPhase() {
-        if (getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL) {
-            setState(STATE_ACTION);
-        }
-    }
-
-    public boolean isActionPhase() {
-        return getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL || getState() == STATE_ACTION;
-    }
+    abstract public void cancelActionPhase();
 
     abstract public void selectUnit(int x, int y);
 
@@ -158,6 +138,10 @@ public abstract class GameManager implements AnimationDispatcher {
     abstract public void standbySelectedUnit();
 
     abstract public void endCurrentTurn();
+
+    public boolean isActionPhase() {
+        return getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL || getState() == STATE_ACTION;
+    }
 
     protected void submitGameEvent(GameEvent event) {
         if (isAnimating()) {
@@ -251,7 +235,7 @@ public abstract class GameManager implements AnimationDispatcher {
         }
     }
 
-    private void createMovablePositions() {
+    public void createMovablePositions() {
         createMoveMarkMap();
         movable_positions = new HashSet();
         int unit_x = getSelectedUnit().getX();

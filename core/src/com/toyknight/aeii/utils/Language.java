@@ -43,7 +43,7 @@ public class Language {
         for (String text : values) {
             charset += text;
         }
-        return removeDuplicate(charset + "0123456789" + "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*");
+        return removeDuplicate(charset.replaceAll("\\p{Graph}", ""));
     }
 
     private static String removeDuplicate(String s) {
