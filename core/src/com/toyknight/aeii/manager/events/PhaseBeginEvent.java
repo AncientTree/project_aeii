@@ -48,8 +48,10 @@ public class PhaseBeginEvent implements GameEvent, Serializable {
                 }
                 break;
             case PHASE_REMOVE:
-                manager.createMovablePositions();
-                manager.setState(GameManager.STATE_REMOVE);
+                if (manager.isActionPhase()) {
+                    manager.createMovablePositions();
+                    manager.setState(GameManager.STATE_REMOVE);
+                }
                 break;
             case PHASE_ATTACK:
                 if (game.isUnitAccessible(selected_unit) && manager.getState() == GameManager.STATE_ACTION) {

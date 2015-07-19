@@ -87,7 +87,7 @@ public class Rule implements Serializable {
         rule.setKillExperience(60);
         rule.setAttackExperience(30);
         rule.setCounterExperience(10);
-        rule.setCommanderPriceGrowth(500);
+        rule.setCommanderPriceGrowth(250);
         rule.setMaxPopulation(20);
 
         int skeleton = UnitFactory.getSkeletonIndex();

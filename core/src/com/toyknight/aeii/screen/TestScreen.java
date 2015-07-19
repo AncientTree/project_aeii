@@ -19,6 +19,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
+import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.widgets.MapList;
@@ -68,7 +69,9 @@ public class TestScreen extends Stage implements Screen {
                     }
                 }
                 GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), players);
-                getContext().gotoGameScreen(game);
+                LocalGameManager manager = new LocalGameManager();
+                manager.setGame(game);
+                getContext().gotoGameScreen(manager);
             }
         });
         this.addActor(btn_start);

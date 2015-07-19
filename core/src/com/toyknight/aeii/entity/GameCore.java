@@ -160,7 +160,7 @@ public class GameCore implements Serializable {
 
     public void moveUnit(int target_x, int target_y, int dest_x, int dest_y) {
         Unit target = getMap().getUnit(target_x, target_y);
-        if (target != null && canUnitMove(target, dest_x, dest_y)) {
+        if (canUnitMove(target, dest_x, dest_y)) {
             getMap().moveUnit(target, dest_x, dest_y);
         }
     }
@@ -181,9 +181,9 @@ public class GameCore implements Serializable {
         Unit unit = UnitFactory.getSample(index, package_name);
         if (unit.isCommander()) {
             if (isCommanderAlive(current_team)) {
-                return getCommanderPrice(team);
-            } else {
                 return -1;
+            } else {
+                return getCommanderPrice(team);
             }
         } else {
             return unit.getPrice();

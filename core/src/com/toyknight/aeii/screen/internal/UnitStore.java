@@ -42,7 +42,7 @@ public class UnitStore extends Table implements UnitListListener {
     private Unit selected_unit;
     private int price;
 
-    public UnitStore(final GameScreen screen, Skin skin) {
+    public UnitStore(GameScreen screen, Skin skin) {
         this.screen = screen;
         this.ts = screen.getContext().getTileSize();
         this.UNIT_STORE_WIDTH = 11 * ts;
@@ -76,7 +76,7 @@ public class UnitStore extends Table implements UnitListListener {
         this.addActor(btn_close);
 
 
-        this.unit_list = new AvailableUnitList(screen.getGameManager(), ts);
+        this.unit_list = new AvailableUnitList(ts);
         this.unit_list.setUnitListListener(this);
         ScrollPane sp_unit_list = new ScrollPane(unit_list);
         sp_unit_list.getStyle().background =
@@ -89,6 +89,7 @@ public class UnitStore extends Table implements UnitListListener {
     public void display(int castle_x, int castle_y) {
         this.castle_x = castle_x;
         this.castle_y = castle_y;
+        this.unit_list.setGame(screen.getGame());
         GameManager manager = screen.getGameManager();
         HashMap<String, ArrayList<Integer>> available_units = manager.getGame().getRule().getAvailableUnitList();
         unit_list.setAvailableUnits(available_units);

@@ -36,14 +36,15 @@ public class UnitBuyEvent implements GameEvent, Serializable {
 
     @Override
     public boolean canExecute(GameCore game) {
-        return game.getMap().getUnit(x, y) == null;
+        return true;
     }
 
     @Override
     public void execute(GameManager manager) {
         manager.getGame().createUnit(index, team, package_name, x, y);
         manager.getGame().getCurrentPlayer().changeGold(-price);
-        manager.selectUnit(x, y);
+        manager.setSelectedUnit(manager.getGame().getMap().getUnit(x, y));
+        manager.beginMovePhase();
     }
 
 }

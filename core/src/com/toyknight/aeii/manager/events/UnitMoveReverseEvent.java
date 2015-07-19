@@ -34,13 +34,15 @@ public class UnitMoveReverseEvent implements GameEvent, Serializable {
     @Override
     public boolean canExecute(GameCore game) {
         Unit target = game.getMap().getUnit(unit_x, unit_y);
-        return target != null && game.canUnitMove(target, origin_x, origin_y);
+        return target != null;
     }
 
     @Override
     public void execute(GameManager manager) {
         Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
-        manager.getGame().moveUnit(unit_x, unit_y, origin_x, origin_y);
+        if (manager.getGame().getMap().canMove(origin_x, origin_y)) {
+            manager.getGame().getMap().moveUnit(unit, origin_x, origin_y);
+        }
         unit.setCurrentMovementPoint(unit.getMovementPoint());
         manager.beginMovePhase();
     }

@@ -47,7 +47,7 @@ public class LocalGameManager extends GameManager {
         if (getState() == STATE_SELECT || getState() == STATE_PREVIEW) {
             Unit unit = getGame().getMap().getUnit(x, y);
             if (getGame().isUnitAccessible(unit)) {
-                selected_unit = unit;
+                setSelectedUnit(unit);
                 submitGameEvent(new UnitSelectEvent(unit.getX(), unit.getY()));
             }
         }
@@ -66,8 +66,6 @@ public class LocalGameManager extends GameManager {
                 ArrayList<Point> move_path = getMovePath(dest_x, dest_y);
                 submitGameEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
             }
-        } else {
-            cancelMovePhase();
         }
     }
 
@@ -81,7 +79,7 @@ public class LocalGameManager extends GameManager {
     @Override
     public void doAttack(int target_x, int target_y) {
         Unit attacker = getSelectedUnit();
-        if (isActionPhase() && UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
+        if (getState() == STATE_ATTACK && UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
             Unit defender = getGame().getMap().getUnit(target_x, target_y);
             int kill_experience = getGame().getRule().getKillExperience();
             int attack_experience = getGame().getRule().getAttackExperience();
@@ -125,7 +123,7 @@ public class LocalGameManager extends GameManager {
     @Override
     public void doSummon(int target_x, int target_y) {
         Unit summoner = getSelectedUnit();
-        if (isActionPhase() && UnitToolkit.isWithinRange(summoner, target_x, target_y) && getGame().canSummon(target_x, target_y)) {
+        if (getState() == STATE_SUMMON && UnitToolkit.isWithinRange(summoner, target_x, target_y) && getGame().canSummon(target_x, target_y)) {
             int experience = getGame().getRule().getAttackExperience();
             submitGameEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
             submitGameEvent(new UnitActionFinishEvent(summoner.getX(), summoner.getY()));
@@ -152,10 +150,8 @@ public class LocalGameManager extends GameManager {
 
     @Override
     public void buyUnit(String package_name, int index, int x, int y) {
-        if (getGame().getMap().getUnit(x, y) == null) {
-            int team = getGame().getCurrentTeam();
-            submitGameEvent(new UnitBuyEvent(package_name, index, team, x, y, getGame().getUnitPrice(package_name, index, team)));
-        }
+        int team = getGame().getCurrentTeam();
+        submitGameEvent(new UnitBuyEvent(package_name, index, team, x, y, getGame().getUnitPrice(package_name, index, team)));
     }
 
     @Override
@@ -232,14 +228,6 @@ public class LocalGameManager extends GameManager {
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {
         Point dest = getGame().getMap().getPosition(dest_x, dest_y);
         return getMovablePositions().contains(dest) && getGame().canUnitMove(getSelectedUnit(), dest_x, dest_y);
-    }
-
-    public boolean canSelectUnitAct() {
-        if (getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE) && !getSelectedUnit().isAt(last_position.x, last_position.y)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
 }

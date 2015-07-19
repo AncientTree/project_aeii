@@ -25,6 +25,7 @@ public abstract class GameManager implements AnimationDispatcher {
     public static final int STATE_SUMMON = 0x6;
     public static final int STATE_HEAL = 0x7;
     public static final int STATE_PREVIEW = 0x8;
+    public static final int STATE_BUY = 0x9;
 
     private final Queue<GameEvent> event_queue;
     private final Queue<Animator> animation_queue;
@@ -87,6 +88,7 @@ public abstract class GameManager implements AnimationDispatcher {
 
     public void setSelectedUnit(Unit unit) {
         this.selected_unit = unit;
+        setLastPosition(new Point(unit.getX(), unit.getY()));
     }
 
     public void setLastPosition(Point position) {
@@ -140,7 +142,7 @@ public abstract class GameManager implements AnimationDispatcher {
     abstract public void endCurrentTurn();
 
     public boolean isActionPhase() {
-        return getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL || getState() == STATE_ACTION;
+        return getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL;
     }
 
     protected void submitGameEvent(GameEvent event) {
@@ -405,6 +407,14 @@ public abstract class GameManager implements AnimationDispatcher {
             }
         }
         return false;
+    }
+
+    public boolean canSelectUnitAct() {
+        if (getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE) && !getSelectedUnit().isAt(last_position.x, last_position.y)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

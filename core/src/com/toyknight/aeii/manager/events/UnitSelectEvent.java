@@ -41,9 +41,6 @@ public class UnitSelectEvent implements GameEvent, Serializable {
     @Override
     public void execute(GameManager manager) {
         manager.setSelectedUnit(manager.getGame().getMap().getUnit(target_x, target_y));
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer) {
-            manager.setLastPosition(new Point(target_x, target_y));
-            manager.beginMovePhase();
-        }
+        manager.beginMovePhase();
     }
 }

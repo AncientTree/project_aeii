@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;
@@ -21,30 +22,31 @@ public class AvailableUnitList extends Widget implements Cullable {
 
     private final int ts;
     private final int item_height;
-    private final GameManager manager;
 
     private final int big_circle_width;
     private final int big_circle_height;
     private final int bc_offset;
     private final int unit_offset;
 
-    private Rectangle cullingArea;
+
+    private GameCore game;
     private HashMap<String, ArrayList<Integer>> available_units;
+
     private float prefWidth;
     private float prefHeight;
+    private Rectangle cullingArea;
 
     private int selected_index = 0;
 
     private UnitListListener listener;
 
-    public AvailableUnitList(GameManager manager, int ts) {
+    public AvailableUnitList(int ts) {
         this.ts = ts;
         this.item_height = ts / 2 * 3;
         this.big_circle_width = ts / 24 * 32;
         this.big_circle_height = ts / 24 * 33;
         this.bc_offset = (item_height - big_circle_height) / 2;
         this.unit_offset = (item_height - ts) / 2;
-        this.manager = manager;
         addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (pointer == 0 && button != 0) return false;
@@ -76,6 +78,14 @@ public class AvailableUnitList extends Widget implements Cullable {
                 index++;
             }
         }
+    }
+
+    public void setGame(GameCore game) {
+        this.game = game;
+    }
+
+    private GameCore getGame() {
+        return game;
     }
 
     public void setUnitListListener(UnitListListener listener) {
@@ -116,7 +126,7 @@ public class AvailableUnitList extends Widget implements Cullable {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         int index = 0;
-        int current_team = manager.getGame().getCurrentTeam();
+        int current_team = getGame().getCurrentTeam();
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
         float itemY = height;
         for (String package_name : available_units.keySet()) {

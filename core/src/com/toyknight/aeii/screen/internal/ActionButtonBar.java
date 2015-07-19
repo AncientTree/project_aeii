@@ -1,17 +1,15 @@
 package com.toyknight.aeii.screen.internal;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
@@ -27,7 +25,6 @@ public class ActionButtonBar extends HorizontalGroup {
 
     private final int ts;
     private final GameScreen screen;
-    private final LocalGameManager manager;
     private final int PADDING_LEFT;
     private final int BUTTON_WIDTH;
     private final int BUTTON_HEIGHT;
@@ -43,9 +40,8 @@ public class ActionButtonBar extends HorizontalGroup {
     private CircleButton btn_heal;
     //private ImageButton btn_info;
 
-    public ActionButtonBar(GameScreen screen, LocalGameManager manager) {
+    public ActionButtonBar(GameScreen screen) {
         this.screen = screen;
-        this.manager = manager;
         this.ts = screen.getContext().getTileSize();
         this.PADDING_LEFT = screen.getContext().getTileSize() / 4;
         this.BUTTON_WIDTH = getPlatform() == Platform.Desktop ? ts / 24 * 20 : ts / 24 * 40;
@@ -58,11 +54,18 @@ public class ActionButtonBar extends HorizontalGroup {
     private void initComponents() {
 
         btn_buy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(0), ts);
+        btn_buy.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getGameManger().setState(GameManager.STATE_SELECT);
+                screen.showUnitStore();
+            }
+        });
         btn_occupy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
         btn_occupy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                manager.doOccupy();
+                getGameManger().doOccupy();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -70,7 +73,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_repair.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                manager.doRepair();
+                getGameManger().doRepair();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -78,7 +81,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_attack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                manager.beginAttackPhase();
+                getGameManger().beginAttackPhase();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -86,53 +89,79 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_summon.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                manager.beginSummonPhase();
+                getGameManger().beginSummonPhase();
                 screen.onButtonUpdateRequested();
             }
         });
         btn_move = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(4), ts);
+        btn_move.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getGameManger().beginMovePhase();
+                screen.onButtonUpdateRequested();
+            }
+        });
         btn_standby = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(5), ts);
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                manager.standbySelectedUnit();
+                getGameManger().standbySelectedUnit();
                 screen.onButtonUpdateRequested();
             }
         });
         btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
     }
 
+    public GameManager getGameManger() {
+        return screen.getGameManager();
+    }
+
     private Platform getPlatform() {
         return screen.getContext().getPlatform();
     }
 
+    private GameCore getGame() {
+        return getGameManger().getGame();
+    }
+
     public void updateButtons() {
         this.clear();
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer && !manager.isAnimating()) {
-            Unit selected_unit = manager.getSelectedUnit();
-            switch (manager.getState()) {
-                case LocalGameManager.STATE_ACTION:
-                    if (manager.canSelectUnitAct()) {
-                        manager.createAttackablePositions(selected_unit);
-                        if (manager.hasEnemyWithinRange(selected_unit)) {
+        if (getGame().getCurrentPlayer() instanceof LocalPlayer && !getGameManger().isAnimating()) {
+            Unit selected_unit = getGameManger().getSelectedUnit();
+            switch (getGameManger().getState()) {
+                case GameManager.STATE_ACTION:
+                    getGameManger().createAttackablePositions(selected_unit);
+                    if (getGameManger().canSelectUnitAct()) {
+                        if (getGameManger().hasEnemyWithinRange(selected_unit)) {
                             addActor(btn_attack);
                         }
                         if (selected_unit.hasAbility(Ability.NECROMANCER)
-                                && manager.hasTombWithinRange(selected_unit)) {
+                                && getGameManger().hasTombWithinRange(selected_unit)) {
                             addActor(btn_summon);
                         }
                         if (selected_unit.hasAbility(Ability.HEALER)
-                                && manager.hasAllyWithinRange(selected_unit)) {
+                                && getGameManger().hasAllyWithinRange(selected_unit)) {
                             addActor(btn_heal);
                         }
-                        if (manager.getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        if (getGameManger().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
                             addActor(btn_occupy);
                         }
-                        if (manager.getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        if (getGameManger().getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
                             addActor(btn_repair);
                         }
                     }
                     addActor(btn_standby);
+                    break;
+                case GameManager.STATE_BUY:
+                    getGameManger().createAttackablePositions(selected_unit);
+                    if (selected_unit.isCommander() && selected_unit.getTeam() == getGame().getCurrentTeam()
+                            && getGame().isCastleAccessible(getGame().getMap().getTile(selected_unit.getX(), selected_unit.getY()))) {
+                        addActor(btn_buy);
+                        addActor(btn_move);
+                        if (getGameManger().hasEnemyWithinRange(selected_unit)) {
+                            addActor(btn_attack);
+                        }
+                    }
                     break;
                 default:
                     //do nothing

@@ -11,6 +11,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.rule.Rule;
@@ -95,9 +96,9 @@ public class AEIIApplication extends Game {
         map_editor_screen.show();
     }
 
-    public void gotoGameScreen(GameCore game) {
+    public void gotoGameScreen(GameManager manager) {
         AudioManager.stopCurrentBGM();
-        game_screen.prepare(game);
+        game_screen.prepare(manager);
         gotoScreen(game_screen);
     }
 
