@@ -106,7 +106,7 @@ public class GameCore implements Serializable {
         if (target != null) {
             getMap().removeUnit(target_x, target_y);
             updatePopulation(target.getTeam());
-            if (target.getIndex() != UnitFactory.getSkeletonIndex()) {
+            if (target.getIndex() != UnitFactory.getSkeletonIndex() && target.getIndex() != UnitFactory.getCommanderIndex()) {
                 getMap().addTomb(target.getX(), target.getY());
             }
             if (target.isCommander()) {

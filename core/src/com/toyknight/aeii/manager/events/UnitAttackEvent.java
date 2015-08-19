@@ -8,6 +8,8 @@ import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -79,6 +81,10 @@ public class UnitAttackEvent implements GameEvent, Serializable {
         boolean level_up = attacker.gainExperience(experience);
         if (level_up) {
             manager.submitAnimation(new UnitLevelUpAnimator(attacker));
+        }
+        if (attacker.getTeam() == game.getCurrentTeam()
+                && (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost())) {
+            manager.onUnitActionFinished(attacker);
         }
     }
 

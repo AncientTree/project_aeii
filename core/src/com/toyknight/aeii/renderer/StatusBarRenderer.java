@@ -3,7 +3,6 @@ package com.toyknight.aeii.renderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.screen.GameScreen;

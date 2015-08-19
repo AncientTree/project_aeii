@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.manager.LocalGameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.Unit;
@@ -28,7 +28,6 @@ public class ActionButtonBar extends HorizontalGroup {
     private final int PADDING_LEFT;
     private final int BUTTON_WIDTH;
     private final int BUTTON_HEIGHT;
-    private final ShapeRenderer shape_renderer;
 
     private CircleButton btn_buy;
     private CircleButton btn_standby;
@@ -46,8 +45,6 @@ public class ActionButtonBar extends HorizontalGroup {
         this.PADDING_LEFT = screen.getContext().getTileSize() / 4;
         this.BUTTON_WIDTH = getPlatform() == Platform.Desktop ? ts / 24 * 20 : ts / 24 * 40;
         this.BUTTON_HEIGHT = getPlatform() == Platform.Desktop ? ts / 24 * 21 : ts / 24 * 42;
-        this.shape_renderer = new ShapeRenderer();
-        this.shape_renderer.setAutoShapeType(true);
         initComponents();
     }
 
@@ -65,7 +62,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_occupy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManger().doOccupy();
+                GameHost.doOccupy();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -73,7 +70,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_repair.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManger().doRepair();
+                GameHost.doRepair();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -105,14 +102,14 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManger().standbySelectedUnit();
+                GameHost.doStandbyUnit();
                 screen.onButtonUpdateRequested();
             }
         });
         btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
     }
 
-    public GameManager getGameManger() {
+    private GameManager getGameManger() {
         return screen.getGameManager();
     }
 
@@ -124,6 +121,11 @@ public class ActionButtonBar extends HorizontalGroup {
         return getGameManger().getGame();
     }
 
+    public int getButtonHeight() {
+        return BUTTON_HEIGHT;
+    }
+
+
     public void updateButtons() {
         this.clear();
         if (getGame().getCurrentPlayer() instanceof LocalPlayer && !getGameManger().isAnimating()) {
@@ -131,7 +133,7 @@ public class ActionButtonBar extends HorizontalGroup {
             switch (getGameManger().getState()) {
                 case GameManager.STATE_ACTION:
                     getGameManger().createAttackablePositions(selected_unit);
-                    if (getGameManger().canSelectUnitAct()) {
+                    if (getGameManger().canSelectedUnitAct()) {
                         if (getGameManger().hasEnemyWithinRange(selected_unit)) {
                             addActor(btn_attack);
                         }
@@ -173,9 +175,11 @@ public class ActionButtonBar extends HorizontalGroup {
     @Override
     public void layout() {
         SnapshotArray<Actor> children = getChildren();
-        for (int i = 0; i < children.size; i++) {
+        int btn_count = children.size;
+        int margin_left = (screen.getViewportWidth() - btn_count * BUTTON_WIDTH - (btn_count + 1) * PADDING_LEFT) / 2;
+        for (int i = 0; i < btn_count; i++) {
             children.get(i).setBounds(
-                    PADDING_LEFT + i * (BUTTON_WIDTH + PADDING_LEFT), 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+                    margin_left + PADDING_LEFT + i * (BUTTON_WIDTH + PADDING_LEFT), 0, BUTTON_WIDTH, BUTTON_HEIGHT);
         }
     }
 

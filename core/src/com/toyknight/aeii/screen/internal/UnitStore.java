@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.widgets.UnitListListener;
 import com.toyknight.aeii.manager.GameManager;
@@ -60,7 +61,7 @@ public class UnitStore extends Table implements UnitListListener {
         this.btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                screen.getGameManager().buyUnit(selected_unit.getPackage(), selected_unit.getIndex(), castle_x, castle_y);
+                GameHost.doBuyUnit(selected_unit.getPackage(), selected_unit.getIndex(), castle_x, castle_y);
                 close();
             }
         });

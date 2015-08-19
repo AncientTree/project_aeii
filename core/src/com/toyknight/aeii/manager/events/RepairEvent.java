@@ -4,6 +4,8 @@ import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
+import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.Language;
 
@@ -39,6 +41,9 @@ public class RepairEvent implements GameEvent, Serializable {
         Tile target_tile = manager.getGame().getMap().getTile(target_x, target_y);
         manager.getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
         manager.submitAnimation(new MessageAnimator(Language.getText("LB_REPAIRED"), 0.5f));
+        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+            manager.onUnitActionFinished(manager.getGame().getMap().getUnit(target_x, target_y));
+        }
     }
 
 }

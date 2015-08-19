@@ -12,14 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.entity.player.Player;
-import com.toyknight.aeii.manager.LocalGameManager;
+import com.toyknight.aeii.manager.GameHost;
+import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.widgets.MapList;
@@ -69,8 +69,9 @@ public class TestScreen extends Stage implements Screen {
                     }
                 }
                 GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), players);
-                LocalGameManager manager = new LocalGameManager();
+                GameManager manager = new GameManager();
                 manager.setGame(game);
+                GameHost.setHost(true);
                 getContext().gotoGameScreen(manager);
             }
         });

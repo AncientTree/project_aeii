@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by toyknight on 5/28/2015.
  */
-public abstract class GameManager implements AnimationDispatcher {
+public class GameManager implements AnimationDispatcher {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -95,51 +95,73 @@ public abstract class GameManager implements AnimationDispatcher {
         this.last_position = position;
     }
 
+    public Point getLastPosition() {
+        return last_position;
+    }
+
     public void beginPreviewPhase(Unit target) {
-        if (getSelectedUnit() != null) {
-            this.selected_unit = target;
-            createMovablePositions();
-            setState(STATE_PREVIEW);
-        }
+        this.selected_unit = target;
+        createMovablePositions();
+        setState(STATE_PREVIEW);
     }
 
     public void cancelPreviewPhase() {
-        if (getState() == STATE_PREVIEW) {
-            setState(STATE_SELECT);
+        setState(STATE_SELECT);
+    }
+
+    public void beginMovePhase() {
+        createMovablePositions();
+        setState(STATE_MOVE);
+    }
+
+    public void cancelMovePhase() {
+        setState(STATE_SELECT);
+    }
+
+    public void beginAttackPhase() {
+        attackable_positions = createAttackablePositions(getSelectedUnit());
+        setState(STATE_ATTACK);
+    }
+
+    public void beginSummonPhase() {
+        attackable_positions = createAttackablePositions(getSelectedUnit());
+        setState(STATE_SUMMON);
+    }
+
+    public void beginRemovePhase() {
+        createMovablePositions();
+        setState(STATE_REMOVE);
+    }
+
+    public void cancelActionPhase() {
+        setState(STATE_ACTION);
+    }
+
+    public void onUnitMoveFinished(Unit unit) {
+        switch (getState()) {
+            case GameManager.STATE_MOVE:
+                setState(GameManager.STATE_ACTION);
+                break;
+            case GameManager.STATE_REMOVE:
+                setState(GameManager.STATE_SELECT);
+                GameHost.doStandbyUnit();
+                break;
         }
     }
 
-    abstract public void beginMovePhase();
-
-    abstract public void cancelMovePhase();
-
-    abstract public void beginAttackPhase();
-
-    abstract public void beginSummonPhase();
-
-    abstract public void beginRemovePhase();
-
-    abstract public void cancelActionPhase();
-
-    abstract public void selectUnit(int x, int y);
-
-    abstract public void moveSelectedUnit(int dest_x, int dest_y);
-
-    abstract public void reverseMove();
-
-    abstract public void doAttack(int target_x, int target_y);
-
-    abstract public void doSummon(int target_x, int target_y);
-
-    abstract public void doRepair();
-
-    abstract public void doOccupy();
-
-    abstract public void buyUnit(String package_name, int index, int x, int y);
-
-    abstract public void standbySelectedUnit();
-
-    abstract public void endCurrentTurn();
+    public void onUnitActionFinished(Unit unit) {
+        if (unit == null) {
+            setState(GameManager.STATE_SELECT);
+        } else {
+            if (UnitToolkit.canMoveAgain(unit)) {
+                setLastPosition(new Point(unit.getX(), unit.getY()));
+                beginRemovePhase();
+            } else {
+                setState(GameManager.STATE_SELECT);
+                unit.setStandby(true);
+            }
+        }
+    }
 
     public boolean isActionPhase() {
         return getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL;
@@ -359,12 +381,12 @@ public abstract class GameManager implements AnimationDispatcher {
         }
     }
 
-    public void createAttackablePositions(Unit unit) {
+    public HashSet<Point> createAttackablePositions(Unit unit) {
         int unit_x = unit.getX();
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
         int max_ar = unit.getMaxAttackRange();
-        attackable_positions = new HashSet();
+        HashSet<Point> attackable_positions = new HashSet();
         for (int ar = min_ar; ar <= max_ar; ar++) {
             for (int dx = -ar; dx <= ar; dx++) {
                 int dy = dx >= 0 ? ar - dx : -ar - dx;
@@ -378,12 +400,18 @@ public abstract class GameManager implements AnimationDispatcher {
                 }
             }
         }
+        return attackable_positions;
     }
 
     public boolean hasEnemyWithinRange(Unit unit) {
+        HashSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (getGame().isEnemy(unit, target)) {
+                return true;
+            }
+            if (getSelectedUnit().hasAbility(Ability.DESTROYER)
+                    && getGame().getMap().getTile(point.x, point.y).isDestroyable()) {
                 return true;
             }
         }
@@ -391,6 +419,7 @@ public abstract class GameManager implements AnimationDispatcher {
     }
 
     public boolean hasAllyWithinRange(Unit unit) {
+        HashSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (target != null && !getGame().isEnemy(unit, target)) {
@@ -401,6 +430,7 @@ public abstract class GameManager implements AnimationDispatcher {
     }
 
     public boolean hasTombWithinRange(Unit unit) {
+        HashSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
             if (getGame().getMap().isTomb(point.x, point.y)) {
                 return true;
@@ -409,12 +439,23 @@ public abstract class GameManager implements AnimationDispatcher {
         return false;
     }
 
-    public boolean canSelectUnitAct() {
+    public boolean canSelectedUnitAct() {
         if (getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE) && !getSelectedUnit().isAt(last_position.x, last_position.y)) {
             return false;
         } else {
             return true;
         }
+    }
+
+    public boolean canSelectedUnitMove(int dest_x, int dest_y) {
+        Point dest = getGame().getMap().getPosition(dest_x, dest_y);
+        return getMovablePositions().contains(dest)
+                && getGame().canUnitMove(getSelectedUnit(), dest_x, dest_y)
+                && getGame().isUnitAccessible(getSelectedUnit());
+    }
+
+    public boolean isMovablePosition(int map_x, int map_y) {
+        return getMovablePositions().contains(getGame().getMap().getPosition(map_x, map_y));
     }
 
 }

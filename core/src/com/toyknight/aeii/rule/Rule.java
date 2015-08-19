@@ -23,6 +23,9 @@ public class Rule implements Serializable {
 
     private int max_population;
 
+    private boolean need_enemy_clear;
+    private boolean need_castle_clear;
+
     private HashMap<String, ArrayList<Integer>> available_unit_list = new HashMap();
 
     public void setPoisonDamage(int damage) {
@@ -73,6 +76,22 @@ public class Rule implements Serializable {
         return max_population;
     }
 
+    public void setEnemyClearNeeded(boolean b) {
+        this.need_enemy_clear = b;
+    }
+
+    public boolean isEnemyClearNeeded() {
+        return need_enemy_clear;
+    }
+
+    public void setCastleClearNeeded(boolean b) {
+        this.need_castle_clear = b;
+    }
+
+    public boolean isCastleClearNeeded() {
+        return need_castle_clear;
+    }
+
     public void addAvailableUnits(String package_name, ArrayList<Integer> list) {
         this.available_unit_list.put(package_name, list);
     }
@@ -80,6 +99,7 @@ public class Rule implements Serializable {
     public HashMap<String, ArrayList<Integer>> getAvailableUnitList() {
         return available_unit_list;
     }
+
 
     public static Rule getDefaultRule() {
         Rule rule = new Rule();
@@ -89,6 +109,8 @@ public class Rule implements Serializable {
         rule.setCounterExperience(10);
         rule.setCommanderPriceGrowth(250);
         rule.setMaxPopulation(20);
+        rule.setEnemyClearNeeded(true);
+        rule.setCastleClearNeeded(true);
 
         int skeleton = UnitFactory.getSkeletonIndex();
         int crystal = UnitFactory.getCrystalIndex();
