@@ -11,4 +11,6 @@ public interface GameManagerListener {
 
     public void onButtonUpdateRequested();
 
+    public void onGameOver();
+
 }

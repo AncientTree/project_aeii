@@ -396,7 +396,7 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         boolean event_handled = super.mouseMoved(screenX, screenY);
-        if (!event_handled) {
+        if (!event_handled && getGameManager().getState() != GameManager.STATE_BUY) {
             if (canOperate() && getGameManager().getState() != GameManager.STATE_ACTION &&
                     0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
                 this.pointer_x = screenX;
@@ -597,22 +597,31 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
         onButtonUpdateRequested();
     }
 
+    @Override
     public void onMapFocusRequired(int map_x, int map_y) {
         cursor_map_x = map_x;
         cursor_map_y = map_y;
         locateViewport(map_x, map_y);
     }
 
+    @Override
     public void onManagerStateChanged(int last_state) {
         onButtonUpdateRequested();
     }
 
+    @Override
     public void onButtonUpdateRequested() {
         int state = getGameManager().getState();
         this.action_button_bar.updateButtons();
         AEIIApplication.setButtonEnabled(btn_end_turn,
                 canOperate() && (state == GameManager.STATE_SELECT || state == GameManager.STATE_PREVIEW));
         AEIIApplication.setButtonEnabled(btn_menu, !menu.isVisible());
+    }
+
+    @Override
+    public void onGameOver() {
+        //for test
+        getContext().gotoMainMenuScreen();
     }
 
     private boolean isOnUnitAnimation(int x, int y) {
@@ -630,7 +639,6 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
 
     private boolean canOperate() {
         return getGameManager().getCurrentAnimation() == null &&
-                getGameManager().getState() != GameManager.STATE_BUY &&
                 !save_load_dialog.isVisible() &&
                 !unit_store.isVisible() &&
                 !mini_map.isVisible() &&

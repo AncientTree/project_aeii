@@ -76,6 +76,10 @@ public class GameCore implements Serializable {
         return rule;
     }
 
+    public void removePlayer(int team) {
+        player_list[team] = null;
+    }
+
     public Player getPlayer(int team) {
         return player_list[team];
     }
@@ -115,14 +119,6 @@ public class GameCore implements Serializable {
         }
     }
 
-    public void summonSkeleton(int target_x, int target_y, int team) {
-        if (getMap().isTomb(target_x, target_y)) {
-            getMap().removeTomb(target_x, target_y);
-            createUnit(UnitFactory.getSkeletonIndex(), team, "default", target_x, target_y);
-            standbyUnit(target_x, target_y);
-        }
-    }
-
     public void standbyUnit(int unit_x, int unit_y) {
         Unit unit = getMap().getUnit(unit_x, unit_y);
         if (unit != null && getMap().canStandby(unit)) {
@@ -138,15 +134,6 @@ public class GameCore implements Serializable {
             commanders[team].setCurrentHp(commanders[team].getMaxHp());
             restoreUnit(commanders[team]);
             updatePopulation(team);
-        }
-    }
-
-    public void buyUnit(int index, int team, String package_name, int x, int y) {
-        int current_cold = getCurrentPlayer().getGold();
-        int unit_price = UnitFactory.getUnitPrice(index, package_name);
-        if (current_cold >= unit_price) {
-            getCurrentPlayer().setGold(current_cold - unit_price);
-            createUnit(index, getCurrentTeam(), package_name, x, y);
         }
     }
 

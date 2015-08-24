@@ -5,6 +5,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.entity.player.LocalPlayer;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
@@ -56,7 +57,8 @@ public class UnitMoveEvent implements GameEvent, Serializable {
             manager.getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
             unit.setCurrentMovementPoint(mp_left);
             manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
-            if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer) {
+
+            if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
                 manager.onUnitMoveFinished(unit);
             }
         }

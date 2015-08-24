@@ -76,14 +76,16 @@ public class UnitAttackEvent implements GameEvent, Serializable {
                 game.destroyUnit(defender.getX(), defender.getY());
                 manager.submitAnimation(new UnitDestroyAnimator(defender));
                 manager.submitAnimation(new DustAriseAnimator(defender.getX(), defender.getY()));
+                GameHost.updateGameStatus();
             }
         }
         boolean level_up = attacker.gainExperience(experience);
         if (level_up) {
             manager.submitAnimation(new UnitLevelUpAnimator(attacker));
         }
-        if (attacker.getTeam() == game.getCurrentTeam()
-                && (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost())) {
+
+        if (attacker.getTeam() == game.getCurrentTeam() &&
+                (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost())) {
             manager.onUnitActionFinished(attacker);
         }
     }

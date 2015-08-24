@@ -67,7 +67,6 @@ public class LogoScreen implements Screen {
 
     @Override
     public void dispose() {
-
     }
 
 }

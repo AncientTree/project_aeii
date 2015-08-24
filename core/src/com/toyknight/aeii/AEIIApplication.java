@@ -49,6 +49,7 @@ public class AEIIApplication extends Game {
             ResourceManager.loadResources();
             FontRenderer.loadFonts(TILE_SIZE);
             BorderRenderer.init();
+
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getLabelFont();
             skin.get(TextField.TextFieldStyle.class).font = FontRenderer.getLabelFont();
@@ -63,7 +64,7 @@ public class AEIIApplication extends Game {
 
             Animator.setTileSize(getTileSize());
 
-            this.setScreen(logo_screen);
+            setScreen(logo_screen);
         } catch (AEIIException ex) {
             System.err.println("ERROR: " + ex.getMessage());
         }
@@ -71,10 +72,6 @@ public class AEIIApplication extends Game {
 
     public int getTileSize() {
         return TILE_SIZE;
-    }
-
-    public int getScaling() {
-        return TILE_SIZE / 24;
     }
 
     public Platform getPlatform() {

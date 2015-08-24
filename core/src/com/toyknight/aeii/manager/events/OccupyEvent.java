@@ -43,6 +43,8 @@ public class OccupyEvent implements GameEvent, Serializable {
         Tile target_tile = manager.getGame().getMap().getTile(target_x, target_y);
         manager.getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
         manager.submitAnimation(new MessageAnimator(Language.getText("LB_OCCUPIED"), 0.5f));
+        GameHost.updateGameStatus();
+
         if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
             manager.onUnitActionFinished(manager.getGame().getMap().getUnit(target_x, target_y));
         }

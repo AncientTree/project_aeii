@@ -5,6 +5,7 @@ import com.toyknight.aeii.animator.UnitDestroyAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
@@ -38,9 +39,12 @@ public class UnitDestroyEvent implements GameEvent, Serializable {
     public void execute(GameManager manager) {
         GameCore game = manager.getGame();
         Unit unit = game.getMap().getUnit(target_x, target_y);
+
+        game.destroyUnit(unit.getX(), unit.getY());
         manager.submitAnimation(new UnitDestroyAnimator(unit));
         manager.submitAnimation(new DustAriseAnimator(unit.getX(), unit.getY()));
-        game.destroyUnit(unit.getX(), unit.getY());
+
+        GameHost.updateGameStatus();
     }
 
 }

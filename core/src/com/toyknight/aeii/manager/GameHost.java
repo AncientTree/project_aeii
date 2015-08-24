@@ -1,6 +1,7 @@
 package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -16,6 +17,7 @@ import java.util.Set;
 public class GameHost {
 
     private static boolean is_host;
+    private static boolean is_game_over;
     private static GameManager manager;
 
     private GameHost() {
@@ -29,8 +31,17 @@ public class GameHost {
         return is_host;
     }
 
+    public static void setGameOver(boolean b) {
+        GameHost.is_game_over = b;
+    }
+
+    public static boolean isGameOver() {
+        return is_game_over;
+    }
+
     public static void setGameManager(GameManager manager) {
         GameHost.manager = manager;
+        GameHost.is_game_over = false;
     }
 
     private static GameManager getManager() {
@@ -54,6 +65,7 @@ public class GameHost {
                 int start_x = getManager().getSelectedUnit().getX();
                 int start_y = getManager().getSelectedUnit().getY();
                 int mp_remains = getManager().getMovementPointRemains(dest_x, dest_y);
+                System.out.println(mp_remains);
                 ArrayList<Point> move_path = getManager().getMovePath(dest_x, dest_y);
                 dispatchEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
             }
@@ -157,9 +169,8 @@ public class GameHost {
         }
     }
 
-    public static void doStandbyUnit() {
+    public static void doStandbyUnit(Unit unit) {
         if (isHost()) {
-            Unit unit = getManager().getSelectedUnit();
             if (getGame().isUnitAccessible(unit)) {
                 dispatchEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
             }
@@ -227,6 +238,51 @@ public class GameHost {
             dispatchEvent(new UnitStatusUpdateEvent(team));
         } else {
             //send operation request to host
+        }
+    }
+
+    public static void updateGameStatus() {
+        //default rule temporarily
+        if (isHost()) {
+            //get population
+            int[] population = new int[4];
+            for (int team = 0; team < 4; team++) {
+                Player player = getGame().getPlayer(team);
+                if (player != null) {
+                    population[team] = player.getPopulation();
+                }
+            }
+
+            //get castle count
+            int[] castle_count = new int[4];
+            for (int team = 0; team < 4; team++) {
+                castle_count[team] = getGame().getMap().getCastleCount(team);
+            }
+
+            //remove failed player
+            for (int team = 0; team < 4; team++) {
+                if (population[team] == 0 && castle_count[team] == 0 && getGame().getPlayer(team) != null) {
+                    dispatchEvent(new PlayerRemoveEvent(team));
+                    getGame().removePlayer(team);
+                }
+            }
+
+            //check winning status
+            int alliance = -1;
+            boolean winning_flag = true;
+            for (int team = 0; team < 4; team++) {
+                Player player = getGame().getPlayer(team);
+                if (player != null) {
+                    if (alliance == -1) {
+                        alliance = player.getAlliance();
+                    } else {
+                        winning_flag = player.getAlliance() == alliance;
+                    }
+                }
+            }
+            if (winning_flag == true) {
+                dispatchEvent(new GameOverEvent(alliance));
+            }
         }
     }
 

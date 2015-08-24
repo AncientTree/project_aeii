@@ -140,11 +140,14 @@ public class GameManager implements AnimationDispatcher {
     public void onUnitMoveFinished(Unit unit) {
         switch (getState()) {
             case GameManager.STATE_MOVE:
-                setState(GameManager.STATE_ACTION);
+                if (getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+                    setState(GameManager.STATE_ACTION);
+                }
                 break;
             case GameManager.STATE_REMOVE:
-                setState(GameManager.STATE_SELECT);
-                GameHost.doStandbyUnit();
+                if (GameHost.isHost()) {
+                    GameHost.doStandbyUnit(unit);
+                }
                 break;
         }
     }
@@ -154,11 +157,14 @@ public class GameManager implements AnimationDispatcher {
             setState(GameManager.STATE_SELECT);
         } else {
             if (UnitToolkit.canMoveAgain(unit)) {
-                setLastPosition(new Point(unit.getX(), unit.getY()));
-                beginRemovePhase();
+                if (getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+                    setLastPosition(new Point(unit.getX(), unit.getY()));
+                    beginRemovePhase();
+                }
             } else {
-                setState(GameManager.STATE_SELECT);
-                unit.setStandby(true);
+                if (GameHost.isHost()) {
+                    GameHost.doStandbyUnit(unit);
+                }
             }
         }
     }
@@ -182,7 +188,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public void executeGameEvent(GameEvent event) {
-        if (event.canExecute(getGame())) {
+        if (event.canExecute(getGame()) && !GameHost.isGameOver()) {
             event.execute(this);
             if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
 
@@ -217,6 +223,9 @@ public class GameManager implements AnimationDispatcher {
             if (current_animation != null) {
                 for (AnimationListener listener : animation_listeners) {
                     listener.animationCompleted(current_animation);
+                }
+                if (GameHost.isGameOver()) {
+                    manager_listener.onGameOver();
                 }
                 finish_flag = true;
             }
@@ -269,15 +278,16 @@ public class GameManager implements AnimationDispatcher {
         Step start_step = new Step(start_position, movement_point);
         Queue<Step> start_steps = new LinkedList();
         start_steps.add(start_step);
-        createMovablePisitions(start_steps);
+        createMovablePositions(start_steps);
     }
 
-    private void createMovablePisitions(Queue<Step> current_steps) {
+    private void createMovablePositions(Queue<Step> current_steps) {
         Queue<Step> next_steps = new LinkedList();
         while (!current_steps.isEmpty()) {
             Step current_step = current_steps.poll();
             int step_x = current_step.getPosition().x;
             int step_y = current_step.getPosition().y;
+            move_mark_map[step_x][step_y] = current_step.getMovementPoint();
             if (getGame().canUnitMove(getSelectedUnit(), step_x, step_y)) {
                 movable_positions.add(current_step.getPosition());
             }
@@ -293,7 +303,6 @@ public class GameManager implements AnimationDispatcher {
                             Unit target_unit = game.getMap().getUnit(next_x, next_y);
                             if (getGame().canMoveThrough(getSelectedUnit(), target_unit)) {
                                 Step next_step = new Step(next, current_mp - mp_cost);
-                                move_mark_map[next_x][next_y] = current_mp - mp_cost;
                                 next_steps.add(next_step);
                             }
                         }
@@ -302,7 +311,7 @@ public class GameManager implements AnimationDispatcher {
             }
         }
         if (!next_steps.isEmpty()) {
-            createMovablePisitions(next_steps);
+            createMovablePositions(next_steps);
         }
     }
 

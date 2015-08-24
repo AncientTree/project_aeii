@@ -46,7 +46,8 @@ public class UnitMoveReverseEvent implements GameEvent, Serializable {
             manager.getGame().getMap().moveUnit(unit, origin_x, origin_y);
         }
         unit.setCurrentMovementPoint(unit.getMovementPoint());
-        if (GameHost.isHost() || manager.getGame().getCurrentPlayer() instanceof LocalPlayer) {
+
+        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
             manager.beginMovePhase();
         }
     }

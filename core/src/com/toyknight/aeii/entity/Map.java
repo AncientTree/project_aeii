@@ -229,6 +229,19 @@ public class Map implements Serializable {
         return count;
     }
 
+    public int getCastleCount(int team) {
+        int count = 0;
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                Tile tile = getTile(x, y);
+                if (tile.isCastle() && tile.getTeam() == team) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     public boolean[] getTeamAccessTable() {
         return team_access;
     }
