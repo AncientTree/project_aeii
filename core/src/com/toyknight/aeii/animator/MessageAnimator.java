@@ -33,18 +33,18 @@ public class MessageAnimator extends MapAnimator {
         int height = message_lower == null ? ts : 2 * ts;
         int x = 0;
         int y = (screen.getViewportHeight() - height) / 2 + ts;
-        FontRenderer.setLabelAlpha(alpha);
+        FontRenderer.setTextAlpha(alpha);
         ResourceManager.setBatchAlpha(batch, alpha);
         batch.draw(ResourceManager.getPanelBackground(), x, y, width, height);
         BorderRenderer.drawTopBottomBorder(batch, x, y, width, height);
         if (message_lower == null) {
-            FontRenderer.drawLabelCenter(batch, message_upper, x, y, width, height);
+            FontRenderer.drawTextCenter(batch, message_upper, x, y, width, height);
         } else {
-            FontRenderer.drawLabelCenter(batch, message_upper, x, y + height / 2, width, height / 2);
-            FontRenderer.drawLabelCenter(batch, message_lower, x, y, width, height / 2);
+            FontRenderer.drawTextCenter(batch, message_upper, x, y + height / 2, width, height / 2);
+            FontRenderer.drawTextCenter(batch, message_lower, x, y, width, height / 2);
         }
         //restore alpha
-        FontRenderer.setLabelAlpha(1.0f);
+        FontRenderer.setTextAlpha(1.0f);
         ResourceManager.setBatchAlpha(batch, 1.0f);
         batch.flush();
     }

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -57,7 +56,7 @@ public class UnitStore extends Table implements UnitListListener {
                 (screen.getViewportHeight() - UNIT_STORE_HEIGHT) / 2 + ts,
                 UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
         this.btn_buy = new TextButton(Language.getText("LB_BUY"), skin);
-        this.btn_buy.setBounds(ts * 6, ts / 2, ts * 2, ts / 2);
+        this.btn_buy.setBounds(ts * 6, ts / 2, ts * 2, ts);
         this.btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -67,7 +66,7 @@ public class UnitStore extends Table implements UnitListListener {
         });
         this.addActor(btn_buy);
         TextButton btn_close = new TextButton(Language.getText("LB_CLOSE"), skin);
-        btn_close.setBounds(ts * 8 + ts / 2, ts / 2, ts * 2, ts / 2);
+        btn_close.setBounds(ts * 8 + ts / 2, ts / 2, ts * 2, ts);
         btn_close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -136,6 +135,7 @@ public class UnitStore extends Table implements UnitListListener {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
         batch.draw(ResourceManager.getPanelBackground(), x, y, width, height);
         BorderRenderer.drawBorder(batch, x, y, width, height);
+        batch.draw(ResourceManager.getBorderDarkColor(), x + ts / 2 - ts / 24, y + ts / 2 - ts / 24, ts * 5 + ts / 12, ts * 3 / 2 * 5 + ts / 12);
         batch.flush();
 
         int interval = ts / 24 * 13;
@@ -171,18 +171,18 @@ public class UnitStore extends Table implements UnitListListener {
         int hh = ts / 24 * 16;
         int itemh = sch + ts / 6;
         int tfh = sch - ts / 4;
-        float lbh = FontRenderer.getLabelFont().getCapHeight();
+        float lbh = FontRenderer.getTextFont().getCapHeight();
         //attack
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 6 + scw / 2,
                 y + height - (ts / 2 + interval + (itemh - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
         if (selected_unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
-            FontRenderer.setLabelColor(ResourceManager.getPhysicalAttackColor());
+            FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
         } else {
-            FontRenderer.setLabelColor(ResourceManager.getMagicalAttackColor());
+            FontRenderer.setTextColor(ResourceManager.getMagicalAttackColor());
         }
-        FontRenderer.drawLabel(batch,
+        FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getAttack()),
                 x + ts * 6 + scw + ts / 12,
                 y + height - (ts / 2 + interval + (itemh - lbh) / 2));
@@ -195,13 +195,13 @@ public class UnitStore extends Table implements UnitListListener {
                 x + ts * 6 + (scw - hw) / 2,
                 y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
                 hw, hh);
-        FontRenderer.setLabelColor(Color.WHITE);
+        FontRenderer.setTextColor(Color.WHITE);
         //movement point
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 8 + ts / 4 + scw / 2,
                 y + height - (ts / 2 + interval + (itemh - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
-        FontRenderer.drawLabel(batch,
+        FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getMovementPoint()),
                 x + ts * 8 + ts / 4 + scw + ts / 12,
                 y + height - (ts / 2 + interval + (itemh - lbh) / 2));
@@ -219,7 +219,7 @@ public class UnitStore extends Table implements UnitListListener {
                 x + ts * 6 + scw / 2,
                 y + height - (ts / 2 + interval + itemh + (itemh - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
-        FontRenderer.drawLabel(batch,
+        FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getPhysicalDefence()),
                 x + ts * 6 + scw + ts / 12,
                 y + height - (ts / 2 + interval + itemh + (itemh - lbh) / 2));
@@ -237,7 +237,7 @@ public class UnitStore extends Table implements UnitListListener {
                 x + ts * 8 + ts / 4 + scw / 2,
                 y + height - (ts / 2 + interval + itemh + (itemh - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
-        FontRenderer.drawLabel(batch,
+        FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getMagicalDefence()),
                 x + ts * 8 + ts / 4 + scw + ts / 12,
                 y + height - (ts / 2 + interval + itemh + (itemh - lbh) / 2));

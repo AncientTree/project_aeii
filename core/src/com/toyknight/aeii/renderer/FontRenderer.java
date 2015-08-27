@@ -18,7 +18,7 @@ public class FontRenderer {
 
     private static final int[] SIZE_TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE};
 
-    private static BitmapFont ui_font_label;
+    private static BitmapFont ui_font_title;
     private static BitmapFont ui_font_text;
 
     private static TextureRegion[] small_chars;
@@ -34,13 +34,23 @@ public class FontRenderer {
     public static void loadFonts(int ts) {
         String charset = Language.createCharset();
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
-        FreeTypeFontParameter label_parameter = new FreeTypeFontParameter();
-        label_parameter.size = ts / 3;
-        label_parameter.color = Color.WHITE;
-        label_parameter.borderColor = Color.BLACK;
-        label_parameter.borderWidth = ts / 24;
-        label_parameter.characters += charset;
-        ui_font_label = generator.generateFont(label_parameter);
+
+        FreeTypeFontParameter title_parameter = new FreeTypeFontParameter();
+        title_parameter.size = ts / 2;
+        title_parameter.color = Color.WHITE;
+        title_parameter.shadowColor = Color.DARK_GRAY;
+        title_parameter.shadowOffsetX = ts / 24;
+        title_parameter.shadowOffsetY = ts / 24;
+        title_parameter.characters += charset;
+        ui_font_title = generator.generateFont(title_parameter);
+
+        FreeTypeFontParameter text_parameter = new FreeTypeFontParameter();
+        text_parameter.size = ts / 3;
+        text_parameter.color = Color.WHITE;
+        text_parameter.borderColor = Color.BLACK;
+        text_parameter.borderWidth = ts / 24;
+        text_parameter.characters += charset;
+        ui_font_text = generator.generateFont(text_parameter);
         generator.dispose();
 
         Texture small_char_sheet = new Texture(FileProvider.getAssetsFile("images/small_chars.png"));
@@ -53,29 +63,54 @@ public class FontRenderer {
         lchar_height = ts / 24 * 11;
     }
 
-    public static BitmapFont getLabelFont() {
-        return ui_font_label;
+    public static BitmapFont getTitleFont() {
+        return ui_font_title;
     }
 
-    public static void setLabelAlpha(float alpha) {
-        Color color = ui_font_label.getColor();
-        ui_font_label.setColor(color.r, color.g, color.b, alpha);
+    public static void setTitleAlpha(float alpha) {
+        Color color = ui_font_title.getColor();
+        ui_font_title.setColor(color.r, color.g, color.b, alpha);
     }
 
-    public static void setLabelColor(Color color) {
-        float alpha = ui_font_label.getColor().a;
-        ui_font_label.setColor(color.r, color.g, color.b, alpha);
+    public static void setTitleColor(Color color) {
+        float alpha = ui_font_title.getColor().a;
+        ui_font_title.setColor(color.r, color.g, color.b, alpha);
     }
 
-    public static void drawLabel(Batch batch, String str, float x, float y) {
-        ui_font_label.draw(batch, str, x, y);
+    public static void drawTitle(Batch batch, String str, float x, float y) {
+        ui_font_title.draw(batch, str, x, y);
     }
 
-    public static void drawLabelCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
-        BitmapFont.TextBounds bounds = ui_font_label.getBounds(str);
+    public static void drawTitleCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
+        BitmapFont.TextBounds bounds = ui_font_title.getBounds(str);
         float x = target_x + (target_width - bounds.width) / 2;
         float y = target_y + (target_height - bounds.height) / 2 + bounds.height;
-        drawLabel(batch, str, x, y);
+        drawTitle(batch, str, x, y);
+    }
+
+    public static BitmapFont getTextFont() {
+        return ui_font_text;
+    }
+
+    public static void setTextAlpha(float alpha) {
+        Color color = ui_font_text.getColor();
+        ui_font_text.setColor(color.r, color.g, color.b, alpha);
+    }
+
+    public static void setTextColor(Color color) {
+        float alpha = ui_font_text.getColor().a;
+        ui_font_text.setColor(color.r, color.g, color.b, alpha);
+    }
+
+    public static void drawText(Batch batch, String str, float x, float y) {
+        ui_font_text.draw(batch, str, x, y);
+    }
+
+    public static void drawTextCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
+        BitmapFont.TextBounds bounds = ui_font_text.getBounds(str);
+        float x = target_x + (target_width - bounds.width) / 2;
+        float y = target_y + (target_height - bounds.height) / 2 + bounds.height;
+        drawText(batch, str, x, y);
     }
 
     public static void drawNegativeSNumber(Batch batch, int number, int x, int y) {

@@ -101,6 +101,7 @@ public class GameMenu extends Table {
         this.setVisible(true);
     }
 
+    @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());

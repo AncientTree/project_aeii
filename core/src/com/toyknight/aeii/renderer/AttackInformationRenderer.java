@@ -45,7 +45,7 @@ public class AttackInformationRenderer {
         int hw = ts / 24 * 13; //hud icon width
         int hh = ts / 24 * 16; //hud icon height
         int tfw = ts * 2; //text field width
-        float lbh = FontRenderer.getLabelFont().getCapHeight(); //label height
+        float lbh = FontRenderer.getTextFont().getCapHeight(); //label height
         int tfh = FontRenderer.getSCharHeight() + ts / 12; //text field height
         int lmargin = (screen.getViewportWidth() - hw * 4 - tfw * 4 - ts / 24 * 7) / 2; //margin left
         int infoh = tfh * 2 + ts / 24 * 3; //information panel height
@@ -90,20 +90,20 @@ public class AttackInformationRenderer {
         //draw attack
         switch (attacker.getAttackType()) {
             case Unit.ATTACK_PHYSICAL:
-                FontRenderer.setLabelColor(ResourceManager.getPhysicalAttackColor());
+                FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
                 break;
             case Unit.ATTACK_MAGICAL:
-                FontRenderer.setLabelColor(ResourceManager.getMagicalAttackColor());
+                FontRenderer.setTextColor(ResourceManager.getMagicalAttackColor());
                 break;
         }
         int attacker_atk = attacker.getAttack();
         int attacker_atk_bonus = UnitToolkit.getAttackBonus(attacker, defender, attacker_tile);
         String attacker_attack_str = Integer.toString(attacker_atk + attacker_atk_bonus);
-        FontRenderer.drawLabel(batch, attacker_attack_str,
+        FontRenderer.drawText(batch, attacker_attack_str,
                 lmargin + hw + ts / 24 * 3 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         if (attacker_atk_bonus > 0) {
-            float attack_width = FontRenderer.getLabelFont().getBounds(attacker_attack_str).width;
+            float attack_width = FontRenderer.getTextFont().getBounds(attacker_attack_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw + ts / 24 * 4 + ts / 4 + attack_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
@@ -112,21 +112,21 @@ public class AttackInformationRenderer {
 
         switch (defender.getAttackType()) {
             case Unit.ATTACK_PHYSICAL:
-                FontRenderer.setLabelColor(ResourceManager.getPhysicalAttackColor());
+                FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
                 break;
             case Unit.ATTACK_MAGICAL:
-                FontRenderer.setLabelColor(ResourceManager.getMagicalAttackColor());
+                FontRenderer.setTextColor(ResourceManager.getMagicalAttackColor());
                 break;
         }
         int defender_atk = defender.getAttack();
         int defender_atk_bonus = UnitToolkit.getAttackBonus(defender, attacker, defender_tile);
         int modified_defender_atk = UnitToolkit.canCounter(defender, attacker) ? defender_atk + defender_atk_bonus : 0;
         String defender_attack_str = Integer.toString(modified_defender_atk);
-        FontRenderer.drawLabel(batch, defender_attack_str,
+        FontRenderer.drawText(batch, defender_attack_str,
                 lmargin + hw + ts / 24 * 3 + ts / 4,
                 infoy + tfh + ts / 24 * 2 + (tfh - lbh) / 2 + lbh);
         if (modified_defender_atk > 0 && defender_atk_bonus > 0) {
-            float attack_width = FontRenderer.getLabelFont().getBounds(defender_attack_str).width;
+            float attack_width = FontRenderer.getTextFont().getBounds(defender_attack_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw + ts / 24 * 4 + ts / 4 + attack_width,
                     infoy + tfh + ts / 24 * 2 + (tfh - ah) / 2,
@@ -134,25 +134,25 @@ public class AttackInformationRenderer {
         }
 
         //paint defence
-        FontRenderer.setLabelColor(Color.WHITE);
+        FontRenderer.setTextColor(Color.WHITE);
         int attacker_defence_bonus = UnitToolkit.getDefenceBonus(attacker, attacker_tile);
         int attacker_p_defence = attacker.getPhysicalDefence();
         String attacker_p_defence_str = Integer.toString(attacker_p_defence + attacker_defence_bonus);
-        FontRenderer.drawLabel(batch, attacker_p_defence_str,
+        FontRenderer.drawText(batch, attacker_p_defence_str,
                 lmargin + hw * 2 + tfw + ts / 24 * 5 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         int attacker_m_defence = attacker.getMagicalDefence();
         String attacker_m_defence_str = Integer.toString(attacker_m_defence + attacker_defence_bonus);
-        FontRenderer.drawLabel(batch, attacker_m_defence_str,
+        FontRenderer.drawText(batch, attacker_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + ts / 24 * 7 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         if (attacker_defence_bonus > 0) {
-            float p_defence_width = FontRenderer.getLabelFont().getBounds(attacker_p_defence_str).width;
+            float p_defence_width = FontRenderer.getTextFont().getBounds(attacker_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + ts / 24 * 6 + ts / 4 + p_defence_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
                     aw, ah);
-            float m_defence_width = FontRenderer.getLabelFont().getBounds(attacker_m_defence_str).width;
+            float m_defence_width = FontRenderer.getTextFont().getBounds(attacker_m_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 3 + tfw * 2 + ts / 24 * 8 + ts / 4 + m_defence_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
@@ -162,21 +162,21 @@ public class AttackInformationRenderer {
         int defender_defence_bonus = UnitToolkit.getDefenceBonus(defender, defender_tile);
         int defender_p_defence = defender.getPhysicalDefence();
         String defender_p_defence_str = Integer.toString(defender_p_defence + defender_defence_bonus);
-        FontRenderer.drawLabel(batch, defender_p_defence_str,
+        FontRenderer.drawText(batch, defender_p_defence_str,
                 lmargin + hw * 2 + tfw + ts / 24 * 5 + ts / 4,
                 infoy + tfh + ts / 24 * 2 + (tfh - lbh) / 2 + lbh);
         int defender_m_defence = defender.getMagicalDefence();
         String defender_m_defence_str = Integer.toString(defender_m_defence + defender_defence_bonus);
-        FontRenderer.drawLabel(batch, defender_m_defence_str,
+        FontRenderer.drawText(batch, defender_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + ts / 24 * 7 + ts / 4,
                 infoy + tfh + ts / 24 * 2 + (tfh - lbh) / 2 + lbh);
         if (defender_defence_bonus > 0) {
-            float p_defence_width = FontRenderer.getLabelFont().getBounds(defender_p_defence_str).width;
+            float p_defence_width = FontRenderer.getTextFont().getBounds(defender_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + ts / 24 * 6 + ts / 4 + p_defence_width,
                     infoy + tfh + ts / 24 * 2 + (tfh - ah) / 2,
                     aw, ah);
-            float m_defence_width = FontRenderer.getLabelFont().getBounds(defender_m_defence_str).width;
+            float m_defence_width = FontRenderer.getTextFont().getBounds(defender_m_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 3 + tfw * 2 + ts / 24 * 8 + ts / 4 + m_defence_width,
                     infoy + tfh + ts / 24 * 2 + (tfh - ah) / 2,
@@ -185,11 +185,11 @@ public class AttackInformationRenderer {
 
         //draw level
         int attacker_level = attacker.getLevel();
-        FontRenderer.drawLabel(batch, Integer.toString(attacker_level),
+        FontRenderer.drawText(batch, Integer.toString(attacker_level),
                 lmargin + hw * 4 + tfw * 3 + ts / 24 * 9 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         int defender_level = defender.getLevel();
-        FontRenderer.drawLabel(batch, Integer.toString(defender_level),
+        FontRenderer.drawText(batch, Integer.toString(defender_level),
                 lmargin + hw * 4 + tfw * 3 + ts / 24 * 9 + ts / 4,
                 infoy + tfh + ts / 24 * 2 + (tfh - lbh) / 2 + lbh);
         batch.flush();

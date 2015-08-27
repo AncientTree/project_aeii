@@ -67,7 +67,7 @@ public class RightPanelRenderer {
     private void drawInformation(Batch batch) {
         int hw = ts / 24 * 13;
         int hh = ts / 24 * 16;
-        float lbh = FontRenderer.getLabelFont().getCapHeight();
+        float lbh = FontRenderer.getTextFont().getCapHeight();
         batch.draw(ResourceManager.getBorderLightColor(),
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - pad - fsize, fsize, fsize);
         batch.draw(ResourceManager.getListBackground(),
@@ -81,47 +81,47 @@ public class RightPanelRenderer {
                     screen.getViewportWidth() + ts, screen.getViewportHeight() - ts * 2, true);
             //draw level
             String level_str = Integer.toString(target_unit.getLevel());
-            FontRenderer.drawLabel(batch, level_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getLabelFont().getBounds(level_str).width) / 2,
+            FontRenderer.drawText(batch, level_str,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(level_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - (hh - lbh) / 2);
             //draw attack
             String attack_str = Integer.toString(target_unit.getAttack());
             switch (target_unit.getAttackType()) {
                 case Unit.ATTACK_PHYSICAL:
-                    FontRenderer.setLabelColor(ResourceManager.getPhysicalAttackColor());
+                    FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
                     break;
                 case Unit.ATTACK_MAGICAL:
-                    FontRenderer.setLabelColor(ResourceManager.getMagicalAttackColor());
+                    FontRenderer.setTextColor(ResourceManager.getMagicalAttackColor());
                     break;
             }
-            FontRenderer.drawLabel(batch, attack_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getLabelFont().getBounds(attack_str).width) / 2,
+            FontRenderer.drawText(batch, attack_str,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(attack_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - hh - (hh - lbh) / 2);
-            FontRenderer.setLabelColor(Color.WHITE);
+            FontRenderer.setTextColor(Color.WHITE);
             //draw physical defence
             String pdefence_str = Integer.toString(target_unit.getPhysicalDefence());
-            FontRenderer.drawLabel(batch, pdefence_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getLabelFont().getBounds(pdefence_str).width) / 2,
+            FontRenderer.drawText(batch, pdefence_str,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(pdefence_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - hh * 2 - (hh - lbh) / 2);
             //draw magical defence
             String mdefence_str = Integer.toString(target_unit.getMagicalDefence());
-            FontRenderer.drawLabel(batch, mdefence_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getLabelFont().getBounds(mdefence_str).width) / 2,
+            FontRenderer.drawText(batch, mdefence_str,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(mdefence_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - hh * 3 - (hh - lbh) / 2);
             //draw health points
             String hp_str = target_unit.getCurrentHp() + "/" + target_unit.getMaxHp();
-            FontRenderer.setLabelColor(Color.GREEN);
-            FontRenderer.drawLabel(batch, hp_str,
-                    screen.getViewportWidth() + pad + FontRenderer.getLabelFont().getBounds(STR_HP).width,
+            FontRenderer.setTextColor(Color.GREEN);
+            FontRenderer.drawText(batch, hp_str,
+                    screen.getViewportWidth() + pad + FontRenderer.getTextFont().getBounds(STR_HP).width,
                     screen.getViewportHeight() - fsize - pad - hh * 4 - ts / 4);
             //draw experience
             String exp_str = target_unit.getLevelUpExperience() > 0 ?
                     target_unit.getCurrentExperience() + "/" + target_unit.getLevelUpExperience() : "-/-";
-            FontRenderer.setLabelColor(Color.CYAN);
-            FontRenderer.drawLabel(batch, exp_str,
-                    screen.getViewportWidth() + pad + FontRenderer.getLabelFont().getBounds(STR_EXP).width,
+            FontRenderer.setTextColor(Color.CYAN);
+            FontRenderer.drawText(batch, exp_str,
+                    screen.getViewportWidth() + pad + FontRenderer.getTextFont().getBounds(STR_EXP).width,
                     screen.getViewportHeight() - fsize - pad - hh * 4 - lbh - ts / 2);
-            FontRenderer.setLabelColor(Color.WHITE);
+            FontRenderer.setTextColor(Color.WHITE);
         }
         batch.draw(ResourceManager.getBattleHudIcon(3),
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - fsize - pad - hh, hw, hh);
@@ -131,9 +131,9 @@ public class RightPanelRenderer {
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - fsize - pad - hh * 3, hw, hh);
         batch.draw(ResourceManager.getBattleHudIcon(2),
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - fsize - pad - hh * 4, hw, hh);
-        FontRenderer.drawLabel(batch, STR_HP,
+        FontRenderer.drawText(batch, STR_HP,
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - fsize - pad - hh * 4 - ts / 4);
-        FontRenderer.drawLabel(batch, STR_EXP,
+        FontRenderer.drawText(batch, STR_EXP,
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - fsize - pad - hh * 4 - lbh - ts / 2);
 
     }

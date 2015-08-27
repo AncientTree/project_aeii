@@ -32,7 +32,7 @@ public class MapList extends Widget implements Cullable {
     public MapList(int ts) {
         this.ts = ts;
         this.item_height = ts;
-        this.text_offset = (ts - FontRenderer.getLabelFont().getCapHeight()) / 2;
+        this.text_offset = (ts - FontRenderer.getTextFont().getCapHeight()) / 2;
         addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (pointer == 0 && button != 0) return false;
@@ -100,7 +100,7 @@ public class MapList extends Widget implements Cullable {
             if (index == selected_index) {
                 batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
-            FontRenderer.drawLabel(batch,
+            FontRenderer.drawText(batch,
                     "(" + player_counts[index] + ") " + map_names[index],
                     x + text_offset, y + itemY - item_height + text_offset);
             itemY -= item_height;

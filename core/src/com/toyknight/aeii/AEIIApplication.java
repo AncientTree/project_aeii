@@ -4,17 +4,16 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.animator.Animator;
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.entity.player.LocalPlayer;
-import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.manager.GameManager;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.*;
 import com.toyknight.aeii.utils.*;
 
@@ -30,8 +29,16 @@ public class AEIIApplication extends Game {
     private LogoScreen logo_screen;
     private MainMenuScreen main_menu_screen;
     private MapEditorScreen map_editor_screen;
+    private LobbyScreen lobby_screen;
     private TestScreen test_screen;
     private GameScreen game_screen;
+
+    private Stage dialog_layer;
+    private Dialog dialog;
+    private DialogCallback dialog_callback;
+    private TextButton btn_ok;
+
+    private NetworkManager network_manager;
 
     public AEIIApplication(Platform platform, int ts) {
         this.TILE_SIZE = ts;
@@ -51,16 +58,21 @@ public class AEIIApplication extends Game {
             BorderRenderer.init();
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
-            skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getLabelFont();
-            skin.get(TextField.TextFieldStyle.class).font = FontRenderer.getLabelFont();
-            skin.get(Label.LabelStyle.class).font = FontRenderer.getLabelFont();
-            skin.get(List.ListStyle.class).font = FontRenderer.getLabelFont();
+            skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();
+            skin.get(TextField.TextFieldStyle.class).font = FontRenderer.getTextFont();
+            skin.get(Label.LabelStyle.class).font = FontRenderer.getTextFont();
+            skin.get(Dialog.WindowStyle.class).titleFont = FontRenderer.getTextFont();
+            skin.get(List.ListStyle.class).font = FontRenderer.getTextFont();
 
             logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen(this);
             map_editor_screen = new MapEditorScreen(this);
+            lobby_screen = new LobbyScreen(this);
             test_screen = new TestScreen(this);
             game_screen = new GameScreen(this);
+            createDialogLayer();
+
+            network_manager = new NetworkManager();
 
             Animator.setTileSize(getTileSize());
 
@@ -68,6 +80,19 @@ public class AEIIApplication extends Game {
         } catch (AEIIException ex) {
             System.err.println("ERROR: " + ex.getMessage());
         }
+    }
+
+    private void createDialogLayer() {
+        dialog_layer = new Stage();
+
+        int dw = TILE_SIZE * 6;
+        int dh = TILE_SIZE / 2 * 5;
+        this.dialog = new Dialog("", getSkin());
+        this.dialog.setBounds((Gdx.graphics.getWidth() - dw) / 2, (Gdx.graphics.getHeight() - dh) / 2, dw, dh);
+        this.dialog.setVisible(false);
+        this.dialog_layer.addActor(dialog);
+
+        this.btn_ok = new TextButton(Language.getText("LB_OK"), getSkin());
     }
 
     public int getTileSize() {
@@ -82,21 +107,27 @@ public class AEIIApplication extends Game {
         return skin;
     }
 
+    public boolean isDialogShown() {
+        return dialog.isVisible();
+    }
+
     public void gotoMainMenuScreen() {
         gotoScreen(main_menu_screen);
-        main_menu_screen.show();
     }
 
     public void gotoMapEditorScreen() {
         AudioManager.stopCurrentBGM();
         gotoScreen(map_editor_screen);
-        map_editor_screen.show();
     }
 
     public void gotoGameScreen(GameManager manager) {
         AudioManager.stopCurrentBGM();
         game_screen.prepare(manager);
         gotoScreen(game_screen);
+    }
+
+    public void gotoLobbyScreen() {
+        gotoScreen(lobby_screen);
     }
 
     public void gotoTestScreen() {
@@ -112,11 +143,60 @@ public class AEIIApplication extends Game {
         this.setScreen(screen);
     }
 
+    public void showMessage(String content, DialogCallback callback) {
+        dialog_callback = callback;
+
+        //set the message and title
+        dialog.getContentTable().reset();
+        dialog.getContentTable().add(new Label(content, getSkin()));
+        dialog.setWidth(Math.max(TILE_SIZE * 6, FontRenderer.getTextFont().getBounds(content).width + TILE_SIZE));
+
+        //set the button
+        dialog.getButtonTable().reset();
+        dialog.getButtonTable().add(btn_ok).size(TILE_SIZE / 2 * 5, TILE_SIZE / 2);
+        btn_ok.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeDialog();
+            }
+        });
+
+        dialog.setVisible(true);
+        Gdx.input.setInputProcessor(dialog_layer);
+    }
+
+    public void closeDialog() {
+        dialog.setVisible(false);
+        if (dialog_callback != null) {
+            dialog_callback.doCallback();
+            dialog_callback = null;
+        }
+        if (getScreen() instanceof Stage) {
+            Gdx.input.setInputProcessor((Stage) getScreen());
+        }
+    }
+
+    public MainMenuScreen getMainMenuScreen() {
+        return main_menu_screen;
+    }
+
+    public NetworkManager getNetworkManager() {
+        return network_manager;
+    }
+
+    public String getUsername() {
+        return "default";
+    }
+
     @Override
     public void render() {
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render();
+        if (isDialogShown()) {
+            dialog_layer.act(Gdx.graphics.getDeltaTime());
+            dialog_layer.draw();
+        }
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;
 
@@ -139,7 +138,7 @@ public class AvailableUnitList extends Widget implements Cullable {
                 batch.draw(ResourceManager.getUnitTexture(package_name, current_team, unit_index, 0, 0),
                         x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
                 batch.flush();
-                FontRenderer.drawLabelCenter(batch, Language.getUnitName(package_name, unit_index),
+                FontRenderer.drawTextCenter(batch, Language.getUnitName(package_name, unit_index),
                         x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
                 index++;
                 itemY -= item_height;

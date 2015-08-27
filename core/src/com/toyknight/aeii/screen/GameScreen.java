@@ -345,9 +345,39 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     public boolean keyDown(int keyCode) {
         boolean event_handled = super.keyDown(keyCode);
         if (!event_handled) {
-            switch (keyCode) {
-                case Input.Keys.GRAVE:
-                    //show command line
+            Unit selected_unit = getGameManager().getSelectedUnit();
+            switch (getGameManager().getState()) {
+                case GameManager.STATE_BUY:
+                    if (keyCode == Input.Keys.B) {
+                        getGameManager().setState(GameManager.STATE_SELECT);
+                        showUnitStore();
+                    }
+                    if (keyCode == Input.Keys.M) {
+                        getGameManager().beginMovePhase();
+                        onButtonUpdateRequested();
+                    }
+                    break;
+                case GameManager.STATE_ACTION:
+                    if (keyCode == Input.Keys.A && getGameManager().hasEnemyWithinRange(selected_unit)) {
+                        getGameManager().beginAttackPhase();
+                        onButtonUpdateRequested();
+                    }
+                    if (keyCode == Input.Keys.O && getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        GameHost.doOccupy();
+                        onButtonUpdateRequested();
+                    }
+                    if (keyCode == Input.Keys.R && getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        GameHost.doRepair();
+                        onButtonUpdateRequested();
+                    }
+                    if (keyCode == Input.Keys.S && selected_unit.hasAbility(Ability.NECROMANCER) && getGameManager().hasTombWithinRange(selected_unit)) {
+                        getGameManager().beginSummonPhase();
+                        onButtonUpdateRequested();
+                    }
+                    if (keyCode == Input.Keys.SPACE) {
+                        GameHost.doStandbyUnit(selected_unit);
+                        onButtonUpdateRequested();
+                    }
                     break;
                 default:
                     //do nothing

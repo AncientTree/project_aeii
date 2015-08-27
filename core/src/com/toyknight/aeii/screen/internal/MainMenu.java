@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
-import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -66,6 +65,12 @@ public class MainMenu extends Table {
         this.btn_campaign = new TextButton(Language.getText("LB_CAMPAIGN"), getContext().getSkin());
         this.add(btn_campaign).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_multiplayer = new TextButton(Language.getText("LB_MULTIPLAYER"), getContext().getSkin());
+        this.btn_multiplayer.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().getMainMenuScreen().showServerList();
+            }
+        });
         this.add(btn_multiplayer).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_map_editor = new TextButton(Language.getText("LB_MAP_EDITOR"), getContext().getSkin());
         this.btn_map_editor.addListener(new ClickListener() {
@@ -85,6 +90,7 @@ public class MainMenu extends Table {
         this.btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                getContext().getNetworkManager().stop();
                 Gdx.app.exit();
             }
         });
