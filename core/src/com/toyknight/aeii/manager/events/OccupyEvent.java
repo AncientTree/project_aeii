@@ -4,7 +4,6 @@ import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.Language;
@@ -45,7 +44,7 @@ public class OccupyEvent implements GameEvent, Serializable {
         manager.submitAnimation(new MessageAnimator(Language.getText("LB_OCCUPIED"), 0.5f));
         GameHost.updateGameStatus();
 
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
             manager.onUnitActionFinished(manager.getGame().getMap().getUnit(target_x, target_y));
         }
     }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -16,12 +15,15 @@ import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.NetworkListener;
-import com.toyknight.aeii.net.NetworkManager;
-import com.toyknight.aeii.net.Server;
+import com.toyknight.aeii.net.NetworkTask;
+import com.toyknight.aeii.server.entity.RoomSnapshot;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
+import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
-import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by toyknight on 8/23/2015.
@@ -32,6 +34,8 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
 
     private final AEIIApplication context;
     private final SpriteBatch batch;
+
+    private StringList<RoomSnapshot> room_list;
 
     private TextButton btn_back;
     private TextButton btn_refresh;
@@ -46,6 +50,15 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
     }
 
     private void initComponents() {
+        room_list = new StringList(ts);
+        ScrollPane sp_room_list = new ScrollPane(room_list);
+        sp_room_list.setBounds(ts, ts * 2, Gdx.graphics.getWidth() - ts * 2, Gdx.graphics.getHeight() - ts * 4);
+        sp_room_list.getStyle().background =
+                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+        sp_room_list.setScrollBarPositions(false, true);
+
+        this.addActor(sp_room_list);
+
         int width_btn = ts * 3;
         int margin_left = (Gdx.graphics.getWidth() - width_btn * 4 - ts * 3) / 2;
 
@@ -62,10 +75,22 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
 
         btn_refresh = new TextButton(Language.getText("LB_REFRESH"), getContext().getSkin());
         btn_refresh.setBounds(margin_left + width_btn + ts, ts / 2, width_btn, ts);
+        btn_refresh.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                refreshGameList();
+            }
+        });
         addActor(btn_refresh);
 
         btn_join = new TextButton(Language.getText("LB_JOIN"), getContext().getSkin());
         btn_join.setBounds(margin_left + width_btn * 2 + ts * 2, ts / 2, width_btn, ts);
+        btn_join.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                doJoinRoom();
+            }
+        });
         addActor(btn_join);
 
         btn_create = new TextButton(Language.getText("LB_CREATE"), getContext().getSkin());
@@ -87,6 +112,66 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
         });
     }
 
+    public void refreshGameList() {
+        room_list.clearItems();
+        Gdx.input.setInputProcessor(null);
+        btn_refresh.setText(Language.getText("LB_REFRESHING"));
+        getContext().getNetworkManager().postTask(new NetworkTask() {
+            @Override
+            public boolean doTask() throws IOException, ClassNotFoundException {
+                ArrayList<RoomSnapshot> open_rooms = getContext().getNetworkManager().requestOpenRoomList();
+                Array<RoomSnapshot> list = new Array();
+                for (RoomSnapshot room : open_rooms) {
+                    list.add(room);
+                }
+                room_list.setItems(list);
+                if (list.size > 0) {
+                    room_list.setSelectedIndex(0);
+                }
+                return true;
+            }
+
+            @Override
+            public void onFinish() {
+                btn_refresh.setText(Language.getText("LB_REFRESH"));
+                Gdx.input.setInputProcessor(LobbyScreen.this);
+            }
+
+            @Override
+            public void onFail(String message) {
+                btn_refresh.setText(Language.getText("LB_REFRESH"));
+                getContext().showMessage(message, null);
+            }
+        });
+    }
+
+    private void doJoinRoom() {
+        if (getSelectedRoom() != null) {
+            Gdx.input.setInputProcessor(null);
+            getContext().getNetworkManager().postTask(new NetworkTask() {
+                @Override
+                public boolean doTask() throws IOException {
+                    return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().getRoomNumber());
+                }
+
+                @Override
+                public void onFinish() {
+                    getContext().gotoNetGameCreateScreen(getSelectedRoom().getRoomNumber());
+                }
+
+                @Override
+                public void onFail(String message) {
+                    Gdx.input.setInputProcessor(LobbyScreen.this);
+                    getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
+                }
+            });
+        }
+    }
+
+    private RoomSnapshot getSelectedRoom() {
+        return room_list.getSelected();
+    }
+
     @Override
     public void draw() {
         batch.begin();
@@ -102,8 +187,8 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
         getContext().getNetworkManager().setNetworkListener(this);
+        refreshGameList();
     }
 
     @Override

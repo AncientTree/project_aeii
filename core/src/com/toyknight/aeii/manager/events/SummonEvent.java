@@ -5,7 +5,6 @@ import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -56,7 +55,7 @@ public class SummonEvent implements GameEvent, Serializable {
             manager.submitAnimation(new UnitLevelUpAnimator(summoner));
         }
 
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
             manager.onUnitActionFinished(summoner);
         }
     }

@@ -63,6 +63,12 @@ public class MainMenu extends Table {
         });
         this.add(btn_test).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_campaign = new TextButton(Language.getText("LB_CAMPAIGN"), getContext().getSkin());
+        this.btn_campaign.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().showMessage(Language.getText("MSG_INFO_NSY"), null);
+            }
+        });
         this.add(btn_campaign).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_multiplayer = new TextButton(Language.getText("LB_MULTIPLAYER"), getContext().getSkin());
         this.btn_multiplayer.addListener(new ClickListener() {
@@ -81,10 +87,28 @@ public class MainMenu extends Table {
         });
         this.add(btn_map_editor).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
+        this.btn_load.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().showMessage(Language.getText("MSG_INFO_NSY"), null);
+            }
+        });
         this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_online_contents = new TextButton(Language.getText("LB_ONLINE_CONTENTS"), getContext().getSkin());
+        this.btn_online_contents.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().showMessage(Language.getText("MSG_INFO_NSY"), null);
+            }
+        });
         this.add(btn_online_contents).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_about = new TextButton(Language.getText("LB_ABOUT"), getContext().getSkin());
+        this.btn_about.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getContext().showMessage("toyknight - 2015", null);
+            }
+        });
         this.add(btn_about).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_exit = new TextButton(Language.getText("LB_EXIT"), getContext().getSkin());
         this.btn_exit.addListener(new ClickListener() {

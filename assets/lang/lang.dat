@@ -27,6 +27,7 @@ LB_MENU=Menu
 LB_MINI_MAP=Mini Map
 LB_MULTIPLAYER=Multiplayer
 LB_REFRESH=Refresh
+LB_REFRESHING=Refreshing...
 LB_REPAIRED=Repaired
 LB_OBJECTIVE=Objective
 LB_OCCUPIED=Occupied
@@ -53,8 +54,12 @@ UNIT_NAME_9=Commander
 UNIT_NAME_10=Skeleton
 UNIT_NAME_11=Crystal
 
+MSG_ERR_AEA=An error occurred :(
 MSG_ERR_CCS=Cannot connect to server
+MSG_ERR_CNJR=Cannot join the room :(
 MSG_ERR_DFS=Disconnected from server
+MSG_ERR_RI=Request interrupted
+MSG_INFO_NSY=Not supported yet :(
 
 EDITOR_ERROR_1=At least 2 teams!
 EDITOR_ERROR_2=Saving map failed!

@@ -2,7 +2,6 @@ package com.toyknight.aeii.manager.events;
 
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 
@@ -47,7 +46,7 @@ public class UnitBuyEvent implements GameEvent, Serializable {
         manager.getGame().getCurrentPlayer().changeGold(-price);
         manager.setSelectedUnit(manager.getGame().getMap().getUnit(x, y));
 
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
             manager.beginMovePhase();
         }
     }

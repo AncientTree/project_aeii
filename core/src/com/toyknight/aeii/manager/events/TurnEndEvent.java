@@ -3,7 +3,6 @@ package com.toyknight.aeii.manager.events;
 import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.Language;
 
@@ -31,7 +30,7 @@ public class TurnEndEvent implements GameEvent, Serializable {
         GameCore game = manager.getGame();
         game.nextTurn();
         int income = game.gainIncome(game.getCurrentTeam());
-        if (game.getCurrentPlayer() instanceof LocalPlayer) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.submitAnimation(new MessageAnimator(
                     Language.getText("LB_CURRENT_TURN") + ": " + game.getCurrentTurn(),
                     Language.getText("LB_INCOME") + ": " + income,

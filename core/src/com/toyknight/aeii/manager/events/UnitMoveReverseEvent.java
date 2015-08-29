@@ -3,7 +3,6 @@ package com.toyknight.aeii.manager.events;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 
@@ -47,7 +46,7 @@ public class UnitMoveReverseEvent implements GameEvent, Serializable {
         }
         unit.setCurrentMovementPoint(unit.getMovementPoint());
 
-        if (manager.getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
             manager.beginMovePhase();
         }
     }

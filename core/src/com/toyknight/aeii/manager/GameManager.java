@@ -1,10 +1,8 @@
 package com.toyknight.aeii.manager;
 
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.EventDispatcherListener;
 import com.toyknight.aeii.listener.GameManagerListener;
@@ -141,7 +139,7 @@ public class GameManager implements AnimationDispatcher {
     public void onUnitMoveFinished(Unit unit) {
         switch (getState()) {
             case GameManager.STATE_MOVE:
-                if (getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+                if (getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
                     setState(GameManager.STATE_ACTION);
                 }
                 break;
@@ -158,7 +156,7 @@ public class GameManager implements AnimationDispatcher {
             setState(GameManager.STATE_SELECT);
         } else {
             if (UnitToolkit.canMoveAgain(unit)) {
-                if (getGame().getCurrentPlayer() instanceof LocalPlayer || GameHost.isHost()) {
+                if (getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
                     setLastPosition(new Point(unit.getX(), unit.getY()));
                     beginRemovePhase();
                 }
@@ -191,7 +189,7 @@ public class GameManager implements AnimationDispatcher {
     public void executeGameEvent(GameEvent event) {
         if (event.canExecute(getGame()) && !GameHost.isGameOver()) {
             event.execute(this);
-            if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
+            if (getGame().getCurrentPlayer().isLocalPlayer()) {
 
             } else {
                 Point focus = event.getFocus();

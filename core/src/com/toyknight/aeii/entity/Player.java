@@ -1,4 +1,4 @@
-package com.toyknight.aeii.entity.player;
+package com.toyknight.aeii.entity;
 
 import java.io.Serializable;
 
@@ -9,9 +9,23 @@ public class Player implements Serializable {
 
     private static final long serialVersionUID = 04032015L;
 
+    public static final int NONE = 0x0;
+    public static final int LOCAL = 0x1;
+    public static final int ROBOT = 0x3;
+    public static final int REMOTE = 0x2;
+
+    private int type;
     private int alliance = 0;
     private int gold = 0;
     private int population = 0;
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
 
     public void setPopulation(int population) {
         this.population = population;
@@ -47,6 +61,10 @@ public class Player implements Serializable {
 
     public int getAlliance() {
         return alliance;
+    }
+
+    public boolean isLocalPlayer() {
+        return getType() == LOCAL;
     }
 
 }

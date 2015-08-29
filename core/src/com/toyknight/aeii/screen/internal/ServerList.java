@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.NetworkTask;
-import com.toyknight.aeii.net.Server;
+import com.toyknight.aeii.server.entity.Server;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
@@ -101,8 +101,9 @@ public class ServerList extends Table {
 
             getContext().getNetworkManager().postTask(new NetworkTask() {
                 @Override
-                public void doTask() throws IOException {
+                public boolean doTask() throws IOException {
                     getContext().getNetworkManager().connect(getSelectedServer(), getContext().getUsername());
+                    return true;
                 }
 
                 @Override

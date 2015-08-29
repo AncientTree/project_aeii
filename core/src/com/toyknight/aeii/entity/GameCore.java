@@ -1,7 +1,5 @@
 package com.toyknight.aeii.entity;
 
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.toyknight.aeii.entity.player.Player;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;

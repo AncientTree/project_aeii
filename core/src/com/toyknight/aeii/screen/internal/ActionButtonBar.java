@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
@@ -126,7 +125,7 @@ public class ActionButtonBar extends HorizontalGroup {
 
     public void updateButtons() {
         this.clear();
-        if (getGame().getCurrentPlayer() instanceof LocalPlayer && !getGameManager().isAnimating()) {
+        if (getGame().getCurrentPlayer().isLocalPlayer() && !getGameManager().isAnimating()) {
             Unit selected_unit = getGameManager().getSelectedUnit();
             switch (getGameManager().getState()) {
                 case GameManager.STATE_ACTION:

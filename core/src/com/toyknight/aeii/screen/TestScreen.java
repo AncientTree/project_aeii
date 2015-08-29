@@ -16,8 +16,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
-import com.toyknight.aeii.entity.player.LocalPlayer;
-import com.toyknight.aeii.entity.player.Player;
+import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
@@ -63,7 +62,8 @@ public class TestScreen extends Stage implements Screen {
                 Player[] players = new Player[4];
                 for (int i = 0; i < 4; i++) {
                     if (map_list.getSelectedMap().getTeamAccess(i) == true) {
-                        players[i] = new LocalPlayer();
+                        players[i] = new Player();
+                        players[i].setType(Player.LOCAL);
                         players[i].setAlliance(i);
                         players[i].setGold(1000);
                     }

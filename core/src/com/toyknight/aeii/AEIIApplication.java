@@ -30,6 +30,7 @@ public class AEIIApplication extends Game {
     private MainMenuScreen main_menu_screen;
     private MapEditorScreen map_editor_screen;
     private LobbyScreen lobby_screen;
+    private NetGameCreateScreen net_game_create_screen;
     private TestScreen test_screen;
     private GameScreen game_screen;
 
@@ -68,6 +69,7 @@ public class AEIIApplication extends Game {
             main_menu_screen = new MainMenuScreen(this);
             map_editor_screen = new MapEditorScreen(this);
             lobby_screen = new LobbyScreen(this);
+            net_game_create_screen = new NetGameCreateScreen(this);
             test_screen = new TestScreen(this);
             game_screen = new GameScreen(this);
             createDialogLayer();
@@ -130,6 +132,11 @@ public class AEIIApplication extends Game {
         gotoScreen(lobby_screen);
     }
 
+    public void gotoNetGameCreateScreen(long room_number) {
+        net_game_create_screen.setRoomNumber(room_number);
+        gotoScreen(net_game_create_screen);
+    }
+
     public void gotoTestScreen() {
         gotoScreen(test_screen);
     }
@@ -190,6 +197,7 @@ public class AEIIApplication extends Game {
 
     @Override
     public void render() {
+        getNetworkManager().updateTasks();
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render();

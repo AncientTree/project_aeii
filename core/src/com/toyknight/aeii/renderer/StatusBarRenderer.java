@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.screen.GameScreen;
 
 /**
@@ -53,7 +52,7 @@ public class StatusBarRenderer {
         FontRenderer.drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);
         //draw gold
         batch.draw(ResourceManager.getStatusHudIcon(1), ts + margin_left * 2 + hud_size + max_pop_width, margin_bottom, hud_size, hud_size);
-        if (getManager().getGame().getCurrentPlayer() instanceof LocalPlayer) {
+        if (getManager().getGame().getCurrentPlayer().isLocalPlayer()) {
             FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
         } else {
             batch.draw(FontRenderer.getLMinus(), ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);

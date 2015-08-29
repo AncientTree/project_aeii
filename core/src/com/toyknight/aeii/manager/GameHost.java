@@ -1,7 +1,7 @@
 package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.entity.player.Player;
+import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;

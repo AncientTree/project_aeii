@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net;
+package com.toyknight.aeii.server.entity;
 
 /**
  * Created by toyknight on 8/24/2015.

@@ -16,7 +16,6 @@ import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.entity.player.LocalPlayer;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.internal.*;
@@ -167,14 +166,14 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
                     move_path_renderer.drawMovePath(batch, manager.getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case GameManager.STATE_PREVIEW:
-                    if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
+                    if (getGame().getCurrentPlayer().isLocalPlayer()) {
                         alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
                     }
                     break;
                 case GameManager.STATE_ATTACK:
                 case GameManager.STATE_SUMMON:
                 case GameManager.STATE_HEAL:
-                    if (getGame().getCurrentPlayer() instanceof LocalPlayer) {
+                    if (getGame().getCurrentPlayer().isLocalPlayer()) {
                         alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
                     }
                     break;
@@ -673,7 +672,7 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
                 !unit_store.isVisible() &&
                 !mini_map.isVisible() &&
                 !menu.isVisible() &&
-                getGame().getCurrentPlayer() instanceof LocalPlayer;
+                getGame().getCurrentPlayer().isLocalPlayer();
     }
 
     public GameCore getGame() {
