@@ -2,11 +2,8 @@ package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
@@ -25,7 +22,7 @@ import java.util.Set;
 /**
  * Created by toyknight on 6/1/2015.
  */
-public class MapEditorScreen extends Stage implements Screen, MapCanvas {
+public class MapEditorScreen extends StageScreen implements MapCanvas {
 
     private static final int MODE_ERASER = 0x1;
     private static final int MODE_BRUSH = 0x2;
@@ -34,10 +31,6 @@ public class MapEditorScreen extends Stage implements Screen, MapCanvas {
     public static final int TYPE_TILE = 0x4;
     public static final int TYPE_UNIT = 0x5;
 
-    private final int ts;
-    private final AEIIApplication context;
-
-    private final SpriteBatch batch;
     private final TileRenderer tile_renderer;
     private final UnitRenderer unit_renderer;
 
@@ -77,10 +70,7 @@ public class MapEditorScreen extends Stage implements Screen, MapCanvas {
     private int cursor_map_y;
 
     public MapEditorScreen(AEIIApplication context) {
-        this.context = context;
-        this.ts = getContext().getTileSize();
-
-        this.batch = new SpriteBatch();
+        super(context);
         this.tile_renderer = new TileRenderer(ts);
         this.unit_renderer = new UnitRenderer(this, ts);
 
@@ -232,10 +222,6 @@ public class MapEditorScreen extends Stage implements Screen, MapCanvas {
         this.dialog.setVisible(false);
         this.dialog.setModal(true);
         this.addActor(dialog);
-    }
-
-    public AEIIApplication getContext() {
-        return context;
     }
 
     public void closeAllDialogs() {
@@ -393,28 +379,6 @@ public class MapEditorScreen extends Stage implements Screen, MapCanvas {
         this.selected_unit = UnitFactory.getSample(0, "default");
         this.setSelectedTeam(0);
         setBrushType(TYPE_TILE);
-    }
-
-    @Override
-    public void render(float delta) {
-        this.draw();
-        this.act(delta);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
     }
 
     public Map getMap() {

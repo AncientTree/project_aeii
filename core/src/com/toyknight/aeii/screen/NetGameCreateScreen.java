@@ -1,25 +1,26 @@
 package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.net.NetworkListener;
+import com.toyknight.aeii.entity.Player;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.net.NetworkTask;
 import com.toyknight.aeii.renderer.BorderRenderer;
+import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.Language;
 
 /**
  * Created by toyknight on 8/28/2015.
  */
-public class NetGameCreateScreen extends Stage implements Screen, NetworkListener {
+public class NetGameCreateScreen extends StageScreen {
 
-    private final AEIIApplication context;
-    private final SpriteBatch batch;
+    private TextButton btn_start;
 
     private long room_number;
 
@@ -34,12 +35,20 @@ public class NetGameCreateScreen extends Stage implements Screen, NetworkListene
     private int max_population;
 
     public NetGameCreateScreen(AEIIApplication context) {
-        this.context = context;
-        this.batch = new SpriteBatch();
+        super(context);
+        this.initComponents();
     }
 
-    public AEIIApplication getContext() {
-        return context;
+    private void initComponents() {
+        btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
+        btn_start.setBounds(ts / 2, ts / 2, ts * 3, ts);
+        btn_start.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tryStartGame();
+            }
+        });
+        addActor(btn_start);
     }
 
     public void setRoomNumber(long room_number) {
@@ -50,24 +59,63 @@ public class NetGameCreateScreen extends Stage implements Screen, NetworkListene
         return room_number;
     }
 
+    private void tryStartGame() {
+        //local check
+        Gdx.input.setInputProcessor(null);
+        btn_start.setText(Language.getText("LB_STARTING"));
+        getContext().getNetworkManager().postTask(new NetworkTask() {
+            @Override
+            public boolean doTask() throws Exception {
+                return getContext().getNetworkManager().requestStartGame();
+            }
+
+            @Override
+            public void onFinish() {
+                btn_start.setText(Language.getText("LB_START"));
+                createGame();
+            }
+
+            @Override
+            public void onFail(String message) {
+                btn_start.setText(Language.getText("LB_START"));
+                getContext().showMessage(message, null);
+            }
+        });
+    }
+
+    private void createGame() {
+        GameHost.setHost(isHost());
+        Player[] players = new Player[4];
+        for (int team = 0; team < 4; team++) {
+            if (map.getTeamAccess(team)) {
+                players[team] = new Player();
+                players[team].setAlliance(alliance_state[team]);
+                players[team].setGold(initial_gold);
+                if (team_allocation[team].equals(getContext().getNetworkManager().getServiceName())) {
+                    players[team].setType(player_type[team]);
+                } else {
+                    players[team].setType(Player.REMOTE);
+                }
+            }
+        }
+        Rule rule = Rule.getDefaultRule();
+        rule.setMaxPopulation(max_population);
+        GameCore game = new GameCore(map, rule, players);
+        getContext().gotoGameScreen(game);
+    }
+
     private void getRoomData() {
         getContext().getNetworkManager().postTask(new NetworkTask() {
             @Override
             public boolean doTask() throws Exception {
-                host = getContext().getNetworkManager().requestHost(room_number);
-//                System.out.println("host: "+host);
-                map = getContext().getNetworkManager().requestMap(room_number);
-//                System.out.println("map: "+map.getAuthor());
-                player_type = getContext().getNetworkManager().requestPlayerType(room_number);
-//                System.out.println("pt: "+player_type.length);
-                team_allocation = getContext().getNetworkManager().requestTeamAllocation(room_number);
-//                System.out.println("ta: "+team_allocation.length);
-                alliance_state = getContext().getNetworkManager().requestAlliance(room_number);
-//                System.out.println("as: "+alliance_state.length);
-                initial_gold = getContext().getNetworkManager().requestInitialGold(room_number);
-//                System.out.println("gold: "+initial_gold);
-                max_population = getContext().getNetworkManager().requestMaxPopulation(room_number);
-//                System.out.println("pop: "+max_population);
+                host = getContext().getNetworkManager().requestHost();
+                AEIIApplication.setButtonEnabled(btn_start, isHost());
+                map = getContext().getNetworkManager().requestMap();
+                player_type = getContext().getNetworkManager().requestPlayerType();
+                team_allocation = getContext().getNetworkManager().requestTeamAllocation();
+                alliance_state = getContext().getNetworkManager().requestAlliance();
+                initial_gold = getContext().getNetworkManager().requestInitialGold();
+                max_population = getContext().getNetworkManager().requestMaxPopulation();
                 return true;
             }
 
@@ -83,21 +131,14 @@ public class NetGameCreateScreen extends Stage implements Screen, NetworkListene
         });
     }
 
-    @Override
-    public void onDisconnect() {
-        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new DialogCallback() {
-            @Override
-            public void doCallback() {
-                getContext().gotoMainMenuScreen();
-            }
-        });
+    private boolean isHost() {
+        return host.equals(getContext().getNetworkManager().getServiceName());
     }
 
     @Override
     public void draw() {
         batch.begin();
         drawBackground();
-
         batch.end();
         super.draw();
     }
@@ -108,11 +149,6 @@ public class NetGameCreateScreen extends Stage implements Screen, NetworkListene
     }
 
     @Override
-    public void act(float delta) {
-        super.act(delta);
-    }
-
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(null);
         getContext().getNetworkManager().setNetworkListener(this);
@@ -120,24 +156,9 @@ public class NetGameCreateScreen extends Stage implements Screen, NetworkListene
     }
 
     @Override
-    public void render(float delta) {
-        this.draw();
-        this.act(delta);
+    public void onGameStart() {
+        createGame();
+        System.out.println("game start");
     }
 
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
 }

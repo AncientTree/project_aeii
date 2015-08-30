@@ -100,7 +100,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doStandbyUnit(getGameManager().getSelectedUnit());
+                GameHost.doStandbyUnit();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -125,7 +125,7 @@ public class ActionButtonBar extends HorizontalGroup {
 
     public void updateButtons() {
         this.clear();
-        if (getGame().getCurrentPlayer().isLocalPlayer() && !getGameManager().isAnimating()) {
+        if (screen.canOperate()) {
             Unit selected_unit = getGameManager().getSelectedUnit();
             switch (getGameManager().getState()) {
                 case GameManager.STATE_ACTION:

@@ -5,6 +5,9 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.manager.GameHost;
+import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.events.GameOverEvent;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
 import com.toyknight.aeii.server.entity.Server;
 import com.toyknight.aeii.utils.Language;
@@ -61,6 +64,10 @@ public class NetworkManager {
         this.listener = listener;
     }
 
+    public NetworkListener getListener() {
+        return listener;
+    }
+
     public void connect(Server server, String username) throws IOException {
         if (server_socket != null) {
             disconnect();
@@ -82,11 +89,12 @@ public class NetworkManager {
         if (server_socket != null) {
             server_socket.dispose();
             server_socket = null;
+            listener = null;
         }
     }
 
     public boolean isConnected() {
-        return server_socket.isConnected();
+        return server_socket != null && server_socket.isConnected();
     }
 
     public String getServiceName() {
@@ -180,11 +188,10 @@ public class NetworkManager {
         }
     }
 
-    public String requestHost(long room_number) throws IOException {
+    public String requestHost() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_HOST);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -199,11 +206,10 @@ public class NetworkManager {
         }
     }
 
-    public Map requestMap(long room_number) throws IOException, ClassNotFoundException {
+    public Map requestMap() throws IOException, ClassNotFoundException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_MAP);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -221,11 +227,10 @@ public class NetworkManager {
         }
     }
 
-    public int[] requestPlayerType(long room_number) throws IOException {
+    public int[] requestPlayerType() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_PLAYER_TYPE);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -243,11 +248,10 @@ public class NetworkManager {
         }
     }
 
-    public String[] requestTeamAllocation(long room_number) throws IOException {
+    public String[] requestTeamAllocation() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_TEAM_ALLOCATION);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -265,11 +269,10 @@ public class NetworkManager {
         }
     }
 
-    public int[] requestAlliance(long room_number) throws IOException {
+    public int[] requestAlliance() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_ALLIANCE);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -287,11 +290,10 @@ public class NetworkManager {
         }
     }
 
-    public int requestInitialGold(long room_number) throws IOException {
+    public int requestInitialGold() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_INITIAL_GOLD);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -306,11 +308,10 @@ public class NetworkManager {
         }
     }
 
-    public int requestMaxPopulation(long room_number) throws IOException {
+    public int requestMaxPopulation() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.GET_MAX_POPULATION);
-            oos.writeLong(room_number);
             oos.flush();
         }
         synchronized (INPUT_LOCK) {
@@ -322,6 +323,40 @@ public class NetworkManager {
                 INPUT_LOCK.notifyAll();
                 throw ex;
             }
+        }
+    }
+
+    public boolean requestStartGame() throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(REQUEST);
+            oos.writeInt(Request.START_GAME);
+            oos.flush();
+        }
+        synchronized (INPUT_LOCK) {
+            try {
+                boolean approved = ois.readBoolean();
+                INPUT_LOCK.notifyAll();
+                return approved;
+            } catch (IOException ex) {
+                INPUT_LOCK.notifyAll();
+                throw ex;
+            }
+        }
+    }
+
+    public void sendGameEvent(GameEvent event) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(REQUEST);
+            oos.writeInt(Request.GAME_EVENT);
+            oos.writeObject(event);
+            oos.flush();
+        }
+    }
+
+    public void sendInteger(int n) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(n);
+            oos.flush();
         }
     }
 
@@ -352,6 +387,8 @@ public class NetworkManager {
                 } catch (IOException e) {
                     Gdx.app.log(TAG, e.getMessage());
                     break;
+                } catch (ClassNotFoundException e) {
+                    Gdx.app.log(TAG, e.toString());
                 }
             }
             if (server_socket != null) {
@@ -363,11 +400,72 @@ public class NetworkManager {
             Gdx.app.log(TAG, "Disconnected from server");
         }
 
-        private void processRequest(int request) {
+        private void processRequest(int request) throws IOException, ClassNotFoundException {
             switch (request) {
-
+                case Request.START_GAME:
+                    getListener().onGameStart();
+                    break;
+                case Request.GAME_EVENT:
+                    GameEvent event = (GameEvent) ois.readObject();
+                    System.out.println(event.toString());
+                    getListener().onReceiveGameEvent(event);
+                    break;
+                case Request.OPT_REQUEST:
+                    int opt = ois.readInt();
+                    System.out.println(opt);
+                    processOperation(opt);
                 default:
                     //do nothing
+            }
+        }
+
+        private void processOperation(int opt) throws IOException {
+            int index, x, y;
+            switch (opt) {
+                case GameHost.OPT_ATTACK:
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    GameHost.doAttack(x, y);
+                    break;
+                case GameHost.OPT_BUY:
+                    index = ois.readInt();
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    System.out.println(index + " " + x + " " + y);
+                    GameHost.doBuyUnit("default", index, x, y);
+                    break;
+                case GameHost.OPT_END_TURN:
+                    GameHost.doEndTurn();
+                    break;
+                case GameHost.OPT_MOVE_UNIT:
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    GameHost.doMoveUnit(x, y);
+                    break;
+                case GameHost.OPT_OCCUPY:
+                    GameHost.doOccupy();
+                    break;
+                case GameHost.OPT_REPAIR:
+                    GameHost.doRepair();
+                    break;
+                case GameHost.OPT_REVERSE_MOVE:
+                    GameHost.doReverseMove();
+                    break;
+                case GameHost.OPT_SELECT:
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    GameHost.doSelect(x, y);
+                    break;
+                case GameHost.OPT_STANDBY:
+                    GameHost.doStandbyUnit();
+                    break;
+                case GameHost.OPT_SUMMON:
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    GameHost.doSummon(x, y);
+                    break;
+                default:
+                    //do nothing;
             }
         }
 

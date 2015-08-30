@@ -5,6 +5,7 @@ import com.toyknight.aeii.entity.Player;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author toyknight
@@ -44,17 +45,28 @@ public class Room {
         Arrays.fill(alliance_state, -1);
     }
 
+    public boolean hasPlayer(String service_name) {
+        return players.contains(service_name);
+    }
+
+    public Set<String> getPlayers() {
+        synchronized (PLAYER_LOCK) {
+            return new HashSet<String>(players);
+        }
+    }
+
     public void addPlayer(String service_name) {
         synchronized (PLAYER_LOCK) {
             players.add(service_name);
             for (int team = 0; team < 4; team++) {
-                if (getMap().getTeamAccessTable()[team] && team_allocation[team].equals("NONE")) {
+                if (getMap().getTeamAccess(team) && team_allocation[team].equals("NONE")) {
                     player_type[team] = Player.LOCAL;
                     team_allocation[team] = service_name;
                     alliance_state[team] = team;
                     if (host_service == null) {
                         host_service = service_name;
                     }
+                    break;
                 }
             }
         }
@@ -155,8 +167,17 @@ public class Room {
         return max_population;
     }
 
-    public void startGame() {
-        game_started = true;
+    public boolean isReady() {
+        for (int team = 0; team < 4; team++) {
+            if (getMap().getTeamAccess(team) && team_allocation[team].equals("NONE")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setGameStarted(boolean started) {
+        game_started = started;
     }
 
     public boolean isOpen() {

@@ -26,7 +26,7 @@ public class UnitDestroyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         return new Point(target_x, target_y);
     }
 

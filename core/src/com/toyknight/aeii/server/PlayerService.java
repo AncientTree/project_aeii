@@ -1,6 +1,8 @@
 package com.toyknight.aeii.server;
 
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.manager.GameHost;
+import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.server.entity.Room;
@@ -115,11 +117,11 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondHost(long room_number) throws IOException {
+    private void respondHost() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null || room.getHostService() == null) {
+            if (room == null || room.getHostService() == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 oos.writeUTF(room.getHostService());
@@ -128,11 +130,11 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondMap(long room_number) throws IOException {
+    private void respondMap() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null) {
+            if (room == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 Map map = getContext().getRoom(room_number).getMap();
@@ -146,11 +148,11 @@ public class PlayerService extends Thread {
                 new Object[]{getUsername(), getClientAddress()});
     }
 
-    private void respondPlayerType(long room_number) throws IOException {
+    private void respondPlayerType() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null) {
+            if (room == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 for (int team = 0; team < 4; team++) {
@@ -161,11 +163,11 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondTeamAllocation(long room_number) throws IOException {
+    private void respondTeamAllocation() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null) {
+            if (room == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 for (int team = 0; team < 4; team++) {
@@ -176,11 +178,11 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondAlliance(long room_number) throws IOException {
+    private void respondAlliance() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null) {
+            if (room == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 for (int team = 0; team < 4; team++) {
@@ -191,11 +193,11 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondInitialGold(long room_number) throws IOException {
+    private void respondInitialGold() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null) {
+            if (room == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 oos.writeInt(room.getInitialGold());
@@ -204,15 +206,104 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondMaxPopulation(long room_number) throws IOException {
+    private void respondMaxPopulation() throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             Room room = getContext().getRoom(room_number);
-            if (room == null) {
+            if (room == null || !room.hasPlayer(getName())) {
                 oos.writeInt(-1);
             } else {
                 oos.writeInt(room.getMaxPopulation());
             }
+            oos.flush();
+        }
+    }
+
+    private void respondStartGame() throws IOException {
+        boolean approved = getContext().onGameStart(room_number, getName());
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(NetworkManager.RESPONSE);
+            oos.writeBoolean(approved);
+            oos.flush();
+        }
+        if (approved) {
+            getContext().getLogger().log(
+                    Level.INFO,
+                    "Player {0}@{1} starts game",
+                    new Object[]{getUsername(), getClientAddress()});
+        }
+    }
+
+    public void respondGameEvent() throws IOException, ClassNotFoundException {
+        GameEvent event = (GameEvent) ois.readObject();
+        getContext().onSubmitGameEvent(getName(), event);
+    }
+
+    public void respondOperation(int opt) throws IOException {
+        Room room = getContext().getRoom(room_number);
+        if (room != null && !room.isOpen()) {
+            int x, y, index;
+            switch (opt) {
+                case GameHost.OPT_SELECT:
+                case GameHost.OPT_ATTACK:
+                case GameHost.OPT_SUMMON:
+                case GameHost.OPT_MOVE_UNIT:
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    sendOperationRequest(opt, x, y);
+                    break;
+                case GameHost.OPT_BUY:
+                    index = ois.readInt();
+                    x = ois.readInt();
+                    y = ois.readInt();
+                    sendOperationRequest(opt, index, x, y);
+                    break;
+                case GameHost.OPT_REVERSE_MOVE:
+                case GameHost.OPT_END_TURN:
+                case GameHost.OPT_STANDBY:
+                case GameHost.OPT_OCCUPY:
+                case GameHost.OPT_REPAIR:
+                    sendOperationRequest(opt);
+                    break;
+                default:
+                    //do nothing
+            }
+        }
+    }
+
+    private void sendOperationRequest(int request, Integer... params) throws IOException {
+        Room room = getContext().getRoom(room_number);
+        if (room != null && !room.isOpen()) {
+            PlayerService host = getContext().getService(room.getHostService());
+            host.sendInteger(NetworkManager.REQUEST);
+            host.sendInteger(Request.OPT_REQUEST);
+            host.sendInteger(request);
+            for (int i = 0; i < params.length; i++) {
+                host.sendInteger(params[i]);
+            }
+        }
+    }
+
+    public void sendRequest(int request) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(NetworkManager.REQUEST);
+            oos.writeInt(request);
+            oos.flush();
+        }
+    }
+
+    public void sendGameEvent(GameEvent event) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(NetworkManager.REQUEST);
+            oos.writeInt(Request.GAME_EVENT);
+            oos.writeObject(event);
+            oos.flush();
+        }
+    }
+
+    public void sendInteger(int n) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(n);
             oos.flush();
         }
     }
@@ -254,12 +345,14 @@ public class PlayerService extends Thread {
             } catch (IOException ex) {
                 closeConnection();
                 break;
+            } catch (ClassNotFoundException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
             }
         }
         getContext().onPlayerDisconnect(getName());
     }
 
-    private void processRequest(int request) throws IOException {
+    private void processRequest(int request) throws IOException, ClassNotFoundException {
         long room_number;
         switch (request) {
             case Request.LIST_ROOMS:
@@ -270,32 +363,35 @@ public class PlayerService extends Thread {
                 respondJoinRoom(room_number);
                 break;
             case Request.GET_HOST:
-                room_number = ois.readLong();
-                respondHost(room_number);
+                respondHost();
                 break;
             case Request.GET_MAP:
-                room_number = ois.readLong();
-                respondMap(room_number);
+                respondMap();
                 break;
             case Request.GET_PLAYER_TYPE:
-                room_number = ois.readLong();
-                respondPlayerType(room_number);
+                respondPlayerType();
                 break;
             case Request.GET_TEAM_ALLOCATION:
-                room_number = ois.readLong();
-                respondTeamAllocation(room_number);
+                respondTeamAllocation();
                 break;
             case Request.GET_ALLIANCE:
-                room_number = ois.readLong();
-                respondAlliance(room_number);
+                respondAlliance();
                 break;
             case Request.GET_INITIAL_GOLD:
-                room_number = ois.readLong();
-                respondInitialGold(room_number);
+                respondInitialGold();
                 break;
             case Request.GET_MAX_POPULATION:
-                room_number = ois.readLong();
-                respondMaxPopulation(room_number);
+                respondMaxPopulation();
+                break;
+            case Request.START_GAME:
+                respondStartGame();
+                break;
+            case Request.GAME_EVENT:
+                respondGameEvent();
+                break;
+            case Request.OPT_REQUEST:
+                int opt = ois.readInt();
+                respondOperation(opt);
                 break;
             default:
                 //do nothing

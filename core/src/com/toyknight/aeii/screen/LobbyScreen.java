@@ -1,11 +1,8 @@
 package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -28,12 +25,7 @@ import java.util.ArrayList;
 /**
  * Created by toyknight on 8/23/2015.
  */
-public class LobbyScreen extends Stage implements Screen, NetworkListener {
-
-    private final int ts;
-
-    private final AEIIApplication context;
-    private final SpriteBatch batch;
+public class LobbyScreen extends StageScreen implements NetworkListener {
 
     private StringList<RoomSnapshot> room_list;
 
@@ -43,9 +35,7 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
     private TextButton btn_create;
 
     public LobbyScreen(AEIIApplication context) {
-        this.context = context;
-        this.ts = getContext().getTileSize();
-        this.batch = new SpriteBatch();
+        super(context);
         this.initComponents();
     }
 
@@ -96,10 +86,6 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
         btn_create = new TextButton(Language.getText("LB_CREATE"), getContext().getSkin());
         btn_create.setBounds(margin_left + width_btn * 3 + ts * 3, ts / 2, width_btn, ts);
         addActor(btn_create);
-    }
-
-    private AEIIApplication getContext() {
-        return context;
     }
 
     @Override
@@ -189,28 +175,6 @@ public class LobbyScreen extends Stage implements Screen, NetworkListener {
     public void show() {
         getContext().getNetworkManager().setNetworkListener(this);
         refreshGameList();
-    }
-
-    @Override
-    public void render(float delta) {
-        this.draw();
-        this.act(delta);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
     }
 
 }

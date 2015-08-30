@@ -34,7 +34,7 @@ public class UnitMoveEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         if (move_path == null) {
             return new Point(unit_x, unit_y);
         } else {

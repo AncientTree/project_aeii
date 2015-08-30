@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.animator.Animator;
+import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
@@ -75,6 +77,7 @@ public class AEIIApplication extends Game {
             createDialogLayer();
 
             network_manager = new NetworkManager();
+            GameHost.setContext(this);
 
             Animator.setTileSize(getTileSize());
 
@@ -122,9 +125,9 @@ public class AEIIApplication extends Game {
         gotoScreen(map_editor_screen);
     }
 
-    public void gotoGameScreen(GameManager manager) {
+    public void gotoGameScreen(GameCore game) {
         AudioManager.stopCurrentBGM();
-        game_screen.prepare(manager);
+        game_screen.prepare(game);
         gotoScreen(game_screen);
     }
 
@@ -178,8 +181,8 @@ public class AEIIApplication extends Game {
             dialog_callback.doCallback();
             dialog_callback = null;
         }
-        if (getScreen() instanceof Stage) {
-            Gdx.input.setInputProcessor((Stage) getScreen());
+        if (getScreen() instanceof StageScreen) {
+            Gdx.input.setInputProcessor((StageScreen) getScreen());
         }
     }
 

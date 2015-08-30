@@ -22,7 +22,7 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         return null;
     }
 

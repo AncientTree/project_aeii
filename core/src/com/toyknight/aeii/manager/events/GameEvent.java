@@ -9,7 +9,7 @@ import com.toyknight.aeii.manager.GameManager;
  */
 public interface GameEvent {
 
-    public Point getFocus();
+    public Point getFocus(GameCore game);
 
     public boolean canExecute(GameCore game);
 

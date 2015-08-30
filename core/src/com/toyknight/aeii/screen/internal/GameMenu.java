@@ -77,6 +77,9 @@ public class GameMenu extends Table {
         this.btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (getContext().getNetworkManager().isConnected()) {
+                    getContext().getNetworkManager().disconnect();
+                }
                 getContext().gotoMainMenuScreen();
             }
         });

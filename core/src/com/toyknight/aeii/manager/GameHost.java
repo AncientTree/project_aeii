@@ -1,11 +1,17 @@
 package com.toyknight.aeii.manager;
 
+import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
+import com.toyknight.aeii.net.GameEventSendingTask;
+import com.toyknight.aeii.net.NetworkTask;
+import com.toyknight.aeii.net.OperationTask;
+import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,11 +22,29 @@ import java.util.Set;
  */
 public class GameHost {
 
+    public static final int OPT_ATTACK = 0x1;
+    public static final int OPT_BUY = 0x2;
+    public static final int OPT_END_TURN = 0x3;
+    public static final int OPT_MOVE_UNIT = 0x4;
+    public static final int OPT_OCCUPY = 0x5;
+    public static final int OPT_REPAIR = 0x6;
+    public static final int OPT_REVERSE_MOVE = 0x7;
+    public static final int OPT_SELECT = 0x8;
+    public static final int OPT_STANDBY = 0x9;
+    public static final int OPT_SUMMON = 0x10;
+
     private static boolean is_host;
+    private static boolean processing;
     private static boolean is_game_over;
+
+    private static AEIIApplication context;
     private static GameManager manager;
 
     private GameHost() {
+    }
+
+    public static void setContext(AEIIApplication context) {
+        GameHost.context = context;
     }
 
     public static void setHost(boolean b) {
@@ -29,6 +53,10 @@ public class GameHost {
 
     public static boolean isHost() {
         return is_host;
+    }
+
+    public static boolean isProcessing() {
+        return processing;
     }
 
     public static void setGameOver(boolean b) {
@@ -41,7 +69,12 @@ public class GameHost {
 
     public static void setGameManager(GameManager manager) {
         GameHost.manager = manager;
+        GameHost.processing = false;
         GameHost.is_game_over = false;
+    }
+
+    public static AEIIApplication getContext() {
+        return context;
     }
 
     private static GameManager getManager() {
@@ -53,24 +86,34 @@ public class GameHost {
     }
 
     public static void doSelect(int x, int y) {
-        Unit unit = getGame().getMap().getUnit(x, y);
-        if (getGame().isUnitAccessible(unit)) {
-            dispatchEvent(new UnitSelectEvent(x, y));
+        if (isHost()) {
+            Unit unit = getGame().getMap().getUnit(x, y);
+            if (getGame().isUnitAccessible(unit)) {
+                dispatchEvent(new UnitSelectEvent(x, y));
+            }
+        } else {
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_SELECT, x, y));
         }
     }
 
     public static void doMoveUnit(int dest_x, int dest_y) {
         if (isHost()) {
+            if (getManager().getMovablePositions() == null) {
+                getManager().createMovablePositions();
+            }
             if (getManager().canSelectedUnitMove(dest_x, dest_y)) {
                 int start_x = getManager().getSelectedUnit().getX();
                 int start_y = getManager().getSelectedUnit().getY();
                 int mp_remains = getManager().getMovementPointRemains(dest_x, dest_y);
-                System.out.println(mp_remains);
                 ArrayList<Point> move_path = getManager().getMovePath(dest_x, dest_y);
                 dispatchEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
             }
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_MOVE_UNIT, dest_x, dest_y));
         }
     }
 
@@ -81,7 +124,9 @@ public class GameHost {
             dispatchEvent(
                     new UnitMoveReverseEvent(selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y));
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_REVERSE_MOVE));
         }
     }
 
@@ -126,7 +171,9 @@ public class GameHost {
                 }
             }
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_ATTACK, target_x, target_y));
         }
     }
 
@@ -138,7 +185,9 @@ public class GameHost {
                 dispatchEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
             }
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_SUMMON, target_x, target_y));
         }
     }
 
@@ -147,7 +196,9 @@ public class GameHost {
             Unit unit = getManager().getSelectedUnit();
             dispatchEvent(new RepairEvent(unit.getX(), unit.getY()));
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_REPAIR));
         }
     }
 
@@ -156,7 +207,9 @@ public class GameHost {
             Unit unit = getManager().getSelectedUnit();
             dispatchEvent(new OccupyEvent(unit.getX(), unit.getY(), unit.getTeam()));
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_OCCUPY));
         }
     }
 
@@ -165,17 +218,22 @@ public class GameHost {
             int team = getGame().getCurrentTeam();
             dispatchEvent(new UnitBuyEvent(package_name, index, team, x, y, getGame().getUnitPrice(package_name, index, team)));
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_BUY, index, x, y));
         }
     }
 
-    public static void doStandbyUnit(Unit unit) {
+    public static void doStandbyUnit() {
         if (isHost()) {
+            Unit unit = getManager().getSelectedUnit();
             if (getGame().isUnitAccessible(unit)) {
                 dispatchEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
             }
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_STANDBY));
         }
     }
 
@@ -237,7 +295,9 @@ public class GameHost {
             }
             dispatchEvent(new UnitStatusUpdateEvent(team));
         } else {
-            //send operation request to host
+            processing = true;
+            getManager().getListener().onButtonUpdateRequested();
+            getContext().getNetworkManager().postTask(new OperationTask(OPT_END_TURN));
         }
     }
 
@@ -286,9 +346,19 @@ public class GameHost {
         }
     }
 
-    private static void dispatchEvent(GameEvent event) {
-        getManager().submitGameEvent(event);
-        //sync operations
+    public static void dispatchEvent(GameEvent event) {
+        if (isHost()) {
+            if (getContext().getNetworkManager().isConnected()) {
+                getContext().getNetworkManager().postTask(new GameEventSendingTask(event));
+            }
+            getManager().submitGameEvent(event);
+        } else {
+            getManager().submitGameEvent(event);
+            if (processing) {
+                processing = false;
+                getManager().getListener().onButtonUpdateRequested();
+            }
+        }
     }
 
 }

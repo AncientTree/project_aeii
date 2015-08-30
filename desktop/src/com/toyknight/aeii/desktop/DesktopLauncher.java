@@ -22,7 +22,6 @@ public class DesktopLauncher implements Runnable {
             config.resizable = false;
             config.useHDPI = true;
         }
-        config.backgroundFPS = -1;
         config.foregroundFPS = fps;
         application = new AEIIApplication(Platform.Desktop, ts);
     }

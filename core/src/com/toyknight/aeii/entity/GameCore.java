@@ -378,6 +378,36 @@ public class GameCore implements Serializable {
         return false;
     }
 
+    public Point getTeamFocus(int team) {
+        Point commander_position = null;
+        Point first_unit_position = null;
+        Set<Point> position_set = getMap().getUnitPositionSet();
+        for (Point position : position_set) {
+            Unit unit = getMap().getUnit(position.x, position.y);
+            if (unit.getTeam() == team) {
+                first_unit_position = position;
+                if (unit.isCommander()) {
+                    commander_position = position;
+                }
+            }
+        }
+        if (commander_position != null) {
+            return commander_position;
+        }
+        if (first_unit_position != null) {
+            return first_unit_position;
+        }
+        for (int x = 0; x < getMap().getWidth(); x++) {
+            for (int y = 0; y < getMap().getHeight(); y++) {
+                Tile tile = getMap().getTile(x, y);
+                if (tile.getTeam() == team && tile.isCastle()) {
+                    return new Point(x, y);
+                }
+            }
+        }
+        return new Point(-1, -1);
+    }
+
     public int getNextTeam() {
         int team = current_team;
         do {

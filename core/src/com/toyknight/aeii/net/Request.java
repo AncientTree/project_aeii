@@ -25,4 +25,10 @@ public class Request {
 
     public static final int GET_HOST = 0x9;
 
+    public static final int START_GAME = 0x10;
+
+    public static final int GAME_EVENT = 0x11;
+
+    public static final int OPT_REQUEST = 0x12;
+
 }

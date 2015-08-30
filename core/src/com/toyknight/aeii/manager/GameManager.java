@@ -71,6 +71,10 @@ public class GameManager implements AnimationDispatcher {
         this.manager_listener = listener;
     }
 
+    public GameManagerListener getListener() {
+        return manager_listener;
+    }
+
     public void setState(int state) {
         if (state != this.state) {
             this.last_state = this.state;
@@ -87,6 +91,7 @@ public class GameManager implements AnimationDispatcher {
 
     public void setSelectedUnit(Unit unit) {
         this.selected_unit = unit;
+        this.movable_positions = null;
         setLastPosition(new Point(unit.getX(), unit.getY()));
     }
 
@@ -145,7 +150,7 @@ public class GameManager implements AnimationDispatcher {
                 break;
             case GameManager.STATE_REMOVE:
                 if (GameHost.isHost()) {
-                    GameHost.doStandbyUnit(unit);
+                    GameHost.doStandbyUnit();
                 }
                 break;
         }
@@ -162,7 +167,7 @@ public class GameManager implements AnimationDispatcher {
                 }
             } else {
                 if (GameHost.isHost()) {
-                    GameHost.doStandbyUnit(unit);
+                    GameHost.doStandbyUnit();
                 }
             }
         }
@@ -192,7 +197,7 @@ public class GameManager implements AnimationDispatcher {
             if (getGame().getCurrentPlayer().isLocalPlayer()) {
 
             } else {
-                Point focus = event.getFocus();
+                Point focus = event.getFocus(getGame());
                 if (focus != null) {
                     manager_listener.onMapFocusRequired(focus.x, focus.y);
                 }

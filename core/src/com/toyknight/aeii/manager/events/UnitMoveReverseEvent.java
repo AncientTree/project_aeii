@@ -28,7 +28,7 @@ public class UnitMoveReverseEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         return new Point(origin_x, origin_y);
     }
 

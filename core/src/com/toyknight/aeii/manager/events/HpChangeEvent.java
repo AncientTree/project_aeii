@@ -23,7 +23,7 @@ public class HpChangeEvent implements GameEvent, Serializable {
         this.change_map = change_map;
     }
 
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         for (Point location : change_map.keySet()) {
             if (location != null) {
                 return location;

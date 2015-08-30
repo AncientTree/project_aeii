@@ -2,15 +2,12 @@ package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
@@ -29,14 +26,10 @@ import java.util.Set;
 /**
  * Created by toyknight on 4/4/2015.
  */
-public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerListener {
-
-    private final int ts;
+public class GameScreen extends StageScreen implements MapCanvas, GameManagerListener {
 
     private final int RIGHT_PANEL_WIDTH;
-    private final AEIIApplication context;
 
-    private final SpriteBatch batch;
     private final TileRenderer tile_renderer;
     private final UnitRenderer unit_renderer;
     private final AlphaRenderer alpha_renderer;
@@ -45,7 +38,7 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     private final RightPanelRenderer right_panel_renderer;
     private final AttackInformationRenderer attack_info_renderer;
 
-    private GameManager manager;
+    private final GameManager manager;
 
     private final CursorAnimator cursor;
     private final AttackCursorAnimator attack_cursor;
@@ -61,7 +54,6 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     private int drag_distance_x;
     private int drag_distance_y;
 
-    private final TextField command_line;
     private TextButton btn_menu;
     private TextButton btn_end_turn;
     private ActionButtonBar action_button_bar;
@@ -71,15 +63,13 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     private GameMenu menu;
 
     public GameScreen(AEIIApplication context) {
-        this.context = context;
-        this.ts = context.getTileSize();
+        super(context);
         this.RIGHT_PANEL_WIDTH = 3 * ts;
 
         this.viewport = new MapViewport();
         this.viewport.width = Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH;
         this.viewport.height = Gdx.graphics.getHeight() - ts;
 
-        this.batch = new SpriteBatch();
         this.tile_renderer = new TileRenderer(ts);
         this.unit_renderer = new UnitRenderer(this, ts);
         this.alpha_renderer = new AlphaRenderer(this, ts);
@@ -91,16 +81,12 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
         this.cursor = new CursorAnimator(this, ts);
         this.attack_cursor = new AttackCursorAnimator(this, ts);
 
-        this.command_line = new TextField("", getContext().getSkin());
+        this.manager = new GameManager();
+        GameHost.setGameManager(manager);
         initComponents();
     }
 
     private void initComponents() {
-        this.command_line.setPosition(0, Gdx.graphics.getHeight() - command_line.getHeight());
-        this.command_line.setWidth(Gdx.graphics.getWidth());
-        this.command_line.setVisible(false);
-        this.addActor(command_line);
-
         this.btn_menu = new TextButton(Language.getText("LB_MENU"), getContext().getSkin());
         this.btn_menu.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, Gdx.graphics.getHeight() - ts, RIGHT_PANEL_WIDTH, ts);
         this.btn_menu.addListener(new ClickListener() {
@@ -150,15 +136,11 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
         this.mini_map.setVisible(false);
     }
 
-    public AEIIApplication getContext() {
-        return context;
-    }
-
     @Override
     public void draw() {
         batch.begin();
         drawMap();
-        if (!manager.isAnimating() /*&& getGame().isLocalPlayer()*/) {
+        if (!manager.isAnimating() && getGame().getCurrentPlayer().isLocalPlayer()) {
             switch (manager.getState()) {
                 case GameManager.STATE_REMOVE:
                 case GameManager.STATE_MOVE:
@@ -166,16 +148,12 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
                     move_path_renderer.drawMovePath(batch, manager.getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case GameManager.STATE_PREVIEW:
-                    if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                        alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
-                    }
+                    alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
                     break;
                 case GameManager.STATE_ATTACK:
                 case GameManager.STATE_SUMMON:
                 case GameManager.STATE_HEAL:
-                    if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                        alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
-                    }
+                    alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
                     break;
                 default:
                     //do nothing
@@ -283,6 +261,21 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     }
 
     @Override
+    public void onPlayerDisconnect(String username, boolean is_host) {
+        if (is_host) {
+            getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
+                @Override
+                public void doCallback() {
+                    getContext().getNetworkManager().disconnect();
+                    getContext().gotoMainMenuScreen();
+                }
+            });
+        } else {
+            //show message
+        }
+    }
+
+    @Override
     public void act(float delta) {
         mini_map.update(delta);
         cursor.addStateTime(delta);
@@ -298,6 +291,9 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
     @Override
     public void show() {
         Gdx.input.setInputProcessor(this);
+        if (getContext().getNetworkManager().isConnected()) {
+            getContext().getNetworkManager().setNetworkListener(this);
+        }
         onButtonUpdateRequested();
         mini_map.updateBounds();
         unit_store.setVisible(false);
@@ -305,39 +301,13 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
         menu.setVisible(false);
     }
 
-    public void prepare(GameManager manager) {
-        this.manager = manager;
-        GameHost.setGameManager(manager);
+    public void prepare(GameCore game) {
+        this.manager.setGame(game);
         this.manager.setGameManagerListener(this);
-        this.locateViewport(0, 0);
-        cursor_map_x = 0;
-        cursor_map_y = 0;
-    }
-
-    @Override
-    public void render(float delta) {
-        this.draw();
-        this.act(delta);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void dispose() {
+        Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
+        this.locateViewport(team_focus.x, team_focus.y);
+        cursor_map_x = team_focus.x;
+        cursor_map_y = team_focus.y;
     }
 
     @Override
@@ -374,7 +344,7 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
                         onButtonUpdateRequested();
                     }
                     if (keyCode == Input.Keys.SPACE) {
-                        GameHost.doStandbyUnit(selected_unit);
+                        GameHost.doStandbyUnit();
                         onButtonUpdateRequested();
                     }
                     break;
@@ -573,8 +543,7 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
             if (getGame().isUnitAccessible(target_unit)) {
                 if (getGame().isCastleAccessible(getGame().getMap().getTile(map_x, map_y))
                         && target_unit.isCommander() && target_unit.getTeam() == getGame().getCurrentTeam()) {
-                    getGameManager().setSelectedUnit(target_unit);
-                    getGameManager().setState(GameManager.STATE_BUY);
+                    GameHost.doSelect(map_x, map_y);
                 } else {
                     GameHost.doSelect(map_x, map_y);
                 }
@@ -666,8 +635,9 @@ public class GameScreen extends Stage implements Screen, MapCanvas, GameManagerL
         }
     }
 
-    private boolean canOperate() {
-        return getGameManager().getCurrentAnimation() == null &&
+    public boolean canOperate() {
+        return !GameHost.isProcessing() &&
+                getGameManager().getCurrentAnimation() == null &&
                 !save_load_dialog.isVisible() &&
                 !unit_store.isVisible() &&
                 !mini_map.isVisible() &&

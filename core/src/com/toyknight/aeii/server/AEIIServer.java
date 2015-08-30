@@ -1,16 +1,17 @@
 package com.toyknight.aeii.server;
 
-import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.server.entity.Room;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
-import com.toyknight.aeii.utils.MapFactory;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -125,6 +126,41 @@ public class AEIIServer {
         }
     }
 
+    public boolean onGameStart(long room_number, String requester) {
+        Room room = getRoom(room_number);
+        if (room == null || !room.getHostService().equals(requester) || !room.isReady()) {
+            return false;
+        } else {
+            try {
+                for (String service_name : room.getPlayers()) {
+                    if (!service_name.equals(requester)) {
+                        getService(service_name).sendRequest(Request.START_GAME);
+                    }
+                }
+                room.setGameStarted(true);
+                return true;
+            } catch (IOException ex) {
+                return false;
+            }
+        }
+    }
+
+    public boolean onSubmitGameEvent(String service_name, GameEvent event) throws IOException {
+        PlayerService service = getService(service_name);
+        Room room = getRoom(service.getRoomNumber());
+        if (room == null || room.isOpen()) {
+            return false;
+        } else {
+            Set<String> players = room.getPlayers();
+            for (String player_service : players) {
+                if (!player_service.equals(service_name)) {
+                    getService(player_service).sendGameEvent(event);
+                }
+            }
+            return true;
+        }
+    }
+
     public void onPlayerLeaveRoom(String service_name) {
         PlayerService service = getService(service_name);
         long room_number = service.getRoomNumber();
@@ -132,12 +168,15 @@ public class AEIIServer {
             Room room = getRoom(room_number);
             room.removePlayer(service_name);
             if (room.getCapacity() == room.getRemaining()) {
-                if (!isSystemRoom(room.getRoomNumber())) {
+                if (isSystemRoom(room.getRoomNumber())) {
+                    room.setGameStarted(false);
+                } else {
                     removeRoom(room_number);
                 }
             } else {
                 //notify players in this room
             }
+            service.setRoomNumber(-1);
             getLogger().log(
                     Level.INFO,
                     "Player {0}@{1} leaves room-{2}",

@@ -31,7 +31,7 @@ public class UnitBuyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         return new Point(x, y);
     }
 

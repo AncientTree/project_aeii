@@ -5,10 +5,14 @@ import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.manager.GameManager;
 
+import java.io.Serializable;
+
 /**
  * Created by toyknight on 4/26/2015.
  */
-public class UnitStandbyEvent implements GameEvent {
+public class UnitStandbyEvent implements GameEvent, Serializable {
+
+    private static final long serialVersionUID = 04262015L;
 
     private final int unit_x;
     private final int unit_y;
@@ -19,7 +23,7 @@ public class UnitStandbyEvent implements GameEvent {
     }
 
     @Override
-    public Point getFocus() {
+    public Point getFocus(GameCore game) {
         return new Point(unit_x, unit_y);
     }
 

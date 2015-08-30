@@ -1,12 +1,9 @@
 package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -27,13 +24,9 @@ import com.toyknight.aeii.utils.FileProvider;
 /**
  * Created by toyknight on 6/21/2015.
  */
-public class TestScreen extends Stage implements Screen {
+public class TestScreen extends StageScreen {
 
-    private final int ts;
     private final int sts;
-    private final AEIIApplication context;
-
-    private final SpriteBatch batch;
 
     private final MapList map_list;
 
@@ -41,12 +34,10 @@ public class TestScreen extends Stage implements Screen {
     private TextButton btn_start;
 
     public TestScreen(AEIIApplication context) {
-        this.context = context;
-        this.batch = new SpriteBatch();
-        this.ts = getContext().getTileSize();
-        this.sts = ts / 24 * 10;
+        super(context);
+        this.sts = 10;
         this.btn_back = new TextButton("Back", getContext().getSkin());
-        this.btn_back.setBounds(Gdx.graphics.getWidth() - ts * 9, ts / 2, ts * 4, ts);
+        this.btn_back.setBounds(Gdx.graphics.getWidth() - ts * 7, ts / 2, ts * 3, ts);
         this.btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -55,7 +46,7 @@ public class TestScreen extends Stage implements Screen {
         });
         this.addActor(btn_back);
         this.btn_start = new TextButton("Start!", getContext().getSkin());
-        this.btn_start.setBounds(Gdx.graphics.getWidth() - ts / 2 - ts * 4, ts / 2, ts * 4, ts);
+        this.btn_start.setBounds(Gdx.graphics.getWidth() - ts / 2 - ts * 3, ts / 2, ts * 3, ts);
         this.btn_start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -69,10 +60,8 @@ public class TestScreen extends Stage implements Screen {
                     }
                 }
                 GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), players);
-                GameManager manager = new GameManager();
-                manager.setGame(game);
                 GameHost.setHost(true);
-                getContext().gotoGameScreen(manager);
+                getContext().gotoGameScreen(game);
             }
         });
         this.addActor(btn_start);
@@ -84,10 +73,6 @@ public class TestScreen extends Stage implements Screen {
         sp_map_list.setScrollBarPositions(false, true);
         sp_map_list.setBounds(ts / 2, ts / 2, ts * 8, Gdx.graphics.getHeight() - ts);
         this.addActor(sp_map_list);
-    }
-
-    private AEIIApplication getContext() {
-        return context;
     }
 
     private void drawMapPreview() {
@@ -126,28 +111,6 @@ public class TestScreen extends Stage implements Screen {
         System.arraycopy(user_maps, 0, maps, internal_maps.length, user_maps.length);
         map_list.setMaps(maps);
         Gdx.input.setInputProcessor(this);
-    }
-
-    @Override
-    public void render(float delta) {
-        this.draw();
-        this.act(delta);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
     }
 
 }
