@@ -7,6 +7,7 @@ import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.EventDispatcherListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.events.TurnEndEvent;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.*;
@@ -194,10 +195,12 @@ public class GameManager implements AnimationDispatcher {
     public void executeGameEvent(GameEvent event) {
         if (event.canExecute(getGame()) && !GameHost.isGameOver()) {
             event.execute(this);
+            Point focus = event.getFocus(getGame());
             if (getGame().getCurrentPlayer().isLocalPlayer()) {
-
+                if (focus != null && event instanceof TurnEndEvent) {
+                    manager_listener.onMapFocusRequired(focus.x, focus.y);
+                }
             } else {
-                Point focus = event.getFocus(getGame());
                 if (focus != null) {
                     manager_listener.onMapFocusRequired(focus.x, focus.y);
                 }

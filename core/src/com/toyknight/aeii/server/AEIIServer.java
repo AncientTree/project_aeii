@@ -56,6 +56,7 @@ public class AEIIServer {
             FileInputStream fis = new FileInputStream(map_file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Map map = (Map) ois.readObject();
+            test_room.setInitialGold(2000);
             test_room.setMap(map);
             test_room.setMapName(map_file.getName());
             rooms.put(test_room.getRoomNumber(), test_room);

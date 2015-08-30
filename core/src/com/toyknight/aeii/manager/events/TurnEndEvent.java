@@ -21,8 +21,8 @@ public class TurnEndEvent implements GameEvent, Serializable {
     }
 
     public Point getFocus(GameCore game) {
-        int next_team = game.getNextTeam();
-        return game.getTeamFocus(next_team);
+        int team = game.getCurrentTeam();
+        return game.getTeamFocus(team);
     }
 
     @Override
