@@ -59,6 +59,7 @@ UNIT_NAME_11=Crystal
 MSG_ERR_AEA=An error occurred :(
 MSG_ERR_CCS=Cannot connect to server
 MSG_ERR_CNJR=Cannot join the room :(
+MSG_ERR_CNSG=Cannot start game
 MSG_ERR_DFS=Disconnected from server
 MSG_ERR_HPD=Host player disconnected
 MSG_ERR_RI=Request interrupted

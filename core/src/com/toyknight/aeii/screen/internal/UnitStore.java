@@ -60,7 +60,7 @@ public class UnitStore extends Table implements UnitListListener {
         this.btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doBuyUnit(selected_unit.getPackage(), selected_unit.getIndex(), castle_x, castle_y);
+                GameHost.doBuyUnit(selected_unit.getIndex(), castle_x, castle_y);
                 close();
             }
         });
@@ -91,7 +91,7 @@ public class UnitStore extends Table implements UnitListListener {
         this.castle_y = castle_y;
         this.unit_list.setGame(screen.getGame());
         GameManager manager = screen.getGameManager();
-        HashMap<String, ArrayList<Integer>> available_units = manager.getGame().getRule().getAvailableUnitList();
+        ArrayList<Integer> available_units = manager.getGame().getRule().getAvailableUnitList();
         unit_list.setAvailableUnits(available_units);
         this.setVisible(true);
     }
@@ -102,8 +102,8 @@ public class UnitStore extends Table implements UnitListListener {
     }
 
     @Override
-    public void onUnitSelected(String package_name, int index) {
-        selected_unit = UnitFactory.getSample(index, package_name);
+    public void onUnitSelected(int index) {
+        selected_unit = UnitFactory.getSample(index);
         if (selected_unit.isCommander()) {
             selected_unit = screen.getGameManager().getGame().getCommander(selected_unit.getTeam());
         }
@@ -115,7 +115,7 @@ public class UnitStore extends Table implements UnitListListener {
         int current_team = manager.getGame().getCurrentTeam();
         if (selected_unit != null
                 && manager.getGame().getCurrentPlayer().getPopulation() < manager.getGame().getRule().getMaxPopulation()) {
-            price = screen.getGame().getUnitPrice(selected_unit.getPackage(), selected_unit.getIndex(), current_team);
+            price = screen.getGame().getUnitPrice(selected_unit.getIndex(), current_team);
             if (price >= 0) {
                 if (manager.getGame().getCurrentPlayer().getGold() >= selected_unit.getPrice()) {
                     AEIIApplication.setButtonEnabled(btn_buy, true);

@@ -3,12 +3,16 @@ package com.toyknight.aeii.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.io.File;
+
 /**
  * Created by toyknight on 4/4/2015.
  */
 public class FileProvider {
 
     private static Platform platform = Platform.Desktop;
+
+    private static final String user_home = System.getProperty("user.home") + "/aeii/";
 
     private FileProvider() {
     }
@@ -20,12 +24,11 @@ public class FileProvider {
     public static FileHandle getAssetsFile(String path) {
         switch (platform) {
             case Android:
-                return Gdx.files.internal(path);
             case iOS:
-                return Gdx.files.internal(path);
             case Desktop:
+                return Gdx.files.internal(path);
             default:
-                return Gdx.files.local("assets/" + path);
+                return Gdx.files.internal(path);
         }
     }
 
@@ -34,7 +37,16 @@ public class FileProvider {
     }
 
     public static FileHandle getUserDir(String path) {
-        FileHandle dir = Gdx.files.local("user/" + path);
+        FileHandle dir;
+        switch (platform) {
+            case Android:
+            case iOS:
+                dir = Gdx.files.local("aeii/user/" + path);
+                break;
+            case Desktop:
+            default:
+                dir = new FileHandle(new File(user_home + path));
+        }
         if (dir.exists() && dir.isDirectory()) {
             return dir;
         } else {

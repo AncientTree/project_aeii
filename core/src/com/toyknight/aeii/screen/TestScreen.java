@@ -1,7 +1,6 @@
 package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -15,11 +14,10 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameHost;
-import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.widgets.MapList;
-import com.toyknight.aeii.utils.FileProvider;
+import com.toyknight.aeii.utils.MapFactory;
 
 /**
  * Created by toyknight on 6/21/2015.
@@ -104,12 +102,7 @@ public class TestScreen extends StageScreen {
 
     @Override
     public void show() {
-        FileHandle[] internal_maps = FileProvider.getAssetsFile("map").list();
-        FileHandle[] user_maps = FileProvider.getUserDir("map").list();
-        FileHandle[] maps = new FileHandle[internal_maps.length + user_maps.length];
-        System.arraycopy(internal_maps, 0, maps, 0, internal_maps.length);
-        System.arraycopy(user_maps, 0, maps, internal_maps.length, user_maps.length);
-        map_list.setMaps(maps);
+        map_list.setMaps(MapFactory.getAvailableMaps());
         Gdx.input.setInputProcessor(this);
     }
 

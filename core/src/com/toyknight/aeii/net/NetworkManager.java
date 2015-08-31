@@ -139,7 +139,6 @@ public class NetworkManager {
                     current_task.onFail(Language.getText("MSG_ERR_RI"));
                     current_task = null;
                 } catch (ExecutionException e) {
-                    System.err.println(e.toString());
                     current_task.onFail(e.getMessage());
                 } finally {
                     current_task = null;
@@ -407,12 +406,11 @@ public class NetworkManager {
                     break;
                 case Request.GAME_EVENT:
                     GameEvent event = (GameEvent) ois.readObject();
-                    System.out.println(event.toString());
+                    //System.out.println(event.toString());
                     getListener().onReceiveGameEvent(event);
                     break;
                 case Request.OPT_REQUEST:
                     int opt = ois.readInt();
-                    System.out.println(opt);
                     processOperation(opt);
                 default:
                     //do nothing
@@ -431,8 +429,7 @@ public class NetworkManager {
                     index = ois.readInt();
                     x = ois.readInt();
                     y = ois.readInt();
-                    System.out.println(index + " " + x + " " + y);
-                    GameHost.doBuyUnit("default", index, x, y);
+                    GameHost.doBuyUnit(index, x, y);
                     break;
                 case GameHost.OPT_END_TURN:
                     GameHost.doEndTurn();

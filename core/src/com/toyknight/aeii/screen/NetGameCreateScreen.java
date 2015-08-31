@@ -158,7 +158,6 @@ public class NetGameCreateScreen extends StageScreen {
     @Override
     public void onGameStart() {
         createGame();
-        System.out.println("game start");
     }
 
 }

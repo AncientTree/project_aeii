@@ -25,12 +25,8 @@ public class Language {
         }
     }
 
-    public static String getUnitName(String package_name, int index) {
-        if (package_name.equals("default")) {
-            return languageMap.get("UNIT_NAME_" + index);
-        } else {
-            return "";
-        }
+    public static String getUnitName(int index) {
+        return languageMap.get("UNIT_NAME_" + index);
     }
 
     public static String getText(String key) {

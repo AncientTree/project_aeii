@@ -97,7 +97,7 @@ public class GameCore implements Serializable {
     public int getCommanderPrice(int team) {
         if (commander_price_delta[team] > 0) {
             int commander_index = UnitFactory.getCommanderIndex();
-            return UnitFactory.getSample(commander_index, "default").getPrice() + commander_price_delta[team];
+            return UnitFactory.getSample(commander_index).getPrice() + commander_price_delta[team];
         } else {
             return -1;
         }
@@ -135,8 +135,8 @@ public class GameCore implements Serializable {
         }
     }
 
-    public void createUnit(int index, int team, String package_name, int x, int y) {
-        Unit unit = UnitFactory.createUnit(index, team, package_name);
+    public void createUnit(int index, int team, int x, int y) {
+        Unit unit = UnitFactory.createUnit(index, team);
         unit.setX(x);
         unit.setY(y);
         getMap().addUnit(unit);
@@ -162,8 +162,8 @@ public class GameCore implements Serializable {
         return commanders[team];
     }
 
-    public int getUnitPrice(String package_name, int index, int team) {
-        Unit unit = UnitFactory.getSample(index, package_name);
+    public int getUnitPrice(int index, int team) {
+        Unit unit = UnitFactory.getSample(index);
         if (unit.isCommander()) {
             if (isCommanderAlive(current_team)) {
                 return -1;

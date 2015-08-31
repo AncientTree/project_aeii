@@ -26,7 +26,7 @@ public class Rule implements Serializable {
     private boolean need_enemy_clear;
     private boolean need_castle_clear;
 
-    private HashMap<String, ArrayList<Integer>> available_unit_list = new HashMap();
+    private ArrayList<Integer> available_unit_list = new ArrayList<Integer>();
 
     public void setPoisonDamage(int damage) {
         this.poison_damage = damage;
@@ -92,11 +92,11 @@ public class Rule implements Serializable {
         return need_castle_clear;
     }
 
-    public void addAvailableUnits(String package_name, ArrayList<Integer> list) {
-        this.available_unit_list.put(package_name, list);
+    public void setAvailableUnits(ArrayList<Integer> list) {
+        available_unit_list = list;
     }
 
-    public HashMap<String, ArrayList<Integer>> getAvailableUnitList() {
+    public ArrayList<Integer> getAvailableUnitList() {
         return available_unit_list;
     }
 
@@ -115,12 +115,12 @@ public class Rule implements Serializable {
         int skeleton = UnitFactory.getSkeletonIndex();
         int crystal = UnitFactory.getCrystalIndex();
         ArrayList<Integer> unit_list = new ArrayList();
-        for (int i = 0; i < UnitFactory.getUnitCount("default"); i++) {
-            if (i != skeleton && i != crystal) {
-                unit_list.add(i);
+        for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
+            if (index != skeleton && index != crystal) {
+                unit_list.add(index);
             }
         }
-        rule.addAvailableUnits("default", unit_list);
+        rule.setAvailableUnits(unit_list);
         return rule;
     }
 

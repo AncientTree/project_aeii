@@ -29,7 +29,7 @@ public class AvailableUnitList extends Widget implements Cullable {
 
 
     private GameCore game;
-    private HashMap<String, ArrayList<Integer>> available_units;
+    private ArrayList<Integer> available_units;
 
     private float prefWidth;
     private float prefHeight;
@@ -66,16 +66,14 @@ public class AvailableUnitList extends Widget implements Cullable {
 
     private void updateSelection() {
         int index = 0;
-        for (String package_name : available_units.keySet()) {
-            for (Integer unit_index : available_units.get(package_name)) {
-                if (index == selected_index) {
-                    if (listener != null) {
-                        listener.onUnitSelected(package_name, unit_index);
-                    }
-                    return;
+        for (Integer unit_index : available_units) {
+            if (index == selected_index) {
+                if (listener != null) {
+                    listener.onUnitSelected(unit_index);
                 }
-                index++;
+                return;
             }
+            index++;
         }
     }
 
@@ -91,18 +89,12 @@ public class AvailableUnitList extends Widget implements Cullable {
         this.listener = listener;
     }
 
-    public void setAvailableUnits(HashMap<String, ArrayList<Integer>> list) {
+    public void setAvailableUnits(ArrayList<Integer> list) {
         this.available_units = list;
-        int count = 0;
-        for (String package_name : available_units.keySet()) {
-            for (Integer unit_index : available_units.get(package_name)) {
-                count++;
-            }
-        }
         this.selected_index = 0;
         this.updateSelection();
         this.prefWidth = getWidth();
-        this.prefHeight = count * item_height;
+        this.prefHeight = available_units.size() * item_height;
     }
 
     @Override
@@ -128,24 +120,22 @@ public class AvailableUnitList extends Widget implements Cullable {
         int current_team = getGame().getCurrentTeam();
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
         float itemY = height;
-        for (String package_name : available_units.keySet()) {
-            for (Integer unit_index : available_units.get(package_name)) {
-                if (index == selected_index) {
-                    batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
-                }
-                batch.draw(ResourceManager.getBigCircleTexture(0),
-                        x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
-                batch.draw(ResourceManager.getUnitTexture(package_name, current_team, unit_index, 0, 0),
-                        x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
-                batch.flush();
-                FontRenderer.drawTextCenter(batch, Language.getUnitName(package_name, unit_index),
-                        x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
-                index++;
-                itemY -= item_height;
+        for (Integer unit_index : available_units) {
+            if (index == selected_index) {
+                batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
-            //batch.draw(ResourceManager.getMenuIcon(0), x, y + height - 800, width, 800);
-            super.draw(batch, parentAlpha);
+            batch.draw(ResourceManager.getBigCircleTexture(0),
+                    x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
+            batch.draw(ResourceManager.getUnitTexture(current_team, unit_index, 0, 0),
+                    x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
+            batch.flush();
+            FontRenderer.drawTextCenter(batch, Language.getUnitName(unit_index),
+                    x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
+            index++;
+            itemY -= item_height;
         }
+        //batch.draw(ResourceManager.getMenuIcon(0), x, y + height - 800, width, 800);
+        super.draw(batch, parentAlpha);
     }
 
 }

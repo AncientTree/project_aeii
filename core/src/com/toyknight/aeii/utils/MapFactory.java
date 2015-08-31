@@ -9,6 +9,7 @@ import com.toyknight.aeii.entity.Unit;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -42,12 +43,11 @@ public class MapFactory {
             Map map = new Map(map_data, team_access, author_name);
             int unit_count = dis.readInt();
             for (int i = 0; i < unit_count; i++) {
-                String unit_package = dis.readUTF();
                 int team = dis.readInt();
                 int index = dis.readInt();
                 int x = dis.readInt();
                 int y = dis.readInt();
-                Unit unit = UnitFactory.createUnit(index, team, unit_package);
+                Unit unit = UnitFactory.createUnit(index, team);
                 unit.setX(x);
                 unit.setY(y);
                 map.addUnit(unit);
@@ -75,7 +75,6 @@ public class MapFactory {
         Collection<Unit> unit_list = map.getUnitSet();
         fos.writeInt(unit_list.size());
         for (Unit unit : unit_list) {
-            fos.writeUTF(unit.getPackage());
             fos.writeInt(unit.getTeam());
             fos.writeInt(unit.getIndex());
             fos.writeInt(unit.getX());
@@ -123,6 +122,23 @@ public class MapFactory {
                 map.setTeamAccess(unit.getTeam(), true);
             }
         }
+    }
+
+    public static FileHandle[] getAvailableMaps() {
+        FileHandle internal_map_config = FileProvider.getAssetsFile("map/config.dat");
+        Scanner din = new Scanner(internal_map_config.read());
+        int internal_map_count = din.nextInt();
+        FileHandle[] internal_maps = new FileHandle[internal_map_count];
+        din.nextLine();
+        for (int i = 0; i < internal_map_count; i++) {
+            String map_name = din.nextLine().trim();
+            internal_maps[i] = FileProvider.getAssetsFile("map/" + map_name);
+        }
+        FileHandle[] user_maps = FileProvider.getUserDir("map").list();
+        FileHandle[] maps = new FileHandle[internal_maps.length + user_maps.length];
+        System.arraycopy(internal_maps, 0, maps, 0, internal_maps.length);
+        System.arraycopy(user_maps, 0, maps, internal_maps.length, user_maps.length);
+        return maps;
     }
 
 }

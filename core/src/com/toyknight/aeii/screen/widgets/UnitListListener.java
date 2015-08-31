@@ -5,6 +5,6 @@ package com.toyknight.aeii.screen.widgets;
  */
 public interface UnitListListener {
 
-    public void onUnitSelected(String package_name, int index);
+    public void onUnitSelected(int index);
 
 }

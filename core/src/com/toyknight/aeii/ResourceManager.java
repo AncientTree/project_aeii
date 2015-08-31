@@ -36,8 +36,7 @@ public class ResourceManager {
     private static Texture[] stile_textures;
 
     private static TextureRegion[] mini_icon_textures;
-    private static TextureRegion[][][][] default_unit_textures;
-    private static HashMap<String, TextureRegion[][][][]> unit_package_textures;
+    private static TextureRegion[][][][] unit_textures;
     private static TextureRegion[] status_textures;
 
     private static Texture cursor_texture;
@@ -116,23 +115,25 @@ public class ResourceManager {
     }
 
     private static void loadTileTextures() throws GdxRuntimeException {
+        Scanner din;
         int tile_count = TileFactory.getTileCount();
         tile_textures = new Texture[tile_count];
         for (int i = 0; i < tile_count; i++) {
             tile_textures[i] = new Texture(FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png"));
         }
         FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat");
-        Scanner din = new Scanner(top_tile_config.read());
+        din = new Scanner(top_tile_config.read());
         top_tile_textures = new Texture[din.nextInt()];
         for (int i = 0; i < top_tile_textures.length; i++) {
             top_tile_textures[i] = new Texture(FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png"));
         }
-        din.close();
-        int stile_count = FileProvider.getAssetsFile("images/stiles").list().length;
-        stile_textures = new Texture[stile_count];
-        for (int i = 0; i < stile_count; i++) {
+        FileHandle stile_config = FileProvider.getAssetsFile("images/stiles/config.dat");
+        din = new Scanner(stile_config.read());
+        stile_textures = new Texture[din.nextInt()];
+        for (int i = 0; i < stile_textures.length; i++) {
             stile_textures[i] = new Texture(FileProvider.getAssetsFile("images/stiles/stiles" + i + ".png"));
         }
+        din.close();
     }
 
     private static void loadUnitTextures() {
@@ -142,21 +143,20 @@ public class ResourceManager {
             FileHandle sheet = FileProvider.getAssetsFile("images/units/unit_sheet_" + team + ".png");
             unit_texture_sheets[team] = new Texture(sheet);
         }
-        int unit_count = UnitFactory.getUnitCount("default");
-        default_unit_textures = new TextureRegion[4][unit_count][4][2];
+        int unit_count = UnitFactory.getUnitCount();
+        unit_textures = new TextureRegion[4][unit_count][4][2];
         for (int team = 0; team < 4; team++) {
             Texture unit_texture_sheet = unit_texture_sheets[team];
             int texture_size = unit_texture_sheet.getWidth() / unit_count;
             for (int index = 0; index < unit_count; index++) {
                 for (int level = 0; level < 4; level++) {
-                    default_unit_textures[team][index][level][0] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2, texture_size, texture_size);
-                    default_unit_textures[team][index][level][1] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
+                    unit_textures[team][index][level][0] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2, texture_size, texture_size);
+                    unit_textures[team][index][level][1] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
                 }
             }
         }
         Texture mini_icon_sheet = new Texture(FileProvider.getAssetsFile("images/mini_icons.png"));
         mini_icon_textures = createFrames(mini_icon_sheet, 4, 1);
-        unit_package_textures = new HashMap();
     }
 
     private static void loadStatusTextures() {
@@ -284,12 +284,8 @@ public class ResourceManager {
         return mini_icon_textures[team];
     }
 
-    public static TextureRegion getUnitTexture(String package_name, int team, int index, int level, int frame) {
-        if (package_name.equals("default")) {
-            return default_unit_textures[team][index][level][frame];
-        } else {
-            return unit_package_textures.get(package_name)[team][index][level][frame];
-        }
+    public static TextureRegion getUnitTexture(int team, int index, int level, int frame) {
+        return unit_textures[team][index][level][frame];
     }
 
     public static TextureRegion getStatusTexture(int index) {

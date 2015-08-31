@@ -11,7 +11,6 @@ import java.util.*;
  */
 public class UnitFactory {
 
-    private final static HashMap<String, Unit[]> unit_packages = new HashMap();
     private static Unit[] default_units;
     private static long current_code;
 
@@ -107,39 +106,21 @@ public class UnitFactory {
         return crystal_index;
     }
 
-    public static Set<String> getPackageNameList() {
-        HashSet<String> names = new HashSet(unit_packages.keySet());
-        names.add("default");
-        return names;
+    public static int getUnitCount() {
+        return default_units.length;
     }
 
-    public static int getUnitCount(String package_name) {
-        if (package_name.equals("default")) {
-            return default_units.length;
-        } else {
-            return unit_packages.get(package_name).length;
-        }
+    public static Unit getSample(int index) {
+        return cloneUnit(default_units[index]);
     }
 
-    public static Unit getSample(int index, String package_name) {
-        if (package_name.equals("default")) {
-            return cloneUnit(default_units[index]);
-        } else {
-            return cloneUnit(unit_packages.get(package_name)[index]);
-        }
+    public static int getUnitPrice(int index) {
+        return default_units[index].getPrice();
     }
 
-    public static int getUnitPrice(int index, String package_name) {
-        if (package_name.equals("default")) {
-            return default_units[index].getPrice();
-        } else {
-            return unit_packages.get(package_name)[index].getPrice();
-        }
-    }
-
-    public static Unit createUnit(int index, int team, String package_name) {
+    public static Unit createUnit(int index, int team) {
         String unit_code = "#" + Long.toString(current_code++);
-        return createUnit(index, team, package_name, unit_code);
+        return createUnit(index, team, unit_code);
     }
 
     public static Unit cloneUnit(Unit unit) {
@@ -147,9 +128,8 @@ public class UnitFactory {
         return new Unit(unit, unit_code);
     }
 
-    public static Unit createUnit(int index, int team, String package_name, String unit_code) {
-        Unit unit = package_name.equals("default") ?
-                new Unit(default_units[index], unit_code) : new Unit(unit_packages.get(package_name)[index], unit_code);
+    public static Unit createUnit(int index, int team, String unit_code) {
+        Unit unit = new Unit(default_units[index], unit_code);
         unit.setTeam(team);
         unit.setStandby(false);
         unit.setCurrentHp(unit.getMaxHp());

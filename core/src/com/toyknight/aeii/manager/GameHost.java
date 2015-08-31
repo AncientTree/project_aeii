@@ -213,10 +213,10 @@ public class GameHost {
         }
     }
 
-    public static void doBuyUnit(String package_name, int index, int x, int y) {
+    public static void doBuyUnit(int index, int x, int y) {
         if (isHost()) {
             int team = getGame().getCurrentTeam();
-            dispatchEvent(new UnitBuyEvent(package_name, index, team, x, y, getGame().getUnitPrice(package_name, index, team)));
+            dispatchEvent(new UnitBuyEvent(index, team, x, y, getGame().getUnitPrice(index, team)));
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();

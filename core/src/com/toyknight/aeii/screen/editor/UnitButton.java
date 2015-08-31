@@ -47,7 +47,7 @@ public class UnitButton extends Button {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(
-                ResourceManager.getUnitTexture(unit.getPackage(), editor.getSelectedTeam(), unit.getIndex(), 0, 0),
+                ResourceManager.getUnitTexture(editor.getSelectedTeam(), unit.getIndex(), 0, 0),
                 getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
     }

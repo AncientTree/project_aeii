@@ -17,7 +17,6 @@ public class Unit implements Serializable {
     private static final int[] level_up_experience = {100, 150, 300};
 
     private final int index;
-    private final String unit_package;
 
     private int price;
 
@@ -53,20 +52,19 @@ public class Unit implements Serializable {
 
     private boolean is_standby;
 
-    public Unit(int index, String unit_package, String unit_code) {
+    public Unit(int index, String unit_code) {
         this.level = 0;
         this.index = index;
-        this.unit_package = unit_package;
         this.abilities = new ArrayList();
         this.unit_code = unit_code;
     }
 
-    public Unit(int index, String unit_package) {
-        this(index, unit_package, "#");
+    public Unit(int index) {
+        this(index, "#");
     }
 
     public Unit(Unit unit, String unit_code) {
-        this(unit.getIndex(), unit.getPackage(), unit_code);
+        this(unit.getIndex(), unit_code);
         this.level = unit.getLevel();
         this.experience = unit.getTotalExperience();
         this.price = unit.getPrice();
@@ -96,12 +94,8 @@ public class Unit implements Serializable {
         return index;
     }
 
-    public String getPackage() {
-        return unit_package;
-    }
-
     public boolean isCommander() {
-        return getIndex() == UnitFactory.getCommanderIndex() && getPackage().equals("default");
+        return getIndex() == UnitFactory.getCommanderIndex();
     }
 
     public int getPrice() {

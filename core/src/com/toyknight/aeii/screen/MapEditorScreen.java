@@ -288,7 +288,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
         batch.draw(ResourceManager.getTileTexture(selected_tile_index), 0, 0, ts, ts);
         batch.draw(
-                ResourceManager.getUnitTexture(selected_unit.getPackage(), getSelectedTeam(), selected_unit.getIndex(), 0, 0),
+                ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
                 Gdx.graphics.getWidth() - ts, 0, ts, ts);
 
         BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
@@ -340,7 +340,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
                     break;
                 case TYPE_UNIT:
                     batch.draw(
-                            ResourceManager.getUnitTexture(selected_unit.getPackage(), getSelectedTeam(), selected_unit.getIndex(), 0, 0),
+                            ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
                             sx, sy, ts, ts);
                     break;
                 default:
@@ -376,7 +376,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         this.filename = "not defined";
         this.brush_type = TYPE_TILE;
         this.selected_tile_index = 0;
-        this.selected_unit = UnitFactory.getSample(0, "default");
+        this.selected_unit = UnitFactory.getSample(0);
         this.setSelectedTeam(0);
         setBrushType(TYPE_TILE);
     }

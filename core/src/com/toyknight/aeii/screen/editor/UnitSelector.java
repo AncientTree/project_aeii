@@ -73,19 +73,15 @@ public class UnitSelector extends Container {
         unit_table.add(btn_team[3]).padLeft(ts / 4).padTop(ts / 4).row();
 
         //add units
-        Set<String> package_names = UnitFactory.getPackageNameList();
         int index = 0;
-        for (String package_name : package_names) {
-            int unit_count = UnitFactory.getUnitCount(package_name);
-            for (int i = 0; i < unit_count; i++) {
-                UnitButton btn_unit = new UnitButton(editor, UnitFactory.getSample(i, package_name), ts);
-                if (index % 2 == 0) {
-                    unit_table.add(btn_unit).padTop(ts / 4);
-                } else {
-                    unit_table.add(btn_unit).padLeft(ts / 4).padTop(ts / 4).row();
-                }
-                index++;
+        for (int i = 0; i < UnitFactory.getUnitCount(); i++) {
+            UnitButton btn_unit = new UnitButton(editor, UnitFactory.getSample(i), ts);
+            if (index % 2 == 0) {
+                unit_table.add(btn_unit).padTop(ts / 4);
+            } else {
+                unit_table.add(btn_unit).padLeft(ts / 4).padTop(ts / 4).row();
             }
+            index++;
         }
 
         ScrollPane sp_unit_table = new ScrollPane(unit_table);

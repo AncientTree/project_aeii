@@ -24,12 +24,12 @@ public class UnitLevelUpAnimator extends UnitAnimator {
         if (current_frame <= 10) {
             batch.setShader(ResourceManager.getWhiteMaskShader((10 - current_frame) * 0.1f));
             batch.draw(
-                    ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel() - 1, 0),
+                    ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel() - 1, 0),
                     screen_x, screen_y, ts, ts);
         } else {
             batch.setShader(ResourceManager.getWhiteMaskShader((current_frame - 10) * 0.1f));
             batch.draw(
-                    ResourceManager.getUnitTexture(unit.getPackage(), unit.getTeam(), unit.getIndex(), unit.getLevel(), 0),
+                    ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), 0),
                     screen_x, screen_y, ts, ts);
         }
         batch.setShader(null);
