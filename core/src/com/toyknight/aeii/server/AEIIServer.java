@@ -108,6 +108,7 @@ public class AEIIServer {
         synchronized (ROOM_LOCK) {
             rooms.remove(room_number);
         }
+        getLogger().log(Level.INFO, "Dispose room-{0}", room_number);
     }
 
     public String getUsername(String service_name) {
@@ -200,6 +201,10 @@ public class AEIIServer {
         if (room_number >= 0) {
             Room room = getRoom(room_number);
             room.removePlayer(service_name);
+            getLogger().log(
+                    Level.INFO,
+                    "Player {0}@{1} leaves room-{2}",
+                    new Object[]{getUsername(service_name), getClientAddress(service_name), room_number});
             if (room.getCapacity() == room.getRemaining()) {
                 if (isSystemRoom(room.getRoomNumber())) {
                     room.reset();
@@ -219,10 +224,6 @@ public class AEIIServer {
                 }
             }
             service.setRoomNumber(-1);
-            getLogger().log(
-                    Level.INFO,
-                    "Player {0}@{1} leaves room-{2}",
-                    new Object[]{getUsername(service_name), getClientAddress(service_name), room_number});
         }
     }
 

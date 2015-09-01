@@ -21,9 +21,6 @@ public class SettingDialog extends Table {
     private final int ts;
     private final AEIIApplication context;
 
-    private TextButton btn_ok;
-
-    private Label lb_username;
     private TextField tf_username;
 
     public SettingDialog(AEIIApplication context) {
@@ -37,7 +34,7 @@ public class SettingDialog extends Table {
     }
 
     private void initComponents() {
-        btn_ok = new TextButton(Language.getText("LB_OK"), getContext().getSkin());
+        TextButton btn_ok = new TextButton(Language.getText("LB_OK"), getContext().getSkin());
         btn_ok.setBounds((getWidth() - ts * 3) / 2, ts / 2, ts * 3, ts);
         btn_ok.addListener(new ClickListener() {
             @Override
@@ -48,7 +45,7 @@ public class SettingDialog extends Table {
         });
         addActor(btn_ok);
 
-        lb_username = new Label(Language.getText("LB_USERNAME"), getContext().getSkin());
+        Label lb_username = new Label(Language.getText("LB_USERNAME"), getContext().getSkin());
         lb_username.setPosition(ts / 2, getHeight() - ts / 2 - lb_username.getPrefHeight());
         addActor(lb_username);
 
