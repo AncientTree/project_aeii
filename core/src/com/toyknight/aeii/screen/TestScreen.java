@@ -33,7 +33,7 @@ public class TestScreen extends StageScreen {
 
     public TestScreen(AEIIApplication context) {
         super(context);
-        this.sts = 10;
+        this.sts = context.getTileSize() * 10 / 48;
         this.btn_back = new TextButton("Back", getContext().getSkin());
         this.btn_back.setBounds(Gdx.graphics.getWidth() - ts * 7, ts / 2, ts * 3, ts);
         this.btn_back.addListener(new ClickListener() {

@@ -4,6 +4,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.server.entity.Room;
+import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
 
 import java.io.*;
@@ -86,6 +87,23 @@ public class AEIIServer {
         return rooms.get(room_number);
     }
 
+    public RoomConfig createRoomConfig(Room room) {
+        RoomConfig config = new RoomConfig();
+        config.room_number = room.getRoomNumber();
+        config.host = room.getHostService();
+        config.map = room.getMap();
+        config.team_allocation = room.getTeamAllocation();
+        config.player_type = room.getPlayerType();
+        config.alliance_state = room.getAllianceState();
+        config.initial_gold = room.getInitialGold();
+        config.max_population = room.getMaxPopulation();
+        return config;
+    }
+
+    public boolean isOpen(Room room) {
+        return room != null && room.isOpen();
+    }
+
     public void removeRoom(long room_number) {
         synchronized (ROOM_LOCK) {
             rooms.remove(room_number);
@@ -116,15 +134,29 @@ public class AEIIServer {
         return snapshot;
     }
 
-    public boolean onPlayerJoinRoom(String service_name, long room_number) {
+    public RoomConfig onPlayerJoinRoom(String service_name, long room_number) {
         Room room = getRoom(room_number);
-        if (room.getRemaining() > 0 && room.isOpen()) {
+        if (isOpen(room) && room.getRemaining() > 0) {
             room.addPlayer(service_name);
             getService(service_name).setRoomNumber(room_number);
-            return true;
+            return createRoomConfig(room);
         } else {
-            return false;
+            return null;
         }
+    }
+
+    public RoomConfig onPlayerCreateRoom(String service_name, String map_name, Map map, int capacity, int gold, int population) {
+        PlayerService player = getService(service_name);
+        Room room = new Room(current_room_number++, player.getUsername() + "'s game");
+        room.setMapName(map_name);
+        room.setMap(map);
+        room.setCapacity(capacity);
+        room.setInitialGold(gold);
+        room.setMaxPopulation(population);
+        room.addPlayer(service_name);
+        player.setRoomNumber(room.getRoomNumber());
+        rooms.put(room.getRoomNumber(), room);
+        return createRoomConfig(room);
     }
 
     public boolean onGameStart(long room_number, String requester) {
@@ -170,12 +202,21 @@ public class AEIIServer {
             room.removePlayer(service_name);
             if (room.getCapacity() == room.getRemaining()) {
                 if (isSystemRoom(room.getRoomNumber())) {
-                    room.setGameStarted(false);
+                    room.reset();
                 } else {
                     removeRoom(room_number);
                 }
             } else {
-                //notify players in this room
+                for (String player : room.getPlayers()) {
+                    PlayerService player_service = getService(player);
+                    if (player_service != null && !player.equals(service_name)) {
+                        try {
+                            player_service.notifyPlayerLeaving(service_name, player_service.getUsername());
+                        } catch (IOException ex) {
+                            getLogger().log(Level.SEVERE, ex.toString());
+                        }
+                    }
+                }
             }
             service.setRoomNumber(-1);
             getLogger().log(

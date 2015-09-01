@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net;
+package com.toyknight.aeii.net.task;
 
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;

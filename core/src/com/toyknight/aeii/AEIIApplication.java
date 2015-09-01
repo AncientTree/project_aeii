@@ -3,6 +3,7 @@ package com.toyknight.aeii;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,19 +13,27 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameHost;
-import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
+import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.utils.*;
 
+import java.io.IOException;
+import java.util.Properties;
+
 public class AEIIApplication extends Game {
+
+    private static final String TAG = "Main";
 
     private final int TILE_SIZE;
     private final Platform PLATFORM;
 
     private Skin skin;
+
+    FileHandle config_file;
+    private Properties configuration;
 
     private Screen previous_screen;
 
@@ -52,6 +61,8 @@ public class AEIIApplication extends Game {
     public void create() {
         try {
             FileProvider.setPlatform(PLATFORM);
+
+            loadConfiguration();
 
             Language.init();
             TileFactory.loadTileData();
@@ -83,7 +94,31 @@ public class AEIIApplication extends Game {
 
             setScreen(logo_screen);
         } catch (AEIIException ex) {
-            System.err.println("ERROR: " + ex.getMessage());
+            Gdx.app.log(TAG, ex.toString());
+        }
+    }
+
+    private void loadConfiguration() throws AEIIException {
+        config_file = FileProvider.getUserFile("user.config");
+        configuration = new Properties();
+        try {
+            if (config_file.exists() && !config_file.isDirectory()) {
+                configuration.load(config_file.read());
+            } else {
+                configuration.put("username", "nobody");
+                configuration.store(config_file.write(false), "");
+            }
+        } catch (IOException ex) {
+            throw new AEIIException(ex.getMessage());
+        }
+    }
+
+    public void updateConfigureation(String key, String value) {
+        try {
+            configuration.setProperty(key, value);
+            configuration.store(config_file.write(false), "");
+        } catch (IOException ex) {
+            Gdx.app.log(TAG, ex.toString());
         }
     }
 
@@ -106,6 +141,10 @@ public class AEIIApplication extends Game {
 
     public Platform getPlatform() {
         return PLATFORM;
+    }
+
+    public Properties getConfiguration() {
+        return configuration;
     }
 
     public Skin getSkin() {
@@ -135,8 +174,8 @@ public class AEIIApplication extends Game {
         gotoScreen(lobby_screen);
     }
 
-    public void gotoNetGameCreateScreen(long room_number) {
-        net_game_create_screen.setRoomNumber(room_number);
+    public void gotoNetGameCreateScreen(RoomConfig config) {
+        net_game_create_screen.setRoomConfig(config);
         gotoScreen(net_game_create_screen);
     }
 
@@ -195,7 +234,21 @@ public class AEIIApplication extends Game {
     }
 
     public String getUsername() {
-        return "default";
+        return getConfiguration().getProperty("username", "nobody");
+    }
+
+    public boolean isGameHost() {
+        String service_name = getNetworkManager().getServiceName();
+        String host_service = getHostService();
+        return service_name.equals(host_service);
+    }
+
+    public String getHostService() {
+        return getRoomConfig().host;
+    }
+
+    public RoomConfig getRoomConfig() {
+        return net_game_create_screen.getRoomConfig();
     }
 
     @Override

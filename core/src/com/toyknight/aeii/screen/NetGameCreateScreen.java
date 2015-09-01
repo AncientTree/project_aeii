@@ -7,12 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameHost;
-import com.toyknight.aeii.net.NetworkTask;
+import com.toyknight.aeii.net.task.NetworkTask;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -22,17 +22,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private TextButton btn_start;
 
-    private long room_number;
-
-    private String host;
-
-    private Map map;
-    private int[] player_type;
-    private String[] team_allocation;
-    private int[] alliance_state;
-
-    private int initial_gold;
-    private int max_population;
+    private RoomConfig room_config;
 
     public NetGameCreateScreen(AEIIApplication context) {
         super(context);
@@ -51,12 +41,12 @@ public class NetGameCreateScreen extends StageScreen {
         addActor(btn_start);
     }
 
-    public void setRoomNumber(long room_number) {
-        this.room_number = room_number;
+    public void setRoomConfig(RoomConfig config) {
+        this.room_config = config;
     }
 
-    public long getRoomNumber() {
-        return room_number;
+    public RoomConfig getRoomConfig() {
+        return room_config;
     }
 
     private void tryStartGame() {
@@ -87,52 +77,25 @@ public class NetGameCreateScreen extends StageScreen {
         GameHost.setHost(isHost());
         Player[] players = new Player[4];
         for (int team = 0; team < 4; team++) {
-            if (map.getTeamAccess(team)) {
+            if (room_config.map.getTeamAccess(team)) {
                 players[team] = new Player();
-                players[team].setAlliance(alliance_state[team]);
-                players[team].setGold(initial_gold);
-                if (team_allocation[team].equals(getContext().getNetworkManager().getServiceName())) {
-                    players[team].setType(player_type[team]);
+                players[team].setAlliance(room_config.alliance_state[team]);
+                players[team].setGold(room_config.initial_gold);
+                if (getContext().getNetworkManager().getServiceName().equals(room_config.team_allocation[team])) {
+                    players[team].setType(room_config.player_type[team]);
                 } else {
                     players[team].setType(Player.REMOTE);
                 }
             }
         }
         Rule rule = Rule.getDefaultRule();
-        rule.setMaxPopulation(max_population);
-        GameCore game = new GameCore(map, rule, players);
+        rule.setMaxPopulation(room_config.max_population);
+        GameCore game = new GameCore(room_config.map, rule, players);
         getContext().gotoGameScreen(game);
     }
 
-    private void getRoomData() {
-        getContext().getNetworkManager().postTask(new NetworkTask() {
-            @Override
-            public boolean doTask() throws Exception {
-                host = getContext().getNetworkManager().requestHost();
-                AEIIApplication.setButtonEnabled(btn_start, isHost());
-                map = getContext().getNetworkManager().requestMap();
-                player_type = getContext().getNetworkManager().requestPlayerType();
-                team_allocation = getContext().getNetworkManager().requestTeamAllocation();
-                alliance_state = getContext().getNetworkManager().requestAlliance();
-                initial_gold = getContext().getNetworkManager().requestInitialGold();
-                max_population = getContext().getNetworkManager().requestMaxPopulation();
-                return true;
-            }
-
-            @Override
-            public void onFinish() {
-                Gdx.input.setInputProcessor(NetGameCreateScreen.this);
-            }
-
-            @Override
-            public void onFail(String message) {
-                getContext().showMessage(Language.getText("MSG_ERR_AEA"), null);
-            }
-        });
-    }
-
     private boolean isHost() {
-        return host.equals(getContext().getNetworkManager().getServiceName());
+        return getContext().getNetworkManager().getServiceName().equals(room_config.host);
     }
 
     @Override
@@ -150,9 +113,8 @@ public class NetGameCreateScreen extends StageScreen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(null);
+        Gdx.input.setInputProcessor(this);
         getContext().getNetworkManager().setNetworkListener(this);
-        getRoomData();
     }
 
     @Override

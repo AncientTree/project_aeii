@@ -1,4 +1,4 @@
-package com.toyknight.aeii.screen.internal;
+package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.net.NetworkTask;
+import com.toyknight.aeii.net.task.NetworkTask;
 import com.toyknight.aeii.server.entity.Server;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.widgets.StringList;
@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * Created by toyknight on 8/25/2015.
  */
-public class ServerList extends Table {
+public class ServerListDialog extends Table {
 
     private final int ts;
     private final AEIIApplication context;
@@ -32,7 +32,7 @@ public class ServerList extends Table {
     private TextButton btn_connect;
     private TextButton btn_back;
 
-    public ServerList(AEIIApplication context) {
+    public ServerListDialog(AEIIApplication context) {
         this.context = context;
         this.ts = getContext().getTileSize();
         int width = ts * 10;

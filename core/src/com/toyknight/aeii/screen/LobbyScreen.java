@@ -9,15 +9,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.net.NetworkListener;
-import com.toyknight.aeii.net.NetworkTask;
+import com.toyknight.aeii.net.task.NetworkTask;
+import com.toyknight.aeii.screen.dialog.MiniMapDialog;
+import com.toyknight.aeii.screen.dialog.RoomCreateDialog;
+import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.utils.MapFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +34,11 @@ import java.util.ArrayList;
 public class LobbyScreen extends StageScreen implements NetworkListener {
 
     private StringList<RoomSnapshot> room_list;
+
+    private RoomConfig room_config;
+
+    private RoomCreateDialog room_create_dialog;
+    private MiniMapDialog map_preview_dialog;
 
     private TextButton btn_back;
     private TextButton btn_refresh;
@@ -85,7 +96,26 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
         btn_create = new TextButton(Language.getText("LB_CREATE"), getContext().getSkin());
         btn_create.setBounds(margin_left + width_btn * 3 + ts * 3, ts / 2, width_btn, ts);
+        btn_create.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                room_create_dialog.updateMaps();
+                showDialog("create");
+            }
+        });
         addActor(btn_create);
+
+        room_create_dialog = new RoomCreateDialog(this);
+        addDialog("create", room_create_dialog);
+
+        map_preview_dialog = new MiniMapDialog(ts, getContext().getSkin());
+        map_preview_dialog.addClickListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showDialog("create");
+            }
+        });
+        addDialog("preview", map_preview_dialog);
     }
 
     @Override
@@ -98,6 +128,16 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         });
     }
 
+    public void showMapPreview(MapFactory.MapSnapshot snapshot) {
+        try {
+            Map map = MapFactory.createMap(snapshot.file);
+            map_preview_dialog.setMap(map);
+            map_preview_dialog.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            showDialog("preview");
+        } catch (AEIIException ex) {
+        }
+    }
+
     public void refreshGameList() {
         room_list.clearItems();
         Gdx.input.setInputProcessor(null);
@@ -106,7 +146,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             @Override
             public boolean doTask() throws IOException, ClassNotFoundException {
                 ArrayList<RoomSnapshot> open_rooms = getContext().getNetworkManager().requestOpenRoomList();
-                Array<RoomSnapshot> list = new Array();
+                Array<RoomSnapshot> list = new Array<RoomSnapshot>();
                 for (RoomSnapshot room : open_rooms) {
                     list.add(room);
                 }
@@ -136,13 +176,14 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             Gdx.input.setInputProcessor(null);
             getContext().getNetworkManager().postTask(new NetworkTask() {
                 @Override
-                public boolean doTask() throws IOException {
-                    return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().getRoomNumber());
+                public boolean doTask() throws IOException, ClassNotFoundException {
+                    room_config = getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().getRoomNumber());
+                    return room_config != null;
                 }
 
                 @Override
                 public void onFinish() {
-                    getContext().gotoNetGameCreateScreen(getSelectedRoom().getRoomNumber());
+                    getContext().gotoNetGameCreateScreen(room_config);
                 }
 
                 @Override

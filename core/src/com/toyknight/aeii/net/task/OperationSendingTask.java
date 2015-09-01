@@ -1,7 +1,9 @@
-package com.toyknight.aeii.net;
+package com.toyknight.aeii.net.task;
 
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.manager.GameHost;
+import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.utils.Language;
 
 import java.io.IOException;
@@ -9,12 +11,12 @@ import java.io.IOException;
 /**
  * Created by toyknight on 8/29/2015.
  */
-public class OperationTask implements NetworkTask {
+public class OperationSendingTask implements NetworkTask {
 
     protected final int request;
     protected final Integer[] params;
 
-    public OperationTask(int request, Integer... params) {
+    public OperationSendingTask(int request, Integer... params) {
         this.request = request;
         this.params = params;
     }
@@ -22,10 +24,10 @@ public class OperationTask implements NetworkTask {
     @Override
     public boolean doTask() throws IOException {
         GameHost.getContext().getNetworkManager().sendInteger(NetworkManager.REQUEST);
-        GameHost.getContext().getNetworkManager().sendInteger(Request.OPT_REQUEST);
+        GameHost.getContext().getNetworkManager().sendInteger(Request.OPERATION);
         GameHost.getContext().getNetworkManager().sendInteger(request);
-        for (int i = 0; i < params.length; i++) {
-            GameHost.getContext().getNetworkManager().sendInteger(params[i]);
+        for (Integer param : params) {
+            GameHost.getContext().getNetworkManager().sendInteger(param);
         }
         return true;
     }

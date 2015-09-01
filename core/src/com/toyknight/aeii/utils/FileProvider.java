@@ -33,7 +33,14 @@ public class FileProvider {
     }
 
     public static FileHandle getUserFile(String path) {
-        return Gdx.files.local("user/" + path);
+        switch (platform) {
+            case Android:
+            case iOS:
+                return Gdx.files.local("aeii/" + path);
+            case Desktop:
+            default:
+                return Gdx.files.absolute(user_home + path);
+        }
     }
 
     public static FileHandle getUserDir(String path) {
@@ -41,11 +48,11 @@ public class FileProvider {
         switch (platform) {
             case Android:
             case iOS:
-                dir = Gdx.files.local("aeii/user/" + path);
+                dir = Gdx.files.local("aeii/" + path);
                 break;
             case Desktop:
             default:
-                dir = new FileHandle(new File(user_home + path));
+                dir = Gdx.files.absolute(user_home + path);
         }
         if (dir.exists() && dir.isDirectory()) {
             return dir;

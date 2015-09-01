@@ -4,14 +4,11 @@ import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
-import com.toyknight.aeii.net.GameEventSendingTask;
-import com.toyknight.aeii.net.NetworkTask;
-import com.toyknight.aeii.net.OperationTask;
-import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.net.task.GameEventSendingTask;
+import com.toyknight.aeii.net.task.OperationSendingTask;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,14 +91,14 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_SELECT, x, y));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_SELECT, x, y));
         }
     }
 
     public static void doMoveUnit(int dest_x, int dest_y) {
         if (isHost()) {
             if (getManager().getMovablePositions() == null) {
-                getManager().createMovablePositions();
+                getManager().beginMovePhase();
             }
             if (getManager().canSelectedUnitMove(dest_x, dest_y)) {
                 int start_x = getManager().getSelectedUnit().getX();
@@ -113,7 +110,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_MOVE_UNIT, dest_x, dest_y));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_MOVE_UNIT, dest_x, dest_y));
         }
     }
 
@@ -126,7 +123,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_REVERSE_MOVE));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_REVERSE_MOVE));
         }
     }
 
@@ -173,7 +170,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_ATTACK, target_x, target_y));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_ATTACK, target_x, target_y));
         }
     }
 
@@ -187,7 +184,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_SUMMON, target_x, target_y));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_SUMMON, target_x, target_y));
         }
     }
 
@@ -198,7 +195,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_REPAIR));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_REPAIR));
         }
     }
 
@@ -209,7 +206,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_OCCUPY));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_OCCUPY));
         }
     }
 
@@ -220,7 +217,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_BUY, index, x, y));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_BUY, index, x, y));
         }
     }
 
@@ -233,7 +230,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_STANDBY));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_STANDBY));
         }
     }
 
@@ -242,9 +239,9 @@ public class GameHost {
             dispatchEvent(new TurnEndEvent());
             //calculate hp change at turn start
             int team = getGame().getCurrentTeam();
-            HashSet<Point> unit_position_set = new HashSet(getGame().getMap().getUnitPositionSet());
-            HashMap<Point, Integer> hp_change_map = new HashMap();
-            Set<Point> unit_position_set_copy = new HashSet(unit_position_set);
+            HashSet<Point> unit_position_set = new HashSet<Point>(getGame().getMap().getUnitPositionSet());
+            HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
+            Set<Point> unit_position_set_copy = new HashSet<Point>(unit_position_set);
             for (Point position : unit_position_set_copy) {
                 Unit unit = getGame().getMap().getUnit(position.x, position.y);
                 if (unit.getTeam() == team) {
@@ -297,7 +294,7 @@ public class GameHost {
         } else {
             processing = true;
             getManager().getListener().onButtonUpdateRequested();
-            getContext().getNetworkManager().postTask(new OperationTask(OPT_END_TURN));
+            getContext().getNetworkManager().postTask(new OperationSendingTask(OPT_END_TURN));
         }
     }
 
@@ -340,7 +337,7 @@ public class GameHost {
                     }
                 }
             }
-            if (winning_flag == true) {
+            if (winning_flag) {
                 dispatchEvent(new GameOverEvent(alliance));
             }
         }

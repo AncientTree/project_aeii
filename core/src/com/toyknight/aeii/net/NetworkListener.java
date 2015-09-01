@@ -9,7 +9,7 @@ public interface NetworkListener {
 
     void onDisconnect();
 
-    void onPlayerDisconnect(String username, boolean is_host);
+    void onPlayerDisconnect(String service_name, String username);
 
     void onGameStart();
 

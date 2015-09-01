@@ -6,6 +6,7 @@ import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.server.entity.Room;
+import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
 
 import java.io.IOException;
@@ -88,9 +89,19 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondOpenRooms() throws IOException {
+    public void notifyPlayerLeaving(String service_name, String username) throws IOException {
         synchronized (OUTPUT_LOCK) {
-            ArrayList<RoomSnapshot> snapshot = getContext().getOpenRoomSnapshot();
+            oos.writeInt(NetworkManager.REQUEST);
+            oos.writeInt(Request.PLAYER_LEAVING);
+            oos.writeUTF(service_name);
+            oos.writeUTF(username);
+            oos.flush();
+        }
+    }
+
+    private void respondOpenRooms() throws IOException {
+        ArrayList<RoomSnapshot> snapshot = getContext().getOpenRoomSnapshot();
+        synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             oos.writeObject(snapshot);
             oos.flush();
@@ -102,14 +113,15 @@ public class PlayerService extends Thread {
     }
 
     private void respondJoinRoom(long room_number) throws IOException {
-        boolean success;
+        RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
         synchronized (OUTPUT_LOCK) {
-            success = getContext().onPlayerJoinRoom(getName(), room_number);
-            oos.writeInt(NetworkManager.RESPONSE);
-            oos.writeBoolean(success);
-            oos.flush();
+            if (config != null) {
+                oos.writeInt(NetworkManager.RESPONSE);
+                oos.writeObject(config);
+                oos.flush();
+            }
         }
-        if (success) {
+        if (config != null) {
             getContext().getLogger().log(
                     Level.INFO,
                     "Player {0}@{1} joins room-{2}",
@@ -117,106 +129,33 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondHost() throws IOException {
+    private void respondCreateRoom() throws IOException, ClassNotFoundException {
+        String map_name = ois.readUTF();
+        Map map = (Map) ois.readObject();
+        int capacity = ois.readInt();
+        int gold = ois.readInt();
+        int population = ois.readInt();
+        RoomConfig config = getContext().onPlayerCreateRoom(getName(), map_name, map, capacity, gold, population);
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || room.getHostService() == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                oos.writeUTF(room.getHostService());
-            }
+            oos.writeObject(config);
             oos.flush();
+        }
+        if (config != null) {
+            getContext().getLogger().log(
+                    Level.INFO,
+                    "Player {0}@{1} creates room-{2}",
+                    new Object[]{getUsername(), getClientAddress(), room_number});
         }
     }
 
-    private void respondMap() throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                Map map = getContext().getRoom(room_number).getMap();
-                oos.writeObject(map);
-            }
-            oos.flush();
-        }
-        getContext().getLogger().log(
-                Level.INFO,
-                "Player {0}@{1} fetches map",
-                new Object[]{getUsername(), getClientAddress()});
+    private void respondUpdatePlayerType() throws IOException {
     }
 
-    private void respondPlayerType() throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                for (int team = 0; team < 4; team++) {
-                    oos.writeInt(room.getPlayerType(team));
-                }
-            }
-            oos.flush();
-        }
+    private void respondUpdateTeamAllocation() throws IOException {
     }
 
-    private void respondTeamAllocation() throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                for (int team = 0; team < 4; team++) {
-                    oos.writeUTF(room.getTeamAllocation(team));
-                }
-            }
-            oos.flush();
-        }
-    }
-
-    private void respondAlliance() throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                for (int team = 0; team < 4; team++) {
-                    oos.writeInt(room.getAlliance(team));
-                }
-            }
-            oos.flush();
-        }
-    }
-
-    private void respondInitialGold() throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                oos.writeInt(room.getInitialGold());
-            }
-            oos.flush();
-        }
-    }
-
-    private void respondMaxPopulation() throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            Room room = getContext().getRoom(room_number);
-            if (room == null || !room.hasPlayer(getName())) {
-                oos.writeInt(-1);
-            } else {
-                oos.writeInt(room.getMaxPopulation());
-            }
-            oos.flush();
-        }
+    private void respondUpdateAlliance() throws IOException {
     }
 
     private void respondStartGame() throws IOException {
@@ -240,43 +179,41 @@ public class PlayerService extends Thread {
     }
 
     public void respondOperation(int opt) throws IOException {
-        Room room = getContext().getRoom(room_number);
-        if (room != null && !room.isOpen()) {
-            int x, y, index;
-            switch (opt) {
-                case GameHost.OPT_SELECT:
-                case GameHost.OPT_ATTACK:
-                case GameHost.OPT_SUMMON:
-                case GameHost.OPT_MOVE_UNIT:
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    sendOperationRequest(opt, x, y);
-                    break;
-                case GameHost.OPT_BUY:
-                    index = ois.readInt();
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    sendOperationRequest(opt, index, x, y);
-                    break;
-                case GameHost.OPT_REVERSE_MOVE:
-                case GameHost.OPT_END_TURN:
-                case GameHost.OPT_STANDBY:
-                case GameHost.OPT_OCCUPY:
-                case GameHost.OPT_REPAIR:
-                    sendOperationRequest(opt);
-                    break;
-                default:
-                    //do nothing
-            }
+        int x, y, index;
+        switch (opt) {
+            case GameHost.OPT_SELECT:
+            case GameHost.OPT_ATTACK:
+            case GameHost.OPT_SUMMON:
+            case GameHost.OPT_MOVE_UNIT:
+                x = ois.readInt();
+                y = ois.readInt();
+                processOperationRequest(opt, x, y);
+                break;
+            case GameHost.OPT_BUY:
+                index = ois.readInt();
+                x = ois.readInt();
+                y = ois.readInt();
+                processOperationRequest(opt, index, x, y);
+                break;
+            case GameHost.OPT_REVERSE_MOVE:
+            case GameHost.OPT_END_TURN:
+            case GameHost.OPT_STANDBY:
+            case GameHost.OPT_OCCUPY:
+            case GameHost.OPT_REPAIR:
+                processOperationRequest(opt);
+                break;
+            default:
+                //do nothing
         }
     }
 
-    private void sendOperationRequest(int request, Integer... params) throws IOException {
+    private void processOperationRequest(int request, Integer... params) throws IOException {
         Room room = getContext().getRoom(room_number);
-        if (room != null && !room.isOpen()) {
-            PlayerService host = getContext().getService(room.getHostService());
+        if (!getContext().isOpen(room)) {
+            String host_service = room.getHostService();
+            PlayerService host = getContext().getService(host_service);
             host.sendInteger(NetworkManager.REQUEST);
-            host.sendInteger(Request.OPT_REQUEST);
+            host.sendInteger(Request.OPERATION);
             host.sendInteger(request);
             for (int i = 0; i < params.length; i++) {
                 host.sendInteger(params[i]);
@@ -362,26 +299,17 @@ public class PlayerService extends Thread {
                 room_number = ois.readLong();
                 respondJoinRoom(room_number);
                 break;
-            case Request.GET_HOST:
-                respondHost();
+            case Request.CREATE_ROOM:
+                respondCreateRoom();
                 break;
-            case Request.GET_MAP:
-                respondMap();
+            case Request.UPDATE_PLAYER_TYPE:
+                respondUpdatePlayerType();
                 break;
-            case Request.GET_PLAYER_TYPE:
-                respondPlayerType();
+            case Request.UPDATE_TEAM_ALLOCATION:
+                respondUpdateTeamAllocation();
                 break;
-            case Request.GET_TEAM_ALLOCATION:
-                respondTeamAllocation();
-                break;
-            case Request.GET_ALLIANCE:
-                respondAlliance();
-                break;
-            case Request.GET_INITIAL_GOLD:
-                respondInitialGold();
-                break;
-            case Request.GET_MAX_POPULATION:
-                respondMaxPopulation();
+            case Request.UPDATE_ALLIANCE:
+                respondUpdateAlliance();
                 break;
             case Request.START_GAME:
                 respondStartGame();
@@ -389,7 +317,7 @@ public class PlayerService extends Thread {
             case Request.GAME_EVENT:
                 respondGameEvent();
                 break;
-            case Request.OPT_REQUEST:
+            case Request.OPERATION:
                 int opt = ois.readInt();
                 respondOperation(opt);
                 break;

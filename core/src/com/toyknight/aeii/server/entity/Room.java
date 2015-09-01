@@ -38,11 +38,18 @@ public class Room {
         this.game_started = false;
         this.players = new HashSet<String>();
         this.player_type = new int[4];
-        Arrays.fill(player_type, Player.NONE);
         this.team_allocation = new String[4];
-        Arrays.fill(team_allocation, "NONE");
         this.alliance_state = new int[4];
+        reset();
+    }
+
+    public void reset() {
+        host_service = null;
+        players.clear();
+        Arrays.fill(player_type, Player.NONE);
+        Arrays.fill(team_allocation, "NONE");
         Arrays.fill(alliance_state, -1);
+        setGameStarted(false);
     }
 
     public boolean hasPlayer(String service_name) {
@@ -95,8 +102,12 @@ public class Room {
         return host_service;
     }
 
-    public boolean getPlayerTeamAccess(String service_name, int team) {
-        return team_allocation[team] != null && team_allocation[team].equals(service_name);
+    public String getTeamAllocation(int team) {
+        return team_allocation[team];
+    }
+
+    public String[] getTeamAllocation() {
+        return team_allocation;
     }
 
     public void setPlayerType(int team, int type) {
@@ -107,12 +118,16 @@ public class Room {
         return player_type[team];
     }
 
-    public String getTeamAllocation(int team) {
-        return team_allocation[team];
+    public int[] getPlayerType() {
+        return player_type;
     }
 
     public int getAlliance(int team) {
         return alliance_state[team];
+    }
+
+    public int[] getAllianceState() {
+        return alliance_state;
     }
 
     public long getRoomNumber() {

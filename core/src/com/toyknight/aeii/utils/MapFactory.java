@@ -84,6 +84,13 @@ public class MapFactory {
         fos.close();
     }
 
+    public static MapSnapshot createMapSnapshot(FileHandle map_file) {
+        MapSnapshot snapshot = new MapSnapshot();
+        snapshot.file = map_file;
+        snapshot.capacity = getPlayerCount(map_file);
+        return snapshot;
+    }
+
     public static int getPlayerCount(FileHandle map_file) {
         DataInputStream dis = new DataInputStream(map_file.read());
         return getPlayerCount(dis);
@@ -139,6 +146,19 @@ public class MapFactory {
         System.arraycopy(internal_maps, 0, maps, 0, internal_maps.length);
         System.arraycopy(user_maps, 0, maps, internal_maps.length, user_maps.length);
         return maps;
+    }
+
+    public static class MapSnapshot {
+
+        public FileHandle file;
+
+        public int capacity;
+
+        @Override
+        public String toString() {
+            return "(" + capacity + ") " + file.name();
+        }
+
     }
 
 }

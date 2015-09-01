@@ -1,4 +1,4 @@
-package com.toyknight.aeii.screen.internal;
+package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -21,12 +21,11 @@ import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by toyknight on 4/20/2015.
  */
-public class UnitStore extends Table implements UnitListListener {
+public class UnitStoreDialog extends Table implements UnitListListener {
 
     private final int ts;
     private final GameScreen screen;
@@ -42,7 +41,7 @@ public class UnitStore extends Table implements UnitListListener {
     private Unit selected_unit;
     private int price;
 
-    public UnitStore(GameScreen screen, Skin skin) {
+    public UnitStoreDialog(GameScreen screen, Skin skin) {
         this.screen = screen;
         this.ts = screen.getContext().getTileSize();
         this.UNIT_STORE_WIDTH = 11 * ts;

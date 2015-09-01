@@ -1,4 +1,4 @@
-package com.toyknight.aeii.screen.internal;
+package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

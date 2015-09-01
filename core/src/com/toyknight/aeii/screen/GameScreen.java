@@ -1,5 +1,6 @@
 package com.toyknight.aeii.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,7 +16,8 @@ import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.renderer.*;
-import com.toyknight.aeii.screen.internal.*;
+import com.toyknight.aeii.screen.dialog.*;
+import com.toyknight.aeii.screen.widgets.ActionButtonBar;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -58,7 +60,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private TextButton btn_end_turn;
     private ActionButtonBar action_button_bar;
     private SaveLoadDialog save_load_dialog;
-    private UnitStore unit_store;
+    private UnitStoreDialog unit_store;
     private MiniMap mini_map;
     private GameMenu menu;
 
@@ -121,7 +123,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.save_load_dialog.setVisible(false);
 
         //unit store
-        this.unit_store = new UnitStore(this, getContext().getSkin());
+        this.unit_store = new UnitStoreDialog(this, getContext().getSkin());
         this.addActor(unit_store);
         this.unit_store.setVisible(false);
 
@@ -261,17 +263,27 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onPlayerDisconnect(String username, boolean is_host) {
-        if (is_host) {
-            getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
-                @Override
-                public void doCallback() {
-                    getContext().getNetworkManager().disconnect();
-                    getContext().gotoMainMenuScreen();
+    public void onPlayerDisconnect(String service_name, String username) {
+        if (getContext().isGameHost()) {
+            String[] team_allocation = getContext().getRoomConfig().team_allocation;
+            for (int team = 0; team < 4; team++) {
+                if (team_allocation[team].equals(service_name)) {
+                    getGame().getPlayer(team).setType(Player.LOCAL);
                 }
-            });
+            }
+            onButtonUpdateRequested();
         } else {
-            //show message
+            if (getContext().getHostService().equals(service_name)) {
+                getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
+                    @Override
+                    public void doCallback() {
+                        getContext().getNetworkManager().disconnect();
+                        getContext().gotoMainMenuScreen();
+                    }
+                });
+            } else {
+                //show message
+            }
         }
     }
 
@@ -304,6 +316,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void prepare(GameCore game) {
         this.manager.setGame(game);
         this.manager.setGameManagerListener(this);
+        GameHost.setGameManager(getGameManager());
         Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
         this.locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
@@ -529,6 +542,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 default:
                     //do nothing
             }
+            //onButtonUpdateRequested();
         }
     }
 
@@ -625,11 +639,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private boolean isOnUnitAnimation(int x, int y) {
         if (manager.isAnimating()) {
             Animator current_animation = manager.getCurrentAnimation();
-            if (current_animation instanceof UnitAnimator) {
-                return ((UnitAnimator) current_animation).hasLocation(x, y);
-            } else {
-                return false;
-            }
+            return current_animation instanceof UnitAnimator && ((UnitAnimator) current_animation).hasLocation(x, y);
         } else {
             return false;
         }

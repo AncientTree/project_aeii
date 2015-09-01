@@ -104,7 +104,6 @@ public class ResourceManager {
             loadCircles();
             loadArrows();
             loadIcons();
-            menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
             createMenuIconTextures();
             createAnimationFrames();
             createShaders();
@@ -205,6 +204,7 @@ public class ResourceManager {
     }
 
     private static void createMenuIconTextures() {
+        menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
         int size = menu_icon_texture.getHeight();
         menu_icon_textures = new TextureRegion[menu_icon_texture.getWidth() / size];
         for (int i = 0; i < menu_icon_textures.length; i++) {
