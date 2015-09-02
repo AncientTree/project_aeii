@@ -253,7 +253,7 @@ public class AEIIApplication extends Game {
 
     @Override
     public void render() {
-        getNetworkManager().updateTasks();
+        //getNetworkManager().updateTasks();
         Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render();

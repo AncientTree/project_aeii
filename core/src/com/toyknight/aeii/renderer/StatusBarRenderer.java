@@ -18,6 +18,9 @@ public class StatusBarRenderer {
     private final int max_pop_width;
     private final GameScreen screen;
 
+    private final int char_width;
+    private final int char_height;
+
     public StatusBarRenderer(GameScreen screen, int ts) {
         this.ts = ts;
         this.hud_size = ts / 24 * 11;
@@ -26,6 +29,9 @@ public class StatusBarRenderer {
         this.margin_left = (screen.getViewportWidth() - ts - max_pop_width - max_gold_width - hud_size * 2) / 3;
         this.margin_bottom = (ts - hud_size) / 2;
         this.screen = screen;
+
+        this.char_width = FontRenderer.getLNumberWidth(0, false);
+        this.char_height = FontRenderer.getLCharHeight();
     }
 
     private GameManager getManager() {
@@ -55,7 +61,10 @@ public class StatusBarRenderer {
         if (getManager().getGame().getCurrentPlayer().isLocalPlayer()) {
             FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
         } else {
-            batch.draw(FontRenderer.getLMinus(), ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
+            batch.draw(
+                    FontRenderer.getLMinus(),
+                    ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom,
+                    char_width, char_height);
         }
         batch.flush();
     }

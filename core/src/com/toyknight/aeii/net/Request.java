@@ -28,4 +28,6 @@ public class Request {
 
     public static final int CREATE_ROOM = 0x11;
 
+    public static final int LEAVE_ROOM = 0x12;
+
 }

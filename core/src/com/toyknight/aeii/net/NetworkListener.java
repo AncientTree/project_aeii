@@ -9,7 +9,9 @@ public interface NetworkListener {
 
     void onDisconnect();
 
-    void onPlayerDisconnect(String service_name, String username);
+    void onPlayerJoin(String service_name, String username);
+
+    void onPlayerLeave(String service_name, String username);
 
     void onGameStart();
 

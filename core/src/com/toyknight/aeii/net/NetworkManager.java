@@ -17,9 +17,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 /**
  * Created by toyknight on 8/25/2015.
@@ -34,9 +32,7 @@ public class NetworkManager {
     private final Object INPUT_LOCK = new Object();
     private final Object OUTPUT_LOCK = new Object();
 
-    private final Queue<NetworkTask> task_queue;
-    private FutureTask<Boolean> task_executor;
-    private NetworkTask current_task;
+    private final ExecutorService executor;
 
     private NetworkListener listener;
 
@@ -50,7 +46,8 @@ public class NetworkManager {
     private ObjectOutputStream oos;
 
     public NetworkManager() {
-        this.task_queue = new LinkedList<NetworkTask>();
+        this.executor = Executors.newSingleThreadExecutor();
+        this.running = true;
     }
 
     public boolean isRunning() {
@@ -103,49 +100,7 @@ public class NetworkManager {
     }
 
     public void postTask(NetworkTask task) {
-        if (current_task == null) {
-            startTask(task);
-        } else {
-            task_queue.add(task);
-        }
-    }
-
-    private void startTask(NetworkTask task) {
-        current_task = task;
-        Callable<Boolean> callable = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return current_task.doTask();
-            }
-        };
-        task_executor = new FutureTask<Boolean>(callable);
-        new Thread(task_executor).start();
-    }
-
-    public void updateTasks() {
-        if (current_task == null) {
-            if (!task_queue.isEmpty()) {
-                startTask(task_queue.poll());
-            }
-        } else {
-            if (task_executor.isDone()) {
-                try {
-                    boolean success = task_executor.get();
-                    if (success) {
-                        current_task.onFinish();
-                    } else {
-                        current_task.onFail(Language.getText("MSG_ERR_AEA"));
-                    }
-                } catch (InterruptedException e) {
-                    current_task.onFail(Language.getText("MSG_ERR_RI"));
-                    current_task = null;
-                } catch (ExecutionException e) {
-                    current_task.onFail(e.getMessage());
-                } finally {
-                    current_task = null;
-                }
-            }
-        }
+        executor.submit(task);
     }
 
     public ArrayList<RoomSnapshot> requestOpenRoomList() throws IOException, ClassNotFoundException {
@@ -210,6 +165,14 @@ public class NetworkManager {
                 INPUT_LOCK.notifyAll();
                 throw ex;
             }
+        }
+    }
+
+    public void requestLeaveRoom() throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(REQUEST);
+            oos.writeInt(Request.LEAVE_ROOM);
+            oos.flush();
         }
     }
 
@@ -282,7 +245,7 @@ public class NetworkManager {
 
         @Override
         public void run() {
-            while (server_socket.isConnected()) {
+            while (server_socket.isConnected() && isRunning()) {
                 try {
                     synchronized (INPUT_LOCK) {
                         int type = ois.readInt();
@@ -295,7 +258,7 @@ public class NetworkManager {
                                 //It's a server response. Free the input stream for task thread to read the response
                                 try {
                                     INPUT_LOCK.wait();
-                                } catch (InterruptedException e) {
+                                } catch (InterruptedException ignored) {
                                 }
                                 break;
                             default:
@@ -319,6 +282,7 @@ public class NetworkManager {
         }
 
         private void processRequest(int request) throws IOException, ClassNotFoundException {
+            String service_name, username;
             switch (request) {
                 case Request.START_GAME:
                     getListener().onGameStart();
@@ -332,12 +296,20 @@ public class NetworkManager {
                     int opt = ois.readInt();
                     processOperation(opt);
                     break;
-                case Request.PLAYER_LEAVING:
-                    String service_name = ois.readUTF();
-                    String username = ois.readUTF();
+                case Request.PLAYER_JOINING:
+                    service_name = ois.readUTF();
+                    username = ois.readUTF();
                     if (getListener() != null) {
-                        getListener().onPlayerDisconnect(service_name, username);
+                        getListener().onPlayerJoin(service_name, username);
                     }
+                    break;
+                case Request.PLAYER_LEAVING:
+                    service_name = ois.readUTF();
+                    username = ois.readUTF();
+                    if (getListener() != null) {
+                        getListener().onPlayerLeave(service_name, username);
+                    }
+                    break;
                 default:
                     //do nothing
             }

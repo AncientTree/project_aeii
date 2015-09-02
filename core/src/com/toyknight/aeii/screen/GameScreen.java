@@ -263,7 +263,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onPlayerDisconnect(String service_name, String username) {
+    public void onPlayerLeave(String service_name, String username) {
         if (getContext().isGameHost()) {
             String[] team_allocation = getContext().getRoomConfig().team_allocation;
             for (int team = 0; team < 4; team++) {

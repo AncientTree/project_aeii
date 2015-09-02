@@ -77,7 +77,15 @@ public class UnitStoreDialog extends Table implements UnitListListener {
 
         this.unit_list = new AvailableUnitList(ts);
         this.unit_list.setUnitListListener(this);
-        ScrollPane sp_unit_list = new ScrollPane(unit_list);
+        ScrollPane sp_unit_list = new ScrollPane(unit_list) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(
+                        ResourceManager.getBorderDarkColor(),
+                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
+                super.draw(batch, parentAlpha);
+            }
+        };
         sp_unit_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_unit_list.setScrollBarPositions(false, true);

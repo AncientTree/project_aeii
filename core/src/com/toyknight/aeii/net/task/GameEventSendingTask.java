@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by toyknight on 8/29/2015.
  */
-public class GameEventSendingTask implements NetworkTask {
+public class GameEventSendingTask extends NetworkTask<Void> {
 
     private final GameEvent event;
 
@@ -17,13 +17,13 @@ public class GameEventSendingTask implements NetworkTask {
     }
 
     @Override
-    public boolean doTask() throws IOException {
+    public Void doTask() throws IOException {
         GameHost.getContext().getNetworkManager().sendGameEvent(event);
-        return true;
+        return null;
     }
 
     @Override
-    public void onFinish() {
+    public void onFinish(Void result) {
     }
 
     @Override

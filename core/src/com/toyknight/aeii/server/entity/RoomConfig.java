@@ -15,6 +15,8 @@ public class RoomConfig implements Serializable {
 
     public String host;
 
+    public PlayerSnapshot[] players;
+
     public Map map;
 
     public int[] player_type;

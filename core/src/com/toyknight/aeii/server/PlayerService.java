@@ -12,9 +12,11 @@ import com.toyknight.aeii.server.entity.RoomSnapshot;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 /**
@@ -25,27 +27,27 @@ public class PlayerService extends Thread {
     private final Object INPUT_LOCK = new Object();
     private final Object OUTPUT_LOCK = new Object();
 
+    private final ExecutorService executor;
+
     private final AEIIServer context;
     private final Socket client;
 
     private final ObjectInputStream ois;
     private final ObjectOutputStream oos;
 
-    private String username = "undefined";
-    private long room_number = -1;
-    private boolean[] team_access;
+    private String username;
+    private long room_number;
 
     public PlayerService(AEIIServer context, Socket client, String name) throws IOException {
         super(context.getServiceGroup(), name);
+
+        this.executor = Executors.newSingleThreadExecutor();
         this.context = context;
         this.client = client;
 
         this.oos = new ObjectOutputStream(client.getOutputStream());
         this.ois = new ObjectInputStream(client.getInputStream());
         this.oos.flush();
-
-        this.team_access = new boolean[4];
-        Arrays.fill(team_access, false);
     }
 
     private AEIIServer getContext() {
@@ -53,7 +55,8 @@ public class PlayerService extends Thread {
     }
 
     public void create() {
-
+        this.username = "undefined";
+        this.room_number = -1;
     }
 
     public String getClientAddress() {
@@ -73,14 +76,6 @@ public class PlayerService extends Thread {
         return room_number;
     }
 
-    public void setTeamAccess(int team, boolean access) {
-        team_access[team] = access;
-    }
-
-    public boolean[] getTeamAccess() {
-        return team_access;
-    }
-
     private void closeConnection() {
         try {
             client.close();
@@ -89,14 +84,29 @@ public class PlayerService extends Thread {
         }
     }
 
-    public void notifyPlayerLeaving(String service_name, String username) throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.REQUEST);
-            oos.writeInt(Request.PLAYER_LEAVING);
-            oos.writeUTF(service_name);
-            oos.writeUTF(username);
-            oos.flush();
-        }
+    public void notifyPlayerJoining(String service_name, String username) {
+        NotificationTask task = new NotificationTask(Request.PLAYER_JOINING, service_name, username);
+        executor.submit(task);
+    }
+
+    public void notifyPlayerLeaving(String service_name, String username) {
+        NotificationTask task = new NotificationTask(Request.PLAYER_LEAVING, service_name, username);
+        executor.submit(task);
+    }
+
+    public void notifyGameStart() {
+        NotificationTask task = new NotificationTask(Request.START_GAME);
+        executor.submit(task);
+    }
+
+    public void notifyGameEvent(GameEvent event) {
+        NotificationTask task = new NotificationTask(Request.GAME_EVENT, event);
+        executor.submit(task);
+    }
+
+    public void notifyOperation(Integer... params) {
+        NotificationTask task = new NotificationTask(Request.OPERATION, params);
+        executor.submit(task);
     }
 
     private void respondOpenRooms() throws IOException {
@@ -126,6 +136,12 @@ public class PlayerService extends Thread {
                     Level.INFO,
                     "Player {0}@{1} joins room-{2}",
                     new Object[]{getUsername(), getClientAddress(), room_number});
+        }
+    }
+
+    private void respondLeaveRoom() {
+        if (getRoomNumber() >= 0) {
+            getContext().onPlayerLeaveRoom(getName());
         }
     }
 
@@ -159,7 +175,7 @@ public class PlayerService extends Thread {
     }
 
     private void respondStartGame() throws IOException {
-        boolean approved = getContext().onGameStart(room_number, getName());
+        boolean approved = getContext().onStartGame(room_number, getName());
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             oos.writeBoolean(approved);
@@ -187,61 +203,26 @@ public class PlayerService extends Thread {
             case GameHost.OPT_MOVE_UNIT:
                 x = ois.readInt();
                 y = ois.readInt();
-                processOperationRequest(opt, x, y);
+                getContext().getHostService(room_number).notifyOperation(opt, x, y);
+                //processOperationRequest(opt, x, y);
                 break;
             case GameHost.OPT_BUY:
                 index = ois.readInt();
                 x = ois.readInt();
                 y = ois.readInt();
-                processOperationRequest(opt, index, x, y);
+                getContext().getHostService(room_number).notifyOperation(opt, index, x, y);
+                //processOperationRequest(opt, index, x, y);
                 break;
             case GameHost.OPT_REVERSE_MOVE:
             case GameHost.OPT_END_TURN:
             case GameHost.OPT_STANDBY:
             case GameHost.OPT_OCCUPY:
             case GameHost.OPT_REPAIR:
-                processOperationRequest(opt);
+                getContext().getHostService(room_number).notifyOperation(opt);
+                //processOperationRequest(opt);
                 break;
             default:
                 //do nothing
-        }
-    }
-
-    private void processOperationRequest(int request, Integer... params) throws IOException {
-        Room room = getContext().getRoom(room_number);
-        if (!getContext().isOpen(room)) {
-            String host_service = room.getHostService();
-            PlayerService host = getContext().getService(host_service);
-            host.sendInteger(NetworkManager.REQUEST);
-            host.sendInteger(Request.OPERATION);
-            host.sendInteger(request);
-            for (int i = 0; i < params.length; i++) {
-                host.sendInteger(params[i]);
-            }
-        }
-    }
-
-    public void sendRequest(int request) throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.REQUEST);
-            oos.writeInt(request);
-            oos.flush();
-        }
-    }
-
-    public void sendGameEvent(GameEvent event) throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.REQUEST);
-            oos.writeInt(Request.GAME_EVENT);
-            oos.writeObject(event);
-            oos.flush();
-        }
-    }
-
-    public void sendInteger(int n) throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(n);
-            oos.flush();
         }
     }
 
@@ -299,6 +280,9 @@ public class PlayerService extends Thread {
                 room_number = ois.readLong();
                 respondJoinRoom(room_number);
                 break;
+            case Request.LEAVE_ROOM:
+                respondLeaveRoom();
+                break;
             case Request.CREATE_ROOM:
                 respondCreateRoom();
                 break;
@@ -324,6 +308,49 @@ public class PlayerService extends Thread {
             default:
                 //do nothing
         }
+    }
+
+    private class NotificationTask implements Runnable {
+
+        private final int request;
+        private final Object[] params;
+
+        public NotificationTask(int request, Object... params) {
+            this.request = request;
+            this.params = params;
+        }
+
+        @Override
+        public void run() {
+            try {
+                synchronized (OUTPUT_LOCK) {
+                    oos.writeInt(NetworkManager.REQUEST);
+                    oos.writeInt(request);
+                    for (Object obj : params) {
+                        if (obj instanceof Integer) {
+                            oos.writeInt((Integer) obj);
+                            continue;
+                        }
+                        if (obj instanceof Long) {
+                            oos.writeLong((Long) obj);
+                            continue;
+                        }
+                        if (obj instanceof String) {
+                            oos.writeUTF((String) obj);
+                            continue;
+                        }
+                        if (obj instanceof Serializable) {
+                            oos.writeObject(obj);
+                            continue;
+                        }
+                    }
+                    oos.flush();
+                }
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
+            }
+        }
+
     }
 
 }

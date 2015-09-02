@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.net.task.NetworkTask;
@@ -24,6 +25,8 @@ import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
+import java.io.IOException;
+
 /**
  * Created by toyknight on 8/31/2015.
  */
@@ -31,8 +34,6 @@ public class RoomCreateDialog extends Table {
 
     private final int ts;
     private final LobbyScreen lobby_screen;
-
-    private RoomConfig room_config;
 
     private TextButton btn_back;
     private TextButton btn_create;
@@ -144,23 +145,22 @@ public class RoomCreateDialog extends Table {
     private void doCreateRoom() {
         setEnabled(false);
         btn_create.setText(Language.getText("LB_CREATING"));
-        getContext().getNetworkManager().postTask(new NetworkTask() {
+        getContext().getNetworkManager().postTask(new NetworkTask<RoomConfig>() {
             @Override
-            public boolean doTask() throws Exception {
+            public RoomConfig doTask() throws AEIIException, IOException, ClassNotFoundException {
                 String map_name = map_list.getSelected().file.name();
                 Map map = MapFactory.createMap(map_list.getSelected().file);
                 int capacity = spinner_capacity.getSelectedItem();
                 int gold = spinner_gold.getSelectedItem();
                 int population = spinner_population.getSelectedItem();
-                room_config = getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
-                return true;
+                return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
             }
 
             @Override
-            public void onFinish() {
+            public void onFinish(RoomConfig config) {
                 setEnabled(true);
                 btn_create.setText(Language.getText("LB_CREATE"));
-                getContext().gotoNetGameCreateScreen(room_config);
+                getContext().gotoNetGameCreateScreen(config);
             }
 
             @Override

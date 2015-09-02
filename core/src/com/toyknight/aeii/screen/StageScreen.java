@@ -48,12 +48,17 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public void showDialog(String name) {
-        for (Table dialog : dialogs.values()) {
-            dialog.setVisible(false);
-        }
+        closeAllDialogs();
         dialogs.get(name).setVisible(true);
         Gdx.input.setInputProcessor(dialog_stage);
         dialog_shown = true;
+    }
+
+    public void closeAllDialogs() {
+        for (Table dialog : dialogs.values()) {
+            dialog.setVisible(false);
+        }
+        Gdx.input.setInputProcessor(this);
     }
 
     public void closeDialog(String name) {
@@ -103,7 +108,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     @Override
-    public void onPlayerDisconnect(String service_name, String username) {
+    public void onPlayerJoin(String service_name, String username) {
+    }
+
+    @Override
+    public void onPlayerLeave(String service_name, String username) {
     }
 
     @Override

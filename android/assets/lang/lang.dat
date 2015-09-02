@@ -23,6 +23,7 @@ LB_HEIGHT=Height
 LB_INCOME=Income
 LB_INITIAL_GOLD=Initial Gold
 LB_JOIN=Join
+LB_JOINING=Joining...
 LB_LEAVE=Leave
 LB_LEAVING=Leaving...
 LB_LOAD=Load

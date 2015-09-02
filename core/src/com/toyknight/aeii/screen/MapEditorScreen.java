@@ -224,6 +224,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         this.addActor(dialog);
     }
 
+    @Override
     public void closeAllDialogs() {
         map_resize_dialog.setVisible(false);
         map_save_dialog.setVisible(false);

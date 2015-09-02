@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by toyknight on 8/29/2015.
  */
-public class OperationSendingTask implements NetworkTask {
+public class OperationSendingTask extends NetworkTask<Void> {
 
     protected final int request;
     protected final Integer[] params;
@@ -22,18 +22,18 @@ public class OperationSendingTask implements NetworkTask {
     }
 
     @Override
-    public boolean doTask() throws IOException {
+    public Void doTask() throws IOException {
         GameHost.getContext().getNetworkManager().sendInteger(NetworkManager.REQUEST);
         GameHost.getContext().getNetworkManager().sendInteger(Request.OPERATION);
         GameHost.getContext().getNetworkManager().sendInteger(request);
         for (Integer param : params) {
             GameHost.getContext().getNetworkManager().sendInteger(param);
         }
-        return true;
+        return null;
     }
 
     @Override
-    public void onFinish() {
+    public void onFinish(Void result) {
     }
 
     @Override

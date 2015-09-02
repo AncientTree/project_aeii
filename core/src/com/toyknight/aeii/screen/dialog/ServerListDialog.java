@@ -53,7 +53,7 @@ public class ServerListDialog extends Table {
 
         Array<Server> servers = new Array();
         servers.add(new Server("127.0.0.1", 5438, "aeii server - PC Debug"));
-        servers.add(new Server("172.16.0.4", 5438, "aeii server - Android Debug"));
+        servers.add(new Server("172.16.0.8", 5438, "aeii server - Android Debug"));
         servers.add(new Server("45.56.93.69", 5438, "aeii server - NA"));
         server_list.setItems(servers);
 
@@ -99,15 +99,15 @@ public class ServerListDialog extends Table {
             setEnabled(false);
             btn_connect.setText(Language.getText("LB_CONNECTING"));
 
-            getContext().getNetworkManager().postTask(new NetworkTask() {
+            getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
                 @Override
-                public boolean doTask() throws IOException {
+                public Void doTask() throws IOException {
                     getContext().getNetworkManager().connect(getSelectedServer(), getContext().getUsername());
-                    return true;
+                    return null;
                 }
 
                 @Override
-                public void onFinish() {
+                public void onFinish(Void result) {
                     setEnabled(true);
                     btn_connect.setText(Language.getText("LB_CONNECT"));
                     getContext().gotoLobbyScreen();
