@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,17 +27,21 @@ public class AEIIServer {
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();
 
-    private boolean running;
-    private long current_service_number;
+    private Properties config;
 
+    private boolean running;
     private ServerSocket server;
     private ThreadGroup service_group;
+
+    private long current_service_number;
     private HashMap<String, PlayerService> services;
 
     private long current_room_number;
     private HashMap<Long, Room> rooms;
 
     private void create() throws IOException {
+        loadConfiguration();
+
         running = true;
         current_service_number = 0;
 
@@ -47,6 +52,34 @@ public class AEIIServer {
 
         current_room_number = 0;
         rooms = new HashMap<Long, Room>();
+    }
+
+    private void loadConfiguration() {
+        config = new Properties();
+        File config_file = new File("server.conf");
+        if (config_file.exists() && config_file.isFile()) {
+            try {
+                FileInputStream fis = new FileInputStream(config_file);
+                config.load(fis);
+            } catch (IOException ex) {
+                getLogger().log(Level.SEVERE, ex.toString());
+                useDefaultConfiguration();
+            }
+        } else {
+            useDefaultConfiguration();
+        }
+    }
+
+    private void useDefaultConfiguration() {
+        config.put("PASSWORD", "password");
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public Properties getConfiguration() {
+        return config;
     }
 
     public ThreadGroup getServiceGroup() {
@@ -272,6 +305,29 @@ public class AEIIServer {
                 Level.INFO,
                 "Player {0}@{1} disconnected",
                 new Object[]{username, address});
+    }
+
+    public void onShutdownRequested(String password) {
+        String actual_password = getConfiguration().getProperty("PASSWORD");
+        if (actual_password != null && actual_password.equals(password)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (SERVICE_LOCK) {
+                        for (PlayerService service : services.values()) {
+                            service.closeConnection();
+                        }
+                    }
+                    try {
+                        server.close();
+                    } catch (IOException ex) {
+                        getLogger().log(Level.SEVERE, ex.toString());
+                        System.exit(-1);
+                    }
+                    running = false;
+                }
+            }, "shutdown-thread").start();
+        }
     }
 
     public void start() {

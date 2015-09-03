@@ -75,11 +75,16 @@ public class PlayerService extends Thread {
         return room_number;
     }
 
-    private void closeConnection() {
-        try {
-            client.close();
-        } catch (IOException ex) {
-            getContext().getLogger().log(Level.WARNING, ex.toString());
+    public void closeConnection() {
+        if (!executor.isShutdown()) {
+            executor.shutdownNow();
+        }
+        if (client.isConnected()) {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.WARNING, ex.toString());
+            }
         }
     }
 
@@ -260,7 +265,7 @@ public class PlayerService extends Thread {
             closeConnection();
         }
 
-        while (client.isConnected()) {
+        while (client.isConnected() && getContext().isRunning()) {
             try {
                 synchronized (INPUT_LOCK) {
                     int type = ois.readInt();
@@ -272,7 +277,7 @@ public class PlayerService extends Thread {
                         case NetworkManager.RESPONSE:
                             try {
                                 INPUT_LOCK.wait();
-                            } catch (InterruptedException e) {
+                            } catch (InterruptedException ignore) {
                             }
                             break;
                         default:
@@ -321,6 +326,10 @@ public class PlayerService extends Thread {
                 int opt = ois.readInt();
                 respondOperation(opt);
                 break;
+            case Request.SHUTDOWN:
+                String password = ois.readUTF();
+                getContext().onShutdownRequested(password);
+                break;
             default:
                 //do nothing
         }
@@ -357,7 +366,6 @@ public class PlayerService extends Thread {
                         }
                         if (obj instanceof Serializable) {
                             oos.writeObject(obj);
-                            continue;
                         }
                     }
                     oos.flush();
