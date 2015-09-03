@@ -57,10 +57,10 @@ public class FontRenderer {
         small_chars = ResourceManager.createFrames(small_char_sheet, 12, 1);
         Texture large_char_sheet = new Texture(FileProvider.getAssetsFile("images/large_chars.png"));
         large_chars = ResourceManager.createFrames(large_char_sheet, 13, 1);
-        schar_width = ts / 24 * 6;
-        schar_height = ts / 24 * 7;
-        lchar_width = ts / 24 * 8;
-        lchar_height = ts / 24 * 11;
+        schar_width = ts * 6 / 24;
+        schar_height = ts * 7 / 24;
+        lchar_width = ts * 8 / 24;
+        lchar_height = ts * 11 / 24;
     }
 
     public static BitmapFont getTitleFont() {

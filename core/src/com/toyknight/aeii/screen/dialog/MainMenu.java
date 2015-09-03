@@ -44,7 +44,7 @@ public class MainMenu extends Table {
         int menu_height = BUTTON_HEIGHT * BUTTON_COUNT + MARGIN * (BUTTON_COUNT + 1);
         this.setBounds(
                 (Gdx.graphics.getWidth() - menu_width) / 2,
-                (Gdx.graphics.getHeight() - 85 - menu_height) / 2,
+                (Gdx.graphics.getHeight() - 85 * ts / 48 - menu_height) / 2,
                 menu_width, menu_height);
         this.initComponents();
     }

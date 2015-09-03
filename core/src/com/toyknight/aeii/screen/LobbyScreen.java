@@ -1,6 +1,7 @@
 package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -48,8 +49,16 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
     private void initComponents() {
         room_list = new StringList<RoomSnapshot>(ts);
-        ScrollPane sp_room_list = new ScrollPane(room_list);
-        sp_room_list.setBounds(ts, ts * 2, Gdx.graphics.getWidth() - ts * 2, Gdx.graphics.getHeight() - ts * 4);
+        ScrollPane sp_room_list = new ScrollPane(room_list, getContext().getSkin()) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(
+                        ResourceManager.getBorderDarkColor(),
+                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
+                super.draw(batch, parentAlpha);
+            }
+        };
+        sp_room_list.setBounds(ts, ts * 2, Gdx.graphics.getWidth() - ts * 2, Gdx.graphics.getHeight() - ts * 3);
         sp_room_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_room_list.setScrollBarPositions(false, true);
@@ -179,14 +188,19 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
                 @Override
                 public void onFinish(RoomConfig config) {
-                    btn_join.setText(Language.getText("LB_JOIN"));
-                    getContext().gotoNetGameCreateScreen(config);
+                    if (config == null) {
+                        btn_join.setText(Language.getText("LB_JOIN"));
+                        getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
+                    } else {
+                        btn_join.setText(Language.getText("LB_JOIN"));
+                        getContext().gotoNetGameCreateScreen(config);
+                    }
                 }
 
                 @Override
                 public void onFail(String message) {
                     btn_join.setText(Language.getText("LB_JOIN"));
-                    getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
+                    getContext().showMessage(message, null);
                 }
             });
         }
@@ -201,10 +215,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         batch.begin();
         batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(
-                ResourceManager.getBorderDarkColor(), ts - ts / 12, ts * 2 - ts / 12,
-                Gdx.graphics.getWidth() - ts * 2 + ts / 6, Gdx.graphics.getHeight() - ts * 4 + ts / 6);
-        FontRenderer.drawTitleCenter(batch, Language.getText("LB_GAMES"), 0, Gdx.graphics.getHeight() - ts * 2, Gdx.graphics.getWidth(), ts * 2);
+        FontRenderer.drawTitleCenter(batch, Language.getText("LB_GAMES"), 0, Gdx.graphics.getHeight() - ts, Gdx.graphics.getWidth(), ts);
         batch.end();
         super.draw();
     }

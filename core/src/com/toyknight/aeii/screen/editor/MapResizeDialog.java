@@ -37,7 +37,7 @@ public class MapResizeDialog extends Table {
     private void initComponents() {
         this.lb_width = new Label(Language.getText("LB_WIDTH"), getContext().getSkin());
         this.add(lb_width).row();
-        this.slider_width = new Slider(5, 30, 1, false, getContext().getSkin());
+        this.slider_width = new Slider(5, 25, 1, false, getContext().getSkin());
         this.slider_width.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -48,7 +48,7 @@ public class MapResizeDialog extends Table {
 
         this.lb_height = new Label(Language.getText("LB_HEIGHT"), getContext().getSkin());
         this.add(lb_height).row();
-        this.slider_height = new Slider(5, 30, 1, false, getContext().getSkin());
+        this.slider_height = new Slider(5, 25, 1, false, getContext().getSkin());
         this.slider_height.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

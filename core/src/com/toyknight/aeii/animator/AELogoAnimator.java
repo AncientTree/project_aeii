@@ -11,8 +11,8 @@ import com.toyknight.aeii.ResourceManager;
  */
 public class AELogoAnimator extends ScreenAnimator {
 
-    private final int WIDTH = 240;
-    private final int HEIGHT = 85;
+    private final int WIDTH = 240 * ts / 48;
+    private final int HEIGHT = 85 * ts / 48;
 
     private final Animation animation;
 
@@ -26,7 +26,7 @@ public class AELogoAnimator extends ScreenAnimator {
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
         int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH) / 2;
         int draw_y = Gdx.app.getGraphics().getHeight() - HEIGHT;
-        batch.draw(current_frame, draw_x, draw_y);
+        batch.draw(current_frame, draw_x, draw_y, WIDTH, HEIGHT);
         batch.end();
     }
 

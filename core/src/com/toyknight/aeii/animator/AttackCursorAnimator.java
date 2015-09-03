@@ -20,8 +20,8 @@ public class AttackCursorAnimator extends Animator {
     private final Animation attack_cursor_animation;
 
     public AttackCursorAnimator(MapCanvas canvas, int ts) {
-        this.width = ts / 24 * 40;
-        this.height = ts / 24 * 41;
+        this.width = ts * 40 / 24;
+        this.height = ts * 41 / 24;
         this.dx = (ts - width) / 2;
         this.dy = (ts - height) / 2;
         this.canvas = canvas;

@@ -10,9 +10,9 @@ public class Request {
 
     public static final int JOIN_ROOM = 0x2;
 
-    public static final int UPDATE_TEAM_ALLOCATION = 0x3;
+    public static final int LEAVE_ROOM = 0x3;
 
-    public static final int UPDATE_PLAYER_TYPE = 0x4;
+    public static final int UPDATE_ALLOCATION = 0x4;
 
     public static final int UPDATE_ALLIANCE = 0x5;
 
@@ -27,7 +27,5 @@ public class Request {
     public static final int PLAYER_LEAVING = 0x10;
 
     public static final int CREATE_ROOM = 0x11;
-
-    public static final int LEAVE_ROOM = 0x12;
 
 }

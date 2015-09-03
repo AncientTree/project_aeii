@@ -61,7 +61,7 @@ public class UnitAttackAnimator extends UnitAnimator {
             screen.getUnitRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
         }
         //paint spark
-        int spark_size = ts / 24 * 20;
+        int spark_size = ts * 20 / 24;
         int spark_offset = (ts - spark_size) / 2;
         batch.draw(
                 attack_spark_animation.getKeyFrame(getStateTime(), true),

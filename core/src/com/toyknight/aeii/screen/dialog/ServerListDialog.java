@@ -37,13 +37,13 @@ public class ServerListDialog extends Table {
         this.ts = getContext().getTileSize();
         int width = ts * 10;
         int height = ts * 6;
-        this.setBounds((Gdx.graphics.getWidth() - width) / 2, (Gdx.graphics.getHeight() - 85 - height) / 2, width, height);
+        this.setBounds((Gdx.graphics.getWidth() - width) / 2, (Gdx.graphics.getHeight() - 85 * ts / 48 - height) / 2, width, height);
         this.initComponents();
     }
 
     private void initComponents() {
         server_list = new StringList(ts);
-        ScrollPane sp_server_list = new ScrollPane(server_list);
+        ScrollPane sp_server_list = new ScrollPane(server_list, getContext().getSkin());
         sp_server_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
         sp_server_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));

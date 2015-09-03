@@ -28,7 +28,7 @@ public class SummonAnimator extends UnitAnimator {
 
     @Override
     public void render(SpriteBatch batch, GameScreen screen) {
-        int offset = ts / 24 * 2;
+        int offset = ts * 2 / 24;
         Unit summoner = getUnit("summoner");
         int target_sx = screen.getXOnScreen(target_x);
         int target_sy = screen.getYOnScreen(target_y);

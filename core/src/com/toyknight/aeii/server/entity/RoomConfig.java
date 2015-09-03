@@ -19,11 +19,11 @@ public class RoomConfig implements Serializable {
 
     public Map map;
 
-    public int[] player_type;
+    public Integer[] player_type;
 
     public String[] team_allocation;
 
-    public int[] alliance_state;
+    public Integer[] alliance_state;
 
     public int initial_gold;
 

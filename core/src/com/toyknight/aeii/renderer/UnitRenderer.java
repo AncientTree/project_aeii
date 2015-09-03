@@ -62,8 +62,8 @@ public class UnitRenderer {
             FontRenderer.drawSNumber(batch, unit.getCurrentHp(), (int) (screen_x + offset_x), (int) (screen_y + offset_y));
         }
         //draw status
-        int sw = ts / 24 * ResourceManager.getStatusTexture(0).getRegionWidth();
-        int sh = ts / 24 * ResourceManager.getStatusTexture(0).getRegionHeight();
+        int sw = ts * ResourceManager.getStatusTexture(0).getRegionWidth() / 24;
+        int sh = ts * ResourceManager.getStatusTexture(0).getRegionHeight() / 24;
         if (unit.getStatus() != null) {
             switch (unit.getStatus().getType()) {
                 case Status.POISONED:

@@ -13,6 +13,9 @@ import com.toyknight.aeii.ResourceManager;
  */
 public class AELogoGlowAnimator extends ScreenAnimator {
 
+    private final int WIDTH = 240 * ts / 48;
+    private final int HEIGHT = 85 * ts / 48;
+
     private final TextureRegionDrawable ae_logo;
     private final TextureRegionDrawable ae_logo_mask;
     private final TextureRegionDrawable ae_logo_glow;
@@ -39,18 +42,18 @@ public class AELogoGlowAnimator extends ScreenAnimator {
     @Override
     public void render(SpriteBatch batch) {
         batch.begin();
-        int logo_x = (Gdx.app.getGraphics().getWidth() - 240) / 2;
-        int logo_y = Gdx.app.getGraphics().getHeight() - 85;
-        ae_logo.draw(batch, logo_x, logo_y, 240, 85);
-        ae_logo_glow.draw(batch, glow_x, Gdx.app.getGraphics().getHeight() - 78, 67, 78);
-        ae_logo_mask.draw(batch, logo_x, logo_y, 240, 85);
+        int logo_x = (Gdx.app.getGraphics().getWidth() - WIDTH) / 2;
+        int logo_y = Gdx.app.getGraphics().getHeight() - HEIGHT;
+        ae_logo.draw(batch, logo_x, logo_y, WIDTH, HEIGHT);
+        ae_logo_glow.draw(batch, glow_x, Gdx.app.getGraphics().getHeight() - 78 * ts / 48, 67 * ts / 48, 78 * ts / 48);
+        ae_logo_mask.draw(batch, logo_x, logo_y, WIDTH, HEIGHT);
         batch.end();
 
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-        shape_renderer.rect(0, 0, (Gdx.app.getGraphics().getWidth() - 240) / 2, Gdx.app.getGraphics().getHeight());
-        shape_renderer.rect((Gdx.app.getGraphics().getWidth() - 240) / 2 + 240, 0, (Gdx.app.getGraphics().getWidth() - 240) / 2, Gdx.app.getGraphics().getHeight());
+        shape_renderer.rect(0, 0, (Gdx.app.getGraphics().getWidth() - WIDTH) / 2, Gdx.app.getGraphics().getHeight());
+        shape_renderer.rect((Gdx.app.getGraphics().getWidth() - WIDTH) / 2 + WIDTH, 0, (Gdx.app.getGraphics().getWidth() - WIDTH) / 2, Gdx.app.getGraphics().getHeight());
         shape_renderer.end();
     }
 

@@ -22,7 +22,7 @@ public class MovePathRenderer {
     public MovePathRenderer(GameScreen screen, int ts) {
         this.ts = ts;
         this.screen = screen;
-        this.cursor_size = ts / 24 * 26;
+        this.cursor_size = ts * 26 / 24;
         this.offset = ts / 24;
     }
 

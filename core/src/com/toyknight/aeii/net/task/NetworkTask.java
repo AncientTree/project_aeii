@@ -9,6 +9,8 @@ public abstract class NetworkTask<T> implements Runnable {
 
     private T result;
 
+    private String message;
+
     abstract public T doTask() throws Exception;
 
     abstract public void onFinish(T result);
@@ -26,7 +28,13 @@ public abstract class NetworkTask<T> implements Runnable {
                 }
             });
         } catch (Exception e) {
-            onFail(e.getMessage());
+            message = e.getMessage();
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    onFail(message);
+                }
+            });
         }
     }
 

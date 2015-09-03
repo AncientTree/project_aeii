@@ -13,6 +13,10 @@ public interface NetworkListener {
 
     void onPlayerLeave(String service_name, String username);
 
+    void onAllocationUpdate(String[] allocation, Integer[] types);
+
+    void onAllianceUpdate(Integer[] alliance);
+
     void onGameStart();
 
     void onReceiveGameEvent(GameEvent event);

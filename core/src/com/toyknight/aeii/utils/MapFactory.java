@@ -125,7 +125,7 @@ public class MapFactory {
         Set<Point> unit_positions = map.getUnitPositionSet();
         for (Point position : unit_positions) {
             Unit unit = map.getUnit(position.x, position.y);
-            if (!map.getTeamAccess(unit.getTeam())) {
+            if (!map.hasTeamAccess(unit.getTeam())) {
                 map.setTeamAccess(unit.getTeam(), true);
             }
         }

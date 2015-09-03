@@ -19,7 +19,7 @@ public class CursorAnimator extends Animator {
     private final Animation cursor_animation;
 
     public CursorAnimator(MapCanvas canvas, int ts) {
-        this.size = ts / 24 * 26;
+        this.size = ts * 26 / 24;
         this.dx = (ts - size) / 2;
         this.dy = (ts - size) / 2;
         this.canvas = canvas;

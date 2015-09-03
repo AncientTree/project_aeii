@@ -20,6 +20,8 @@ public class Spinner<T> extends Table {
     private float prefWidth;
     private final float prefHeight;
 
+    private SpinnerListener listener;
+
     private T[] items;
     private int selected_index;
 
@@ -38,6 +40,9 @@ public class Spinner<T> extends Table {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 selected_index = selected_index > 0 ? selected_index - 1 : items.length - 1;
+                if (listener != null) {
+                    listener.onValueChanged(Spinner.this);
+                }
             }
         });
         this.addActor(btn_left);
@@ -47,6 +52,9 @@ public class Spinner<T> extends Table {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 selected_index = selected_index < items.length - 1 ? selected_index + 1 : 0;
+                if (listener != null) {
+                    listener.onValueChanged(Spinner.this);
+                }
             }
         });
         this.addActor(btn_right);
@@ -56,6 +64,10 @@ public class Spinner<T> extends Table {
         this.prefWidth = width + ts * 2;
         this.setWidth(prefWidth);
         this.btn_right.setBounds(ts + width, 0, ts, ts);
+    }
+
+    public void setListener(SpinnerListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -71,6 +83,12 @@ public class Spinner<T> extends Table {
     public void setItems(T[] items) {
         this.items = items;
         this.selected_index = 0;
+    }
+
+    public void setSelectedIndex(int index) {
+        if (0 <= index && index < items.length) {
+            selected_index = index;
+        }
     }
 
     public T getSelectedItem() {

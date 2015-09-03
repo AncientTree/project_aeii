@@ -28,7 +28,7 @@ import com.toyknight.aeii.utils.MapFactory;
 import java.io.IOException;
 
 /**
- * Created by toyknight on 8/31/2015.
+ * @author toyknight 8/31/2015.
  */
 public class RoomCreateDialog extends Table {
 
@@ -39,28 +39,22 @@ public class RoomCreateDialog extends Table {
     private TextButton btn_create;
     private TextButton btn_preview;
 
-    private Label lb_capacity;
     private Spinner<Integer> spinner_capacity;
-
-    private Label lb_initial_gold;
     private Spinner<Integer> spinner_gold;
-
-    private Label lb_max_population;
     private Spinner<Integer> spinner_population;
-
     private StringList<MapFactory.MapSnapshot> map_list;
 
     public RoomCreateDialog(LobbyScreen lobby_screen) {
         this.lobby_screen = lobby_screen;
         this.ts = getContext().getTileSize();
         int width = ts * 11;
-        this.setBounds((Gdx.graphics.getWidth() - width) / 2, ts, width, Gdx.graphics.getHeight() - ts * 2);
+        this.setBounds((Gdx.graphics.getWidth() - width) / 2, ts / 2, width, Gdx.graphics.getHeight() - ts);
         this.initComponents();
     }
 
     private void initComponents() {
         map_list = new StringList<MapFactory.MapSnapshot>(ts);
-        ScrollPane sp_map_list = new ScrollPane(map_list) {
+        ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
@@ -103,7 +97,7 @@ public class RoomCreateDialog extends Table {
         btn_preview.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
         addActor(btn_preview);
 
-        lb_capacity = new Label(Language.getText("LB_CAPACITY"), getContext().getSkin());
+        Label lb_capacity = new Label(Language.getText("LB_CAPACITY"), getContext().getSkin());
         lb_capacity.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts - ts / 2, ts * 3, ts);
         addActor(lb_capacity);
         spinner_capacity = new Spinner<Integer>(ts, getContext().getSkin());
@@ -111,7 +105,7 @@ public class RoomCreateDialog extends Table {
         spinner_capacity.setItems(new Integer[]{2, 3, 4, 5, 6, 7, 8});
         addActor(spinner_capacity);
 
-        lb_initial_gold = new Label(Language.getText("LB_INITIAL_GOLD"), getContext().getSkin());
+        Label lb_initial_gold = new Label(Language.getText("LB_INITIAL_GOLD"), getContext().getSkin());
         lb_initial_gold.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 3 - ts / 2, ts * 3, ts);
         addActor(lb_initial_gold);
         spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());
@@ -119,7 +113,7 @@ public class RoomCreateDialog extends Table {
         spinner_gold.setItems(new Integer[]{500, 1000, 1500, 2000});
         addActor(spinner_gold);
 
-        lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
+        Label lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
         lb_max_population.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 5 - ts / 2, ts * 3, ts);
         addActor(lb_max_population);
         spinner_population = new Spinner<Integer>(ts, getContext().getSkin());

@@ -26,8 +26,6 @@ public class AEIIServer {
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();
 
-    private final String TAG_SERVICE = "service-";
-
     private boolean running;
     private long current_service_number;
 
@@ -45,24 +43,10 @@ public class AEIIServer {
         service_group = new ThreadGroup("service-group");
         server = new ServerSocket(5438);
 
-        services = new HashMap();
+        services = new HashMap<String, PlayerService>();
 
         current_room_number = 0;
-        rooms = new HashMap();
-
-        //create test room
-        try {
-            Room test_room = new Room(current_room_number++, "Server's test game");
-            File map_file = new File("Mourningstar.saem");
-            FileInputStream fis = new FileInputStream(map_file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            Map map = (Map) ois.readObject();
-            test_room.setInitialGold(2000);
-            test_room.setMap(map);
-            test_room.setMapName(map_file.getName());
-            rooms.put(test_room.getRoomNumber(), test_room);
-        } catch (Exception ex) {
-        }
+        rooms = new HashMap<Long, Room>();
     }
 
     public ThreadGroup getServiceGroup() {
@@ -139,12 +123,8 @@ public class AEIIServer {
         return getService(service_name).getClientAddress();
     }
 
-    public boolean isSystemRoom(long room_number) {
-        return room_number == 0;
-    }
-
     public ArrayList<RoomSnapshot> getOpenRoomSnapshot() {
-        ArrayList<RoomSnapshot> snapshot = new ArrayList();
+        ArrayList<RoomSnapshot> snapshot = new ArrayList<RoomSnapshot>();
         synchronized (ROOM_LOCK) {
             for (Room room : rooms.values()) {
                 if (room.isOpen()) {
@@ -163,6 +143,7 @@ public class AEIIServer {
         room.setCapacity(capacity);
         room.setInitialGold(gold);
         room.setMaxPopulation(population);
+        room.setHostService(service_name);
         room.addPlayer(service_name);
         player.setRoomNumber(room.getRoomNumber());
         rooms.put(room.getRoomNumber(), room);
@@ -171,7 +152,7 @@ public class AEIIServer {
 
     public RoomConfig onPlayerJoinRoom(String service_name, long room_number) {
         Room room = getRoom(room_number);
-        if (isOpen(room) && room.getRemaining() > 0 && getService(service_name).getRoomNumber() == -1) {
+        if (isOpen(room) && room.getRemaining() > 0 && getService(service_name).getRoomNumber() == -1 && room.getHostService() != null) {
             room.addPlayer(service_name);
             getService(service_name).setRoomNumber(room_number);
 
@@ -179,6 +160,7 @@ public class AEIIServer {
                 PlayerService player_service = getService(player);
                 if (player_service != null && !player.equals(service_name)) {
                     player_service.notifyPlayerJoining(service_name, getService(service_name).getUsername());
+                    player_service.notifyAllocation(room.getTeamAllocation(), room.getPlayerType());
                 }
             }
 
@@ -200,16 +182,50 @@ public class AEIIServer {
                     "Player {0}@{1} leaves room-{2}",
                     new Object[]{getUsername(service_name), getClientAddress(service_name), room_number});
             if (room.getCapacity() == room.getRemaining()) {
-                if (isSystemRoom(room.getRoomNumber())) {
-                    room.reset();
-                } else {
-                    removeRoom(room_number);
-                }
+                removeRoom(room_number);
             } else {
                 for (String player : room.getPlayers()) {
                     PlayerService player_service = getService(player);
                     if (player_service != null) {
                         player_service.notifyPlayerLeaving(service_name, player_service.getUsername());
+                        player_service.notifyAllocation(room.getTeamAllocation(), room.getPlayerType());
+                    }
+                }
+            }
+        }
+    }
+
+    public void onUpdateAllocation(String service_name, String[] allocation, Integer[] types) {
+        PlayerService requester = getService(service_name);
+        if (requester != null) {
+            Room room = getRoom(requester.getRoomNumber());
+            if (isOpen(room) && room.getHostService().equals(service_name)) {
+                for (int team = 0; team < 4; team++) {
+                    room.setTeamAllocation(team, allocation[team]);
+                    room.setPlayerType(team, types[team]);
+                }
+                for (String player : room.getPlayers()) {
+                    PlayerService player_service = getService(player);
+                    if (player_service != null && !player.equals(service_name)) {
+                        player_service.notifyAllocation(allocation, types);
+                    }
+                }
+            }
+        }
+    }
+
+    public void onUpdateAlliance(String service_name, Integer[] alliance) {
+        PlayerService requester = getService(service_name);
+        if (requester != null) {
+            Room room = getRoom(requester.getRoomNumber());
+            if (isOpen(room) && room.getHostService().equals(service_name)) {
+                for (int team = 0; team < 4; team++) {
+                    room.setAlliance(team, alliance[team]);
+                }
+                for (String player : room.getPlayers()) {
+                    PlayerService player_service = getService(player);
+                    if (player_service != null && !player.equals(service_name)) {
+                        player_service.notifyAlliance(alliance);
                     }
                 }
             }
@@ -295,6 +311,7 @@ public class AEIIServer {
     }
 
     private String createServiceName() {
+        String TAG_SERVICE = "service-";
         return TAG_SERVICE + (current_service_number++);
     }
 

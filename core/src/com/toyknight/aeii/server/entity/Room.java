@@ -48,7 +48,9 @@ public class Room {
         players.clear();
         Arrays.fill(player_type, Player.NONE);
         Arrays.fill(team_allocation, "NONE");
-        Arrays.fill(alliance_state, -1);
+        for (int team = 0; team < 4; team++) {
+            alliance_state[team] = team + 1;
+        }
         setGameStarted(false);
     }
 
@@ -66,13 +68,9 @@ public class Room {
         synchronized (PLAYER_LOCK) {
             players.add(service_name);
             for (int team = 0; team < 4; team++) {
-                if (getMap().getTeamAccess(team) && team_allocation[team].equals("NONE")) {
+                if (getMap().hasTeamAccess(team) && team_allocation[team].equals("NONE")) {
                     player_type[team] = Player.LOCAL;
                     team_allocation[team] = service_name;
-                    alliance_state[team] = team;
-                    if (host_service == null) {
-                        host_service = service_name;
-                    }
                     break;
                 }
             }
@@ -88,22 +86,22 @@ public class Room {
                     team_allocation[team] = "NONE";
                 }
             }
-            if (host_service.equals(service_name)) {
+            if (host_service != null && host_service.equals(service_name)) {
                 host_service = null;
-                for (String player_service : players) {
-                    host_service = player_service;
-                    break;
-                }
             }
         }
+    }
+
+    public void setHostService(String service) {
+        host_service = service;
     }
 
     public String getHostService() {
         return host_service;
     }
 
-    public String getTeamAllocation(int team) {
-        return team_allocation[team];
+    public void setTeamAllocation(int team, String service) {
+        team_allocation[team] = service;
     }
 
     public String[] getTeamAllocation() {
@@ -118,16 +116,24 @@ public class Room {
         return player_type[team];
     }
 
-    public int[] getPlayerType() {
-        return player_type;
+    public Integer[] getPlayerType() {
+        Integer[] types = new Integer[4];
+        for (int i = 0; i < player_type.length; i++) {
+            types[i] = player_type[i];
+        }
+        return types;
     }
 
-    public int getAlliance(int team) {
-        return alliance_state[team];
+    public void setAlliance(int team, int alliance) {
+        alliance_state[team] = alliance;
     }
 
-    public int[] getAllianceState() {
-        return alliance_state;
+    public Integer[] getAllianceState() {
+        Integer[] alliance = new Integer[4];
+        for (int i = 0; i < alliance_state.length; i++) {
+            alliance[i] = alliance_state[i];
+        }
+        return alliance;
     }
 
     public long getRoomNumber() {
@@ -183,12 +189,24 @@ public class Room {
     }
 
     public boolean isReady() {
+        boolean player_ready = true;
+        boolean alliance_ready = false;
+        int alliance = -1;
         for (int team = 0; team < 4; team++) {
-            if (getMap().getTeamAccess(team) && team_allocation[team].equals("NONE")) {
-                return false;
+            if (getMap().hasTeamAccess(team)) {
+                if (team_allocation[team].equals("NONE")) {
+                    player_ready = false;
+                }
+                if (alliance == -1) {
+                    alliance = alliance_state[team];
+                } else {
+                    if (alliance != alliance_state[team]) {
+                        alliance_ready = true;
+                    }
+                }
             }
         }
-        return true;
+        return player_ready && alliance_ready;
     }
 
     public void setGameStarted(boolean started) {

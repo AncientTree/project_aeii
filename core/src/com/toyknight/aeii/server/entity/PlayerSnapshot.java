@@ -18,7 +18,7 @@ public class PlayerSnapshot implements Serializable {
     @Override
     public String toString() {
         if (is_host) {
-            return username + " (host)";
+            return username + " *";
         } else {
             return username;
         }

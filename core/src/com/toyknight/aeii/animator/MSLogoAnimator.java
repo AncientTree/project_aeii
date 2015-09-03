@@ -38,7 +38,7 @@ public class MSLogoAnimator extends ScreenAnimator {
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
         int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH * ts / 48) / 2;
         int draw_y = (Gdx.app.getGraphics().getHeight() - HEIGHT * ts / 48) / 2;
-        batch.draw(current_frame, draw_x, draw_y);
+        batch.draw(current_frame, draw_x, draw_y, WIDTH * ts / 48, HEIGHT * ts / 48);
         batch.end();
     }
 

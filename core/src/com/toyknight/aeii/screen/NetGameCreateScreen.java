@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -19,6 +18,9 @@ import com.toyknight.aeii.net.task.NetworkTask;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
+import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
+import com.toyknight.aeii.screen.widgets.Spinner;
+import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.server.entity.PlayerSnapshot;
 import com.toyknight.aeii.server.entity.RoomConfig;
@@ -35,6 +37,18 @@ public class NetGameCreateScreen extends StageScreen {
     private TextButton btn_start;
     private TextButton btn_leave;
 
+    private TextButton[] btn_allocate;
+    private Image[] team_image;
+    private Spinner<Integer>[] spinner_alliance;
+    private Spinner<String>[] spinner_type;
+    private Label[] lb_username;
+    private ScrollPane[] sp_username;
+
+    private Label lb_population;
+    private Label lb_gold;
+
+    private Table team_setting_table;
+
     private StringList<PlayerSnapshot> player_list;
 
     private MiniMapDialog map_preview;
@@ -45,6 +59,17 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void initComponents() {
+        Label lb_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
+        lb_team.setPosition(
+                ts * 7 + (ts * 3 - lb_team.getPrefWidth()) / 2,
+                Gdx.graphics.getHeight() - ts / 2 - lb_team.getPrefHeight());
+        addActor(lb_team);
+        Label lb_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
+        lb_type.setPosition(
+                ts * 10 + ts / 2 + (ts * 4 - lb_type.getPrefWidth()) / 2,
+                Gdx.graphics.getHeight() - ts / 2 - lb_type.getPrefHeight());
+        addActor(lb_type);
+
         btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
         btn_start.setBounds(ts / 2, ts / 2, ts * 3, ts);
         btn_start.addListener(new ClickListener() {
@@ -84,6 +109,50 @@ public class NetGameCreateScreen extends StageScreen {
         });
         addDialog("preview", map_preview);
 
+        int tstw = Gdx.graphics.getWidth() - ts * 4;
+        int tsth = ts * 4 + ts / 2 * 4;
+        team_setting_table = new Table();
+        team_setting_table.setBounds(
+                ts * 4, Gdx.graphics.getHeight() - ts / 2 - lb_team.getPrefHeight() - tsth, tstw, tsth);
+        addActor(team_setting_table);
+
+        btn_allocate = new TextButton[4];
+        team_image = new Image[4];
+        spinner_alliance = new Spinner[4];
+        spinner_type = new Spinner[4];
+        lb_username = new Label[4];
+        sp_username = new ScrollPane[4];
+        for (int team = 0; team < 4; team++) {
+            btn_allocate[team] = new PlayerAllocationButton(team, getContext().getSkin());
+            btn_allocate[team].addListener(new ClickListener() {
+                public void clicked(InputEvent event, float x, float y) {
+                    int team = ((PlayerAllocationButton) event.getListenerActor()).getTeam();
+                    allocateSelectedPlayer(team);
+                }
+            });
+
+            TextureRegionDrawable team_color =
+                    new TextureRegionDrawable(new TextureRegion(ResourceManager.getTeamBackground(team)));
+            team_color.setMinWidth(ts);
+            team_color.setMinHeight(ts);
+            team_image[team] = new Image(team_color);
+
+            Integer[] alliance = new Integer[]{1, 2, 3, 4};
+            spinner_alliance[team] = new Spinner<Integer>(ts, getContext().getSkin());
+            spinner_alliance[team].setListener(alliance_listener);
+            spinner_alliance[team].setItems(alliance);
+
+            String[] type = new String[]{Language.getText("LB_NONE"), Language.getText("LB_PLAYER")};
+            spinner_type[team] = new Spinner<String>(ts, getContext().getSkin());
+            spinner_type[team].setListener(allocation_listener);
+            spinner_type[team].setContentWidth(ts * 2);
+            spinner_type[team].setItems(type);
+
+            lb_username[team] = new Label("", getContext().getSkin());
+            sp_username[team] = new ScrollPane(lb_username[team]);
+            sp_username[team].setScrollBarPositions(true, false);
+        }
+
         player_list = new StringList<PlayerSnapshot>(ts);
         ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
             @Override
@@ -97,8 +166,31 @@ public class NetGameCreateScreen extends StageScreen {
         sp_player_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_player_list.setScrollBarPositions(false, true);
-        sp_player_list.setBounds(ts / 2, ts * 2, ts * 5 + ts / 2, Gdx.graphics.getHeight() - ts * 2 - ts / 2);
+        sp_player_list.setBounds(ts / 2, ts * 2, ts * 3, Gdx.graphics.getHeight() - ts * 2 - ts / 2);
         addActor(sp_player_list);
+
+        HorizontalGroup info_group = new HorizontalGroup();
+        info_group.setBounds(ts * 4, ts * 2, Gdx.graphics.getWidth() - ts * 4, ts * 11 / 24);
+
+        TextureRegion tr_population = ResourceManager.getStatusHudIcon(0);
+        TextureRegionDrawable trd_population = new TextureRegionDrawable(tr_population);
+        trd_population.setMinWidth(ts / 24 * 11);
+        trd_population.setMinHeight(ts / 24 * 11);
+        Image ico_population = new Image(trd_population);
+        info_group.addActor(ico_population);
+        lb_population = new Label("", getContext().getSkin());
+        info_group.addActor(lb_population);
+
+        TextureRegion tr_gold = ResourceManager.getStatusHudIcon(1);
+        TextureRegionDrawable trd_gold = new TextureRegionDrawable(tr_gold);
+        trd_gold.setMinWidth(ts / 24 * 11);
+        trd_gold.setMinHeight(ts / 24 * 11);
+        Image ico_gold = new Image(trd_gold);
+        info_group.addActor(ico_gold);
+        lb_gold = new Label("", getContext().getSkin());
+        info_group.addActor(lb_gold);
+
+        addActor(info_group);
     }
 
     public void setRoomConfig(RoomConfig config) {
@@ -113,6 +205,110 @@ public class NetGameCreateScreen extends StageScreen {
 
     public RoomConfig getRoomConfig() {
         return room_config;
+    }
+
+    public String getUsername(String service_name) {
+        for (PlayerSnapshot player : players) {
+            if (player.service_name.equals(service_name)) {
+                return player.username;
+            }
+        }
+        return "";
+    }
+
+    public void updateStatus() {
+        for (int team = 0; team < 4; team++) {
+            String player_service = getRoomConfig().team_allocation[team];
+            if (room_config.map.hasTeamAccess(team)) {
+                if (player_service.equals("NONE")) {
+                    spinner_type[team].setSelectedIndex(0);
+                    lb_username[team].setText("");
+                } else {
+                    spinner_type[team].setSelectedIndex(1);
+                    lb_username[team].setText(getUsername(getRoomConfig().team_allocation[team]));
+                }
+                spinner_alliance[team].setSelectedIndex(room_config.alliance_state[team] - 1);
+            }
+        }
+    }
+
+    public void updateAllocation() {
+        for (int team = 0; team < 4; team++) {
+            if (room_config.map.hasTeamAccess(team)) {
+                String selected = spinner_type[team].getSelectedItem();
+                if (selected.equals(Language.getText("LB_NONE"))) {
+                    room_config.team_allocation[team] = "NONE";
+                }
+                if (selected.equals(Language.getText("LB_PLAYER"))) {
+                    if (room_config.team_allocation[team].equals("NONE")) {
+                        room_config.team_allocation[team] = getContext().getNetworkManager().getServiceName();
+                        room_config.player_type[team] = Player.LOCAL;
+                    }
+                }
+            }
+        }
+        updateStatus();
+        tryUpdateAllocation();
+    }
+
+    public void updateAlliance() {
+        for (int team = 0; team < 4; team++) {
+            if (room_config.map.hasTeamAccess(team)) {
+                room_config.alliance_state[team] = spinner_alliance[team].getSelectedItem();
+            }
+        }
+        updateStatus();
+        tryUpdateAlliance();
+    }
+
+    public void allocateSelectedPlayer(int team) {
+        String service_name = player_list.getSelected().service_name;
+        room_config.team_allocation[team] = service_name;
+        room_config.player_type[team] = Player.LOCAL;
+        updateStatus();
+        tryUpdateAllocation();
+    }
+
+    private void tryUpdateAllocation() {
+        Gdx.input.setInputProcessor(null);
+        getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
+            @Override
+            public Void doTask() throws Exception {
+                getContext().getNetworkManager().requestUpdateAllocation(room_config.team_allocation, room_config.player_type);
+                return null;
+            }
+
+            @Override
+            public void onFinish(Void result) {
+                Gdx.input.setInputProcessor(NetGameCreateScreen.this);
+            }
+
+            @Override
+            public void onFail(String message) {
+                getContext().showMessage(message, null);
+            }
+        });
+    }
+
+    private void tryUpdateAlliance() {
+        Gdx.input.setInputProcessor(null);
+        getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
+            @Override
+            public Void doTask() throws Exception {
+                getContext().getNetworkManager().requestUpdateAlliance(room_config.alliance_state);
+                return null;
+            }
+
+            @Override
+            public void onFinish(Void result) {
+                Gdx.input.setInputProcessor(NetGameCreateScreen.this);
+            }
+
+            @Override
+            public void onFail(String message) {
+                getContext().showMessage(message, null);
+            }
+        });
     }
 
     private void tryLeaveRoom() {
@@ -172,7 +368,7 @@ public class NetGameCreateScreen extends StageScreen {
         GameHost.setHost(isHost());
         Player[] players = new Player[4];
         for (int team = 0; team < 4; team++) {
-            if (room_config.map.getTeamAccess(team)) {
+            if (room_config.map.hasTeamAccess(team)) {
                 players[team] = new Player();
                 players[team].setAlliance(room_config.alliance_state[team]);
                 players[team].setGold(room_config.initial_gold);
@@ -212,6 +408,26 @@ public class NetGameCreateScreen extends StageScreen {
         getContext().getNetworkManager().setNetworkListener(this);
         map_preview.setMap(room_config.map);
         map_preview.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        lb_population.setText(" " + room_config.max_population + " ");
+        lb_gold.setText(" " + room_config.initial_gold + " ");
+
+        team_setting_table.clear();
+        for (int team = 0; team < 4; team++) {
+            if (room_config.map.hasTeamAccess(team)) {
+                AEIIApplication.setButtonEnabled(btn_allocate[team], isHost());
+                spinner_alliance[team].setEnabled(isHost());
+                spinner_type[team].setSelectedIndex(0);
+                spinner_type[team].setEnabled(isHost());
+
+                team_setting_table.add(btn_allocate[team]).size(ts, ts).padTop(ts / 2);
+                team_setting_table.add(team_image[team]).size(ts, ts).padTop(ts / 2).padLeft(ts / 2);
+                team_setting_table.add(spinner_alliance[team]).size(ts * 3, ts).padTop(ts / 2).padLeft(ts / 2);
+                team_setting_table.add(spinner_type[team]).size(ts * 4, ts).padTop(ts / 2).padLeft(ts / 2);
+                team_setting_table.add(sp_username[team]).size(team_setting_table.getWidth() - ts * 11 - ts / 2, ts).padTop(ts / 2).padLeft(ts / 2).row();
+            }
+        }
+        updateStatus();
     }
 
     @Override
@@ -246,8 +462,35 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     @Override
+    public void onAllocationUpdate(String[] allocation, Integer[] types) {
+        room_config.team_allocation = allocation;
+        room_config.player_type = types;
+        updateStatus();
+    }
+
+    @Override
+    public void onAllianceUpdate(Integer[] alliance) {
+        room_config.alliance_state = alliance;
+        updateStatus();
+    }
+
+    @Override
     public void onGameStart() {
         createGame();
     }
+
+    private final SpinnerListener allocation_listener = new SpinnerListener() {
+        @Override
+        public void onValueChanged(Spinner spinner) {
+            updateAllocation();
+        }
+    };
+
+    private final SpinnerListener alliance_listener = new SpinnerListener() {
+        @Override
+        public void onValueChanged(Spinner spinner) {
+            updateAlliance();
+        }
+    };
 
 }

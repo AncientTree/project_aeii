@@ -25,6 +25,8 @@ import java.util.Properties;
 
 public class AEIIApplication extends Game {
 
+    public static final Object RENDER_LOCK = new Object();
+
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -70,6 +72,7 @@ public class AEIIApplication extends Game {
             ResourceManager.loadResources();
             FontRenderer.loadFonts(TILE_SIZE);
             BorderRenderer.init();
+            Animator.setTileSize(getTileSize());
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();
@@ -89,8 +92,6 @@ public class AEIIApplication extends Game {
 
             network_manager = new NetworkManager();
             GameHost.setContext(this);
-
-            Animator.setTileSize(getTileSize());
 
             setScreen(logo_screen);
         } catch (AEIIException ex) {
@@ -253,13 +254,15 @@ public class AEIIApplication extends Game {
 
     @Override
     public void render() {
-        //getNetworkManager().updateTasks();
-        Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        super.render();
-        if (isDialogShown()) {
-            dialog_layer.act(Gdx.graphics.getDeltaTime());
-            dialog_layer.draw();
+        synchronized (RENDER_LOCK) {
+            //getNetworkManager().updateTasks();
+            Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            super.render();
+            if (isDialogShown()) {
+                dialog_layer.act(Gdx.graphics.getDeltaTime());
+                dialog_layer.draw();
+            }
         }
     }
 

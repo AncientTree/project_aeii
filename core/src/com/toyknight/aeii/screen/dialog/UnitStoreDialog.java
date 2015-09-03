@@ -74,10 +74,9 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         });
         this.addActor(btn_close);
 
-
         this.unit_list = new AvailableUnitList(ts);
         this.unit_list.setUnitListListener(this);
-        ScrollPane sp_unit_list = new ScrollPane(unit_list) {
+        ScrollPane sp_unit_list = new ScrollPane(unit_list, skin) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
@@ -145,15 +144,15 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         batch.draw(ResourceManager.getBorderDarkColor(), x + ts / 2 - ts / 24, y + ts / 2 - ts / 24, ts * 5 + ts / 12, ts * 3 / 2 * 5 + ts / 12);
         batch.flush();
 
-        int interval = ts / 24 * 13;
+        int interval = ts * 13 / 24;
         int lw = FontRenderer.getLNumberWidth(0, false);
         int lh = FontRenderer.getLCharHeight();
         //price
         batch.draw(ResourceManager.getStatusHudIcon(1),
-                x + ts * 10 + ts / 2 - lw * 4 - ts / 24 * 11,
+                x + ts * 10 + ts / 2 - lw * 4 - 11 * ts / 24,
                 y + height - ts / 2 - lh,
-                ts / 24 * 11,
-                ts / 24 * 11);
+                11 * ts / 24,
+                11 * ts / 24);
         if (price >= 0) {
             FontRenderer.drawLNumber(batch,
                     price,
@@ -171,11 +170,11 @@ public class UnitStoreDialog extends Table implements UnitListListener {
                 y + height - (ts / 2 + interval),
                 ts * 4 + ts / 2,
                 1);
-        int scw = ts / 24 * 20;
-        int sch = ts / 24 * 21;
-        int acs = ts / 24 * 16;
-        int hw = ts / 24 * 13;
-        int hh = ts / 24 * 16;
+        int scw = ts * 20 / 24;
+        int sch = ts * 21 / 24;
+        int acs = ts * 16 / 24;
+        int hw = ts * 13 / 24;
+        int hh = ts * 16 / 24;
         int itemh = sch + ts / 6;
         int tfh = sch - ts / 4;
         float lbh = FontRenderer.getTextFont().getCapHeight();
@@ -196,8 +195,8 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 6,
                 y + height - (ts / 2 + interval + (itemh - sch) / 2 + sch),
-                ts / 24 * 20,
-                ts / 24 * 21);
+                20 * ts / 24,
+                21 * ts / 24);
         batch.draw(ResourceManager.getBattleHudIcon(0),
                 x + ts * 6 + (scw - hw) / 2,
                 y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
@@ -215,8 +214,8 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 8 + ts / 4,
                 y + height - (ts / 2 + interval + (itemh - sch) / 2 + sch),
-                ts / 24 * 20,
-                ts / 24 * 21);
+                20 * ts / 24,
+                21 * ts / 24);
         batch.draw(ResourceManager.getActionIcon(4),
                 x + ts * 8 + ts / 4 + (scw - acs) / 2,
                 y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
@@ -233,8 +232,8 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 6,
                 y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + sch),
-                ts / 24 * 20,
-                ts / 24 * 21);
+                20 * ts / 24,
+                21 * ts / 24);
         batch.draw(ResourceManager.getBattleHudIcon(1),
                 x + ts * 6 + (scw - hw) / 2,
                 y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
@@ -251,8 +250,8 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 8 + ts / 4,
                 y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + sch),
-                ts / 24 * 20,
-                ts / 24 * 21);
+                20 * ts / 24,
+                21 * ts / 24);
         batch.draw(ResourceManager.getBattleHudIcon(2),
                 x + ts * 8 + ts / 4 + (scw - hw) / 2,
                 y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + (sch - hh) / 2 + hh),

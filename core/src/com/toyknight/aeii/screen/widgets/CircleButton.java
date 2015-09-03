@@ -32,9 +32,9 @@ public class CircleButton extends Button {
     public float getPrefWidth() {
         switch (type) {
             case SMALL:
-                return ts / 24 * 20;
+                return ts * 20 / 24;
             case LARGE:
-                return ts / 24 * 32;
+                return ts * 32 / 24;
             default:
                 return super.getPrefWidth();
         }
@@ -44,9 +44,9 @@ public class CircleButton extends Button {
     public float getPrefHeight() {
         switch (type) {
             case SMALL:
-                return ts / 24 * 21;
+                return ts * 21 / 24;
             case LARGE:
-                return ts / 24 * 33;
+                return ts * 33 / 24;
             default:
                 return super.getPrefHeight();
         }

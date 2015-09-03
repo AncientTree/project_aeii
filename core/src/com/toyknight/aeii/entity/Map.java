@@ -222,7 +222,7 @@ public class Map implements Serializable {
     public int getPlayerCount() {
         int count = 0;
         for (int team = 0; team < 4; team++) {
-            if (getTeamAccess(team) == true) {
+            if (hasTeamAccess(team) == true) {
                 count++;
             }
         }
@@ -246,7 +246,7 @@ public class Map implements Serializable {
         return team_access;
     }
 
-    public boolean getTeamAccess(int team) {
+    public boolean hasTeamAccess(int team) {
         return team_access[team];
     }
 

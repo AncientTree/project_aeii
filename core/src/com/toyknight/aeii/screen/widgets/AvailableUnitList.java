@@ -42,8 +42,8 @@ public class AvailableUnitList extends Widget implements Cullable {
     public AvailableUnitList(int ts) {
         this.ts = ts;
         this.item_height = ts / 2 * 3;
-        this.big_circle_width = ts / 24 * 32;
-        this.big_circle_height = ts / 24 * 33;
+        this.big_circle_width = ts * 32 / 24;
+        this.big_circle_height = ts * 33 / 24;
         this.bc_offset = (item_height - big_circle_height) / 2;
         this.unit_offset = (item_height - ts) / 2;
         addListener(new InputListener() {

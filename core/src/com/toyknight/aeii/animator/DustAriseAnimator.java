@@ -24,7 +24,7 @@ public class DustAriseAnimator extends MapAnimator {
     @Override
     public void render(SpriteBatch batch, GameScreen screen) {
         int ts = screen.getContext().getTileSize();
-        int dust_height = ts / 24 * 20;
+        int dust_height = ts * 20 / 24;
         int dust_sx = screen.getXOnScreen(map_x);
         int dust_sy = screen.getYOnScreen(map_y);
         int offset = (int) (getStateTime() / (1f / 15)) * ts / 6;

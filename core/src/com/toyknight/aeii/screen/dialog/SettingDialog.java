@@ -51,7 +51,7 @@ public class SettingDialog extends Table {
 
         tf_username = new TextField("", getContext().getSkin());
         tf_username.setPosition(ts * 3 + ts / 2, getHeight() - ts / 2 - tf_username.getPrefHeight());
-        tf_username.setMaxLength(12);
+        tf_username.setMaxLength(10);
         tf_username.setWidth(getWidth() - ts * 4);
         addActor(tf_username);
     }

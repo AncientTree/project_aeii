@@ -50,7 +50,7 @@ public class TestScreen extends StageScreen {
             public void clicked(InputEvent event, float x, float y) {
                 Player[] players = new Player[4];
                 for (int i = 0; i < 4; i++) {
-                    if (map_list.getSelectedMap().getTeamAccess(i) == true) {
+                    if (map_list.getSelectedMap().hasTeamAccess(i) == true) {
                         players[i] = new Player();
                         players[i].setType(Player.LOCAL);
                         players[i].setAlliance(i);
@@ -65,7 +65,7 @@ public class TestScreen extends StageScreen {
         this.addActor(btn_start);
 
         this.map_list = new MapList(ts);
-        ScrollPane sp_map_list = new ScrollPane(map_list);
+        ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin());
         sp_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_map_list.setScrollBarPositions(false, true);

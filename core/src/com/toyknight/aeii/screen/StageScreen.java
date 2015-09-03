@@ -116,6 +116,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     @Override
+    public void onAllocationUpdate(String[] allocation, Integer[] types) {
+    }
+
+    @Override
+    public void onAllianceUpdate(Integer[] alliance) {
+    }
+
+    @Override
     public void onGameStart() {
     }
 

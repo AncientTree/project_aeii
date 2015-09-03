@@ -5,7 +5,6 @@ import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
-import com.toyknight.aeii.server.entity.Room;
 import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
 
@@ -94,6 +93,19 @@ public class PlayerService extends Thread {
         executor.submit(task);
     }
 
+    public void notifyAllocation(String[] team_allocation, Integer[] player_type) {
+        Object[] params = new Object[team_allocation.length + player_type.length];
+        System.arraycopy(team_allocation, 0, params, 0, team_allocation.length);
+        System.arraycopy(player_type, 0, params, team_allocation.length, player_type.length);
+        NotificationTask task = new NotificationTask(Request.UPDATE_ALLOCATION, params);
+        executor.submit(task);
+    }
+
+    public void notifyAlliance(Integer[] alliance) {
+        NotificationTask task = new NotificationTask(Request.UPDATE_ALLIANCE, alliance);
+        executor.submit(task);
+    }
+
     public void notifyGameStart() {
         NotificationTask task = new NotificationTask(Request.START_GAME);
         executor.submit(task);
@@ -125,11 +137,9 @@ public class PlayerService extends Thread {
     private void respondJoinRoom(long room_number) throws IOException {
         RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
         synchronized (OUTPUT_LOCK) {
-            if (config != null) {
-                oos.writeInt(NetworkManager.RESPONSE);
-                oos.writeObject(config);
-                oos.flush();
-            }
+            oos.writeInt(NetworkManager.RESPONSE);
+            oos.writeObject(config);
+            oos.flush();
         }
         if (config != null) {
             getContext().getLogger().log(
@@ -165,13 +175,22 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondUpdatePlayerType() throws IOException {
-    }
-
-    private void respondUpdateTeamAllocation() throws IOException {
+    private void respondUpdateAllocation() throws IOException {
+        String[] allocation = new String[4];
+        Integer[] types = new Integer[4];
+        for (int team = 0; team < 4; team++) {
+            allocation[team] = ois.readUTF();
+            types[team] = ois.readInt();
+        }
+        getContext().onUpdateAllocation(getName(), allocation, types);
     }
 
     private void respondUpdateAlliance() throws IOException {
+        Integer[] alliance = new Integer[4];
+        for (int team = 0; team < 4; team++) {
+            alliance[team] = ois.readInt();
+        }
+        getContext().onUpdateAlliance(getName(), alliance);
     }
 
     private void respondStartGame() throws IOException {
@@ -286,11 +305,8 @@ public class PlayerService extends Thread {
             case Request.CREATE_ROOM:
                 respondCreateRoom();
                 break;
-            case Request.UPDATE_PLAYER_TYPE:
-                respondUpdatePlayerType();
-                break;
-            case Request.UPDATE_TEAM_ALLOCATION:
-                respondUpdateTeamAllocation();
+            case Request.UPDATE_ALLOCATION:
+                respondUpdateAllocation();
                 break;
             case Request.UPDATE_ALLIANCE:
                 respondUpdateAlliance();
