@@ -243,7 +243,7 @@ public class GameManager implements AnimationDispatcher {
                 }
             } else {
                 dispatchGameEvents();
-                if (finish_flag == true && current_animation == null) {
+                if (finish_flag && current_animation == null) {
                     manager_listener.onButtonUpdateRequested();
                 }
             }
@@ -270,48 +270,48 @@ public class GameManager implements AnimationDispatcher {
         move_mark_map = new int[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                move_mark_map[x][y] = Integer.MIN_VALUE;
+                move_mark_map[x][y] = -1;
             }
         }
     }
 
     public void createMovablePositions() {
         createMoveMarkMap();
-        movable_positions = new HashSet();
+        movable_positions = new HashSet<Point>();
         int unit_x = getSelectedUnit().getX();
         int unit_y = getSelectedUnit().getY();
         int movement_point = getSelectedUnit().getCurrentMovementPoint();
         Point start_position = new Point(unit_x, unit_y);
         Step start_step = new Step(start_position, movement_point);
-        Queue<Step> start_steps = new LinkedList();
+        Queue<Step> start_steps = new LinkedList<Step>();
         start_steps.add(start_step);
         createMovablePositions(start_steps);
     }
 
     private void createMovablePositions(Queue<Step> current_steps) {
-        Queue<Step> next_steps = new LinkedList();
+        Queue<Step> next_steps = new LinkedList<Step>();
         while (!current_steps.isEmpty()) {
             Step current_step = current_steps.poll();
             int step_x = current_step.getPosition().x;
             int step_y = current_step.getPosition().y;
-            move_mark_map[step_x][step_y] = current_step.getMovementPoint();
-            if (getGame().canUnitMove(getSelectedUnit(), step_x, step_y)) {
-                movable_positions.add(current_step.getPosition());
+            if (current_step.getMovementPoint() > move_mark_map[step_x][step_y]) {
+                move_mark_map[step_x][step_y] = current_step.getMovementPoint();
+                if (getGame().canUnitMove(getSelectedUnit(), step_x, step_y)) {
+                    movable_positions.add(current_step.getPosition());
+                }
             }
             for (int i = 0; i < 4; i++) {
                 int next_x = current_step.getPosition().x + x_dir[i];
                 int next_y = current_step.getPosition().y + y_dir[i];
                 Point next = new Point(next_x, next_y);
                 int current_mp = current_step.getMovementPoint();
-                if (game.getMap().isWithinMap(next_x, next_y)) {
+                if (getGame().getMap().isWithinMap(next_x, next_y)) {
                     int mp_cost = UnitToolkit.getMovementPointCost(getSelectedUnit(), getGame().getMap().getTile(next_x, next_y));
-                    if (current_mp - mp_cost > move_mark_map[next_x][next_y]) {
-                        if (mp_cost <= current_mp) {
-                            Unit target_unit = game.getMap().getUnit(next_x, next_y);
-                            if (getGame().canMoveThrough(getSelectedUnit(), target_unit)) {
-                                Step next_step = new Step(next, current_mp - mp_cost);
-                                next_steps.add(next_step);
-                            }
+                    if (mp_cost <= current_mp && current_mp - mp_cost > move_mark_map[next_x][next_y]) {
+                        Unit target_unit = game.getMap().getUnit(next_x, next_y);
+                        if (getGame().canMoveThrough(getSelectedUnit(), target_unit)) {
+                            Step next_step = new Step(next, current_mp - mp_cost);
+                            next_steps.add(next_step);
                         }
                     }
                 }
@@ -356,15 +356,13 @@ public class GameManager implements AnimationDispatcher {
     }
 
     private void createMovePath(int dest_x, int dest_y) {
-        move_path = new ArrayList();
+        move_path = new ArrayList<Point>();
         int start_x = getSelectedUnit().getX();
         int start_y = getSelectedUnit().getY();
         if (start_x != dest_x || start_y != dest_y) {
             Point dest_position = getGame().getMap().getPosition(dest_x, dest_y);
             if (movable_positions.contains(dest_position)) {
-                int current_x = dest_x;
-                int current_y = dest_y;
-                createMovePath(current_x, current_y, start_x, start_y);
+                createMovePath(dest_x, dest_y, start_x, start_y);
             }
         }
     }
@@ -402,7 +400,7 @@ public class GameManager implements AnimationDispatcher {
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
         int max_ar = unit.getMaxAttackRange();
-        HashSet<Point> attackable_positions = new HashSet();
+        HashSet<Point> attackable_positions = new HashSet<Point>();
         for (int ar = min_ar; ar <= max_ar; ar++) {
             for (int dx = -ar; dx <= ar; dx++) {
                 int dy = dx >= 0 ? ar - dx : -ar - dx;
@@ -456,8 +454,8 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public boolean canSelectedUnitAct() {
-        if (getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE) && !getSelectedUnit().isAt(last_position.x, last_position.y)) {
-            return false;
+        if (getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE)) {
+            return getSelectedUnit().isAt(last_position.x, last_position.y);
         } else {
             return true;
         }
