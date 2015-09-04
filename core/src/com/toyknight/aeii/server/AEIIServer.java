@@ -10,6 +10,7 @@ import com.toyknight.aeii.server.entity.RoomSnapshot;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -56,7 +57,7 @@ public class AEIIServer {
 
     private void loadConfiguration() {
         config = new Properties();
-        File config_file = new File("server.conf");
+        File config_file = new File("server.cfg");
         if (config_file.exists() && config_file.isFile()) {
             try {
                 FileInputStream fis = new FileInputStream(config_file);
@@ -318,15 +319,16 @@ public class AEIIServer {
                             service.closeConnection();
                         }
                     }
+                    running = false;
                     try {
                         server.close();
                     } catch (IOException ex) {
                         getLogger().log(Level.SEVERE, ex.toString());
                         System.exit(-1);
                     }
-                    running = false;
                 }
             }, "shutdown-thread").start();
+            getLogger().log(Level.INFO, "Shutdown server");
         }
     }
 
@@ -337,7 +339,7 @@ public class AEIIServer {
 
                 @Override
                 public void run() {
-                    while (running) {
+                    while (isRunning()) {
                         try {
                             Socket client = server.accept();
                             acceptClient(client);
