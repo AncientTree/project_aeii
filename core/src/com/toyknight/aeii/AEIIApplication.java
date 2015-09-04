@@ -73,6 +73,7 @@ public class AEIIApplication extends Game {
             FontRenderer.loadFonts(TILE_SIZE);
             BorderRenderer.init();
             Animator.setTileSize(getTileSize());
+            Gdx.input.setCatchBackKey(true);
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();

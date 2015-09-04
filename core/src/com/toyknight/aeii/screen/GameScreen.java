@@ -328,6 +328,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         boolean event_handled = super.keyDown(keyCode);
         if (!event_handled) {
             Unit selected_unit = getGameManager().getSelectedUnit();
+            if (keyCode == Input.Keys.BACK) {
+                doCancel();
+                return true;
+            }
             switch (getGameManager().getState()) {
                 case GameManager.STATE_BUY:
                     if (keyCode == Input.Keys.B) {
@@ -338,7 +342,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                         getGameManager().beginMovePhase();
                         onButtonUpdateRequested();
                     }
-                    break;
+                    return true;
                 case GameManager.STATE_ACTION:
                     if (keyCode == Input.Keys.A && getGameManager().hasEnemyWithinRange(selected_unit)) {
                         getGameManager().beginAttackPhase();
@@ -360,12 +364,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                         GameHost.doStandbyUnit();
                         onButtonUpdateRequested();
                     }
-                    break;
+                    return true;
                 default:
-                    //do nothing
+                    return false;
             }
+        } else {
+            return true;
         }
-        return true;
     }
 
     @Override
