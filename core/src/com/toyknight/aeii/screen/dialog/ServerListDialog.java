@@ -52,8 +52,8 @@ public class ServerListDialog extends Table {
         this.addActor(sp_server_list);
 
         Array<Server> servers = new Array();
-        servers.add(new Server("127.0.0.1", 5438, "aeii server - PC Debug"));
-        servers.add(new Server("172.16.0.8", 5438, "aeii server - Android Debug"));
+        servers.add(new Server("127.0.0.1", 5438, "aeii server - Local"));
+        servers.add(new Server("112.74.215.26", 5438, "aeii server - China"));
         servers.add(new Server("45.56.93.69", 5438, "aeii server - NA"));
         server_list.setItems(servers);
 
