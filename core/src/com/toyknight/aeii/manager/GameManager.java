@@ -446,7 +446,7 @@ public class GameManager implements AnimationDispatcher {
     public boolean hasTombWithinRange(Unit unit) {
         HashSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
-            if (getGame().getMap().isTomb(point.x, point.y)) {
+            if (getGame().getMap().isTomb(point.x, point.y) && getGame().getMap().getUnit(point.x, point.y) == null) {
                 return true;
             }
         }
