@@ -80,7 +80,7 @@ public class Unit implements Serializable {
         this.hp_growth = unit.getHpGrowth();
         this.attack_growth = unit.getAttackGrowth();
         this.physical_defence_growth = unit.getPhysicalDefenceGrowth();
-        this.magical_defence_growth = unit.getMovementGrowth();
+        this.magical_defence_growth = unit.getMagicalDefenceGrowth();
         this.movement_growth = unit.getMovementGrowth();
         this.x_position = unit.getX();
         this.y_position = unit.getY();
@@ -296,7 +296,6 @@ public class Unit implements Serializable {
             this.attack += this.getAttackGrowth();
             this.max_hp += this.getHpGrowth();
             this.changeCurrentHp(getHpGrowth());
-            this.current_hp += this.getHpGrowth();
             this.movement_point += this.getMovementGrowth();
             this.physical_defence += this.getPhysicalDefenceGrowth();
             this.magical_defence += this.getMagicalDefenceGrowth();

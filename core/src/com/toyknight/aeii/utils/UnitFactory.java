@@ -67,12 +67,12 @@ public class UnitFactory {
             int max_atk_rng = din.nextInt();
             int min_atk_rng = din.nextInt();
             int ability_count = din.nextInt();
-            ArrayList<Integer> ability_list = new ArrayList();
+            ArrayList<Integer> ability_list = new ArrayList<Integer>();
             for (int n = 0; n < ability_count; n++) {
                 ability_list.add(din.nextInt());
             }
             din.close();
-            Unit unit = new Unit(index, "default");
+            Unit unit = new Unit(index);
             unit.setPrice(price);
             unit.setMaxHp(max_hp);
             unit.setMovementPoint(mp);
