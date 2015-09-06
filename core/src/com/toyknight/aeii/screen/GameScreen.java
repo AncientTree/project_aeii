@@ -267,7 +267,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         if (getContext().isGameHost()) {
             String[] team_allocation = getContext().getRoomConfig().team_allocation;
             for (int team = 0; team < 4; team++) {
-                if (team_allocation[team].equals(service_name)) {
+                if (team_allocation[team].equals(service_name) && getGame().getPlayer(team) != null) {
                     getGame().getPlayer(team).setType(Player.LOCAL);
                 }
             }
