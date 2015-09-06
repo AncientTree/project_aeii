@@ -34,12 +34,13 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
     @Override
     public void execute(GameManager manager) {
         GameCore game = manager.getGame();
-        HashSet<Point> unit_position_set = new HashSet(game.getMap().getUnitPositionSet());
+        HashSet<Point> unit_position_set = new HashSet<Point>(game.getMap().getUnitPositionSet());
         for (Point position : unit_position_set) {
             Unit unit = game.getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 unit.updateStatus();
             }
+            unit.setCurrentMovementPoint(unit.getMovementPoint());
         }
     }
 

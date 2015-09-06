@@ -15,6 +15,11 @@ public class UnitToolkit {
     public static void attachAttackStatus(Unit attacker, Unit defender) {
         if (attacker.hasAbility(Ability.POISONER)) {
             defender.attachStatus(new Status(Status.POISONED, 2));
+            return;
+        }
+        if (attacker.hasAbility(Ability.SLOWING_GAZE) && !defender.hasAbility(Ability.SLOWING_GAZE)) {
+            defender.attachStatus(new Status(Status.PETRIFACTED, 2));
+            defender.setCurrentMovementPoint(defender.getMovementPoint());
         }
     }
 

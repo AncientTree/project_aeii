@@ -187,7 +187,11 @@ public class Unit implements Serializable {
     }
 
     public int getMovementPoint() {
-        return movement_point;
+        if (getStatus() != null && getStatus().getType() == Status.PETRIFACTED) {
+            return 1;
+        } else {
+            return movement_point;
+        }
     }
 
     public void setMovementPoint(int movement_point) {

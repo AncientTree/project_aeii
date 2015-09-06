@@ -160,7 +160,7 @@ public class ResourceManager {
 
     private static void loadStatusTextures() {
         Texture status_sheet = new Texture(FileProvider.getAssetsFile("images/status.png"));
-        status_textures = createFrames(status_sheet, 2, 1);
+        status_textures = createFrames(status_sheet, 3, 1);
     }
 
     private static void loadCircles() {
