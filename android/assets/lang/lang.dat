@@ -13,6 +13,7 @@ LB_CONNECTING=Connecting...
 LB_CREATE=Create
 LB_CREATING=Creating...
 LB_CURRENT_TURN=Current Turn
+LB_DISCONNECTED=disconnected
 LB_END_TURN=End Turn
 LB_ERROR=Error
 LB_EXIT=Exit

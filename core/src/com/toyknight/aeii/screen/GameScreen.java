@@ -272,6 +272,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 }
             }
             onButtonUpdateRequested();
+            getContext().showMessage(username + " " + Language.getText("LB_DISCONNECTED"), null);
         } else {
             if (getContext().getHostService().equals(service_name)) {
                 getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
@@ -282,7 +283,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                 });
             } else {
-                //show message
+                getContext().showMessage(username + " " + Language.getText("LB_DISCONNECTED"), null);
             }
         }
     }
