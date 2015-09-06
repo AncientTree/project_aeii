@@ -108,4 +108,12 @@ public class TileFactory {
         return tile_list.length;
     }
 
+    public static String getVarificationString() {
+        String str = "";
+        for (Tile tile : tile_list) {
+            str += tile.getVerificationString();
+        }
+        return str;
+    }
+
 }

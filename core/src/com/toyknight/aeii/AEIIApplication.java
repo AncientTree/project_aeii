@@ -21,13 +21,19 @@ import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 public class AEIIApplication extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
+    private final static String[] HEX_DIGITS =
+            {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
     private static final String TAG = "Main";
+    private static String V_STRING;
 
     private final int TILE_SIZE;
     private final Platform PLATFORM;
@@ -74,6 +80,9 @@ public class AEIIApplication extends Game {
             BorderRenderer.init();
             Animator.setTileSize(getTileSize());
             Gdx.input.setCatchBackKey(true);
+
+            V_STRING =
+                    createVerificationString(TileFactory.getVarificationString() + UnitFactory.getVerificationString());
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();
@@ -253,6 +262,10 @@ public class AEIIApplication extends Game {
         return net_game_create_screen.getRoomConfig();
     }
 
+    public String getVerificationString() {
+        return V_STRING;
+    }
+
     @Override
     public void render() {
         synchronized (RENDER_LOCK) {
@@ -278,6 +291,38 @@ public class AEIIApplication extends Game {
         } else {
             button.setTouchable(Touchable.disabled);
         }
+    }
+
+    private String createVerificationString(String str) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] origin = str.getBytes("UTF-8");
+            byte[] encrypted = md.digest(origin);
+            return byteArrayToHexString(encrypted);
+        } catch (UnsupportedEncodingException ex) {
+            Gdx.app.log(TAG, str);
+            return str;
+        } catch (NoSuchAlgorithmException ex) {
+            Gdx.app.log(TAG, str);
+            return str;
+        }
+    }
+
+    private static String byteArrayToHexString(byte[] b) {
+        StringBuffer resultSb = new StringBuffer();
+        for (int i = 0; i < b.length; i++) {
+            resultSb.append(byteToHexString(b[i]));
+        }
+        return resultSb.toString();
+    }
+
+    private static String byteToHexString(byte b) {
+        int n = b;
+        if (n < 0)
+            n = 256 + n;
+        int d1 = n / 16;
+        int d2 = n % 16;
+        return HEX_DIGITS[d1] + HEX_DIGITS[d2];
     }
 
 }

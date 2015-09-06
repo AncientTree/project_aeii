@@ -41,7 +41,7 @@ public class RepairEvent implements GameEvent, Serializable {
         manager.getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
         manager.submitAnimation(new MessageAnimator(Language.getText("LB_REPAIRED"), 0.5f));
 
-        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.onUnitActionFinished(manager.getGame().getMap().getUnit(target_x, target_y));
         }
     }

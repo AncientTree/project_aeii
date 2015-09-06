@@ -58,7 +58,6 @@ public class TestScreen extends StageScreen {
                     }
                 }
                 GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), players);
-                GameHost.setHost(true);
                 getContext().gotoGameScreen(game);
             }
         });

@@ -363,4 +363,28 @@ public class Unit implements Serializable {
         return this.x_position == x && this.y_position == y;
     }
 
+    public String getVerificationString() {
+        String str = "";
+        str = str
+                + index
+                + price
+                + max_hp
+                + attack
+                + attack_type
+                + physical_defence
+                + magical_defence
+                + movement_point
+                + hp_growth
+                + attack_growth
+                + physical_defence_growth
+                + magical_defence_growth
+                + movement_growth
+                + max_attack_range
+                + min_attack_range;
+        for (Integer ability : abilities) {
+            str += ability;
+        }
+        return str;
+    }
+
 }

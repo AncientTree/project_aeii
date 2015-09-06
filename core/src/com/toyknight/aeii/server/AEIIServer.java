@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 public class AEIIServer {
 
     private static final Logger logger = Logger.getLogger("com.toyknight.aeii.server");
+    private static final String V_STRING = "4093018b032859612325c84bea2dbf5b";
 
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();
@@ -77,6 +78,10 @@ public class AEIIServer {
 
     public boolean isRunning() {
         return running;
+    }
+
+    public String getVerificationString() {
+        return V_STRING;
     }
 
     public Properties getConfiguration() {
@@ -281,16 +286,16 @@ public class AEIIServer {
         }
     }
 
-    public boolean onSubmitGameEvent(String service_name, GameEvent event) throws IOException {
-        PlayerService service = getService(service_name);
-        Room room = getRoom(service.getRoomNumber());
+    public boolean onSubmitGameEvent(String submitter, GameEvent event) throws IOException {
+        Room room = getRoom(getService(submitter).getRoomNumber());
         if (room == null || room.isOpen()) {
             return false;
         } else {
             Set<String> players = room.getPlayers();
             for (String player_service : players) {
-                if (!player_service.equals(service_name)) {
-                    getService(player_service).notifyGameEvent(event);
+                PlayerService service = getService(player_service);
+                if (!player_service.equals(submitter) && service != null) {
+                    service.notifyGameEvent(event);
                 }
             }
             return true;

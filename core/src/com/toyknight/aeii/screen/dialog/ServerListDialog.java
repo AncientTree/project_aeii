@@ -99,18 +99,26 @@ public class ServerListDialog extends Table {
             setEnabled(false);
             btn_connect.setText(Language.getText("LB_CONNECTING"));
 
-            getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
+            getContext().getNetworkManager().postTask(new NetworkTask<Boolean>() {
                 @Override
-                public Void doTask() throws IOException {
-                    getContext().getNetworkManager().connect(getSelectedServer(), getContext().getUsername());
-                    return null;
+                public Boolean doTask() throws IOException {
+                    return getContext().getNetworkManager().connect(
+                            getSelectedServer(), getContext().getUsername(), getContext().getVerificationString());
                 }
 
                 @Override
-                public void onFinish(Void result) {
-                    setEnabled(true);
-                    btn_connect.setText(Language.getText("LB_CONNECT"));
-                    getContext().gotoLobbyScreen();
+                public void onFinish(Boolean approved) {
+                    if (approved) {
+                        setEnabled(true);
+                        btn_connect.setText(Language.getText("LB_CONNECT"));
+                        getContext().gotoLobbyScreen();
+                    } else {
+                        setEnabled(true);
+                        btn_connect.setText(Language.getText("LB_CONNECT"));
+                        getContext().getMainMenuScreen().showMenu();
+                        getContext().getNetworkManager().disconnect();
+                        getContext().showMessage(Language.getText("MSG_ERR_RBS"), null);
+                    }
                 }
 
                 @Override

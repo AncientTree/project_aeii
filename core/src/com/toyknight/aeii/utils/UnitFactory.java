@@ -137,4 +137,12 @@ public class UnitFactory {
         return unit;
     }
 
+    public static String getVerificationString() {
+        String str = "";
+        for (Unit unit : default_units) {
+            str += unit.getVerificationString();
+        }
+        return str;
+    }
+
 }

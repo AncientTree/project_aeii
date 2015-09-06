@@ -44,7 +44,7 @@ public class OccupyEvent implements GameEvent, Serializable {
         manager.submitAnimation(new MessageAnimator(Language.getText("LB_OCCUPIED"), 0.5f));
         GameHost.updateGameStatus();
 
-        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.onUnitActionFinished(manager.getGame().getMap().getUnit(target_x, target_y));
         }
     }

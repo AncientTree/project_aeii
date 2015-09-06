@@ -64,7 +64,7 @@ public class NetworkManager {
         return listener;
     }
 
-    public void connect(Server server, String username) throws IOException {
+    public boolean connect(Server server, String username, String v_string) throws IOException {
         if (server_socket != null) {
             disconnect();
         }
@@ -74,11 +74,15 @@ public class NetworkManager {
         oos = new ObjectOutputStream(server_socket.getOutputStream());
         ois = new ObjectInputStream(server_socket.getInputStream());
 
-        service_name = ois.readUTF();
         oos.writeUTF(username);
+        oos.writeUTF(v_string);
         oos.flush();
-
-        new ReceivingThread().start();
+        boolean approved = ois.readBoolean();
+        if (approved) {
+            service_name = ois.readUTF();
+            new ReceivingThread().start();
+        }
+        return approved;
     }
 
     public void disconnect() {
@@ -225,13 +229,6 @@ public class NetworkManager {
         Gdx.app.log(TAG, "Send " + event.toString());
     }
 
-    public void sendInteger(int n) throws IOException {
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(n);
-            oos.flush();
-        }
-    }
-
     private class ReceivingThread extends Thread {
 
         @Override
@@ -287,10 +284,6 @@ public class NetworkManager {
                         getListener().onReceiveGameEvent(event);
                     }
                     break;
-                case Request.OPERATION:
-                    int opt = ois.readInt();
-                    processOperation(opt);
-                    break;
                 case Request.PLAYER_JOINING:
                     service_name = ois.readUTF();
                     username = ois.readUTF();
@@ -337,75 +330,6 @@ public class NetworkManager {
                     break;
                 default:
                     //do nothing
-            }
-        }
-
-        private void processOperation(int opt) throws IOException {
-            int index, x, y;
-            switch (opt) {
-                case GameHost.OPT_ATTACK:
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doAttack(x, y);
-                    }
-                    break;
-                case GameHost.OPT_BUY:
-                    index = ois.readInt();
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doBuyUnit(index, x, y);
-                    }
-                    break;
-                case GameHost.OPT_END_TURN:
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doEndTurn();
-                    }
-                    break;
-                case GameHost.OPT_MOVE_UNIT:
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doMoveUnit(x, y);
-                    }
-                    break;
-                case GameHost.OPT_OCCUPY:
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doOccupy();
-                    }
-                    break;
-                case GameHost.OPT_REPAIR:
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doRepair();
-                    }
-                    break;
-                case GameHost.OPT_REVERSE_MOVE:
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doReverseMove();
-                    }
-                    break;
-                case GameHost.OPT_SELECT:
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doSelect(x, y);
-                    }
-                    break;
-                case GameHost.OPT_STANDBY:
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doStandbyUnit();
-                    }
-                    break;
-                case GameHost.OPT_SUMMON:
-                    x = ois.readInt();
-                    y = ois.readInt();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        GameHost.doSummon(x, y);
-                    }
-                    break;
-                default:
-                    //do nothing;
             }
         }
 

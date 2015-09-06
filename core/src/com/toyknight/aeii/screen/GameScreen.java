@@ -639,6 +639,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public void onGameOver() {
         //for test
+        getContext().getNetworkManager().disconnect();
         getContext().gotoMainMenuScreen();
     }
 
@@ -652,8 +653,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public boolean canOperate() {
-        return !GameHost.isProcessing() &&
-                getGameManager().getCurrentAnimation() == null &&
+        return getGameManager().getCurrentAnimation() == null &&
                 !save_load_dialog.isVisible() &&
                 !unit_store.isVisible() &&
                 !mini_map.isVisible() &&

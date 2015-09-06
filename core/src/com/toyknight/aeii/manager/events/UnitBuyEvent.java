@@ -44,7 +44,7 @@ public class UnitBuyEvent implements GameEvent, Serializable {
         manager.getGame().getCurrentPlayer().changeGold(-price);
         manager.setSelectedUnit(manager.getGame().getMap().getUnit(x, y));
 
-        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.beginMovePhase();
         }
     }

@@ -365,7 +365,6 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void createGame() {
-        GameHost.setHost(isHost());
         Player[] players = new Player[4];
         for (int team = 0; team < 4; team++) {
             if (room_config.map.hasTeamAccess(team)) {

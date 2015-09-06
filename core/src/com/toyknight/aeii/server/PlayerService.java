@@ -1,7 +1,6 @@
 package com.toyknight.aeii.server;
 
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
@@ -121,11 +120,6 @@ public class PlayerService extends Thread {
         executor.submit(task);
     }
 
-    public void notifyOperation(Integer... params) {
-        NotificationTask task = new NotificationTask(Request.OPERATION, params);
-        executor.submit(task);
-    }
-
     private void respondOpenRooms() throws IOException {
         ArrayList<RoomSnapshot> snapshot = getContext().getOpenRoomSnapshot();
         synchronized (OUTPUT_LOCK) {
@@ -213,54 +207,33 @@ public class PlayerService extends Thread {
         }
     }
 
-    public void respondGameEvent() throws IOException, ClassNotFoundException {
+    public void receiveGameEvent() throws IOException, ClassNotFoundException {
         GameEvent event = (GameEvent) ois.readObject();
         getContext().onSubmitGameEvent(getName(), event);
-    }
-
-    public void respondOperation(int opt) throws IOException {
-        int x, y, index;
-        switch (opt) {
-            case GameHost.OPT_SELECT:
-            case GameHost.OPT_ATTACK:
-            case GameHost.OPT_SUMMON:
-            case GameHost.OPT_MOVE_UNIT:
-                x = ois.readInt();
-                y = ois.readInt();
-                getContext().getHostService(room_number).notifyOperation(opt, x, y);
-                //processOperationRequest(opt, x, y);
-                break;
-            case GameHost.OPT_BUY:
-                index = ois.readInt();
-                x = ois.readInt();
-                y = ois.readInt();
-                getContext().getHostService(room_number).notifyOperation(opt, index, x, y);
-                //processOperationRequest(opt, index, x, y);
-                break;
-            case GameHost.OPT_REVERSE_MOVE:
-            case GameHost.OPT_END_TURN:
-            case GameHost.OPT_STANDBY:
-            case GameHost.OPT_OCCUPY:
-            case GameHost.OPT_REPAIR:
-                getContext().getHostService(room_number).notifyOperation(opt);
-                //processOperationRequest(opt);
-                break;
-            default:
-                //do nothing
-        }
     }
 
     @Override
     public void run() {
         try {
-            oos.writeUTF(getName());
-            oos.flush();
-
             username = ois.readUTF();
-            getContext().getLogger().log(
-                    Level.INFO,
-                    "Player {0}@{1} connected",
-                    new Object[]{getUsername(), getClientAddress()});
+            String v_string = ois.readUTF();
+            if (getContext().getVerificationString().equals(v_string)) {
+                oos.writeBoolean(true);
+                oos.writeUTF(getName());
+                oos.flush();
+
+                getContext().getLogger().log(
+                        Level.INFO,
+                        "Player {0}@{1} connected",
+                        new Object[]{getUsername(), getClientAddress()});
+            } else {
+                oos.writeBoolean(false);
+                oos.flush();
+                getContext().getLogger().log(
+                        Level.INFO,
+                        "Player {0}@{1} verification failed",
+                        new Object[]{getUsername(), getClientAddress()});
+            }
         } catch (IOException ex) {
             closeConnection();
         }
@@ -289,6 +262,7 @@ public class PlayerService extends Thread {
                 break;
             } catch (ClassNotFoundException ex) {
                 getContext().getLogger().log(Level.SEVERE, ex.toString());
+                break;
             }
         }
         getContext().onPlayerDisconnect(getName());
@@ -320,11 +294,7 @@ public class PlayerService extends Thread {
                 respondStartGame();
                 break;
             case Request.GAME_EVENT:
-                respondGameEvent();
-                break;
-            case Request.OPERATION:
-                int opt = ois.readInt();
-                respondOperation(opt);
+                receiveGameEvent();
                 break;
             case Request.SHUTDOWN:
                 String password = ois.readUTF();

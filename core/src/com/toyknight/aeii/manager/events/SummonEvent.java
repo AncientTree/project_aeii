@@ -55,7 +55,7 @@ public class SummonEvent implements GameEvent, Serializable {
             manager.submitAnimation(new UnitLevelUpAnimator(summoner));
         }
 
-        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.onUnitActionFinished(summoner);
         }
     }

@@ -145,14 +145,10 @@ public class GameManager implements AnimationDispatcher {
     public void onUnitMoveFinished(Unit unit) {
         switch (getState()) {
             case GameManager.STATE_MOVE:
-                if (getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
-                    setState(GameManager.STATE_ACTION);
-                }
+                setState(GameManager.STATE_ACTION);
                 break;
             case GameManager.STATE_REMOVE:
-                if (GameHost.isHost()) {
-                    GameHost.doStandbyUnit();
-                }
+                GameHost.doStandbyUnit();
                 break;
         }
     }
@@ -162,14 +158,10 @@ public class GameManager implements AnimationDispatcher {
             setState(GameManager.STATE_SELECT);
         } else {
             if (UnitToolkit.canMoveAgain(unit)) {
-                if (getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
-                    setLastPosition(new Point(unit.getX(), unit.getY()));
-                    beginRemovePhase();
-                }
+                setLastPosition(new Point(unit.getX(), unit.getY()));
+                beginRemovePhase();
             } else {
-                if (GameHost.isHost()) {
-                    GameHost.doStandbyUnit();
-                }
+                GameHost.doStandbyUnit();
             }
         }
     }

@@ -57,7 +57,7 @@ public class UnitMoveEvent implements GameEvent, Serializable {
             unit.setCurrentMovementPoint(mp_left);
             manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
 
-            if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
+            if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
                 manager.onUnitMoveFinished(unit);
             }
         }

@@ -83,7 +83,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
             manager.submitAnimation(new UnitLevelUpAnimator(attacker));
         }
 
-        if (manager.getGame().getCurrentPlayer().isLocalPlayer() || GameHost.isHost()) {
+        if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             if (defender != null) {
                 if (attacker.getTeam() == game.getCurrentTeam() && !UnitToolkit.canCounter(defender, attacker)) {
                     manager.onUnitActionFinished(attacker);

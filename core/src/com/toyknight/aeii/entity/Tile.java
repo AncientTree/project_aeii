@@ -129,7 +129,7 @@ public class Tile {
 
     public void setCastle(boolean b) {
         this.is_castle = b;
-        if(is_village && is_castle) {
+        if (is_village && is_castle) {
             this.is_village = false;
         }
     }
@@ -140,7 +140,7 @@ public class Tile {
 
     public void setVillage(boolean b) {
         this.is_village = b;
-        if(is_village && is_castle) {
+        if (is_village && is_castle) {
             this.is_castle = false;
         }
     }
@@ -184,6 +184,34 @@ public class Tile {
 
     public short getAnimationTileIndex() {
         return animation_tile_index;
+    }
+
+    public String getVerificationString() {
+        String str = "";
+        str = str
+                + defence_bonus
+                + step_cost
+                + hp_recovery
+                + type
+                + team
+                + can_be_captured
+                + can_be_destroyed
+                + can_be_repaired
+                + is_castle
+                + is_village
+                + destroyed_index
+                + repaired_index;
+        if (access_tile_list != null) {
+            for (int index : access_tile_list) {
+                str += index;
+            }
+        }
+        if (captured_tile_list != null) {
+            for (int index : captured_tile_list) {
+                str += index;
+            }
+        }
+        return str;
     }
 
 }
