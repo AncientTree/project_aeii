@@ -131,4 +131,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     public void onReceiveGameEvent(GameEvent event) {
     }
 
+    @Override
+    public void onReceiveMessage(String username, String message) {
+    }
+
 }

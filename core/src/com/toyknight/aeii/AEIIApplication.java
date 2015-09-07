@@ -32,6 +32,7 @@ public class AEIIApplication extends Game {
 
     private final static String[] HEX_DIGITS =
             {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+    private static final String VERSION = "1.0.0";
     private static final String TAG = "Main";
     private static String V_STRING;
 
@@ -81,8 +82,10 @@ public class AEIIApplication extends Game {
             Animator.setTileSize(getTileSize());
             Gdx.input.setCatchBackKey(true);
 
-            V_STRING =
-                    createVerificationString(TileFactory.getVarificationString() + UnitFactory.getVerificationString());
+            V_STRING = createVerificationString(
+                    TileFactory.getVarificationString()
+                            + UnitFactory.getVerificationString()
+                            + VERSION);
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();
@@ -201,6 +204,9 @@ public class AEIIApplication extends Game {
     public void gotoScreen(Screen screen) {
         this.previous_screen = getScreen();
         this.setScreen(screen);
+        if (dialog.isVisible()) {
+            Gdx.input.setInputProcessor(dialog_layer);
+        }
     }
 
     public void showMessage(String content, DialogCallback callback) {
@@ -260,6 +266,16 @@ public class AEIIApplication extends Game {
 
     public RoomConfig getRoomConfig() {
         return net_game_create_screen.getRoomConfig();
+    }
+
+    public boolean hasTeamAccess() {
+        String service_name = getNetworkManager().getServiceName();
+        for (String player_service : getRoomConfig().team_allocation) {
+            if (service_name.equals(player_service)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getVerificationString() {

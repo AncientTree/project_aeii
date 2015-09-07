@@ -1,10 +1,12 @@
 package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.net.task.GameEventSendingTask;
+import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -214,52 +216,53 @@ public class GameHost {
 
     public static void updateGameStatus() {
         //default rule temporarily
-        if (getGame().getCurrentPlayer().isLocalPlayer()) {
-            //get population
-            int[] population = new int[4];
-            for (int team = 0; team < 4; team++) {
-                Player player = getGame().getPlayer(team);
-                if (player != null) {
-                    population[team] = player.getPopulation();
-                }
+        //get population
+        int[] population = new int[4];
+        for (int team = 0; team < 4; team++) {
+            Player player = getGame().getPlayer(team);
+            if (player != null) {
+                population[team] = player.getPopulation();
             }
+        }
 
-            //get castle count
-            int[] castle_count = new int[4];
-            for (int team = 0; team < 4; team++) {
-                castle_count[team] = getGame().getMap().getCastleCount(team);
+        //get castle count
+        int[] castle_count = new int[4];
+        for (int team = 0; team < 4; team++) {
+            castle_count[team] = getGame().getMap().getCastleCount(team);
+        }
+
+        //remove failed player
+        for (int team = 0; team < 4; team++) {
+            if (population[team] == 0 && castle_count[team] == 0 && getGame().getPlayer(team) != null) {
+                getGame().removePlayer(team);
             }
+        }
 
-            //remove failed player
-            for (int team = 0; team < 4; team++) {
-                if (population[team] == 0 && castle_count[team] == 0 && getGame().getPlayer(team) != null) {
-                    dispatchEvent(new PlayerRemoveEvent(team));
-                    getGame().removePlayer(team);
-                }
-            }
-
-            //check winning status
-            int alliance = -1;
-            boolean winning_flag = true;
-            for (int team = 0; team < 4; team++) {
-                Player player = getGame().getPlayer(team);
-                if (player != null) {
-                    if (alliance == -1) {
-                        alliance = player.getAlliance();
-                    } else {
-                        winning_flag = player.getAlliance() == alliance;
+        //check winning status
+        int alliance = -1;
+        boolean winning_flag = true;
+        for (int team = 0; team < 4; team++) {
+            Player player = getGame().getPlayer(team);
+            if (player != null) {
+                if (alliance == -1) {
+                    alliance = player.getAlliance();
+                } else {
+                    winning_flag = player.getAlliance() == alliance;
+                    if (!winning_flag) {
+                        break;
                     }
                 }
             }
-            if (winning_flag) {
-                dispatchEvent(new GameOverEvent(alliance));
-            }
+        }
+        if (winning_flag) {
+            getManager().submitAnimation(new MessageAnimator(Language.getText("LB_TEAM") + " " + alliance + " " + Language.getText("LB_WIN") + "!", 1.5f));
+            GameHost.setGameOver(true);
         }
     }
 
     public static void dispatchEvent(GameEvent event) {
         if (getContext().getNetworkManager().isConnected()) {
-                getContext().getNetworkManager().postTask(new GameEventSendingTask(event));
+            getContext().getNetworkManager().postTask(new GameEventSendingTask(event));
         }
         getManager().queueGameEvent(event);
     }

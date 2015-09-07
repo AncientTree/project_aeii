@@ -229,6 +229,15 @@ public class NetworkManager {
         Gdx.app.log(TAG, "Send " + event.toString());
     }
 
+    public void requestSubmitMessage(String message) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(REQUEST);
+            oos.writeInt(Request.MESSAGE);
+            oos.writeUTF(message);
+            oos.flush();
+        }
+    }
+
     private class ReceivingThread extends Thread {
 
         @Override
@@ -270,7 +279,7 @@ public class NetworkManager {
         }
 
         private void processRequest(int request) throws IOException, ClassNotFoundException {
-            String service_name, username;
+            String service_name, username, message;
             switch (request) {
                 case Request.START_GAME:
                     synchronized (AEIIApplication.RENDER_LOCK) {
@@ -282,6 +291,15 @@ public class NetworkManager {
                     Gdx.app.log(TAG, "Receive " + event.toString());
                     synchronized (AEIIApplication.RENDER_LOCK) {
                         getListener().onReceiveGameEvent(event);
+                    }
+                    break;
+                case Request.MESSAGE:
+                    username = ois.readUTF();
+                    message = ois.readUTF();
+                    synchronized (AEIIApplication.RENDER_LOCK) {
+                        if (getListener() != null) {
+                            getListener().onReceiveMessage(username, message);
+                        }
                     }
                     break;
                 case Request.PLAYER_JOINING:

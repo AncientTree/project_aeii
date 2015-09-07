@@ -20,7 +20,7 @@ public class Request {
 
     public static final int GAME_EVENT = 0x7;
 
-    public static final int OPERATION = 0x8;
+    public static final int MESSAGE = 0x8;
 
     public static final int PLAYER_JOINING = 0x9;
 

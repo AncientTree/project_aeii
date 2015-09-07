@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
@@ -19,6 +20,9 @@ import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
+import com.toyknight.aeii.screen.widgets.CircleButton;
+import com.toyknight.aeii.screen.widgets.MessageBoard;
+import com.toyknight.aeii.screen.widgets.MessageBox;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -59,9 +63,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     private TextButton btn_menu;
     private TextButton btn_end_turn;
+    private CircleButton btn_message;
     private ActionButtonBar action_button_bar;
+
+    private MessageBoard message_board;
+
     private SaveLoadDialog save_load_dialog;
     private UnitStoreDialog unit_store;
+    private MessageBox message_box;
     private MiniMap mini_map;
     private GameMenu menu;
 
@@ -112,6 +121,22 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         });
         this.addActor(btn_end_turn);
 
+        this.btn_message = new CircleButton(CircleButton.LARGE, ResourceManager.getMenuIcon(7), ts);
+        this.btn_message.setPosition(0, Gdx.graphics.getHeight() - btn_message.getPrefHeight());
+        this.btn_message.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                message_board.display();
+                showDialog("message");
+            }
+        });
+        this.addActor(btn_message);
+
+        //message board
+        this.message_board = new MessageBoard(ts);
+        this.message_board.setBounds(0, ts, viewport.width, ts * 3);
+        addActor(message_board);
+
         //action button bar
         this.action_button_bar = new ActionButtonBar(this);
         this.action_button_bar.setPosition(0, ts + action_button_bar.getButtonHeight() / 4);
@@ -132,6 +157,16 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.menu = new GameMenu(this);
         this.addActor(menu);
         this.menu.setVisible(false);
+
+        this.message_box = new MessageBox(getContext());
+        this.message_box.setBounds((viewport.width - ts * 8) / 2, (viewport.height - ts * 8) / 2 + ts, ts * 8, ts * 8);
+        this.message_box.setCallback(new DialogCallback() {
+            @Override
+            public void doCallback() {
+                closeDialog("message");
+            }
+        });
+        addDialog("message", message_box);
 
         //mini map
         this.mini_map = new MiniMap(this);
@@ -273,7 +308,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 }
             }
             onButtonUpdateRequested();
-            getContext().showMessage(username + " " + Language.getText("LB_DISCONNECTED"), null);
+            message_board.appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
         } else {
             if (getContext().getHostService().equals(service_name)) {
                 getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
@@ -284,7 +319,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                 });
             } else {
-                getContext().showMessage(username + " " + Language.getText("LB_DISCONNECTED"), null);
+                message_board.appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
             }
         }
     }
@@ -295,7 +330,15 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
+    public void onReceiveMessage(String username, String message) {
+        message_board.appendMessage(username, Language.getText(message));
+    }
+
+    @Override
     public void act(float delta) {
+        if (!message_box.isVisible()) {
+            message_board.update(delta);
+        }
         mini_map.update(delta);
         cursor.addStateTime(delta);
         tile_renderer.update(delta);
@@ -311,13 +354,19 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void show() {
         Gdx.input.setInputProcessor(this);
         if (getContext().getNetworkManager().isConnected()) {
+            btn_message.setVisible(true);
             getContext().getNetworkManager().setNetworkListener(this);
+        } else {
+            btn_message.setVisible(false);
         }
         onButtonUpdateRequested();
+        message_board.clearMessages();
         mini_map.updateBounds();
         unit_store.setVisible(false);
         mini_map.setVisible(false);
         menu.setVisible(false);
+
+        message_board.appendMessage(null, Language.getText("MSG_INFO_GS"));
     }
 
     public void prepare(GameCore game) {
@@ -645,8 +694,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public void onGameOver() {
         //for test
-        getContext().getNetworkManager().disconnect();
         getContext().gotoMainMenuScreen();
+        getContext().getNetworkManager().disconnect();
     }
 
     private boolean isOnUnitAnimation(int x, int y) {

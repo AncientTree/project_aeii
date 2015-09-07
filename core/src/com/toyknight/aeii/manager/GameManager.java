@@ -50,10 +50,10 @@ public class GameManager implements AnimationDispatcher {
     private final int[] y_dir = {0, 0, 1, -1};
 
     public GameManager() {
-        this.event_queue = new LinkedList();
-        this.animation_queue = new LinkedList();
-        this.event_dispatcher_listeners = new ArrayList();
-        this.animation_listeners = new ArrayList();
+        this.event_queue = new LinkedList<GameEvent>();
+        this.animation_queue = new LinkedList<Animator>();
+        this.event_dispatcher_listeners = new ArrayList<EventDispatcherListener>();
+        this.animation_listeners = new ArrayList<AnimationListener>();
     }
 
     public void setGame(GameCore game) {
@@ -154,7 +154,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public void onUnitActionFinished(Unit unit) {
-        if (unit == null) {
+        if (unit == null || unit.getCurrentHp() <= 0) {
             setState(GameManager.STATE_SELECT);
         } else {
             if (UnitToolkit.canMoveAgain(unit)) {

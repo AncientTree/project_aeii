@@ -21,4 +21,6 @@ public interface NetworkListener {
 
     void onReceiveGameEvent(GameEvent event);
 
+    void onReceiveMessage(String username, String message);
+
 }

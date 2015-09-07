@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class AEIIServer {
 
     private static final Logger logger = Logger.getLogger("com.toyknight.aeii.server");
-    private static final String V_STRING = "4093018b032859612325c84bea2dbf5b";
+    private static final String V_STRING = "5a8fa5b1466fb541300531e99ddc45bb";
 
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();
@@ -209,24 +209,24 @@ public class AEIIServer {
         }
     }
 
-    public void onPlayerLeaveRoom(String service_name) {
-        PlayerService service = getService(service_name);
+    public void onPlayerLeaveRoom(String leaver_service, String username) {
+        PlayerService service = getService(leaver_service);
         long room_number = service.getRoomNumber();
         if (room_number >= 0) {
             Room room = getRoom(room_number);
-            room.removePlayer(service_name);
+            room.removePlayer(leaver_service);
             service.setRoomNumber(-1);
             getLogger().log(
                     Level.INFO,
                     "Player {0}@{1} leaves room-{2}",
-                    new Object[]{getUsername(service_name), getClientAddress(service_name), room_number});
+                    new Object[]{getUsername(leaver_service), getClientAddress(leaver_service), room_number});
             if (room.getCapacity() == room.getRemaining()) {
                 removeRoom(room_number);
             } else {
                 for (String player : room.getPlayers()) {
                     PlayerService player_service = getService(player);
-                    if (player_service != null && !player.equals(service_name)) {
-                        player_service.notifyPlayerLeaving(service_name, getService(service_name).getUsername());
+                    if (player_service != null) {
+                        player_service.notifyPlayerLeaving(leaver_service, username);
                         player_service.notifyAllocation(room.getTeamAllocation(), room.getPlayerType());
                     }
                 }
@@ -302,10 +302,24 @@ public class AEIIServer {
         }
     }
 
+    public void onSubmitMessage(String submitter_service, String message) {
+        PlayerService submitter = getService(submitter_service);
+        Room room = getRoom(submitter.getRoomNumber());
+        if (room != null) {
+            Set<String> players = room.getPlayers();
+            for (String player_service : players) {
+                PlayerService service = getService(player_service);
+                if (service != null) {
+                    service.notifyMessage(submitter.getUsername(), message);
+                }
+            }
+        }
+    }
+
     public void onPlayerDisconnect(String service_name) {
         String username = getService(service_name).getUsername();
         String address = getService(service_name).getClientAddress();
-        onPlayerLeaveRoom(service_name);
+        onPlayerLeaveRoom(service_name, username);
         removeService(service_name);
         getLogger().log(
                 Level.INFO,

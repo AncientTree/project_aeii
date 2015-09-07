@@ -120,6 +120,11 @@ public class PlayerService extends Thread {
         executor.submit(task);
     }
 
+    public void notifyMessage(String username, String message) {
+        NotificationTask task = new NotificationTask(Request.MESSAGE, username, message);
+        executor.submit(task);
+    }
+
     private void respondOpenRooms() throws IOException {
         ArrayList<RoomSnapshot> snapshot = getContext().getOpenRoomSnapshot();
         synchronized (OUTPUT_LOCK) {
@@ -150,7 +155,7 @@ public class PlayerService extends Thread {
 
     private void respondLeaveRoom() {
         if (getRoomNumber() >= 0) {
-            getContext().onPlayerLeaveRoom(getName());
+            getContext().onPlayerLeaveRoom(getName(), getUsername());
         }
     }
 
@@ -295,6 +300,10 @@ public class PlayerService extends Thread {
                 break;
             case Request.GAME_EVENT:
                 receiveGameEvent();
+                break;
+            case Request.MESSAGE:
+                String message = ois.readUTF();
+                getContext().onSubmitMessage(getName(), message);
                 break;
             case Request.SHUTDOWN:
                 String password = ois.readUTF();
