@@ -178,6 +178,10 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
+    public void queueGameEvent(GameEvent event) {
+        event_queue.add(event);
+    }
+
     private void dispatchGameEvents() {
         while (!isAnimating() && !event_queue.isEmpty()) {
             executeGameEvent(event_queue.poll());

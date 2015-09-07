@@ -15,6 +15,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.GameManagerListener;
+import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
@@ -286,6 +287,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 getContext().showMessage(username + " " + Language.getText("LB_DISCONNECTED"), null);
             }
         }
+    }
+
+    @Override
+    public void onReceiveGameEvent(GameEvent event) {
+        getGameManager().queueGameEvent(event);
     }
 
     @Override

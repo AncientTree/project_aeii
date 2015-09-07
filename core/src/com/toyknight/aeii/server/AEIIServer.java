@@ -225,8 +225,8 @@ public class AEIIServer {
             } else {
                 for (String player : room.getPlayers()) {
                     PlayerService player_service = getService(player);
-                    if (player_service != null) {
-                        player_service.notifyPlayerLeaving(service_name, player_service.getUsername());
+                    if (player_service != null && !player.equals(service_name)) {
+                        player_service.notifyPlayerLeaving(service_name, getService(service_name).getUsername());
                         player_service.notifyAllocation(room.getTeamAllocation(), room.getPlayerType());
                     }
                 }

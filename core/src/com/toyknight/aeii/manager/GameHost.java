@@ -155,15 +155,15 @@ public class GameHost {
     }
 
     public static void doEndTurn() {
+        int next_team = getGame().getNextTeam();
         dispatchEvent(new TurnEndEvent());
         //calculate hp change at turn start
-        int team = getGame().getCurrentTeam();
         HashSet<Point> unit_position_set = new HashSet<Point>(getGame().getMap().getUnitPositionSet());
         HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
         Set<Point> unit_position_set_copy = new HashSet<Point>(unit_position_set);
         for (Point position : unit_position_set_copy) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
-            if (unit.getTeam() == team) {
+            if (unit.getTeam() == next_team) {
                 int change = 0;
                 //deal with terrain heal issues
                 change += UnitToolkit.getTerrainHeal(unit, getGame().getMap().getTile(unit.getX(), unit.getY()));
@@ -209,7 +209,7 @@ public class GameHost {
                 dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
         }
-        dispatchEvent(new UnitStatusUpdateEvent(team));
+        dispatchEvent(new UnitStatusUpdateEvent(next_team));
     }
 
     public static void updateGameStatus() {
@@ -258,10 +258,10 @@ public class GameHost {
     }
 
     public static void dispatchEvent(GameEvent event) {
-        if (getGame().getCurrentPlayer().isLocalPlayer() && getContext().getNetworkManager().isConnected()) {
+        if (getContext().getNetworkManager().isConnected()) {
                 getContext().getNetworkManager().postTask(new GameEventSendingTask(event));
         }
-        getManager().submitGameEvent(event);
+        getManager().queueGameEvent(event);
     }
 
 }

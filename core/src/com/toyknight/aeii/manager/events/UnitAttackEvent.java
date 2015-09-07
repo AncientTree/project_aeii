@@ -91,7 +91,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
                         (!UnitToolkit.canCounter(defender, attacker) || defender.getCurrentHp() <= 0)) {
                     manager.onUnitActionFinished(attacker);
                 }
-                if (attacker.getTeam() != game.getCurrentTeam()) {
+                if (attacker.getTeam() != game.getCurrentTeam() && defender.getCurrentHp() > 0) {
                     manager.onUnitActionFinished(defender);
                 }
             }

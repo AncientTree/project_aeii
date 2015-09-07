@@ -129,7 +129,6 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onReceiveGameEvent(GameEvent event) {
-        GameHost.dispatchEvent(event);
     }
 
 }
