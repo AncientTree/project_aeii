@@ -86,6 +86,7 @@ public class AEIIApplication extends Game {
                     TileFactory.getVarificationString()
                             + UnitFactory.getVerificationString()
                             + VERSION);
+            System.out.println(V_STRING);
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();

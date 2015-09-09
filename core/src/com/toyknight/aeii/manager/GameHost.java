@@ -178,12 +178,12 @@ public class GameHost {
         }
         //the healing aura
         for (Point position : unit_position_set) {
-            Unit unit = getGame().getMap().getUnit(position.x, position.y);
-            if (unit.hasAbility(Ability.HEALING_AURA)) {
-                for (int x = unit.getX() - 1; x <= unit.getX() + 1; x++) {
-                    for (int y = unit.getY() - 1; y <= unit.getY() + 1; y++) {
+            Unit healer = getGame().getMap().getUnit(position.x, position.y);
+            if (healer.hasAbility(Ability.HEALING_AURA)) {
+                for (int x = healer.getX() - 1; x <= healer.getX() + 1; x++) {
+                    for (int y = healer.getY() - 1; y <= healer.getY() + 1; y++) {
                         //not healer himself
-                        if ((x != unit.getX() || y != unit.getY()) && getGame().getMap().isWithinMap(x, y)) {
+                        if ((x != healer.getX() || y != healer.getY()) && getGame().getMap().isWithinMap(x, y)) {
                             Point target_position = getGame().getMap().getPosition(x, y);
                             //there's a unit at the position
                             if (unit_position_set.contains(target_position)) {
