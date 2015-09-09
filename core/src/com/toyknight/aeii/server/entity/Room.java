@@ -189,14 +189,12 @@ public class Room {
     }
 
     public boolean isReady() {
-        boolean player_ready = true;
-        boolean alliance_ready = false;
+        int player_count = 0;
         int alliance = -1;
+        boolean alliance_ready = false;
         for (int team = 0; team < 4; team++) {
-            if (getMap().hasTeamAccess(team)) {
-                if (team_allocation[team].equals("NONE")) {
-                    player_ready = false;
-                }
+            if (getMap().hasTeamAccess(team) && !team_allocation[team].equals("NONE")) {
+                player_count++;
                 if (alliance == -1) {
                     alliance = alliance_state[team];
                 } else {
@@ -206,7 +204,7 @@ public class Room {
                 }
             }
         }
-        return player_ready && alliance_ready;
+        return player_count >= 2 && alliance_ready;
     }
 
     public void setGameStarted(boolean started) {

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class AEIIServer {
 
     private static final Logger logger = Logger.getLogger("com.toyknight.aeii.server");
-    private static final String V_STRING = "5a8fa5b1466fb541300531e99ddc45bb";
+    private static final String V_STRING = "1cb5b4f1db2b83c184bff52570639262";
 
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();

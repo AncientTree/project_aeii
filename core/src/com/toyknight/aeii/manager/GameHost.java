@@ -65,9 +65,6 @@ public class GameHost {
     }
 
     public static void doMoveUnit(int dest_x, int dest_y) {
-        if (getManager().getMovablePositions() == null) {
-            getManager().beginMovePhase();
-        }
         if (getManager().canSelectedUnitMove(dest_x, dest_y)) {
             int start_x = getManager().getSelectedUnit().getX();
             int start_y = getManager().getSelectedUnit().getY();

@@ -14,11 +14,11 @@ public class UnitToolkit {
 
     public static void attachAttackStatus(Unit attacker, Unit defender) {
         if (attacker.hasAbility(Ability.POISONER)) {
-            defender.attachStatus(new Status(Status.POISONED, 2));
+            defender.attachStatus(new Status(Status.POISONED, 1));
             return;
         }
         if (attacker.hasAbility(Ability.SLOWING_GAZE) && !defender.hasAbility(Ability.SLOWING_GAZE)) {
-            defender.attachStatus(new Status(Status.PETRIFACTED, 2));
+            defender.attachStatus(new Status(Status.PETRIFACTED, 1));
             defender.setCurrentMovementPoint(defender.getMovementPoint());
         }
     }
@@ -95,6 +95,10 @@ public class UnitToolkit {
         return Math.abs(target_x - unit_x) + Math.abs(target_y - unit_y);
     }
 
+    public static int getRange(Unit unit_a, Unit unit_b) {
+        return getRange(unit_a.getX(), unit_a.getY(), unit_b.getX(), unit_b.getY());
+    }
+
     public static int getDefenceBonus(Unit unit, int tile_index) {
         int defence_bonus = 0;
         Tile tile = TileFactory.getTile(tile_index);
@@ -143,20 +147,31 @@ public class UnitToolkit {
     public static int getDamage(Unit attacker, Unit defender, Map map) {
         int attacker_tile_index = map.getTileIndex(attacker.getX(), attacker.getY());
         int defender_tile_index = map.getTileIndex(defender.getX(), defender.getY());
+        //calculate attack bonus
         int attack_bonus = getAttackBonus(attacker, defender, attacker_tile_index);
         int attack = attacker.getAttack() + attack_bonus;
+        //calculate defence bonus
         int defence_bonus = getDefenceBonus(defender, defender_tile_index);
         int defence = attacker.getAttackType() == Unit.ATTACK_PHYSICAL
                 ? defender.getPhysicalDefence() : defender.getMagicalDefence();
         defence += defence_bonus;
+        //calculate base damage
         int damage = attack > defence ? attack - defence : 0;
         int attacker_hp = attacker.getCurrentHp();
         int attacker_max_hp = attacker.getMaxHp();
+        //calculate random damage offset
         int offset = random.nextInt(5) - 2;
+        //calculate final damage
         damage = damage * attacker_hp / attacker_max_hp + offset;
         damage = damage > 0 ? damage : 0;
+        if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
+            damage /= 2;
+        }
+        if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
+            damage = damage * 3 / 2;
+        }
+        //validate damage
         damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
-        //more process
         return damage;
     }
 

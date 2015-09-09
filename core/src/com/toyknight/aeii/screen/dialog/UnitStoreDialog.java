@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -19,6 +20,7 @@ import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.widgets.AvailableUnitList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
+import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
 
@@ -92,6 +94,14 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         this.addActor(sp_unit_list);
     }
 
+    private GameCore getGame() {
+        return screen.getGame();
+    }
+
+    private GameManager getManager() {
+        return screen.getGameManager();
+    }
+
     public void display(int castle_x, int castle_y) {
         this.castle_x = castle_x;
         this.castle_y = castle_y;
@@ -117,22 +127,27 @@ public class UnitStoreDialog extends Table implements UnitListListener {
     }
 
     private void updateButton() {
-        GameManager manager = screen.getGameManager();
-        int current_team = manager.getGame().getCurrentTeam();
-        if (selected_unit != null
-                && manager.getGame().getCurrentPlayer().getPopulation() < manager.getGame().getRule().getMaxPopulation()) {
+        int current_team = getGame().getCurrentTeam();
+        if (selected_unit != null) {
             price = screen.getGame().getUnitPrice(selected_unit.getIndex(), current_team);
-            if (price >= 0) {
-                if (manager.getGame().getCurrentPlayer().getGold() >= selected_unit.getPrice()) {
-                    AEIIApplication.setButtonEnabled(btn_buy, true);
-                } else {
-                    AEIIApplication.setButtonEnabled(btn_buy, false);
-                }
+            btn_buy.setVisible(canBuy(selected_unit.getIndex(), price));
+        } else {
+            btn_buy.setVisible(false);
+        }
+    }
+
+    private boolean canBuy(int unit_index, int unit_price) {
+        Unit sample_unit = UnitFactory.getSample(unit_index);
+        if (unit_price >= 0
+                && getGame().getCurrentPlayer().getGold() >= unit_price
+                && getManager().createMovablePositions(sample_unit).size() > 0) {
+            if (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation()) {
+                return true;
             } else {
-                AEIIApplication.setButtonEnabled(btn_buy, false);
+                return sample_unit.isCommander();
             }
         } else {
-            AEIIApplication.setButtonEnabled(btn_buy, false);
+            return false;
         }
     }
 

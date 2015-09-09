@@ -42,8 +42,8 @@ public class GameCore implements Serializable {
         this.commanders = new Unit[4];
     }
 
-    public void init() {
-        Set<Point> position_set = new HashSet(getMap().getUnitPositionSet());
+    public void initialize() {
+        Set<Point> position_set = new HashSet<Point>(getMap().getUnitPositionSet());
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.isCommander()) {
@@ -57,11 +57,13 @@ public class GameCore implements Serializable {
                     current_team = team;
                 }
                 if (commanders[team] == null) {
-                    commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team, "default");
+                    commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
                 }
                 updatePopulation(team);
             } else {
-                //remove all elements on the map that is related to this team
+                if (getMap().hasTeamAccess(team)) {
+                    getMap().removeTeam(team);
+                }
             }
         }
     }
@@ -194,7 +196,8 @@ public class GameCore implements Serializable {
     }
 
     public void updatePopulation(int team) {
-        getPlayer(team).setPopulation(getMap().getUnitCount(team));
+        int population = getMap().getPopulation(team);
+        getPlayer(team).setPopulation(population);
     }
 
     private int calcIncome(int team) {
@@ -220,40 +223,6 @@ public class GameCore implements Serializable {
         getPlayer(team).changeGold(income);
         return income;
     }
-
-    /*public Point getTurnStartPosition(int team) {
-        Set<Point> position_set = new HashSet(getMap().getUnitPositionSet());
-        Unit first_unit = null;
-        for (Point position : position_set) {
-            Unit unit = getMap().getUnit(position.x, position.y);
-            if (first_unit == null) {
-                first_unit = unit;
-            }
-            if (unit.getTeam() == team && unit.isCommander()) {
-                return getMap().getPosition(unit.getX(), unit.getY());
-            }
-        }
-        if (first_unit != null) {
-            return getMap().getPosition(first_unit.getX(), first_unit.getY());
-        }
-        Point first_tile_position = null;
-        for (int x = 0; x < getMap().getWidth(); x++) {
-            for (int y = 0; y < getMap().getHeight(); y++) {
-                if (getMap().getTile(x, y).getTeam() == team) {
-                    if (first_tile_position == null) {
-                        first_tile_position = getMap().getPosition(x, y);
-                    }
-                    if (getMap().getTile(x, y).isCastle()) {
-                        return getMap().getPosition(x, y);
-                    }
-                }
-            }
-        }
-        if (first_tile_position != null) {
-            return first_tile_position;
-        }
-        return getMap().getPosition(0, 0);
-    }*/
 
     public void restoreUnit(Unit unit) {
         unit.setCurrentMovementPoint(unit.getMovementPoint());

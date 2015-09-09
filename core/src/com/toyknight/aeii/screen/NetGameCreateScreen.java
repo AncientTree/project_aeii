@@ -367,7 +367,7 @@ public class NetGameCreateScreen extends StageScreen {
     private void createGame() {
         Player[] players = new Player[4];
         for (int team = 0; team < 4; team++) {
-            if (room_config.map.hasTeamAccess(team)) {
+            if (room_config.map.hasTeamAccess(team) && !room_config.team_allocation[team].equals("NONE")) {
                 players[team] = new Player();
                 players[team].setAlliance(room_config.alliance_state[team]);
                 players[team].setGold(room_config.initial_gold);

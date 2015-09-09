@@ -16,6 +16,8 @@ import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.utils.Platform;
 
+import java.util.HashMap;
+
 /**
  * Created by toyknight on 4/26/2015.
  */
@@ -27,15 +29,7 @@ public class ActionButtonBar extends HorizontalGroup {
     private final int BUTTON_WIDTH;
     private final int BUTTON_HEIGHT;
 
-    private CircleButton btn_buy;
-    private CircleButton btn_standby;
-    private CircleButton btn_attack;
-    private CircleButton btn_move;
-    private CircleButton btn_occupy;
-    private CircleButton btn_repair;
-    private CircleButton btn_summon;
-    private CircleButton btn_heal;
-    //private ImageButton btn_info;
+    private final HashMap<String, CircleButton> buttons;
 
     public ActionButtonBar(GameScreen screen) {
         this.screen = screen;
@@ -43,12 +37,12 @@ public class ActionButtonBar extends HorizontalGroup {
         this.PADDING_LEFT = screen.getContext().getTileSize() / 4;
         this.BUTTON_WIDTH = getPlatform() == Platform.Desktop ? ts / 24 * 20 : ts / 24 * 40;
         this.BUTTON_HEIGHT = getPlatform() == Platform.Desktop ? ts / 24 * 21 : ts / 24 * 42;
+        this.buttons = new HashMap<String, CircleButton>();
         initComponents();
     }
 
     private void initComponents() {
-
-        btn_buy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(0), ts);
+        CircleButton btn_buy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(0), ts);
         btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -56,7 +50,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.showUnitStore();
             }
         });
-        btn_occupy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
+        buttons.put("buy", btn_buy);
+        CircleButton btn_occupy = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
         btn_occupy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -64,7 +59,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_repair = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
+        buttons.put("occupy", btn_occupy);
+        CircleButton btn_repair = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(1), ts);
         btn_repair.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -72,7 +68,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_attack = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(2), ts);
+        buttons.put("repair", btn_repair);
+        CircleButton btn_attack = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(2), ts);
         btn_attack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -80,7 +77,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_summon = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(3), ts);
+        buttons.put("attack", btn_attack);
+        CircleButton btn_summon = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(3), ts);
         btn_summon.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -88,7 +86,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_move = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(4), ts);
+        buttons.put("summon", btn_summon);
+        CircleButton btn_move = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(4), ts);
         btn_move.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -96,7 +95,8 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_standby = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(5), ts);
+        buttons.put("move", btn_move);
+        CircleButton btn_standby = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(5), ts);
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -104,7 +104,9 @@ public class ActionButtonBar extends HorizontalGroup {
                 screen.onButtonUpdateRequested();
             }
         });
-        btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
+        buttons.put("standby", btn_standby);
+        CircleButton btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
+        buttons.put("heal", btn_heal);
     }
 
     private GameManager getGameManager() {
@@ -123,6 +125,24 @@ public class ActionButtonBar extends HorizontalGroup {
         return BUTTON_HEIGHT;
     }
 
+    public boolean isButtonAvailable(String name) {
+        return buttons.get(name).isVisible();
+    }
+
+    @Override
+    public void addActor(Actor actor) {
+        actor.setVisible(true);
+        super.addActor(actor);
+    }
+
+    @Override
+    public void clear() {
+        for (CircleButton button : buttons.values()) {
+            button.setVisible(false);
+        }
+        super.clear();
+    }
+
     public void updateButtons() {
         this.clear();
         if (screen.canOperate()) {
@@ -132,33 +152,33 @@ public class ActionButtonBar extends HorizontalGroup {
                     getGameManager().createAttackablePositions(selected_unit);
                     if (getGameManager().canSelectedUnitAct()) {
                         if (getGameManager().hasEnemyWithinRange(selected_unit)) {
-                            addActor(btn_attack);
+                            addActor(buttons.get("attack"));
                         }
                         if (selected_unit.hasAbility(Ability.NECROMANCER)
                                 && getGameManager().hasTombWithinRange(selected_unit)) {
-                            addActor(btn_summon);
+                            addActor(buttons.get("summon"));
                         }
                         if (selected_unit.hasAbility(Ability.HEALER)
                                 && getGameManager().hasAllyWithinRange(selected_unit)) {
-                            addActor(btn_heal);
+                            addActor(buttons.get("heal"));
                         }
                         if (getGameManager().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
-                            addActor(btn_occupy);
+                            addActor(buttons.get("occupy"));
                         }
                         if (getGameManager().getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
-                            addActor(btn_repair);
+                            addActor(buttons.get("repair"));
                         }
                     }
-                    addActor(btn_standby);
+                    addActor(buttons.get("standby"));
                     break;
                 case GameManager.STATE_BUY:
                     getGameManager().createAttackablePositions(selected_unit);
                     if (selected_unit.isCommander() && selected_unit.getTeam() == getGame().getCurrentTeam()
                             && getGame().isCastleAccessible(getGame().getMap().getTile(selected_unit.getX(), selected_unit.getY()))) {
-                        addActor(btn_buy);
-                        addActor(btn_move);
+                        addActor(buttons.get("buy"));
+                        addActor(buttons.get("move"));
                         if (getGameManager().hasEnemyWithinRange(selected_unit)) {
-                            addActor(btn_attack);
+                            addActor(buttons.get("attack"));
                         }
                     }
                     break;

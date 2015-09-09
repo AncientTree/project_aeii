@@ -1,13 +1,11 @@
 package com.toyknight.aeii.entity;
 
 import com.toyknight.aeii.utils.TileFactory;
+import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by toyknight on 4/3/2015.
@@ -183,17 +181,39 @@ public class Map implements Serializable {
         return unit_map.keySet();
     }
 
-    public int getUnitCount(int team) {
+    public void removeTeam(int team) {
+        Set<Point> positions = new HashSet<Point>(getUnitPositionSet());
+        for (Point position : positions) {
+            Unit unit = getUnit(position.x, position.y);
+            if (unit.getTeam() == team) {
+                removeUnit(position.x, position.y);
+            }
+        }
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                Unit unit = getUnit(x, y);
+                if (unit != null && unit.getTeam() == team) {
+                    removeUnit(x, y);
+                }
+                Tile tile = getTile(x, y);
+                if (tile.getTeam() == team && tile.isCapturable()) {
+                    setTile(tile.getCapturedTileIndex(-1), x, y);
+                }
+            }
+        }
+    }
+
+    public int getPopulation(int team) {
         Collection<Unit> units = getUnitSet();
         int count = 0;
         for (Unit unit : units) {
-            if (unit.getTeam() == team) {
+            if (unit.getTeam() == team && !unit.isSkeleton()) {
                 count++;
             }
         }
         for (Unit[] unit_row : upper_unit_layer) {
             for (Unit unit : unit_row) {
-                if (unit != null && unit.getTeam() == team) {
+                if (unit != null && unit.getTeam() == team && !unit.isSkeleton()) {
                     count++;
                 }
             }

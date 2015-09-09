@@ -1,11 +1,9 @@
 package com.toyknight.aeii.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
@@ -383,7 +381,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public boolean keyDown(int keyCode) {
         boolean event_handled = super.keyDown(keyCode);
         if (!event_handled) {
-            Unit selected_unit = getGameManager().getSelectedUnit();
             if (keyCode == Input.Keys.BACK) {
                 doCancel();
                 return true;
@@ -400,19 +397,19 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                     return true;
                 case GameManager.STATE_ACTION:
-                    if (keyCode == Input.Keys.A && getGameManager().hasEnemyWithinRange(selected_unit)) {
+                    if (keyCode == Input.Keys.A && action_button_bar.isButtonAvailable("attack")) {
                         getGameManager().beginAttackPhase();
                         onButtonUpdateRequested();
                     }
-                    if (keyCode == Input.Keys.O && getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                    if (keyCode == Input.Keys.O && action_button_bar.isButtonAvailable("occupy")) {
                         GameHost.doOccupy();
                         onButtonUpdateRequested();
                     }
-                    if (keyCode == Input.Keys.R && getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                    if (keyCode == Input.Keys.R && action_button_bar.isButtonAvailable("repair")) {
                         GameHost.doRepair();
                         onButtonUpdateRequested();
                     }
-                    if (keyCode == Input.Keys.S && selected_unit.hasAbility(Ability.NECROMANCER) && getGameManager().hasTombWithinRange(selected_unit)) {
+                    if (keyCode == Input.Keys.S && action_button_bar.isButtonAvailable("summon")) {
                         getGameManager().beginSummonPhase();
                         onButtonUpdateRequested();
                     }
@@ -432,13 +429,15 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchDown(screenX, screenY, pointer, button);
-        if (!event_handled && canOperate()) {
+        if (!event_handled) {
             this.pointer_x = screenX;
             this.pointer_y = screenY;
-            this.press_map_x = createCursorMapX(screenX);
-            this.press_map_y = createCursorMapY(screenY);
-            this.drag_distance_x = 0;
-            this.drag_distance_y = 0;
+            if (canOperate()) {
+                this.press_map_x = createCursorMapX(screenX);
+                this.press_map_y = createCursorMapY(screenY);
+                this.drag_distance_x = 0;
+                this.drag_distance_y = 0;
+            }
         }
         return true;
     }
@@ -482,15 +481,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void onDrag(int drag_x, int drag_y) {
-        if (canOperate()) {
-            int delta_x = pointer_x - drag_x;
-            int delta_y = pointer_y - drag_y;
-            this.drag_distance_x += Math.abs(delta_x);
-            this.drag_distance_y += Math.abs(delta_y);
-            dragViewport(delta_x, delta_y);
-            pointer_x = drag_x;
-            pointer_y = drag_y;
-        }
+        int delta_x = pointer_x - drag_x;
+        int delta_y = pointer_y - drag_y;
+        this.drag_distance_x += Math.abs(delta_x);
+        this.drag_distance_y += Math.abs(delta_y);
+        dragViewport(delta_x, delta_y);
+        pointer_x = drag_x;
+        pointer_y = drag_y;
     }
 
     private void onClick(int screen_x, int screen_y) {
@@ -674,7 +671,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void onMapFocusRequired(int map_x, int map_y) {
         cursor_map_x = map_x;
         cursor_map_y = map_y;
-        locateViewport(map_x, map_y);
+        //locateViewport(map_x, map_y);
     }
 
     @Override
@@ -837,7 +834,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void dragViewport(int delta_x, int delta_y) {
         int map_width = getGame().getMap().getWidth() * ts;
         int map_height = getGame().getMap().getHeight() * ts;
-        if (viewport.width < map_width) {
+        if (viewport.width < map_width + ts * 2) {
             if (-ts <= viewport.x + delta_x
                     && viewport.x + delta_x <= map_width - viewport.width + ts) {
                 viewport.x += delta_x;
@@ -847,7 +844,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         } else {
             viewport.x = (map_width - viewport.width) / 2;
         }
-        if (viewport.height < map_height) {
+        if (viewport.height < map_height + ts * 2) {
             if (-ts <= viewport.y + delta_y
                     && viewport.y + delta_y <= map_height - viewport.height + ts) {
                 viewport.y += delta_y;

@@ -4,6 +4,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
+import com.toyknight.aeii.utils.UnitFactory;
 
 import java.io.Serializable;
 
@@ -40,7 +41,11 @@ public class UnitBuyEvent implements GameEvent, Serializable {
 
     @Override
     public void execute(GameManager manager) {
-        manager.getGame().createUnit(index, team, x, y);
+        if (index == UnitFactory.getCommanderIndex()) {
+            manager.getGame().restoreCommander(team, x, y);
+        } else {
+            manager.getGame().createUnit(index, team, x, y);
+        }
         manager.getGame().getCurrentPlayer().changeGold(-price);
         manager.setSelectedUnit(manager.getGame().getMap().getUnit(x, y));
 

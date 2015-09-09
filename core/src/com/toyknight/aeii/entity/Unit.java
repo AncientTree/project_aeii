@@ -98,6 +98,10 @@ public class Unit implements Serializable {
         return getIndex() == UnitFactory.getCommanderIndex();
     }
 
+    public boolean isSkeleton() {
+        return getIndex() == UnitFactory.getSkeletonIndex();
+    }
+
     public int getPrice() {
         return price;
     }
