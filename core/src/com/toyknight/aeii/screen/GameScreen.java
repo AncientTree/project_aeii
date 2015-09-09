@@ -371,6 +371,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.manager.setGame(game);
         this.manager.setGameManagerListener(this);
         GameHost.setGameManager(getGameManager());
+        UnitToolkit.setGame(game);
         Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
         this.locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
@@ -411,6 +412,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                     if (keyCode == Input.Keys.S && action_button_bar.isButtonAvailable("summon")) {
                         getGameManager().beginSummonPhase();
+                        onButtonUpdateRequested();
+                    }
+                    if (keyCode == Input.Keys.H && action_button_bar.isButtonAvailable("heal")) {
+                        getGameManager().beginHealPhase();
                         onButtonUpdateRequested();
                     }
                     if (keyCode == Input.Keys.SPACE) {
@@ -567,7 +572,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     GameHost.doSummon(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_HEAL:
-                    //manager.doHeal(click_x, click_y);
+                    GameHost.doHeal(cursor_x, cursor_y);
                     break;
                 default:
                     //do nothing

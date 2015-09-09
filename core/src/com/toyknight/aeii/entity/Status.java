@@ -11,6 +11,7 @@ public class Status implements Serializable {
 
     public static final int POISONED = 0x1;
     public static final int PETRIFACTED = 0x2;
+    public static final int INSPIRED = 0x3;
 
     private final int type;
     private int remaining_turn;

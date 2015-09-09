@@ -32,6 +32,13 @@ public class HpChangeAnimator extends UnitAnimator {
         this.dy = (ts - FontRenderer.getLCharHeight()) / 2;
     }
 
+    public HpChangeAnimator(Unit unit, int change) {
+        addUnit(unit, Integer.toString(0));
+        this.change_map = new HashMap<Point, Integer>();
+        this.change_map.put(new Point(unit.getX(), unit.getY()), change);
+        this.dy = (ts - FontRenderer.getLCharHeight()) / 2;
+    }
+
     @Override
     public void render(SpriteBatch batch, GameScreen screen) {
         for (int index = 0; index < getUnitCount(); index++) {

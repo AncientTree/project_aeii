@@ -134,6 +134,11 @@ public class GameManager implements AnimationDispatcher {
         setState(STATE_SUMMON);
     }
 
+    public void beginHealPhase() {
+        attackable_positions = createAttackablePositions(getSelectedUnit());
+        setState(STATE_HEAL);
+    }
+
     public void beginRemovePhase() {
         createMovablePositions();
         setState(STATE_REMOVE);
@@ -438,6 +443,17 @@ public class GameManager implements AnimationDispatcher {
         for (Point point : attackable_positions) {
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (target != null && !getGame().isEnemy(unit, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAllyNeedHealingWithinRange(Unit unit) {
+        HashSet<Point> attackable_positions = createAttackablePositions(unit);
+        for (Point point : attackable_positions) {
+            Unit target = getGame().getMap().getUnit(point.x, point.y);
+            if (target != null && !getGame().isEnemy(unit, target) && target.getCurrentHp() < target.getMaxHp() && !target.isSkeleton()) {
                 return true;
             }
         }
