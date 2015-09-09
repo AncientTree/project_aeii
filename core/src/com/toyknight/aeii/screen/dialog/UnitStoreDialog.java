@@ -142,17 +142,10 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         sample_unit.setCurrentMovementPoint(movement_point);
         sample_unit.setX(castle_x);
         sample_unit.setY(castle_y);
-        if (unit_price >= 0
+        return unit_price >= 0
                 && getGame().getCurrentPlayer().getGold() >= unit_price
-                && getManager().createMovablePositions(sample_unit).size() > 0) {
-            if (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation()) {
-                return true;
-            } else {
-                return sample_unit.isCommander();
-            }
-        } else {
-            return false;
-        }
+                && getManager().createMovablePositions(sample_unit).size() > 0
+                && (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation() || sample_unit.isCommander());
     }
 
     @Override

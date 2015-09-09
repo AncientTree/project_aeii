@@ -185,7 +185,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCommanderAlive(int team) {
-        Set<Point> position_set = new HashSet(getMap().getUnitPositionSet());
+        Set<Point> position_set = new HashSet<Point>(getMap().getUnitPositionSet());
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team && unit.isCommander()) {
