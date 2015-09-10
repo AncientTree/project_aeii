@@ -158,7 +158,7 @@ public class UnitToolkit {
             attack_bonus += 10;
         }
         if (attacker.hasStatus(Status.INSPIRED)) {
-            attack_bonus += 5;
+            attack_bonus += 10;
         }
         return attack_bonus;
     }
@@ -196,7 +196,7 @@ public class UnitToolkit {
 
     public static int getHeal(Unit unit) {
         if (unit.hasAbility(Ability.HEALER)) {
-            return 40 + 10 * unit.getLevel();
+            return 50 + 10 * unit.getLevel();
         } else {
             return 0;
         }

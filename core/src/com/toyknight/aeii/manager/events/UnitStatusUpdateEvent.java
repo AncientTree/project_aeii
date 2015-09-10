@@ -37,23 +37,7 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
             Unit unit = game.getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 unit.updateStatus();
-                attachAuraStatus(unit, manager.getGame());
                 unit.setCurrentMovementPoint(unit.getMovementPoint());
-            }
-        }
-    }
-
-    private void attachAuraStatus(Unit unit, GameCore game) {
-        if (unit.hasAbility(Ability.ATTACK_AURA)) {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i != 0 || j != 0) {
-                        Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
-                        if (target != null && game.getAlliance(unit.getTeam()) == game.getAlliance(target.getTeam())) {
-                            target.attachStatus(new Status(Status.INSPIRED, 1));
-                        }
-                    }
-                }
             }
         }
     }
