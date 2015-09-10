@@ -112,14 +112,16 @@ public class Rule implements Serializable {
         rule.setEnemyClearNeeded(true);
         rule.setCastleClearNeeded(true);
 
+        int commander = UnitFactory.getCommanderIndex();
         int skeleton = UnitFactory.getSkeletonIndex();
         int crystal = UnitFactory.getCrystalIndex();
-        ArrayList<Integer> unit_list = new ArrayList();
+        ArrayList<Integer> unit_list = new ArrayList<Integer>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-            if (index != skeleton && index != crystal) {
+            if (index != commander && index != skeleton && index != crystal) {
                 unit_list.add(index);
             }
         }
+        unit_list.add(commander);
         rule.setAvailableUnits(unit_list);
         return rule;
     }

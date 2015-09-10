@@ -13,7 +13,6 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.utils.Platform;
 
 import java.util.HashMap;
@@ -106,6 +105,13 @@ public class ActionButtonBar extends HorizontalGroup {
         });
         buttons.put("standby", btn_standby);
         CircleButton btn_heal = new CircleButton(CircleButton.SMALL, ResourceManager.getActionIcon(7), ts);
+        btn_heal.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getGameManager().beginHealPhase();
+                screen.onButtonUpdateRequested();
+            }
+        });
         buttons.put("heal", btn_heal);
     }
 
@@ -159,7 +165,7 @@ public class ActionButtonBar extends HorizontalGroup {
                             addActor(buttons.get("summon"));
                         }
                         if (selected_unit.hasAbility(Ability.HEALER)
-                                && getGameManager().hasAllyWithinRange(selected_unit)) {
+                                && getGameManager().hasAllyNeedHealingWithinRange(selected_unit)) {
                             addActor(buttons.get("heal"));
                         }
                         if (getGameManager().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {

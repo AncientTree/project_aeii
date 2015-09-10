@@ -1,8 +1,6 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
@@ -39,8 +37,8 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
             Unit unit = game.getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 unit.updateStatus();
+                unit.setCurrentMovementPoint(unit.getMovementPoint());
             }
-            unit.setCurrentMovementPoint(unit.getMovementPoint());
         }
     }
 

@@ -12,6 +12,16 @@ public class UnitToolkit {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
+    private static GameCore game;
+
+    public static void setGame(GameCore game) {
+        UnitToolkit.game = game;
+    }
+
+    public static GameCore getGame() {
+        return game;
+    }
+
     public static void attachAttackStatus(Unit attacker, Unit defender) {
         if (attacker.hasAbility(Ability.POISONER)) {
             defender.attachStatus(new Status(Status.POISONED, 1));
@@ -28,7 +38,7 @@ public class UnitToolkit {
         if (tile.getTeam() == -1) {
             heal += tile.getHpRecovery();
         } else {
-            if (unit.getTeam() == tile.getTeam()) {
+            if (getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
                 heal += tile.getHpRecovery();
             }
         }
@@ -105,6 +115,10 @@ public class UnitToolkit {
         if (!unit.hasAbility(Ability.AIR_FORCE)) {
             defence_bonus += tile.getDefenceBonus();
         }
+        if (unit.hasAbility(Ability.GUARDIAN)
+                && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
+            defence_bonus += 5;
+        }
         switch (tile.getType()) {
             case Tile.TYPE_FOREST:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_FOREST)) {
@@ -125,23 +139,28 @@ public class UnitToolkit {
     }
 
     public static int getAttackBonus(Unit attacker, Unit defender, int tile_index) {
-        int bonus = 0;
-        if (attacker.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN)
-                && TileFactory.getTile(tile_index).getType() == Tile.TYPE_MOUNTAIN) {
-            bonus += 10;
+        int attack_bonus = 0;
+        Tile tile = TileFactory.getTile(tile_index);
+        if (attacker.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile.getType() == Tile.TYPE_MOUNTAIN) {
+            attack_bonus += 10;
         }
-        if (attacker.hasAbility(Ability.FIGHTER_OF_THE_FOREST)
-                && TileFactory.getTile(tile_index).getType() == Tile.TYPE_FOREST) {
-            bonus += 10;
+        if (attacker.hasAbility(Ability.FIGHTER_OF_THE_FOREST) && tile.getType() == Tile.TYPE_FOREST) {
+            attack_bonus += 10;
         }
-        if (attacker.hasAbility(Ability.FIGHTER_OF_THE_SEA)
-                && TileFactory.getTile(tile_index).getType() == Tile.TYPE_WATER) {
-            bonus += 10;
+        if (attacker.hasAbility(Ability.FIGHTER_OF_THE_SEA) && tile.getType() == Tile.TYPE_WATER) {
+            attack_bonus += 10;
         }
         if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
-            bonus += 10;
+            attack_bonus += 10;
         }
-        return bonus;
+        if (attacker.hasAbility(Ability.GUARDIAN)
+                && getGame().getAlliance(attacker.getTeam()) == getGame().getAlliance(tile.getTeam())) {
+            attack_bonus += 10;
+        }
+        if (attacker.hasStatus(Status.INSPIRED)) {
+            attack_bonus += 10;
+        }
+        return attack_bonus;
     }
 
     public static int getDamage(Unit attacker, Unit defender, Map map) {
@@ -164,15 +183,25 @@ public class UnitToolkit {
         //calculate final damage
         damage = damage * attacker_hp / attacker_max_hp + offset;
         damage = damage > 0 ? damage : 0;
-        if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
-            damage /= 2;
-        }
-        if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
-            damage = damage * 3 / 2;
+        if (!attacker.hasAbility(Ability.LORD_OF_TERROR) || !defender.hasAbility(Ability.LORD_OF_TERROR)) {
+            if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
+                damage /= 2;
+            }
+            if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
+                damage = damage * 3 / 2;
+            }
         }
         //validate damage
         damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
         return damage;
+    }
+
+    public static int getHeal(Unit unit) {
+        if (unit.hasAbility(Ability.HEALER)) {
+            return 50 + 10 * unit.getLevel();
+        } else {
+            return 0;
+        }
     }
 
     public static boolean canMoveAgain(Unit unit) {

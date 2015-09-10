@@ -131,6 +131,15 @@ public class GameHost {
         }
     }
 
+    public static void doHeal(int target_x, int target_y) {
+        Unit healer = getManager().getSelectedUnit();
+        if (getGame().canHeal(healer, target_x, target_y)) {
+            int heal = UnitToolkit.getHeal(healer);
+            int experience = getGame().getRule().getAttackExperience();
+            dispatchEvent(new UnitHealEvent(healer.getX(), healer.getY(), target_x, target_y, heal, experience));
+        }
+    }
+
     public static void doRepair() {
         Unit unit = getManager().getSelectedUnit();
         dispatchEvent(new RepairEvent(unit.getX(), unit.getY()));

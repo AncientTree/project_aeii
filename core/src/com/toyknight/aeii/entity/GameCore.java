@@ -157,7 +157,7 @@ public class GameCore implements Serializable {
     }
 
     public int getAlliance(int team) {
-        return getPlayer(team).getAlliance();
+        return 0 <= team && team < 4 && getPlayer(team) != null ? getPlayer(team).getAlliance() : -1;
     }
 
     public Unit getCommander(int team) {
@@ -185,7 +185,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCommanderAlive(int team) {
-        Set<Point> position_set = new HashSet(getMap().getUnitPositionSet());
+        Set<Point> position_set = new HashSet<Point>(getMap().getUnitPositionSet());
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team && unit.isCommander()) {
@@ -230,19 +230,11 @@ public class GameCore implements Serializable {
     }
 
     public boolean isEnemy(Unit unit_a, Unit unit_b) {
-        if (unit_a != null && unit_b != null) {
-            return isEnemy(unit_a.getTeam(), unit_b.getTeam());
-        } else {
-            return false;
-        }
+        return unit_a != null && unit_b != null && isEnemy(unit_a.getTeam(), unit_b.getTeam());
     }
 
     public boolean isEnemy(int team_a, int team_b) {
-        if (team_a >= 0 && team_b >= 0) {
-            return getAlliance(team_a) != getAlliance(team_b);
-        } else {
-            return false;
-        }
+        return team_a >= 0 && team_b >= 0 && getAlliance(team_a) != getAlliance(team_b);
     }
 
     public boolean canAttack(Unit attacker, int x, int y) {
@@ -251,11 +243,7 @@ public class GameCore implements Serializable {
             if (defender != null) {
                 return isEnemy(attacker, defender);
             } else {
-                if (attacker.hasAbility(Ability.DESTROYER)) {
-                    return getMap().getTile(x, y).isDestroyable();
-                } else {
-                    return false;
-                }
+                return attacker.hasAbility(Ability.DESTROYER) && getMap().getTile(x, y).isDestroyable();
             }
         } else {
             return false;
@@ -270,12 +258,8 @@ public class GameCore implements Serializable {
             return false;
         }
         Tile tile = getMap().getTile(x, y);
-        if (tile.getTeam() != getCurrentTeam()) {
-            return (tile.isCastle() && conqueror.hasAbility(Ability.COMMANDER))
-                    || (tile.isVillage() && conqueror.hasAbility(Ability.CONQUEROR));
-        } else {
-            return false;
-        }
+        return tile.getTeam() != getCurrentTeam()
+                && ((tile.isCastle() && conqueror.hasAbility(Ability.COMMANDER)) || (tile.isVillage() && conqueror.hasAbility(Ability.CONQUEROR)));
     }
 
     public boolean canRepair(Unit repairer, int x, int y) {
@@ -290,46 +274,28 @@ public class GameCore implements Serializable {
     }
 
     public boolean canSummon(int x, int y) {
-        if (getMap().isTomb(x, y)) {
-            return getMap().getUnit(x, y) == null;
-        } else {
-            return false;
-        }
+        return getMap().isTomb(x, y) && getMap().getUnit(x, y) == null;
     }
 
     public boolean canHeal(Unit healer, int x, int y) {
         Unit target = getMap().getUnit(x, y);
-        if (target != null) {
-            return target.getCurrentHp() < target.getMaxHp()
-                    && target.getIndex() != UnitFactory.getSkeletonIndex() && !isEnemy(healer, target);
-        } else {
-            return false;
-        }
+        return target != null
+                && target.getCurrentHp() < target.getMaxHp()
+                && target.getIndex() != UnitFactory.getSkeletonIndex()
+                && !isEnemy(healer, target);
     }
 
     public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {
         if (getMap().canMove(dest_x, dest_y)) {
             Unit dest_unit = getMap().getUnit(dest_x, dest_y);
-            if (dest_unit == null) {
-                return true;
-            } else {
-                return UnitToolkit.isTheSameUnit(unit, dest_unit);
-            }
+            return dest_unit == null || UnitToolkit.isTheSameUnit(unit, dest_unit);
         } else {
             return false;
         }
     }
 
     public boolean canMoveThrough(Unit unit, Unit target_unit) {
-        if (target_unit == null) {
-            return true;
-        } else {
-            if (isEnemy(unit, target_unit)) {
-                return unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
-            } else {
-                return true;
-            }
-        }
+        return target_unit == null || !isEnemy(unit, target_unit) || unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
     }
 
     public boolean isUnitAccessible(Unit unit) {

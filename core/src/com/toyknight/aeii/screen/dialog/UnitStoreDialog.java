@@ -138,17 +138,14 @@ public class UnitStoreDialog extends Table implements UnitListListener {
 
     private boolean canBuy(int unit_index, int unit_price) {
         Unit sample_unit = UnitFactory.getSample(unit_index);
-        if (unit_price >= 0
+        int movement_point = sample_unit.getMovementPoint();
+        sample_unit.setCurrentMovementPoint(movement_point);
+        sample_unit.setX(castle_x);
+        sample_unit.setY(castle_y);
+        return unit_price >= 0
                 && getGame().getCurrentPlayer().getGold() >= unit_price
-                && getManager().createMovablePositions(sample_unit).size() > 0) {
-            if (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation()) {
-                return true;
-            } else {
-                return sample_unit.isCommander();
-            }
-        } else {
-            return false;
-        }
+                && getManager().createMovablePositions(sample_unit).size() > 0
+                && (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation() || sample_unit.isCommander());
     }
 
     @Override

@@ -226,6 +226,10 @@ public class Unit implements Serializable {
         return status;
     }
 
+    public boolean hasStatus(int type) {
+        return getStatus() != null && getStatus().getType() == type;
+    }
+
     public int getHpGrowth() {
         return hp_growth;
     }

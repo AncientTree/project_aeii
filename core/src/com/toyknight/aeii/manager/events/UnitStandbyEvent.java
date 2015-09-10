@@ -1,8 +1,6 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
@@ -35,7 +33,25 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
 
     @Override
     public void execute(GameManager manager) {
+        Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
         manager.getGame().standbyUnit(unit_x, unit_y);
+        attachAuraStatus(unit, manager.getGame());
         manager.setState(GameManager.STATE_SELECT);
     }
+
+    private void attachAuraStatus(Unit unit, GameCore game) {
+        if (unit.hasAbility(Ability.ATTACK_AURA)) {
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (i != 0 || j != 0) {
+                        Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
+                        if (target != null && game.getAlliance(unit.getTeam()) == game.getAlliance(target.getTeam())) {
+                            target.attachStatus(new Status(Status.INSPIRED, 1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
