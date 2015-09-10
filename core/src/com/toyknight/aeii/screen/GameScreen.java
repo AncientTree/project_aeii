@@ -520,7 +520,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     case GameManager.STATE_ATTACK:
                     case GameManager.STATE_SUMMON:
                     case GameManager.STATE_HEAL:
-                        if (UnitToolkit.isWithinRange(getGameManager().getSelectedUnit(), release_map_x, release_map_y)) {
+                        if (getGameManager().getAttackablePositions().contains(new Point(release_map_x, release_map_y))) {
                             if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
                                 doClick(release_map_x, release_map_y);
                             } else {

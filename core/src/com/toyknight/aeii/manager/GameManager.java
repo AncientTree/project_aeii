@@ -125,18 +125,18 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public void beginAttackPhase() {
-        attackable_positions = createAttackablePositions(getSelectedUnit());
         setState(STATE_ATTACK);
+        attackable_positions = createAttackablePositions(getSelectedUnit());
     }
 
     public void beginSummonPhase() {
-        attackable_positions = createAttackablePositions(getSelectedUnit());
         setState(STATE_SUMMON);
+        attackable_positions = createAttackablePositions(getSelectedUnit());
     }
 
     public void beginHealPhase() {
-        attackable_positions = createAttackablePositions(getSelectedUnit());
         setState(STATE_HEAL);
+        attackable_positions = createAttackablePositions(getSelectedUnit());
     }
 
     public void beginRemovePhase() {
@@ -420,6 +420,9 @@ public class GameManager implements AnimationDispatcher {
                 }
             }
         }
+        if (getState() == STATE_HEAL) {
+            attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
+        }
         return attackable_positions;
     }
 
@@ -457,7 +460,7 @@ public class GameManager implements AnimationDispatcher {
                 return true;
             }
         }
-        return false;
+        return unit.getCurrentHp() < unit.getMaxHp();
     }
 
     public boolean hasTombWithinRange(Unit unit) {
