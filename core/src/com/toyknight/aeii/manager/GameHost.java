@@ -218,7 +218,7 @@ public class GameHost {
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (player != null) {
-                population[team] = player.getPopulation();
+                population[team] = getGame().getMap().getUnitCount(team, true);
             }
         }
 

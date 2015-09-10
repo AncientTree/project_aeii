@@ -204,17 +204,29 @@ public class Map implements Serializable {
     }
 
     public int getPopulation(int team) {
+        return getUnitCount(team, false);
+    }
+
+    public int getUnitCount(int team, boolean count_skeleton) {
         Collection<Unit> units = getUnitSet();
         int count = 0;
         for (Unit unit : units) {
-            if (unit.getTeam() == team && !unit.isSkeleton()) {
-                count++;
+            if (unit != null && unit.getTeam() == team) {
+                if (unit.isSkeleton()) {
+                    count += count_skeleton ? 1 : 0;
+                } else {
+                    count++;
+                }
             }
         }
         for (Unit[] unit_row : upper_unit_layer) {
             for (Unit unit : unit_row) {
-                if (unit != null && unit.getTeam() == team && !unit.isSkeleton()) {
-                    count++;
+                if (unit != null && unit.getTeam() == team) {
+                    if (unit.isSkeleton()) {
+                        count += count_skeleton ? 1 : 0;
+                    } else {
+                        count++;
+                    }
                 }
             }
         }
