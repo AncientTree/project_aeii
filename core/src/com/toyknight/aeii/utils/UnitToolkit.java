@@ -28,7 +28,7 @@ public class UnitToolkit {
             return;
         }
         if (attacker.hasAbility(Ability.SLOWING_GAZE) && !defender.hasAbility(Ability.SLOWING_GAZE)) {
-            defender.attachStatus(new Status(Status.PETRIFACTED, 0));
+            defender.attachStatus(new Status(Status.PETRIFACTED, 1));
             defender.setCurrentMovementPoint(defender.getMovementPoint());
         }
     }
