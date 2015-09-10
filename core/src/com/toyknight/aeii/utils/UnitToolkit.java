@@ -183,11 +183,13 @@ public class UnitToolkit {
         //calculate final damage
         damage = damage * attacker_hp / attacker_max_hp + offset;
         damage = damage > 0 ? damage : 0;
-        if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
-            damage /= 2;
-        }
-        if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
-            damage = damage * 3 / 2;
+        if (!attacker.hasAbility(Ability.LORD_OF_TERROR) || !defender.hasAbility(Ability.LORD_OF_TERROR)) {
+            if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
+                damage /= 2;
+            }
+            if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
+                damage = damage * 3 / 2;
+            }
         }
         //validate damage
         damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
