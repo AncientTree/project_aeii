@@ -2,6 +2,7 @@ package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.AudioManager;
@@ -14,7 +15,7 @@ import com.toyknight.aeii.screen.dialog.SettingDialog;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class MainMenuScreen extends StageScreen {
 
@@ -26,6 +27,7 @@ public class MainMenuScreen extends StageScreen {
     private final SettingDialog setting_dialog;
 
     private final CircleButton btn_setting;
+    private final Label lb_version;
 
     private boolean logo_shown;
 
@@ -58,11 +60,12 @@ public class MainMenuScreen extends StageScreen {
         this.btn_setting.setVisible(false);
         this.addActor(btn_setting);
 
-        this.logo_shown = false;
-    }
+        this.lb_version = new Label(getContext().getVersion(), getContext().getSkin());
+        this.lb_version.setPosition(Gdx.graphics.getWidth() - lb_version.getPrefWidth(), 0);
+        this.lb_version.setVisible(false);
+        addActor(lb_version);
 
-    public int getTitleHeight() {
-        return ts * 85 / 48;
+        this.logo_shown = false;
     }
 
     public void showMenu() {
@@ -105,6 +108,7 @@ public class MainMenuScreen extends StageScreen {
             logo_glow_animator.update(delta);
             if (!logo_shown) {
                 btn_setting.setVisible(true);
+                lb_version.setVisible(true);
                 menu.setVisible(true);
                 logo_shown = true;
             }

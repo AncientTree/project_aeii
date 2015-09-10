@@ -189,35 +189,45 @@ public class GameHost {
         for (Point position : unit_position_set) {
             Unit healer = getGame().getMap().getUnit(position.x, position.y);
             if (healer.hasAbility(Ability.HEALING_AURA)) {
-                for (int x = healer.getX() - 1; x <= healer.getX() + 1; x++) {
-                    for (int y = healer.getY() - 1; y <= healer.getY() + 1; y++) {
-                        //not healer himself
-                        if ((x != healer.getX() || y != healer.getY()) && getGame().getMap().isWithinMap(x, y)) {
-                            Point target_position = getGame().getMap().getPosition(x, y);
-                            //there's a unit at the position
-                            if (unit_position_set.contains(target_position)) {
-                                //see if this unit already has hp change
-                                if (hp_change_map.keySet().contains(target_position)) {
-                                    int change = hp_change_map.get(target_position) + 15;
-                                    hp_change_map.put(target_position, change);
-                                } else {
-                                    hp_change_map.put(target_position, 15);
-                                }
-                            }
+                Set<Point> attackable_positions = getManager().createAttackablePositions(healer);
+                for (Point target_position : attackable_positions) {
+                    //there's a unit at the position
+                    if (unit_position_set.contains(target_position)) {
+                        //see if this unit already has hp change
+                        if (hp_change_map.keySet().contains(target_position)) {
+                            int change = hp_change_map.get(target_position) + 15;
+                            hp_change_map.put(target_position, change);
+                        } else {
+                            hp_change_map.put(target_position, 15);
                         }
+                    } else {
+//                        Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
+//                        if (!getGame().isEnemy(healer, target)) {
+//                            hp_change_map.put(target_position, 15);
+//                        }
                     }
                 }
             }
         }
-        dispatchEvent(new HpChangeEvent(hp_change_map));
+
+        dispatchEvent(new HpChangeEvent(hp_change_map)
+
+        );
         // pre-calculate unit that will be destroyed
-        for (Point position : hp_change_map.keySet()) {
+        for (
+                Point position
+                : hp_change_map.keySet())
+
+        {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
                 dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
         }
-        dispatchEvent(new UnitStatusUpdateEvent(next_team));
+
+        dispatchEvent(new UnitStatusUpdateEvent(next_team)
+
+        );
     }
 
     public static void updateGameStatus() {

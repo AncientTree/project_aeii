@@ -280,7 +280,6 @@ public class GameCore implements Serializable {
     public boolean canHeal(Unit healer, int x, int y) {
         Unit target = getMap().getUnit(x, y);
         return target != null
-                && target.getCurrentHp() < target.getMaxHp()
                 && target.getIndex() != UnitFactory.getSkeletonIndex()
                 && !isEnemy(healer, target);
     }

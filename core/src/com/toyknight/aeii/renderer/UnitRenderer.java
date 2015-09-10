@@ -58,7 +58,7 @@ public class UnitRenderer {
         int screen_x = canvas.getXOnScreen(map_x);
         int screen_y = canvas.getYOnScreen(map_y);
         //draw health points
-        if (unit.getCurrentHp() < unit.getMaxHp()) {
+        if (unit.getCurrentHp() != unit.getMaxHp()) {
             FontRenderer.drawSNumber(batch, unit.getCurrentHp(), (int) (screen_x + offset_x), (int) (screen_y + offset_y));
         }
         //draw status

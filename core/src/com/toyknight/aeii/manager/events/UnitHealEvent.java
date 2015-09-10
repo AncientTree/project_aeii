@@ -46,9 +46,8 @@ public class UnitHealEvent implements GameEvent, Serializable {
     public void execute(GameManager manager) {
         Unit healer = manager.getGame().getMap().getUnit(healer_x, healer_y);
         Unit target = manager.getGame().getMap().getUnit(target_x, target_y);
-        int validated_heal = target.getCurrentHp() + heal <= target.getMaxHp() ? heal : target.getMaxHp() - target.getCurrentHp();
-        target.changeCurrentHp(validated_heal);
-        manager.submitAnimation(new HpChangeAnimator(target, validated_heal));
+        target.changeCurrentHp(heal);
+        manager.submitAnimation(new HpChangeAnimator(target, heal));
         boolean level_up = healer.gainExperience(experience);
         if (level_up) {
             manager.submitAnimation(new UnitLevelUpAnimator(healer));

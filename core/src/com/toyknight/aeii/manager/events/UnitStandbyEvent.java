@@ -46,7 +46,7 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
                     if (i != 0 || j != 0) {
                         Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
                         if (target != null && game.getAlliance(unit.getTeam()) == game.getAlliance(target.getTeam())) {
-                            target.attachStatus(new Status(Status.INSPIRED, 1));
+                            target.attachStatus(new Status(Status.INSPIRED, 0));
                         }
                     }
                 }

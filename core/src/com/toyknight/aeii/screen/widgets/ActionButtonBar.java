@@ -164,8 +164,7 @@ public class ActionButtonBar extends HorizontalGroup {
                                 && getGameManager().hasTombWithinRange(selected_unit)) {
                             addActor(buttons.get("summon"));
                         }
-                        if (selected_unit.hasAbility(Ability.HEALER)
-                                && getGameManager().hasAllyNeedHealingWithinRange(selected_unit)) {
+                        if (selected_unit.hasAbility(Ability.HEALER)) {
                             addActor(buttons.get("heal"));
                         }
                         if (getGameManager().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
