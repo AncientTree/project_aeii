@@ -216,7 +216,7 @@ public class Room {
     }
 
     public RoomSnapshot createSnapshot() {
-        return new RoomSnapshot(getRoomNumber(), getRoomName(), getMapName(), getCapacity(), getRemaining());
+        return new RoomSnapshot(getRoomNumber(), isOpen(), getRoomName(), getMapName(), getCapacity(), getRemaining());
     }
 
 }

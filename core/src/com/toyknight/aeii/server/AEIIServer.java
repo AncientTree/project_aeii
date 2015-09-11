@@ -10,7 +10,6 @@ import com.toyknight.aeii.server.entity.RoomSnapshot;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -166,9 +165,7 @@ public class AEIIServer {
         ArrayList<RoomSnapshot> snapshot = new ArrayList<RoomSnapshot>();
         synchronized (ROOM_LOCK) {
             for (Room room : rooms.values()) {
-                if (room.isOpen()) {
-                    snapshot.add(room.createSnapshot());
-                }
+                snapshot.add(room.createSnapshot());
             }
         }
         return snapshot;

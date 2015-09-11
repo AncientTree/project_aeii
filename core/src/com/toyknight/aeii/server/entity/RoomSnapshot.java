@@ -7,16 +7,18 @@ import java.io.Serializable;
  */
 public class RoomSnapshot implements Serializable {
 
-    private static final long serialVersionUID = 8272015L;
+    private static final long serialVersionUID = 9112015L;
 
     private final long room_number;
+    private final boolean open;
     private final String room_name;
     private final String map_name;
     private final int capacity;
     private final int remaining;
 
-    public RoomSnapshot(long room_number, String room_name, String map_name, int capacity, int remaining) {
+    public RoomSnapshot(long room_number, boolean open, String room_name, String map_name, int capacity, int remaining) {
         this.room_number = room_number;
+        this.open = open;
         this.room_name = room_name;
         this.map_name = map_name;
         this.capacity = capacity;
@@ -45,7 +47,11 @@ public class RoomSnapshot implements Serializable {
 
     @Override
     public String toString() {
-        return getRoomName() + "    |    Map: " + getMapName() + "    |    (" + (getCapacity() - getRemaining()) + "/" + getCapacity() + ")";
+        String str = getRoomName() + " | Map: " + getMapName() + " | (" + (getCapacity() - getRemaining()) + "/" + getCapacity() + ")";
+        if (!open) {
+            str += " - Started";
+        }
+        return str;
     }
 
 }
