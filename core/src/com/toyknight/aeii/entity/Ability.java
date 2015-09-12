@@ -26,7 +26,7 @@ public class Ability {
     public static final int COMMANDER = 18;
     public static final int SIEGE_MACHINE = 19;
     public static final int ATTACK_AURA = 20;
-    public static final int DEFENCE_AURA = 21;
+    public static final int BLOODTHIRSTY = 21;
     public static final int GUARDIAN = 22;
     public static final int HEALING_AURA = 23;
     public static final int LORD_OF_TERROR = 24;

@@ -13,6 +13,7 @@ public class UnitToolkit {
     private static final Random random = new Random(System.currentTimeMillis());
 
     private static GameCore game;
+    private static int enemy_count;
 
     public static void setGame(GameCore game) {
         UnitToolkit.game = game;
@@ -119,6 +120,10 @@ public class UnitToolkit {
                 && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
             defence_bonus += 5;
         }
+        if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
+            int enemy_count = getGame().getEnemyAroundCount(unit, 2);
+            defence_bonus += enemy_count * 5;
+        }
         switch (tile.getType()) {
             case Tile.TYPE_FOREST:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_FOREST)) {
@@ -160,12 +165,17 @@ public class UnitToolkit {
         if (attacker.hasStatus(Status.INSPIRED)) {
             attack_bonus += 10;
         }
+        if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
+            int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
+            attack_bonus += enemy_count * 5;
+        }
         return attack_bonus;
     }
 
     public static int getDamage(Unit attacker, Unit defender, Map map) {
         int attacker_tile_index = map.getTileIndex(attacker.getX(), attacker.getY());
         int defender_tile_index = map.getTileIndex(defender.getX(), defender.getY());
+
         //calculate attack bonus
         int attack_bonus = getAttackBonus(attacker, defender, attacker_tile_index);
         int attack = attacker.getAttack() + attack_bonus;

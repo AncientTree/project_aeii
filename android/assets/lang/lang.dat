@@ -76,6 +76,7 @@ UNIT_NAME_9=Commander
 UNIT_NAME_10=Skeleton
 UNIT_NAME_11=Crystal
 UNIT_NAME_12=Paladin
+UNIT_NAME_13=Berserker
 
 MSG_ERR_AEA=An error occurred :(
 MSG_ERR_CCS=Cannot connect to server

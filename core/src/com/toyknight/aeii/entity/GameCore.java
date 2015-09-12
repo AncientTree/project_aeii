@@ -237,6 +237,25 @@ public class GameCore implements Serializable {
         return team_a >= 0 && team_b >= 0 && getAlliance(team_a) != getAlliance(team_b);
     }
 
+    public int getEnemyAroundCount(Unit unit, int range) {
+        if (range < 1) {
+            return 0;
+        }
+        int count = 0;
+        for (int ar = -range; ar <= range; ar++) {
+            for (int dx = -ar; dx <= ar; dx++) {
+                int dy = dx >= 0 ? ar - dx : -ar - dx;
+                if (isEnemy(unit, getMap().getUnit(unit.getX() + dx, unit.getY() + dy))) {
+                    count++;
+                }
+                if (dy != 0 && isEnemy(unit, getMap().getUnit(unit.getX() + dx, unit.getY() - dy))) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     public boolean canAttack(Unit attacker, int x, int y) {
         if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
             Unit defender = getMap().getUnit(x, y);
