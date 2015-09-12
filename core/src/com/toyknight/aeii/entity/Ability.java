@@ -16,7 +16,7 @@ public class Ability {
     public static final int CHARGER = 8;
     public static final int POISONER = 9;
     public static final int REPAIRER = 10;
-    public static final int FLAME_MASTER = 11;
+    public static final int LAST_POWER = 11;
     public static final int MARKSMAN = 12;
     public static final int SON_OF_THE_SEA = 13;
     public static final int SON_OF_THE_FOREST = 14;

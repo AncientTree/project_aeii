@@ -122,6 +122,7 @@ public class UnitToolkit {
         }
         if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(unit, 2);
+            enemy_count = enemy_count < 4 ? enemy_count : 3;
             defence_bonus += enemy_count * 5;
         }
         switch (tile.getType()) {
@@ -167,7 +168,8 @@ public class UnitToolkit {
         }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
-            attack_bonus += enemy_count * 5;
+            enemy_count = enemy_count < 4 ? enemy_count : 3;
+            attack_bonus += enemy_count * 10;
         }
         return attack_bonus;
     }
@@ -191,7 +193,9 @@ public class UnitToolkit {
         //calculate random damage offset
         int offset = random.nextInt(5) - 2;
         //calculate final damage
-        damage = damage * attacker_hp / attacker_max_hp + offset;
+        damage = attacker.hasAbility(Ability.LAST_POWER) ?
+                damage * (attacker_max_hp * 2 - attacker_hp) / attacker_max_hp : damage * attacker_hp / attacker_max_hp;
+        damage += offset;
         damage = damage > 0 ? damage : 0;
         if (!attacker.hasAbility(Ability.LORD_OF_TERROR) || !defender.hasAbility(Ability.LORD_OF_TERROR)) {
             if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
