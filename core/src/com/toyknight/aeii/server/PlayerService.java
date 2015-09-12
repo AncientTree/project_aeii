@@ -126,7 +126,7 @@ public class PlayerService extends Thread {
     }
 
     private void respondOpenRooms() throws IOException {
-        ArrayList<RoomSnapshot> snapshot = getContext().getOpenRoomSnapshot();
+        ArrayList<RoomSnapshot> snapshot = getContext().getRoomSnapshot();
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
             oos.writeObject(snapshot);

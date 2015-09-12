@@ -161,7 +161,7 @@ public class AEIIServer {
         return getService(service_name).getClientAddress();
     }
 
-    public ArrayList<RoomSnapshot> getOpenRoomSnapshot() {
+    public ArrayList<RoomSnapshot> getRoomSnapshot() {
         ArrayList<RoomSnapshot> snapshot = new ArrayList<RoomSnapshot>();
         synchronized (ROOM_LOCK) {
             for (Room room : rooms.values()) {
