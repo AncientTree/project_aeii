@@ -30,5 +30,6 @@ public class Ability {
     public static final int GUARDIAN = 22;
     public static final int HEALING_AURA = 23;
     public static final int LORD_OF_TERROR = 24;
+    public static final int COUNTER_MADNESS = 25;
 
 }

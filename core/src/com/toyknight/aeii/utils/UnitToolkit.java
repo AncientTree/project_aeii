@@ -98,8 +98,12 @@ public class UnitToolkit {
     }
 
     public static boolean canCounter(Unit counter, Unit attacker) {
-        return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) == 1
-                && isWithinRange(counter, attacker.getX(), attacker.getY());
+        if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
+            return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) <= 2;
+        } else {
+            return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) == 1
+                    && isWithinRange(counter, attacker.getX(), attacker.getY());
+        }
     }
 
     private static int getRange(int unit_x, int unit_y, int target_x, int target_y) {

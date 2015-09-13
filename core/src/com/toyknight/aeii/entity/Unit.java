@@ -353,7 +353,7 @@ public class Unit implements Serializable {
     }
 
     public void attachStatus(Status status) {
-        if (getStatus() == null) {
+        if (getStatus() == null || getStatus().getType() == status.getType()) {
             this.status = status;
         }
     }
