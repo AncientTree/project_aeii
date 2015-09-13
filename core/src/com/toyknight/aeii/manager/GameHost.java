@@ -190,6 +190,7 @@ public class GameHost {
             Unit healer = getGame().getMap().getUnit(position.x, position.y);
             if (healer.hasAbility(Ability.HEALING_AURA)) {
                 Set<Point> attackable_positions = getManager().createAttackablePositions(healer);
+                attackable_positions.add(getGame().getMap().getPosition(healer.getX(), healer.getY()));
                 for (Point target_position : attackable_positions) {
                     //there's a unit at the position
                     if (unit_position_set.contains(target_position)) {
