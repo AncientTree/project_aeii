@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameHost;
@@ -21,10 +23,11 @@ import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
 
 public class AEIIApplication extends Game {
 
@@ -42,7 +45,7 @@ public class AEIIApplication extends Game {
     private Skin skin;
 
     FileHandle config_file;
-    private Properties configuration;
+    private ObjectMap<String, String> configuration;
 
     private Screen previous_screen;
 
@@ -70,10 +73,8 @@ public class AEIIApplication extends Game {
     public void create() {
         try {
             FileProvider.setPlatform(PLATFORM);
-
-            loadConfiguration();
-
             Language.init();
+            loadConfiguration();
             TileFactory.loadTileData();
             UnitFactory.loadUnitData();
             ResourceManager.loadResources();
@@ -115,23 +116,26 @@ public class AEIIApplication extends Game {
 
     private void loadConfiguration() throws AEIIException {
         config_file = FileProvider.getUserFile("user.config");
-        configuration = new Properties();
+        configuration = new ObjectMap<String, String>();
         try {
             if (config_file.exists() && !config_file.isDirectory()) {
-                configuration.load(config_file.read());
+                InputStreamReader reader = new InputStreamReader(config_file.read(), "UTF8");
+                PropertiesUtils.load(configuration, reader);
             } else {
-                configuration.put("username", "nobody");
-                configuration.store(config_file.write(false), "");
+                configuration.put("username", Language.getText("USERNAME_DEFAULT"));
+                OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
+                PropertiesUtils.store(configuration, writer, "aeii user configure file");
             }
         } catch (IOException ex) {
             throw new AEIIException(ex.getMessage());
         }
     }
 
-    public void updateConfigureation(String key, String value) {
+    public void updateConfiguration(String key, String value) {
         try {
-            configuration.setProperty(key, value);
-            configuration.store(config_file.write(false), "");
+            configuration.put(key, value);
+            OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
+            PropertiesUtils.store(configuration, writer, "aeii user configure file");
         } catch (IOException ex) {
             Gdx.app.log(TAG, ex.toString());
         }
@@ -158,7 +162,7 @@ public class AEIIApplication extends Game {
         return PLATFORM;
     }
 
-    public Properties getConfiguration() {
+    public ObjectMap<String, String> getConfiguration() {
         return configuration;
     }
 
@@ -216,7 +220,7 @@ public class AEIIApplication extends Game {
         //set the message and title
         dialog.getContentTable().reset();
         dialog.getContentTable().add(new Label(content, getSkin()));
-        dialog.setWidth(Math.max(TILE_SIZE * 6, FontRenderer.getTextFont().getBounds(content).width + TILE_SIZE));
+        dialog.setWidth(Math.max(TILE_SIZE * 6, FontRenderer.getTextLayout(content).width + TILE_SIZE));
 
         //set the button
         dialog.getButtonTable().reset();
@@ -252,7 +256,7 @@ public class AEIIApplication extends Game {
     }
 
     public String getUsername() {
-        return getConfiguration().getProperty("username", "nobody");
+        return getConfiguration().get("username", Language.getText("USERNAME_DEFAULT"));
     }
 
     public boolean isGameHost() {
@@ -290,7 +294,6 @@ public class AEIIApplication extends Game {
     @Override
     public void render() {
         synchronized (RENDER_LOCK) {
-            //getNetworkManager().updateTasks();
             Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             super.render();
@@ -330,7 +333,7 @@ public class AEIIApplication extends Game {
     }
 
     private static String byteArrayToHexString(byte[] b) {
-        StringBuffer resultSb = new StringBuffer();
+        StringBuilder resultSb = new StringBuilder();
         for (int i = 0; i < b.length; i++) {
             resultSb.append(byteToHexString(b[i]));
         }

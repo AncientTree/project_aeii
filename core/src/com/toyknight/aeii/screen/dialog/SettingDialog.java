@@ -14,7 +14,7 @@ import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 8/31/2015.
+ * @author toyknight 8/31/2015.
  */
 public class SettingDialog extends Table {
 
@@ -61,7 +61,7 @@ public class SettingDialog extends Table {
     }
 
     private void save() {
-        getContext().updateConfigureation("username", tf_username.getText());
+        getContext().updateConfiguration("username", tf_username.getText());
     }
 
     public void display() {

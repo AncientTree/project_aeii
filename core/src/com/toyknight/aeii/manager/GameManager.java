@@ -62,6 +62,9 @@ public class GameManager implements AnimationDispatcher {
         this.game.initialize();
         this.state = STATE_SELECT;
         this.event_dispatcher_listeners.clear();
+        this.event_queue.clear();
+        this.animation_queue.clear();
+        this.current_animation = null;
         this.animation_listeners.clear();
     }
 
@@ -270,7 +273,7 @@ public class GameManager implements AnimationDispatcher {
         move_mark_map = new int[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                move_mark_map[x][y] = -1;
+                move_mark_map[x][y] = Integer.MIN_VALUE;
             }
         }
     }

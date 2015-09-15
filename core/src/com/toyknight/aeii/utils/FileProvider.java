@@ -62,4 +62,14 @@ public class FileProvider {
         }
     }
 
+    public static FileHandle getLanguageFile() {
+        String locale = java.util.Locale.getDefault().toString();
+        FileHandle language_file = getAssetsFile("lang/" + locale + ".dat");
+        if (language_file.exists() && !language_file.isDirectory()) {
+            return language_file;
+        } else {
+            return getAssetsFile("lang/en_US.dat");
+        }
+    }
+
 }

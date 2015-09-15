@@ -1,5 +1,6 @@
 package com.toyknight.aeii;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -23,7 +24,7 @@ import java.util.Scanner;
  */
 public class ResourceManager {
 
-    private static final SuffixFileFilter png_filter = new SuffixFileFilter("png");
+    private static final String TAG = "RES";
 
     private static Texture ms_logo_texture;
     private static Texture ae_logo_texture;
@@ -109,7 +110,7 @@ public class ResourceManager {
             createShaders();
             createColors();
         } catch (GdxRuntimeException ex) {
-            throw new AEIIException(ex.getMessage());
+            Gdx.app.log(TAG, ex.toString());
         }
     }
 

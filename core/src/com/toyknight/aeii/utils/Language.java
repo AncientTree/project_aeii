@@ -1,25 +1,27 @@
 package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.AEIIException;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
 
 /**
  * Created by Majirefy on 5/22/15.
  */
 public class Language {
 
-    private static ObjectMap<String, String> languageMap = new ObjectMap();
+    private static ObjectMap<String, String> languageMap = new ObjectMap<String, String>();
 
     public static void init() throws AEIIException {
+        String locale = java.util.Locale.getDefault().toString();
         try {
-            FileHandle languageFile = FileProvider.getAssetsFile("lang/lang.dat");
-            Reader languageReader = languageFile.reader();
-            PropertiesUtils.load(languageMap, languageReader);
+            FileHandle languageFile = FileProvider.getLanguageFile();
+            InputStreamReader reader = new InputStreamReader(languageFile.read(), "UTF8");
+            PropertiesUtils.load(languageMap, reader);
         } catch (IOException ex) {
             throw new AEIIException(ex.getClass() + ": " + ex.getMessage());
         }
@@ -30,7 +32,7 @@ public class Language {
     }
 
     public static String getText(String key) {
-        return languageMap.get(key);
+        return languageMap.get(key, "");
     }
 
     public static String createCharset() {
@@ -39,11 +41,12 @@ public class Language {
         for (String text : values) {
             charset += text;
         }
-        return removeDuplicate(charset.replaceAll("\\p{Graph}", ""));
+        String additional_charset = FileProvider.getAssetsFile("lang/charset.dat").readString("UTF8");
+        return charset + additional_charset;
     }
 
-    private static String removeDuplicate(String s) {
-        char[] temp = s.toCharArray();
+    public static String removeDuplicate(String str) {
+        char[] temp = str.toCharArray();
         int length = temp.length;
         for (int i = 0; i < length; i++) {
             for (int j = i + 1; j < length; j++) {
@@ -58,7 +61,8 @@ public class Language {
                 }
             }
         }
-        return String.copyValueOf(temp).substring(0, length);
+        String result = String.copyValueOf(temp).substring(0, length);
+        return result;
     }
 
 }

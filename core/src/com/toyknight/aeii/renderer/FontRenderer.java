@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -17,6 +18,8 @@ import com.toyknight.aeii.utils.Language;
 public class FontRenderer {
 
     private static final int[] SIZE_TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE};
+
+    private static GlyphLayout font_layout = new GlyphLayout();
 
     private static BitmapFont ui_font_title;
     private static BitmapFont ui_font_text;
@@ -32,7 +35,10 @@ public class FontRenderer {
     }
 
     public static void loadFonts(int ts) {
-        String charset = Language.createCharset();
+        String language_charset = Language.createCharset();
+        String default_charset = FreeTypeFontGenerator.DEFAULT_CHARS;
+        String charset = Language.removeDuplicate(default_charset + language_charset);
+
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
 
         FreeTypeFontParameter title_parameter = new FreeTypeFontParameter();
@@ -41,7 +47,7 @@ public class FontRenderer {
         title_parameter.shadowColor = Color.DARK_GRAY;
         title_parameter.shadowOffsetX = ts / 24;
         title_parameter.shadowOffsetY = ts / 24;
-        title_parameter.characters += charset;
+        title_parameter.characters = charset;
         ui_font_title = generator.generateFont(title_parameter);
 
         FreeTypeFontParameter text_parameter = new FreeTypeFontParameter();
@@ -49,7 +55,7 @@ public class FontRenderer {
         text_parameter.color = Color.WHITE;
         text_parameter.borderColor = Color.BLACK;
         text_parameter.borderWidth = ts / 24;
-        text_parameter.characters += charset;
+        text_parameter.characters = charset;
         ui_font_text = generator.generateFont(text_parameter);
         generator.dispose();
 
@@ -77,14 +83,19 @@ public class FontRenderer {
         ui_font_title.setColor(color.r, color.g, color.b, alpha);
     }
 
+    public static GlyphLayout getTitleLayout(String str) {
+        font_layout.setText(ui_font_title, str);
+        return font_layout;
+    }
+
     public static void drawTitle(Batch batch, String str, float x, float y) {
         ui_font_title.draw(batch, str, x, y);
     }
 
     public static void drawTitleCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
-        BitmapFont.TextBounds bounds = ui_font_title.getBounds(str);
-        float x = target_x + (target_width - bounds.width) / 2;
-        float y = target_y + (target_height - bounds.height) / 2 + bounds.height;
+        font_layout.setText(ui_font_title, str);
+        float x = target_x + (target_width - font_layout.width) / 2;
+        float y = target_y + (target_height - font_layout.height) / 2 + font_layout.height;
         drawTitle(batch, str, x, y);
     }
 
@@ -102,14 +113,19 @@ public class FontRenderer {
         ui_font_text.setColor(color.r, color.g, color.b, alpha);
     }
 
+    public static GlyphLayout getTextLayout(String str) {
+        font_layout.setText(ui_font_text, str);
+        return font_layout;
+    }
+
     public static void drawText(Batch batch, String str, float x, float y) {
         ui_font_text.draw(batch, str, x, y);
     }
 
     public static void drawTextCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
-        BitmapFont.TextBounds bounds = ui_font_text.getBounds(str);
-        float x = target_x + (target_width - bounds.width) / 2;
-        float y = target_y + (target_height - bounds.height) / 2 + bounds.height;
+        font_layout.setText(ui_font_text, str);
+        float x = target_x + (target_width - font_layout.width) / 2;
+        float y = target_y + (target_height - font_layout.height) / 2 + font_layout.height;
         drawText(batch, str, x, y);
     }
 

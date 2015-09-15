@@ -82,7 +82,7 @@ public class RightPanelRenderer {
             //draw level
             String level_str = Integer.toString(target_unit.getLevel());
             FontRenderer.drawText(batch, level_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(level_str).width) / 2,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextLayout(level_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - (hh - lbh) / 2);
             //draw attack
             String attack_str = Integer.toString(target_unit.getAttack());
@@ -95,31 +95,31 @@ public class RightPanelRenderer {
                     break;
             }
             FontRenderer.drawText(batch, attack_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(attack_str).width) / 2,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextLayout(attack_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - hh - (hh - lbh) / 2);
             FontRenderer.setTextColor(Color.WHITE);
             //draw physical defence
             String pdefence_str = Integer.toString(target_unit.getPhysicalDefence());
             FontRenderer.drawText(batch, pdefence_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(pdefence_str).width) / 2,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextLayout(pdefence_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - hh * 2 - (hh - lbh) / 2);
             //draw magical defence
             String mdefence_str = Integer.toString(target_unit.getMagicalDefence());
             FontRenderer.drawText(batch, mdefence_str,
-                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextFont().getBounds(mdefence_str).width) / 2,
+                    screen.getViewportWidth() + pad + hw + (fsize - hw - FontRenderer.getTextLayout(mdefence_str).width) / 2,
                     screen.getViewportHeight() - fsize - pad - hh * 3 - (hh - lbh) / 2);
             //draw health points
             String hp_str = target_unit.getCurrentHp() + "/" + target_unit.getMaxHp();
             FontRenderer.setTextColor(Color.GREEN);
             FontRenderer.drawText(batch, hp_str,
-                    screen.getViewportWidth() + pad + FontRenderer.getTextFont().getBounds(STR_HP).width,
+                    screen.getViewportWidth() + pad + FontRenderer.getTextLayout(STR_HP).width,
                     screen.getViewportHeight() - fsize - pad - hh * 4 - ts / 4);
             //draw experience
             String exp_str = target_unit.getLevelUpExperience() > 0 ?
                     target_unit.getCurrentExperience() + "/" + target_unit.getLevelUpExperience() : "-/-";
             FontRenderer.setTextColor(Color.CYAN);
             FontRenderer.drawText(batch, exp_str,
-                    screen.getViewportWidth() + pad + FontRenderer.getTextFont().getBounds(STR_EXP).width,
+                    screen.getViewportWidth() + pad + FontRenderer.getTextLayout(STR_EXP).width,
                     screen.getViewportHeight() - fsize - pad - hh * 4 - lbh - ts / 2);
             FontRenderer.setTextColor(Color.WHITE);
         }

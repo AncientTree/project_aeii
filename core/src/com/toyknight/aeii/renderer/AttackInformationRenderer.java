@@ -103,7 +103,7 @@ public class AttackInformationRenderer {
                 lmargin + hw + ts * 3 / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         if (attacker_atk_bonus > 0) {
-            float attack_width = FontRenderer.getTextFont().getBounds(attacker_attack_str).width;
+            float attack_width = FontRenderer.getTextLayout(attacker_attack_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw + ts * 4 / 24 + ts / 4 + attack_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
@@ -126,7 +126,7 @@ public class AttackInformationRenderer {
                 lmargin + hw + ts * 3 / 24 + ts / 4,
                 infoy + tfh + ts * 2 / 24 + (tfh - lbh) / 2 + lbh);
         if (modified_defender_atk > 0 && defender_atk_bonus > 0) {
-            float attack_width = FontRenderer.getTextFont().getBounds(defender_attack_str).width;
+            float attack_width = FontRenderer.getTextLayout(defender_attack_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw + ts * 4 / 24 + ts / 4 + attack_width,
                     infoy + tfh + ts * 2 / 24 + (tfh - ah) / 2,
@@ -147,12 +147,12 @@ public class AttackInformationRenderer {
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         if (attacker_defence_bonus > 0) {
-            float p_defence_width = FontRenderer.getTextFont().getBounds(attacker_p_defence_str).width;
+            float p_defence_width = FontRenderer.getTextLayout(attacker_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
                     aw, ah);
-            float m_defence_width = FontRenderer.getTextFont().getBounds(attacker_m_defence_str).width;
+            float m_defence_width = FontRenderer.getTextLayout(attacker_m_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 3 + tfw * 2 + 8 * ts / 24 + ts / 4 + m_defence_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
@@ -171,12 +171,12 @@ public class AttackInformationRenderer {
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
         if (defender_defence_bonus > 0) {
-            float p_defence_width = FontRenderer.getTextFont().getBounds(defender_p_defence_str).width;
+            float p_defence_width = FontRenderer.getTextLayout(defender_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
                     infoy + tfh + 2 * ts / 24 + (tfh - ah) / 2,
                     aw, ah);
-            float m_defence_width = FontRenderer.getTextFont().getBounds(defender_m_defence_str).width;
+            float m_defence_width = FontRenderer.getTextLayout(defender_m_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 3 + tfw * 2 + 8 * ts / 24 + ts / 4 + m_defence_width,
                     infoy + tfh + 2 * ts / 24 + (tfh - ah) / 2,
