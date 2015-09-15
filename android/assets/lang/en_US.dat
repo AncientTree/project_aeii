@@ -1,4 +1,6 @@
 ﻿
+FONT=en_US.ttf
+
 LB_ABOUT=About
 LB_AUTHOR=Author
 LB_BACK=Back
@@ -62,8 +64,6 @@ LB_TYPE=Type
 LB_USERNAME=Username
 LB_WIDTH=Width
 LB_WIN=Wins
-
-USERNAME_DEFAULT=nobody
 
 UNIT_NAME_0=Soldier
 UNIT_NAME_1=Archer

@@ -122,7 +122,7 @@ public class AEIIApplication extends Game {
                 InputStreamReader reader = new InputStreamReader(config_file.read(), "UTF8");
                 PropertiesUtils.load(configuration, reader);
             } else {
-                configuration.put("username", Language.getText("USERNAME_DEFAULT"));
+                configuration.put("username", "nobody");
                 OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
                 PropertiesUtils.store(configuration, writer, "aeii user configure file");
             }
@@ -256,7 +256,7 @@ public class AEIIApplication extends Game {
     }
 
     public String getUsername() {
-        return getConfiguration().get("username", Language.getText("USERNAME_DEFAULT"));
+        return getConfiguration().get("username", "nobody");
     }
 
     public boolean isGameHost() {

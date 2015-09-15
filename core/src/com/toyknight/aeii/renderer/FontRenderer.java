@@ -39,7 +39,7 @@ public class FontRenderer {
         String default_charset = FreeTypeFontGenerator.DEFAULT_CHARS;
         String charset = Language.removeDuplicate(default_charset + language_charset);
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getAssetsFile("fonts/ui_default.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getUIDefaultFont());
 
         FreeTypeFontParameter title_parameter = new FreeTypeFontParameter();
         title_parameter.size = ts / 2;

@@ -27,6 +27,10 @@ public class Language {
         }
     }
 
+    public static String getFontFilename() {
+        return languageMap.get("FONT", "en_US.ttf");
+    }
+
     public static String getUnitName(int index) {
         return languageMap.get("UNIT_NAME_" + index);
     }
@@ -41,8 +45,8 @@ public class Language {
         for (String text : values) {
             charset += text;
         }
-        String additional_charset = FileProvider.getAssetsFile("lang/charset.dat").readString("UTF8");
-        return charset + additional_charset;
+        //String additional_charset = FileProvider.getAssetsFile("lang/charset.dat").readString("UTF8");
+        return charset;
     }
 
     public static String removeDuplicate(String str) {

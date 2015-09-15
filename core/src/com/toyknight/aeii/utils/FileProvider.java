@@ -72,4 +72,9 @@ public class FileProvider {
         }
     }
 
+    public static FileHandle getUIDefaultFont() {
+        String filename = Language.getFontFilename();
+        return getAssetsFile("fonts/" + filename);
+    }
+
 }
