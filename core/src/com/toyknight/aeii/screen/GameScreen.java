@@ -297,6 +297,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
+    public void onPlayerJoin(String service_name, String username) {
+        message_board.appendMessage(null, username + " " + Language.getText("LB_JOINS"));
+    }
+
+    @Override
     public void onPlayerLeave(String service_name, String username) {
         if (getContext().isGameHost()) {
             String[] team_allocation = getContext().getRoomConfig().team_allocation;

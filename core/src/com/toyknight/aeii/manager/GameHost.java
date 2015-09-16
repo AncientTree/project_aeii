@@ -49,11 +49,11 @@ public class GameHost {
         return context;
     }
 
-    private static GameManager getManager() {
+    public static GameManager getManager() {
         return manager;
     }
 
-    private static GameCore getGame() {
+    public static GameCore getGame() {
         return manager.getGame();
     }
 

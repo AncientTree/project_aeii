@@ -30,6 +30,7 @@ LB_INITIAL_GOLD=初始金币
 LB_IRRITATE=挑衅
 LB_JOIN=加入
 LB_JOINING=加入中...
+LB_JOINS=加入了游戏
 LB_LEAVE=离开
 LB_LEAVING=离开中...
 LB_LOAD=载入

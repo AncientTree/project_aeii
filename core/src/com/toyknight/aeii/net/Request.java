@@ -28,6 +28,8 @@ public class Request {
 
     public static final int CREATE_ROOM = 0x11;
 
-    public static final int SHUTDOWN = 0x12;
+    public static final int GET_GAME = 0x12;
+
+    public static final int SHUTDOWN = 0x100;
 
 }

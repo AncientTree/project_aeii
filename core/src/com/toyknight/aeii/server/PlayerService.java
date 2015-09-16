@@ -1,9 +1,11 @@
 package com.toyknight.aeii.server;
 
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
+import com.toyknight.aeii.server.entity.Room;
 import com.toyknight.aeii.server.entity.RoomConfig;
 import com.toyknight.aeii.server.entity.RoomSnapshot;
 
@@ -125,6 +127,19 @@ public class PlayerService extends Thread {
         executor.submit(task);
     }
 
+    public GameCore requestGame() throws IOException, ClassNotFoundException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(NetworkManager.REQUEST);
+            oos.writeInt(Request.GET_GAME);
+            oos.flush();
+        }
+        synchronized (INPUT_LOCK) {
+            GameCore game = (GameCore) ois.readObject();
+            INPUT_LOCK.notifyAll();
+            return game;
+        }
+    }
+
     private void respondOpenRooms() throws IOException {
         ArrayList<RoomSnapshot> snapshot = getContext().getRoomSnapshot();
         synchronized (OUTPUT_LOCK) {
@@ -140,17 +155,24 @@ public class PlayerService extends Thread {
 
     private void respondJoinRoom(long room_number) throws IOException {
         RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
-        synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            oos.writeObject(config);
-            oos.flush();
+        if (config == null) {
+            synchronized (OUTPUT_LOCK) {
+                GameCore game = getContext().onPlayerJoinStartedGame(getName(), room_number);
+                oos.writeInt(NetworkManager.RESPONSE);
+                oos.writeObject(game);
+                oos.flush();
+            }
+        } else {
+            synchronized (OUTPUT_LOCK) {
+                oos.writeInt(NetworkManager.RESPONSE);
+                oos.writeObject(config);
+                oos.flush();
+            }
         }
-        if (config != null) {
-            getContext().getLogger().log(
-                    Level.INFO,
-                    "Player {0}@{1} joins room-{2}",
-                    new Object[]{getUsername(), getClientAddress(), room_number});
-        }
+        getContext().getLogger().log(
+                Level.INFO,
+                "Player {0}@{1} tries to join room-{2}",
+                new Object[]{getUsername(), getClientAddress(), room_number});
     }
 
     private void respondLeaveRoom() {

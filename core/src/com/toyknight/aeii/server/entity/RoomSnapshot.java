@@ -29,6 +29,10 @@ public class RoomSnapshot implements Serializable {
         return room_number;
     }
 
+    public boolean isOpen() {
+        return open;
+    }
+
     public String getRoomName() {
         return room_name;
     }

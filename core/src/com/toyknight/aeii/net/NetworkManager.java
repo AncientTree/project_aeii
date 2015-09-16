@@ -5,6 +5,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
@@ -151,7 +152,7 @@ public class NetworkManager {
         }
     }
 
-    public RoomConfig requestJoinRoom(long room_number) throws IOException, ClassNotFoundException {
+    public Object requestJoinRoom(long room_number) throws IOException, ClassNotFoundException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);
             oos.writeInt(Request.JOIN_ROOM);
@@ -160,9 +161,9 @@ public class NetworkManager {
         }
         synchronized (INPUT_LOCK) {
             try {
-                RoomConfig config = (RoomConfig) ois.readObject();
+                Object response = ois.readObject();
                 INPUT_LOCK.notifyAll();
-                return config;
+                return response;
             } catch (IOException ex) {
                 INPUT_LOCK.notifyAll();
                 throw ex;
@@ -344,6 +345,14 @@ public class NetworkManager {
                         if (getListener() != null) {
                             getListener().onAllianceUpdate(alliance);
                         }
+                    }
+                    break;
+                case Request.GET_GAME:
+                    GameCore game = GameHost.getGame();
+                    synchronized (OUTPUT_LOCK) {
+                        oos.writeInt(NetworkManager.RESPONSE);
+                        oos.writeObject(game);
+                        oos.flush();
                     }
                     break;
                 default:

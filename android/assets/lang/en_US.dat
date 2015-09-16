@@ -30,6 +30,7 @@ LB_INITIAL_GOLD=Initial Gold
 LB_IRRITATE=Irritate
 LB_JOIN=Join
 LB_JOINING=Joining...
+LB_JOINS=joins the game
 LB_LEAVE=Leave
 LB_LEAVING=Leaving...
 LB_LOAD=Load

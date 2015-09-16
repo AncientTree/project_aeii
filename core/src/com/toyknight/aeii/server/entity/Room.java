@@ -67,11 +67,13 @@ public class Room {
     public void addPlayer(String service_name) {
         synchronized (PLAYER_LOCK) {
             players.add(service_name);
-            for (int team = 0; team < 4; team++) {
-                if (getMap().hasTeamAccess(team) && team_allocation[team].equals("NONE")) {
-                    player_type[team] = Player.LOCAL;
-                    team_allocation[team] = service_name;
-                    break;
+            if (isOpen()) {
+                for (int team = 0; team < 4; team++) {
+                    if (getMap().hasTeamAccess(team) && team_allocation[team].equals("NONE")) {
+                        player_type[team] = Player.LOCAL;
+                        team_allocation[team] = service_name;
+                        break;
+                    }
                 }
             }
         }
@@ -80,14 +82,16 @@ public class Room {
     public void removePlayer(String service_name) {
         synchronized (PLAYER_LOCK) {
             players.remove(service_name);
-            for (int team = 0; team < 4; team++) {
-                if (!team_allocation[team].equals("NONE") && team_allocation[team].equals(service_name)) {
-                    player_type[team] = Player.NONE;
-                    team_allocation[team] = "NONE";
+            if (isOpen()) {
+                for (int team = 0; team < 4; team++) {
+                    if (!team_allocation[team].equals("NONE") && team_allocation[team].equals(service_name)) {
+                        player_type[team] = Player.NONE;
+                        team_allocation[team] = "NONE";
+                    }
                 }
-            }
-            if (host_service != null && host_service.equals(service_name)) {
-                host_service = null;
+                if (host_service != null && host_service.equals(service_name)) {
+                    host_service = null;
+                }
             }
         }
     }

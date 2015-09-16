@@ -13,7 +13,9 @@ import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.net.NetworkListener;
 import com.toyknight.aeii.net.task.NetworkTask;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
@@ -28,6 +30,7 @@ import com.toyknight.aeii.utils.MapFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by toyknight on 8/23/2015.
@@ -94,7 +97,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_join.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                doJoinRoom();
+                tryJoinRoom();
             }
         });
         addActor(btn_join);
@@ -176,24 +179,34 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         });
     }
 
-    private void doJoinRoom() {
+    private void tryJoinRoom() {
         if (getSelectedRoom() != null) {
             Gdx.input.setInputProcessor(null);
             btn_join.setText(Language.getText("LB_JOINING"));
-            getContext().getNetworkManager().postTask(new NetworkTask<RoomConfig>() {
+            getContext().getNetworkManager().postTask(new NetworkTask<Object>() {
                 @Override
-                public RoomConfig doTask() throws IOException, ClassNotFoundException {
+                public Object doTask() throws IOException, ClassNotFoundException {
                     return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().getRoomNumber());
                 }
 
                 @Override
-                public void onFinish(RoomConfig config) {
-                    if (config == null) {
-                        btn_join.setText(Language.getText("LB_JOIN"));
+                public void onFinish(Object result) {
+                    btn_join.setText(Language.getText("LB_JOIN"));
+                    if (result == null) {
                         getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
                     } else {
-                        btn_join.setText(Language.getText("LB_JOIN"));
-                        getContext().gotoNetGameCreateScreen(config);
+                        if (result instanceof RoomConfig) {
+                            getContext().gotoNetGameCreateScreen((RoomConfig) result);
+                        }
+                        if (result instanceof GameCore) {
+                            GameCore game = (GameCore) result;
+                            for (int team = 0; team < 4; team++) {
+                                if (game.getPlayer(team) != null) {
+                                    game.getPlayer(team).setType(Player.REMOTE);
+                                }
+                            }
+                            getContext().gotoGameScreen((GameCore) result);
+                        }
                     }
                 }
 

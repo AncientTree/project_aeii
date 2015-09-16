@@ -1,5 +1,6 @@
 package com.toyknight.aeii.server;
 
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.server.entity.PlayerSnapshot;
@@ -201,6 +202,33 @@ public class AEIIServer {
             }
 
             return createRoomConfig(room);
+        } else {
+            return null;
+        }
+    }
+
+    public GameCore onPlayerJoinStartedGame(String service_name, long room_number) {
+        Room room = getRoom(room_number);
+        if (room != null && room.getRemaining() > 0 && room.getHostService() != null) {
+            room.addPlayer(service_name);
+            getService(service_name).setRoomNumber(room_number);
+            try {
+                GameCore game = getService(room.getHostService()).requestGame();
+
+                //notify player join
+                for (String player : room.getPlayers()) {
+                    PlayerService player_service = getService(player);
+                    if (player_service != null && !player.equals(service_name)) {
+                        player_service.notifyPlayerJoining(service_name, getService(service_name).getUsername());
+                    }
+                }
+
+                return game;
+            } catch (IOException e) {
+                return null;
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
         } else {
             return null;
         }
