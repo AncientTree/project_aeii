@@ -13,8 +13,7 @@ import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;
-import com.toyknight.aeii.manager.GameHost;
-import com.toyknight.aeii.net.task.NetworkTask;
+import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
@@ -22,8 +21,8 @@ import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
-import com.toyknight.aeii.server.entity.PlayerSnapshot;
-import com.toyknight.aeii.server.entity.RoomConfig;
+import com.toyknight.aeii.serializable.PlayerSnapshot;
+import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -100,7 +99,7 @@ public class NetGameCreateScreen extends StageScreen {
         });
         addActor(btn_preview);
 
-        map_preview = new MiniMapDialog(ts, getContext().getSkin());
+        map_preview = new MiniMapDialog(this);
         map_preview.addClickListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -271,7 +270,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private void tryUpdateAllocation() {
         Gdx.input.setInputProcessor(null);
-        getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
                 getContext().getNetworkManager().requestUpdateAllocation(room_config.team_allocation, room_config.player_type);
@@ -292,7 +291,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private void tryUpdateAlliance() {
         Gdx.input.setInputProcessor(null);
-        getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
                 getContext().getNetworkManager().requestUpdateAlliance(room_config.alliance_state);
@@ -314,7 +313,7 @@ public class NetGameCreateScreen extends StageScreen {
     private void tryLeaveRoom() {
         Gdx.input.setInputProcessor(null);
         btn_leave.setText(Language.getText("LB_LEAVING"));
-        getContext().getNetworkManager().postTask(new NetworkTask<Void>() {
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
                 getContext().getNetworkManager().requestLeaveRoom();
@@ -339,7 +338,7 @@ public class NetGameCreateScreen extends StageScreen {
         //local check
         Gdx.input.setInputProcessor(null);
         btn_start.setText(Language.getText("LB_STARTING"));
-        getContext().getNetworkManager().postTask(new NetworkTask<Boolean>() {
+        getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
                 return getContext().getNetworkManager().requestStartGame();
@@ -380,12 +379,18 @@ public class NetGameCreateScreen extends StageScreen {
         }
         Rule rule = Rule.getDefaultRule();
         rule.setMaxPopulation(room_config.max_population);
-        GameCore game = new GameCore(room_config.map, rule, players);
+        GameCore game = new GameCore(room_config.map, rule, GameCore.SKIRMISH, players);
         getContext().gotoGameScreen(game);
     }
 
     private boolean isHost() {
         return getContext().getNetworkManager().getServiceName().equals(room_config.host);
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        map_preview.update(delta);
     }
 
     @Override

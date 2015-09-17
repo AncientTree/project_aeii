@@ -1,15 +1,15 @@
-package com.toyknight.aeii.server.entity;
+package com.toyknight.aeii.serializable;
 
 /**
  * Created by toyknight on 8/24/2015.
  */
-public class Server {
+public class ServerConfig {
 
     private final String address;
     private final int port;
     private final String name;
 
-    public Server(String address, int port, String name) {
+    public ServerConfig(String address, int port, String name) {
         this.address = address;
         this.port = port;
         this.name = name;

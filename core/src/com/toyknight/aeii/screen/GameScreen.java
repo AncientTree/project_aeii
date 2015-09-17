@@ -2,7 +2,6 @@ package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,7 +19,7 @@ import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
-import com.toyknight.aeii.screen.widgets.MessageBox;
+import com.toyknight.aeii.screen.dialog.MessageBox;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -66,10 +65,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     private MessageBoard message_board;
 
-    private SaveLoadDialog save_load_dialog;
-    private UnitStoreDialog unit_store;
+    private UnitStoreDialog unit_store_dialog;
+    private GameLoadDialog game_load_dialog;
+    private MiniMapDialog mini_map;
     private MessageBox message_box;
-    private MiniMap mini_map;
     private GameMenu menu;
 
     public GameScreen(AEIIApplication context) {
@@ -102,9 +101,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.btn_menu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                closeAllWindows();
-                menu.display();
-                onButtonUpdateRequested();
+                showDialog("menu");
             }
         });
         this.addActor(btn_menu);
@@ -140,23 +137,19 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.action_button_bar.setPosition(0, ts + action_button_bar.getButtonHeight() / 4);
         this.addActor(action_button_bar);
 
-        //save load dialog
-        this.save_load_dialog =
-                new SaveLoadDialog(getContext(), new Rectangle(0, ts, getViewportWidth(), getViewportHeight()));
-        this.addActor(save_load_dialog);
-        this.save_load_dialog.setVisible(false);
+        //game load dialog
+        this.game_load_dialog = new GameLoadDialog(this);
+        this.addDialog("load", game_load_dialog);
 
         //unit store
-        this.unit_store = new UnitStoreDialog(this, getContext().getSkin());
-        this.addActor(unit_store);
-        this.unit_store.setVisible(false);
+        this.unit_store_dialog = new UnitStoreDialog(this);
+        this.addDialog("store", unit_store_dialog);
 
         //game menu
         this.menu = new GameMenu(this);
-        this.addActor(menu);
-        this.menu.setVisible(false);
+        this.addDialog("menu", menu);
 
-        this.message_box = new MessageBox(getContext());
+        this.message_box = new MessageBox(this);
         this.message_box.setBounds((viewport.width - ts * 8) / 2, (viewport.height - ts * 8) / 2 + ts, ts * 8, ts * 8);
         this.message_box.setCallback(new DialogCallback() {
             @Override
@@ -164,12 +157,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 closeDialog("message");
             }
         });
-        addDialog("message", message_box);
+        this.addDialog("message", message_box);
 
         //mini map
-        this.mini_map = new MiniMap(this);
-        this.addActor(mini_map);
-        this.mini_map.setVisible(false);
+        this.mini_map = new MiniMapDialog(this);
+        this.mini_map.addClickListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeDialog("map");
+            }
+        });
+        this.addDialog("map", mini_map);
     }
 
     @Override
@@ -298,7 +296,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onPlayerJoin(String service_name, String username) {
-        message_board.appendMessage(null, username + " " + Language.getText("LB_JOINS"));
+        appendMessage(null, username + " " + Language.getText("LB_JOINS"));
     }
 
     @Override
@@ -311,7 +309,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 }
             }
             onButtonUpdateRequested();
-            message_board.appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
+            appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
         } else {
             if (getContext().getHostService().equals(service_name)) {
                 getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
@@ -322,7 +320,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                 });
             } else {
-                message_board.appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
+                appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
             }
         }
     }
@@ -362,14 +360,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         } else {
             btn_message.setVisible(false);
         }
-        onButtonUpdateRequested();
         message_board.clearMessages();
-        mini_map.updateBounds();
-        unit_store.setVisible(false);
-        mini_map.setVisible(false);
-        menu.setVisible(false);
+        mini_map.setMap(getGame().getMap());
+        mini_map.updateBounds(0, ts, viewport.width, viewport.height);
+        closeAllDialogs();
 
-        message_board.appendMessage(null, Language.getText("MSG_INFO_GS"));
+        appendMessage(null, Language.getText("MSG_INFO_GS"));
+        onButtonUpdateRequested();
     }
 
     public void prepare(GameCore game) {
@@ -395,7 +392,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 case GameManager.STATE_BUY:
                     if (keyCode == Input.Keys.B) {
                         getGameManager().setState(GameManager.STATE_SELECT);
-                        showUnitStore();
+                        showDialog("store");
                     }
                     if (keyCode == Input.Keys.M) {
                         getGameManager().beginMovePhase();
@@ -619,7 +616,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         Unit target_unit = getGame().getMap().getUnit(map_x, map_y);
         if (target_unit == null) {
             if (getGame().isCastleAccessible(target_tile)) {
-                showUnitStore();
+                showDialog("store");
             }
         } else {
             if (getGame().isUnitAccessible(target_unit)) {
@@ -632,49 +629,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             } else {
                 if (target_unit.isCommander() && target_unit.getTeam() == getGame().getCurrentTeam() &&
                         getGame().isCastleAccessible(target_tile)) {
-                    showUnitStore();
+                    showDialog("store");
                 }
                 if (target_unit.getTeam() != getGame().getCurrentTeam()) {
                     getGameManager().beginPreviewPhase(target_unit);
                 }
             }
         }
-    }
-
-    public void showUnitStore() {
-        closeAllWindows();
-        unit_store.display(cursor_map_x, cursor_map_y);
-        onButtonUpdateRequested();
-    }
-
-    public void showMiniMap() {
-        closeAllWindows();
-        mini_map.setVisible(true);
-        onButtonUpdateRequested();
-    }
-
-    public void showSaveDialog() {
-        closeAllWindows();
-        save_load_dialog.display(SaveLoadDialog.MODE_SAVE);
-        onButtonUpdateRequested();
-    }
-
-    public void showLoadDialog() {
-        closeAllWindows();
-        save_load_dialog.display(SaveLoadDialog.MODE_LOAD);
-        onButtonUpdateRequested();
-    }
-
-    public boolean isWindowOpened() {
-        return save_load_dialog.isVisible() || unit_store.isVisible() || mini_map.isVisible() || menu.isVisible();
-    }
-
-    public void closeAllWindows() {
-        save_load_dialog.setVisible(false);
-        unit_store.setVisible(false);
-        mini_map.setVisible(false);
-        menu.setVisible(false);
-        onButtonUpdateRequested();
     }
 
     @Override
@@ -705,6 +666,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         getContext().getNetworkManager().disconnect();
     }
 
+    public void appendMessage(String username, String message) {
+        message_board.appendMessage(username, message);
+    }
+
     private boolean isOnUnitAnimation(int x, int y) {
         if (manager.isAnimating()) {
             Animator current_animation = manager.getCurrentAnimation();
@@ -716,8 +681,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     public boolean canOperate() {
         return getGameManager().getCurrentAnimation() == null &&
-                !save_load_dialog.isVisible() &&
-                !unit_store.isVisible() &&
+                !game_load_dialog.isVisible() &&
+                !unit_store_dialog.isVisible() &&
                 !mini_map.isVisible() &&
                 !menu.isVisible() &&
                 getGame().getCurrentPlayer().isLocalPlayer();

@@ -68,12 +68,15 @@ public class StringList<T> extends Widget {
         return selection.first();
     }
 
-    public void setItems(Array items) {
+    public void setItems(Array<T> items) {
         if (items == null) throw new IllegalArgumentException("list items cannot be null.");
         this.items.clear();
         this.items.addAll(items);
         this.prefWidth = getWidth();
         this.prefHeight = items.size * item_height;
+        if (items.size > 0) {
+            setSelectedIndex(0);
+        }
     }
 
     public void setSelectedIndex(int index) {

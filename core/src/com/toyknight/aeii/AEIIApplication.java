@@ -19,7 +19,8 @@ import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
-import com.toyknight.aeii.server.entity.RoomConfig;
+import com.toyknight.aeii.serializable.GameSave;
+import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AEIIApplication extends Game {
 
@@ -41,6 +44,8 @@ public class AEIIApplication extends Game {
 
     private final int TILE_SIZE;
     private final Platform PLATFORM;
+
+    private ExecutorService executor;
 
     private Skin skin;
 
@@ -72,6 +77,8 @@ public class AEIIApplication extends Game {
     @Override
     public void create() {
         try {
+            executor = Executors.newSingleThreadExecutor();
+
             FileProvider.setPlatform(PLATFORM);
             Language.init();
             loadConfiguration();
@@ -174,6 +181,10 @@ public class AEIIApplication extends Game {
         return dialog.isVisible();
     }
 
+    public void submitAsyncTask(AsyncTask task) {
+        executor.submit(task);
+    }
+
     public void gotoMainMenuScreen() {
         gotoScreen(main_menu_screen);
     }
@@ -185,7 +196,14 @@ public class AEIIApplication extends Game {
 
     public void gotoGameScreen(GameCore game) {
         AudioManager.stopCurrentBGM();
+        game.initialize();
         game_screen.prepare(game);
+        gotoScreen(game_screen);
+    }
+
+    public void gotoGameScreen(GameSave save) {
+        AudioManager.stopCurrentBGM();
+        game_screen.prepare(save.game);
         gotoScreen(game_screen);
     }
 
@@ -245,10 +263,6 @@ public class AEIIApplication extends Game {
         if (getScreen() instanceof StageScreen) {
             Gdx.input.setInputProcessor((StageScreen) getScreen());
         }
-    }
-
-    public MainMenuScreen getMainMenuScreen() {
-        return main_menu_screen;
     }
 
     public NetworkManager getNetworkManager() {

@@ -9,10 +9,10 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.net.task.NetworkTask;
-import com.toyknight.aeii.server.entity.RoomConfig;
-import com.toyknight.aeii.server.entity.RoomSnapshot;
-import com.toyknight.aeii.server.entity.Server;
+import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomSnapshot;
+import com.toyknight.aeii.serializable.ServerConfig;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -31,8 +31,6 @@ public class NetworkManager {
     private final Object INPUT_LOCK = new Object();
     private final Object OUTPUT_LOCK = new Object();
 
-    private final ExecutorService executor;
-
     private NetworkListener listener;
 
     private boolean running;
@@ -45,7 +43,6 @@ public class NetworkManager {
     private ObjectOutputStream oos;
 
     public NetworkManager() {
-        this.executor = Executors.newSingleThreadExecutor();
         this.running = true;
     }
 
@@ -65,7 +62,7 @@ public class NetworkManager {
         return listener;
     }
 
-    public boolean connect(Server server, String username, String v_string) throws IOException {
+    public boolean connect(ServerConfig server, String username, String v_string) throws IOException {
         if (server_socket != null) {
             disconnect();
         }
@@ -100,10 +97,6 @@ public class NetworkManager {
 
     public String getServiceName() {
         return service_name;
-    }
-
-    public void postTask(NetworkTask task) {
-        executor.submit(task);
     }
 
     public ArrayList<RoomSnapshot> requestOpenRoomList() throws IOException, ClassNotFoundException {

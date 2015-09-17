@@ -1,23 +1,16 @@
 package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.renderer.BorderRenderer;
+import com.toyknight.aeii.screen.MainMenuScreen;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 6/21/2015.
+ * @author toyknight 6/21/2015.
  */
-public class MainMenu extends Table {
-
-    private final int ts;
-    private final AEIIApplication context;
+public class MainMenu extends BasicDialog {
 
     private final int MARGIN;
     private final int BUTTON_WIDTH;
@@ -33,10 +26,8 @@ public class MainMenu extends Table {
     private TextButton btn_about;
     private TextButton btn_exit;
 
-    public MainMenu(AEIIApplication context) {
-        this.context = context;
-        this.ts = getContext().getTileSize();
-
+    public MainMenu(MainMenuScreen screen) {
+        super(screen);
         this.MARGIN = ts / 4;
         this.BUTTON_WIDTH = ts * 4;
         this.BUTTON_HEIGHT = ts / 3 * 2;
@@ -47,10 +38,6 @@ public class MainMenu extends Table {
                 (Gdx.graphics.getHeight() - 85 * ts / 48 - menu_height) / 2,
                 menu_width, menu_height);
         this.initComponents();
-    }
-
-    private AEIIApplication getContext() {
-        return context;
     }
 
     private void initComponents() {
@@ -74,7 +61,7 @@ public class MainMenu extends Table {
         this.btn_multiplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().getMainMenuScreen().showServerList();
+                getOwner().showDialog("server");
             }
         });
         this.add(btn_multiplayer).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -90,7 +77,7 @@ public class MainMenu extends Table {
         this.btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().showMessage(Language.getText("MSG_INFO_NSY"), null);
+                getOwner().showDialog("load");
             }
         });
         this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -122,12 +109,8 @@ public class MainMenu extends Table {
         this.layout();
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        batch.flush();
-        super.draw(batch, parentAlpha);
+    public MainMenuScreen getOwner() {
+        return (MainMenuScreen) super.getOwner();
     }
 
 }

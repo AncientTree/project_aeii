@@ -57,7 +57,7 @@ public class TestScreen extends StageScreen {
                         players[i].setGold(1000);
                     }
                 }
-                GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), players);
+                GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), GameCore.SKIRMISH, players);
                 getContext().gotoGameScreen(game);
             }
         });

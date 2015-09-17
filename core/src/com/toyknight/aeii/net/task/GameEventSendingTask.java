@@ -1,5 +1,6 @@
 package com.toyknight.aeii.net.task;
 
+import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
 /**
  * Created by toyknight on 8/29/2015.
  */
-public class GameEventSendingTask extends NetworkTask<Void> {
+public class GameEventSendingTask extends AsyncTask<Void> {
 
     private final GameEvent event;
 

@@ -3,10 +3,10 @@ package com.toyknight.aeii.server;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.server.entity.PlayerSnapshot;
+import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.server.entity.Room;
-import com.toyknight.aeii.server.entity.RoomConfig;
-import com.toyknight.aeii.server.entity.RoomSnapshot;
+import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class AEIIServer {
 
     private static final Logger logger = Logger.getLogger("com.toyknight.aeii.server");
-    private static final String V_STRING = "3d9aec7cad320a6b90fe92e23c1f722a";
+    private static final String V_STRING = "c2018dfc3970bada57e1f348021e58ed";
 
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();

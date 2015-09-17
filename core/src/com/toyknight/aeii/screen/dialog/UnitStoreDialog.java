@@ -27,10 +27,8 @@ import java.util.ArrayList;
 /**
  * Created by toyknight on 4/20/2015.
  */
-public class UnitStoreDialog extends Table implements UnitListListener {
+public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
-    private final int ts;
-    private final GameScreen screen;
     private final int UNIT_STORE_WIDTH;
     private final int UNIT_STORE_HEIGHT;
 
@@ -43,39 +41,18 @@ public class UnitStoreDialog extends Table implements UnitListListener {
     private Unit selected_unit;
     private int price;
 
-    public UnitStoreDialog(GameScreen screen, Skin skin) {
-        this.screen = screen;
-        this.ts = screen.getContext().getTileSize();
+    public UnitStoreDialog(GameScreen screen) {
+        super(screen);
         this.UNIT_STORE_WIDTH = 11 * ts;
         this.UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
-        this.initComponents(skin);
+        this.setBounds(
+                (getOwner().getViewportWidth() - UNIT_STORE_WIDTH) / 2,
+                (getOwner().getViewportHeight() - UNIT_STORE_HEIGHT) / 2 + ts,
+                UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
+        this.initComponents(getContext().getSkin());
     }
 
     private void initComponents(Skin skin) {
-        this.setBounds(
-                (screen.getViewportWidth() - UNIT_STORE_WIDTH) / 2,
-                (screen.getViewportHeight() - UNIT_STORE_HEIGHT) / 2 + ts,
-                UNIT_STORE_WIDTH, UNIT_STORE_HEIGHT);
-        this.btn_buy = new TextButton(Language.getText("LB_BUY"), skin);
-        this.btn_buy.setBounds(ts * 6, ts / 2, ts * 2, ts);
-        this.btn_buy.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                GameHost.doBuyUnit(selected_unit.getIndex(), castle_x, castle_y);
-                close();
-            }
-        });
-        this.addActor(btn_buy);
-        TextButton btn_close = new TextButton(Language.getText("LB_CLOSE"), skin);
-        btn_close.setBounds(ts * 8 + ts / 2, ts / 2, ts * 2, ts);
-        btn_close.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                close();
-            }
-        });
-        this.addActor(btn_close);
-
         this.unit_list = new AvailableUnitList(ts);
         this.unit_list.setUnitListListener(this);
         ScrollPane sp_unit_list = new ScrollPane(unit_list, skin) {
@@ -90,38 +67,58 @@ public class UnitStoreDialog extends Table implements UnitListListener {
         sp_unit_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_unit_list.setScrollBarPositions(false, true);
+        //sp_unit_list.setFadeScrollBars(false);
         sp_unit_list.setBounds(ts / 2, ts / 2, ts * 5, ts * 3 / 2 * 5);
         this.addActor(sp_unit_list);
+
+        this.btn_buy = new TextButton(Language.getText("LB_BUY"), skin);
+        this.btn_buy.setBounds(ts * 6, ts / 2, ts * 2, ts);
+        this.btn_buy.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameHost.doBuyUnit(selected_unit.getIndex(), castle_x, castle_y);
+                getOwner().closeDialog("store");
+            }
+        });
+        this.addActor(btn_buy);
+        TextButton btn_close = new TextButton(Language.getText("LB_CLOSE"), skin);
+        btn_close.setBounds(ts * 8 + ts / 2, ts / 2, ts * 2, ts);
+        btn_close.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("store");
+            }
+        });
+        this.addActor(btn_close);
+    }
+
+    public GameScreen getOwner() {
+        return (GameScreen) super.getOwner();
     }
 
     private GameCore getGame() {
-        return screen.getGame();
+        return getOwner().getGame();
     }
 
     private GameManager getManager() {
-        return screen.getGameManager();
+        return getOwner().getGameManager();
     }
 
-    public void display(int castle_x, int castle_y) {
-        this.castle_x = castle_x;
-        this.castle_y = castle_y;
-        this.unit_list.setGame(screen.getGame());
-        GameManager manager = screen.getGameManager();
+    @Override
+    public void display() {
+        this.castle_x = getOwner().getCursorMapX();
+        this.castle_y = getOwner().getCursorMapY();
+        this.unit_list.setGame(getGame());
+        GameManager manager = getManager();
         ArrayList<Integer> available_units = manager.getGame().getRule().getAvailableUnitList();
         unit_list.setAvailableUnits(available_units);
-        this.setVisible(true);
-    }
-
-    public void close() {
-        this.setVisible(false);
-        screen.onButtonUpdateRequested();
     }
 
     @Override
     public void onUnitSelected(int index) {
         selected_unit = UnitFactory.getSample(index);
         if (selected_unit.isCommander()) {
-            selected_unit = screen.getGameManager().getGame().getCommander(selected_unit.getTeam());
+            selected_unit = getGame().getCommander(selected_unit.getTeam());
         }
         updateButton();
     }
@@ -129,7 +126,7 @@ public class UnitStoreDialog extends Table implements UnitListListener {
     private void updateButton() {
         int current_team = getGame().getCurrentTeam();
         if (selected_unit != null) {
-            price = screen.getGame().getUnitPrice(selected_unit.getIndex(), current_team);
+            price = getGame().getUnitPrice(selected_unit.getIndex(), current_team);
             btn_buy.setVisible(canBuy(selected_unit.getIndex(), price));
         } else {
             btn_buy.setVisible(false);
@@ -149,13 +146,8 @@ public class UnitStoreDialog extends Table implements UnitListListener {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    protected void drawCustom(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(ResourceManager.getPanelBackground(), x, y, width, height);
-        BorderRenderer.drawBorder(batch, x, y, width, height);
-        batch.draw(ResourceManager.getBorderDarkColor(), x + ts / 2 - ts / 24, y + ts / 2 - ts / 24, ts * 5 + ts / 12, ts * 3 / 2 * 5 + ts / 12);
-        batch.flush();
-
         int interval = ts * 13 / 24;
         int lw = FontRenderer.getLNumberWidth(0, false);
         int lh = FontRenderer.getLCharHeight();
@@ -274,7 +266,6 @@ public class UnitStoreDialog extends Table implements UnitListListener {
                 y + height - (ts / 2 + interval + itemh * 2),
                 ts * 4 + ts / 2,
                 1);
-        super.draw(batch, parentAlpha);
     }
 
 }

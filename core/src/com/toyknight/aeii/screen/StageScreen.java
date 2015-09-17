@@ -4,18 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.DialogCallback;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkListener;
+import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
 import java.util.HashMap;
 
 /**
- * Created by toyknight on 8/29/2015.
+ * @author toyknight 8/29/2015.
  */
 public class StageScreen extends Stage implements Screen, NetworkListener {
 
@@ -26,14 +25,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     private boolean dialog_shown;
     private final Stage dialog_stage;
-    private final HashMap<String, Table> dialogs;
+    private final HashMap<String, BasicDialog> dialogs;
 
     public StageScreen(AEIIApplication context) {
         this.context = context;
         this.ts = context.getTileSize();
         this.batch = new SpriteBatch();
         this.dialog_stage = new Stage();
-        this.dialogs = new HashMap<String, Table>();
+        this.dialogs = new HashMap<String, BasicDialog>();
         this.dialog_shown = false;
     }
 
@@ -41,7 +40,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         return context;
     }
 
-    public void addDialog(String name, Table dialog) {
+    public void addDialog(String name, BasicDialog dialog) {
         dialog_stage.addActor(dialog);
         dialogs.put(name, dialog);
         dialog.setVisible(false);
@@ -50,12 +49,13 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     public void showDialog(String name) {
         closeAllDialogs();
         dialogs.get(name).setVisible(true);
+        dialogs.get(name).display();
         Gdx.input.setInputProcessor(dialog_stage);
         dialog_shown = true;
     }
 
     public void closeAllDialogs() {
-        for (Table dialog : dialogs.values()) {
+        for (BasicDialog dialog : dialogs.values()) {
             dialog.setVisible(false);
         }
         Gdx.input.setInputProcessor(this);
@@ -67,6 +67,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         dialog_shown = false;
     }
 
+    public boolean isDialogShown() {
+        return dialog_shown;
+    }
+
+    public Stage getDialogLayer() {
+        return dialog_stage;
+    }
+
     @Override
     public void show() {
     }
@@ -75,7 +83,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     public void render(float delta) {
         this.draw();
         this.act(delta);
-        if (dialog_shown) {
+        if (isDialogShown()) {
             this.dialog_stage.draw();
             this.dialog_stage.act(delta);
         }

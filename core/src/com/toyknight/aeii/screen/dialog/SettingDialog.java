@@ -11,21 +11,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
+import com.toyknight.aeii.screen.MainMenuScreen;
 import com.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 8/31/2015.
  */
-public class SettingDialog extends Table {
-
-    private final int ts;
-    private final AEIIApplication context;
+public class SettingDialog extends BasicDialog {
 
     private TextField tf_username;
 
-    public SettingDialog(AEIIApplication context) {
-        this.context = context;
-        this.ts = getContext().getTileSize();
+    public SettingDialog(MainMenuScreen screen) {
+        super(screen);
         int width = ts * 10;
         int height = ts * 6;
         int title_height = ts * 85 / 48;
@@ -40,7 +37,7 @@ public class SettingDialog extends Table {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 save();
-                getContext().getMainMenuScreen().showMenu();
+                getOwner().closeDialog("setting");
             }
         });
         addActor(btn_ok);
@@ -56,26 +53,20 @@ public class SettingDialog extends Table {
         addActor(tf_username);
     }
 
-    private AEIIApplication getContext() {
-        return context;
-    }
-
     private void save() {
         getContext().updateConfiguration("username", tf_username.getText());
     }
 
+    @Override
+    public MainMenuScreen getOwner() {
+        return (MainMenuScreen) super.getOwner();
+    }
+
+    @Override
     public void display() {
         String username = getContext().getUsername();
         tf_username.setText(username);
         setVisible(true);
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        batch.flush();
-        super.draw(batch, parentAlpha);
     }
 
 }

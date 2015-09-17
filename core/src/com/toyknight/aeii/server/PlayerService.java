@@ -5,9 +5,8 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
-import com.toyknight.aeii.server.entity.Room;
-import com.toyknight.aeii.server.entity.RoomConfig;
-import com.toyknight.aeii.server.entity.RoomSnapshot;
+import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

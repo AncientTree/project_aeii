@@ -1,11 +1,11 @@
-package com.toyknight.aeii.net.task;
+package com.toyknight.aeii;
 
 import com.badlogic.gdx.Gdx;
 
 /**
  * Created by toyknight on 8/26/2015.
  */
-public abstract class NetworkTask<T> implements Runnable {
+public abstract class AsyncTask<T> implements Runnable {
 
     private T result;
 

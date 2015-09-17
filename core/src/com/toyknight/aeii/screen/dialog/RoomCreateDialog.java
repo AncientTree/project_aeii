@@ -16,12 +16,12 @@ import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.net.task.NetworkTask;
+import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.StringList;
-import com.toyknight.aeii.server.entity.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
@@ -30,10 +30,7 @@ import java.io.IOException;
 /**
  * @author toyknight 8/31/2015.
  */
-public class RoomCreateDialog extends Table {
-
-    private final int ts;
-    private final LobbyScreen lobby_screen;
+public class RoomCreateDialog extends BasicDialog {
 
     private TextButton btn_back;
     private TextButton btn_create;
@@ -45,8 +42,7 @@ public class RoomCreateDialog extends Table {
     private StringList<MapFactory.MapSnapshot> map_list;
 
     public RoomCreateDialog(LobbyScreen lobby_screen) {
-        this.lobby_screen = lobby_screen;
-        this.ts = getContext().getTileSize();
+        super(lobby_screen);
         int width = ts * 11;
         this.setBounds((Gdx.graphics.getWidth() - width) / 2, ts / 2, width, Gdx.graphics.getHeight() - ts);
         this.initComponents();
@@ -73,7 +69,7 @@ public class RoomCreateDialog extends Table {
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                lobby_screen.closeDialog("create");
+                getOwner().closeDialog("create");
             }
         });
         btn_back.setBounds(ts / 2, ts / 2, ts * 3, ts);
@@ -91,7 +87,7 @@ public class RoomCreateDialog extends Table {
         btn_preview.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                lobby_screen.showMapPreview(map_list.getSelected());
+                getOwner().showMapPreview(map_list.getSelected());
             }
         });
         btn_preview.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
@@ -122,8 +118,8 @@ public class RoomCreateDialog extends Table {
         addActor(spinner_population);
     }
 
-    private AEIIApplication getContext() {
-        return lobby_screen.getContext();
+    public LobbyScreen getOwner() {
+        return (LobbyScreen) super.getOwner();
     }
 
     public void setEnabled(boolean enabled) {
@@ -139,7 +135,7 @@ public class RoomCreateDialog extends Table {
     private void doCreateRoom() {
         setEnabled(false);
         btn_create.setText(Language.getText("LB_CREATING"));
-        getContext().getNetworkManager().postTask(new NetworkTask<RoomConfig>() {
+        getContext().submitAsyncTask(new AsyncTask<RoomConfig>() {
             @Override
             public RoomConfig doTask() throws AEIIException, IOException, ClassNotFoundException {
                 String map_name = map_list.getSelected().file.name();
@@ -161,7 +157,7 @@ public class RoomCreateDialog extends Table {
             public void onFail(String message) {
                 setEnabled(true);
                 btn_create.setText(Language.getText("LB_CREATE"));
-                lobby_screen.closeDialog("create");
+                getOwner().closeDialog("create");
                 getContext().showMessage(message, null);
             }
         });
@@ -176,13 +172,6 @@ public class RoomCreateDialog extends Table {
         }
         map_list.setItems(maps);
         map_list.setSelectedIndex(0);
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        super.draw(batch, parentAlpha);
     }
 
 }

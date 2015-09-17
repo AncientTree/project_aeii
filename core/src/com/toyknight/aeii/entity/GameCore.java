@@ -10,11 +10,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class GameCore implements Serializable {
 
-    private static final long serialVersionUID = 04032015L;
+    private static final long serialVersionUID = 9172015L;
+
+    public static final int SKIRMISH = 0x1;
+    public static final int CAMPAIGN = 0x2;
+
+    private final int type;
 
     private final Map map;
     private final Rule rule;
@@ -26,9 +31,10 @@ public class GameCore implements Serializable {
     private final Unit[] commanders;
     private final int[] commander_price_delta;
 
-    public GameCore(Map map, Rule rule, Player[] players) {
+    public GameCore(Map map, Rule rule, int type, Player[] players) {
         this.map = map;
         this.rule = rule;
+        this.type = type;
         player_list = new Player[4];
         for (int team = 0; team < 4; team++) {
             if (team < players.length) {
@@ -76,6 +82,10 @@ public class GameCore implements Serializable {
         return rule;
     }
 
+    public final int getType() {
+        return type;
+    }
+
     public void removePlayer(int team) {
         player_list[team] = null;
     }
@@ -97,7 +107,7 @@ public class GameCore implements Serializable {
     }
 
     public int getCommanderPrice(int team) {
-        if (commander_price_delta[team] > 0) {
+        if (commander_price_delta[team] >= 0) {
             int commander_index = UnitFactory.getCommanderIndex();
             return UnitFactory.getSample(commander_index).getPrice() + commander_price_delta[team];
         } else {

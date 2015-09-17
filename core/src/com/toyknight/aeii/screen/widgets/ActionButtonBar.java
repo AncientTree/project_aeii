@@ -46,7 +46,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getGameManager().setState(GameManager.STATE_SELECT);
-                screen.showUnitStore();
+                screen.showDialog("store");
             }
         });
         buttons.put("buy", btn_buy);

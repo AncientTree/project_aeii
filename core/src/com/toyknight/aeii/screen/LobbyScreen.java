@@ -17,11 +17,11 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.net.NetworkListener;
-import com.toyknight.aeii.net.task.NetworkTask;
+import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.dialog.RoomCreateDialog;
-import com.toyknight.aeii.server.entity.RoomConfig;
-import com.toyknight.aeii.server.entity.RoomSnapshot;
+import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomSnapshot;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.widgets.StringList;
@@ -30,7 +30,6 @@ import com.toyknight.aeii.utils.MapFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by toyknight on 8/23/2015.
@@ -116,7 +115,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         room_create_dialog = new RoomCreateDialog(this);
         addDialog("create", room_create_dialog);
 
-        map_preview_dialog = new MiniMapDialog(ts, getContext().getSkin());
+        map_preview_dialog = new MiniMapDialog(this);
         map_preview_dialog.addClickListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -151,7 +150,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         room_list.clearItems();
         Gdx.input.setInputProcessor(null);
         btn_refresh.setText(Language.getText("LB_REFRESHING"));
-        getContext().getNetworkManager().postTask(new NetworkTask<ArrayList<RoomSnapshot>>() {
+        getContext().submitAsyncTask(new AsyncTask<ArrayList<RoomSnapshot>>() {
             @Override
             public ArrayList<RoomSnapshot> doTask() throws IOException, ClassNotFoundException {
                 return getContext().getNetworkManager().requestOpenRoomList();
@@ -183,7 +182,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         if (getSelectedRoom() != null) {
             Gdx.input.setInputProcessor(null);
             btn_join.setText(Language.getText("LB_JOINING"));
-            getContext().getNetworkManager().postTask(new NetworkTask<Object>() {
+            getContext().submitAsyncTask(new AsyncTask<Object>() {
                 @Override
                 public Object doTask() throws IOException, ClassNotFoundException {
                     return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().getRoomNumber());

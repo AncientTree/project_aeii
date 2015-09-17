@@ -2,6 +2,7 @@ package com.toyknight.aeii.server.entity;
 
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
+import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.util.Arrays;
 import java.util.HashSet;

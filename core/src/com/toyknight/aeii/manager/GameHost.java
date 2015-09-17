@@ -279,7 +279,7 @@ public class GameHost {
 
     public static void dispatchEvent(GameEvent event) {
         if (getContext().getNetworkManager().isConnected()) {
-            getContext().getNetworkManager().postTask(new GameEventSendingTask(event));
+            getContext().submitAsyncTask(new GameEventSendingTask(event));
         }
         getManager().queueGameEvent(event);
     }

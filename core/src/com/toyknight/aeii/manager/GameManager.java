@@ -59,7 +59,6 @@ public class GameManager implements AnimationDispatcher {
 
     public void setGame(GameCore game) {
         this.game = game;
-        this.game.initialize();
         this.state = STATE_SELECT;
         this.event_dispatcher_listeners.clear();
         this.event_queue.clear();

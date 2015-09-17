@@ -7,24 +7,30 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
+import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.screen.StageScreen;
+
+import java.util.Set;
 
 /**
  * Created by toyknight on 8/31/2015.
  */
-public class MiniMapDialog extends Table {
+public class MiniMapDialog extends BasicDialog {
 
-    private final int ts;
     private final int sts;
 
     private final Button btn_close;
 
     private Map map;
 
-    public MiniMapDialog(int ts, Skin skin) {
-        this.ts = ts;
+    private float state_time;
+
+    public MiniMapDialog(StageScreen owner) {
+        super(owner);
         this.sts = ts / 24 * 10;
-        this.btn_close = new Button(skin);
+        this.btn_close = new Button(getContext().getSkin());
         this.addActor(btn_close);
     }
 
@@ -40,10 +46,19 @@ public class MiniMapDialog extends Table {
         return map;
     }
 
+    @Override
+    public void display() {
+        state_time = 0f;
+    }
+
+    public void update(float delta) {
+        state_time += delta;
+    }
+
     public void updateBounds(int parent_x, int parent_y, int parent_width, int parent_height) {
         int width = getMap().getWidth() * sts + 10;
         int height = getMap().getHeight() * sts + 10;
-        this.setBounds((parent_width - width) / 2 + parent_y, (parent_height - height) / 2 + parent_x, width, height);
+        this.setBounds((parent_width - width) / 2 + parent_x, (parent_height - height) / 2 + parent_y, width, height);
         this.btn_close.setBounds(0, 0, getWidth(), getHeight());
     }
 
@@ -62,6 +77,17 @@ public class MiniMapDialog extends Table {
                         x + map_x * sts + 5, y + height - 5 - map_y * sts - sts, sts, sts);
             }
         }
+
+        Set<Point> unit_positions = getMap().getUnitPositionSet();
+        for (Point position : unit_positions) {
+            Unit unit = getMap().getUnit(position.x, position.y);
+            if (((int) (state_time / 0.3f)) % 2 != 0) {
+                batch.draw(
+                        ResourceManager.getMiniIcon(unit.getTeam()),
+                        x + unit.getX() * sts + 5, y + height - 5 - unit.getY() * sts - sts, sts, sts);
+            }
+        }
+        batch.flush();
     }
 
 }

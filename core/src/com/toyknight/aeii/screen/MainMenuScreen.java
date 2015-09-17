@@ -9,6 +9,7 @@ import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.AELogoAnimator;
 import com.toyknight.aeii.animator.AELogoGlowAnimator;
+import com.toyknight.aeii.screen.dialog.GameLoadDialog;
 import com.toyknight.aeii.screen.dialog.MainMenu;
 import com.toyknight.aeii.screen.dialog.ServerListDialog;
 import com.toyknight.aeii.screen.dialog.SettingDialog;
@@ -24,6 +25,7 @@ public class MainMenuScreen extends StageScreen {
 
     private final MainMenu menu;
     private final ServerListDialog server_list;
+    private final GameLoadDialog load_dialog;
     private final SettingDialog setting_dialog;
 
     private final CircleButton btn_setting;
@@ -35,24 +37,34 @@ public class MainMenuScreen extends StageScreen {
         super(context);
         this.logo_animator = new AELogoAnimator();
         this.logo_glow_animator = new AELogoGlowAnimator();
-        this.menu = new MainMenu(getContext());
+
+        this.menu = new MainMenu(this);
         this.menu.setVisible(false);
         this.addActor(menu);
-        this.server_list = new ServerListDialog(getContext());
-        this.server_list.setVisible(false);
-        this.addActor(server_list);
-        this.setting_dialog = new SettingDialog(getContext());
-        this.setting_dialog.setVisible(false);
-        this.addActor(setting_dialog);
+
+        this.server_list = new ServerListDialog(this);
+        this.addDialog("server", server_list);
+
+        this.load_dialog = new GameLoadDialog(this);
+        this.load_dialog.setCancelAction(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                closeDialog("load");
+            }
+        });
+        this.addDialog("load", load_dialog);
+
+        this.setting_dialog = new SettingDialog(this);
+        this.addDialog("setting", setting_dialog);
 
         this.btn_setting = new CircleButton(CircleButton.LARGE, ResourceManager.getMenuIcon(4), ts);
         this.btn_setting.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (setting_dialog.isVisible()) {
-                    showMenu();
+                    showDialog("menu");
                 } else {
-                    showSettingDialog();
+                    showDialog("setting");
                 }
             }
         });
@@ -66,30 +78,6 @@ public class MainMenuScreen extends StageScreen {
         addActor(lb_version);
 
         this.logo_shown = false;
-    }
-
-    public void showMenu() {
-        if (logo_shown) {
-            clearScreen();
-            menu.setVisible(true);
-        }
-    }
-
-    public void showServerList() {
-        clearScreen();
-        server_list.setSelectedIndex(0);
-        server_list.setVisible(true);
-    }
-
-    public void showSettingDialog() {
-        clearScreen();
-        setting_dialog.display();
-    }
-
-    private void clearScreen() {
-        menu.setVisible(false);
-        server_list.setVisible(false);
-        setting_dialog.setVisible(false);
     }
 
     @Override
@@ -122,7 +110,7 @@ public class MainMenuScreen extends StageScreen {
     public void show() {
         Gdx.input.setInputProcessor(this);
         AudioManager.loopMainTheme();
-        showMenu();
+        closeAllDialogs();
     }
 
 }

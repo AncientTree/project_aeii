@@ -1,4 +1,4 @@
-package com.toyknight.aeii.server.entity;
+package com.toyknight.aeii.serializable;
 
 import com.toyknight.aeii.entity.Map;
 

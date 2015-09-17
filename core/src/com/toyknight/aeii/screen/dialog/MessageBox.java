@@ -1,4 +1,4 @@
-package com.toyknight.aeii.screen.widgets;
+package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,15 +10,14 @@ import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.task.MessageSendingTask;
 import com.toyknight.aeii.renderer.BorderRenderer;
+import com.toyknight.aeii.screen.StageScreen;
+import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 9/7/2015.
+ * @author toyknight 9/7/2015.
  */
-public class MessageBox extends Table {
-
-    private final int ts;
-    private final AEIIApplication context;
+public class MessageBox extends BasicDialog {
 
     private DialogCallback callback;
 
@@ -30,14 +29,9 @@ public class MessageBox extends Table {
     private TextButton btn_irritate;
     private TextButton btn_close;
 
-    public MessageBox(AEIIApplication context) {
-        this.context = context;
-        this.ts = getContext().getTileSize();
+    public MessageBox(StageScreen owner) {
+        super(owner);
         this.initComponents();
-    }
-
-    private AEIIApplication getContext() {
-        return context;
     }
 
     private void initComponents() {
@@ -125,7 +119,7 @@ public class MessageBox extends Table {
     }
 
     public void sendMessage(String message) {
-        getContext().getNetworkManager().postTask(new MessageSendingTask(message) {
+        getContext().submitAsyncTask(new MessageSendingTask(message) {
             @Override
             public Void doTask() throws Exception {
                 getContext().getNetworkManager().requestSubmitMessage(message);
@@ -146,13 +140,6 @@ public class MessageBox extends Table {
 
     public void setCallback(DialogCallback callback) {
         this.callback = callback;
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        super.draw(batch, parentAlpha);
     }
 
 }
