@@ -21,15 +21,17 @@ import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
+import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 8/28/2015.
+ * @author toyknight 8/28/2015.
  */
 public class NetGameCreateScreen extends StageScreen {
 
+    private GameSave game_save;
     private RoomConfig room_config;
     private Array<PlayerSnapshot> players = new Array<PlayerSnapshot>();
 
@@ -192,6 +194,10 @@ public class NetGameCreateScreen extends StageScreen {
         addActor(info_group);
     }
 
+    public void setGameSave(GameSave game_save) {
+        this.game_save = game_save;
+    }
+
     public void setRoomConfig(RoomConfig config) {
         this.room_config = config;
         players.clear();
@@ -269,7 +275,6 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void tryUpdateAllocation() {
-        Gdx.input.setInputProcessor(null);
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
@@ -279,7 +284,6 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFinish(Void result) {
-                Gdx.input.setInputProcessor(NetGameCreateScreen.this);
             }
 
             @Override
@@ -290,7 +294,6 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void tryUpdateAlliance() {
-        Gdx.input.setInputProcessor(null);
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
@@ -300,7 +303,6 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFinish(Void result) {
-                Gdx.input.setInputProcessor(NetGameCreateScreen.this);
             }
 
             @Override
@@ -341,14 +343,18 @@ public class NetGameCreateScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
-                return getContext().getNetworkManager().requestStartGame();
+                if (game_save == null) {
+                    return getContext().getNetworkManager().requestStartGame();
+                } else {
+                    return getContext().getNetworkManager().requestStartGame(game_save);
+                }
             }
 
             @Override
             public void onFinish(Boolean success) {
                 if (success) {
                     btn_start.setText(Language.getText("LB_START"));
-                    createGame();
+                    createGame(game_save);
                 } else {
                     btn_start.setText(Language.getText("LB_START"));
                     getContext().showMessage(Language.getText("MSG_ERR_CNSG"), null);
@@ -363,24 +369,42 @@ public class NetGameCreateScreen extends StageScreen {
         });
     }
 
-    private void createGame() {
-        Player[] players = new Player[4];
-        for (int team = 0; team < 4; team++) {
-            if (room_config.map.hasTeamAccess(team) && !room_config.team_allocation[team].equals("NONE")) {
-                players[team] = new Player();
-                players[team].setAlliance(room_config.alliance_state[team]);
-                players[team].setGold(room_config.initial_gold);
-                if (getContext().getNetworkManager().getServiceName().equals(room_config.team_allocation[team])) {
-                    players[team].setType(room_config.player_type[team]);
-                } else {
-                    players[team].setType(Player.REMOTE);
+    private void createGame(GameSave game_save) {
+        if (game_save == null) {
+            Player[] players = new Player[4];
+            for (int team = 0; team < 4; team++) {
+                if (room_config.map.hasTeamAccess(team) && !room_config.team_allocation[team].equals("NONE")) {
+                    players[team] = new Player();
+                    players[team].setAlliance(room_config.alliance_state[team]);
+                    players[team].setGold(room_config.initial_gold);
+                    if (getContext().getNetworkManager().getServiceName().equals(room_config.team_allocation[team])) {
+                        players[team].setType(room_config.player_type[team]);
+                    } else {
+                        players[team].setType(Player.REMOTE);
+                    }
                 }
             }
+            Rule rule = Rule.getDefaultRule();
+            rule.setMaxPopulation(room_config.max_population);
+            GameCore game = new GameCore(room_config.map, rule, GameCore.SKIRMISH, players);
+            getContext().gotoGameScreen(game);
+        } else {
+            GameCore game = game_save.game;
+            for (int team = 0; team < 4; team++) {
+                if (game.getPlayer(team) != null) {
+                    if (room_config.team_allocation[team].equals("NONE")) {
+                        game.removePlayer(team);
+                    } else {
+                        if (getContext().getNetworkManager().getServiceName().equals(room_config.team_allocation[team])) {
+                            game.getPlayer(team).setType(Player.LOCAL);
+                        } else {
+                            game.getPlayer(team).setType(Player.REMOTE);
+                        }
+                    }
+                }
+            }
+            getContext().gotoGameScreen(game_save);
         }
-        Rule rule = Rule.getDefaultRule();
-        rule.setMaxPopulation(room_config.max_population);
-        GameCore game = new GameCore(room_config.map, rule, GameCore.SKIRMISH, players);
-        getContext().gotoGameScreen(game);
     }
 
     private boolean isHost() {
@@ -414,13 +438,17 @@ public class NetGameCreateScreen extends StageScreen {
         map_preview.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         lb_population.setText(" " + room_config.max_population + " ");
-        lb_gold.setText(" " + room_config.initial_gold + " ");
+        if (room_config.initial_gold >= 0) {
+            lb_gold.setText(" " + room_config.initial_gold + " ");
+        } else {
+            lb_gold.setText(" - ");
+        }
 
         team_setting_table.clear();
         for (int team = 0; team < 4; team++) {
             if (room_config.map.hasTeamAccess(team)) {
                 AEIIApplication.setButtonEnabled(btn_allocate[team], isHost());
-                spinner_alliance[team].setEnabled(isHost());
+                spinner_alliance[team].setEnabled(isHost() && game_save == null);
                 spinner_type[team].setSelectedIndex(0);
                 spinner_type[team].setEnabled(isHost());
 
@@ -479,8 +507,8 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     @Override
-    public void onGameStart() {
-        createGame();
+    public void onGameStart(GameSave game_save) {
+        createGame(game_save);
     }
 
     private final SpinnerListener allocation_listener = new SpinnerListener() {

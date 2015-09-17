@@ -73,7 +73,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_map_editor).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        this.btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
+        this.btn_load = new TextButton(Language.getText("LB_LOAD_GAME"), getContext().getSkin());
         this.btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

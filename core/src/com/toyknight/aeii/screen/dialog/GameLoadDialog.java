@@ -164,7 +164,7 @@ public class GameLoadDialog extends BasicDialog {
         public boolean accept(File file) {
             if (file.exists() && !file.isDirectory()) {
                 String filename = file.getName();
-                return filename.endsWith("sav") || filename.endsWith("rec");
+                return filename.endsWith(".sav") || filename.endsWith(".rec");
             } else {
                 return false;
             }

@@ -30,6 +30,8 @@ public class Request {
 
     public static final int GET_GAME = 0x12;
 
+    public static final int RESUME_GAME = 0x13;
+
     public static final int SHUTDOWN = 0x100;
 
 }

@@ -5,6 +5,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
+import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 
@@ -113,6 +114,11 @@ public class PlayerService extends Thread {
 
     public void notifyGameStart() {
         NotificationTask task = new NotificationTask(Request.START_GAME);
+        executor.submit(task);
+    }
+
+    public void notifyGameResume(GameSave game_save) {
+        NotificationTask task = new NotificationTask(Request.RESUME_GAME, game_save);
         executor.submit(task);
     }
 
@@ -233,6 +239,22 @@ public class PlayerService extends Thread {
         }
     }
 
+    private void respondResumeGame() throws IOException, ClassNotFoundException {
+        GameSave game_save = (GameSave) ois.readObject();
+        boolean approved = getContext().onResumeGame(room_number, getName(), game_save);
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(NetworkManager.RESPONSE);
+            oos.writeBoolean(approved);
+            oos.flush();
+        }
+        if (approved) {
+            getContext().getLogger().log(
+                    Level.INFO,
+                    "Player {0}@{1} starts game",
+                    new Object[]{getUsername(), getClientAddress()});
+        }
+    }
+
     public void receiveGameEvent() throws IOException, ClassNotFoundException {
         GameEvent event = (GameEvent) ois.readObject();
         getContext().onSubmitGameEvent(getName(), event);
@@ -295,13 +317,12 @@ public class PlayerService extends Thread {
     }
 
     private void processRequest(int request) throws IOException, ClassNotFoundException {
-        long room_number;
         switch (request) {
             case Request.LIST_ROOMS:
                 respondOpenRooms();
                 break;
             case Request.JOIN_ROOM:
-                room_number = ois.readLong();
+                long room_number = ois.readLong();
                 respondJoinRoom(room_number);
                 break;
             case Request.LEAVE_ROOM:
@@ -318,6 +339,9 @@ public class PlayerService extends Thread {
                 break;
             case Request.START_GAME:
                 respondStartGame();
+                break;
+            case Request.RESUME_GAME:
+                respondResumeGame();
                 break;
             case Request.GAME_EVENT:
                 receiveGameEvent();

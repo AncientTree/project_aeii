@@ -7,24 +7,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.AEIIException;
-import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.*;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.AsyncTask;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.StringList;
+import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.utils.FileProvider;
+import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 
 /**
@@ -32,14 +32,22 @@ import java.io.IOException;
  */
 public class RoomCreateDialog extends BasicDialog {
 
+    private final SaveFileFilter filter = new SaveFileFilter();
+
+    private int mode;
+    private GameSave game_save;
+
     private TextButton btn_back;
     private TextButton btn_create;
     private TextButton btn_preview;
 
+    private Label lb_initial_gold;
+    private Label lb_max_population;
+
     private Spinner<Integer> spinner_capacity;
     private Spinner<Integer> spinner_gold;
     private Spinner<Integer> spinner_population;
-    private StringList<MapFactory.MapSnapshot> map_list;
+    private StringList<Object> object_list;
 
     public RoomCreateDialog(LobbyScreen lobby_screen) {
         super(lobby_screen);
@@ -49,8 +57,8 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        map_list = new StringList<MapFactory.MapSnapshot>(ts);
-        ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin()) {
+        object_list = new StringList<Object>(ts);
+        ScrollPane sp_map_list = new ScrollPane(object_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
@@ -87,7 +95,7 @@ public class RoomCreateDialog extends BasicDialog {
         btn_preview.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().showMapPreview(map_list.getSelected());
+                preview();
             }
         });
         btn_preview.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
@@ -101,7 +109,7 @@ public class RoomCreateDialog extends BasicDialog {
         spinner_capacity.setItems(new Integer[]{2, 3, 4, 5, 6, 7, 8});
         addActor(spinner_capacity);
 
-        Label lb_initial_gold = new Label(Language.getText("LB_INITIAL_GOLD"), getContext().getSkin());
+        lb_initial_gold = new Label(Language.getText("LB_INITIAL_GOLD"), getContext().getSkin());
         lb_initial_gold.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 3 - ts / 2, ts * 3, ts);
         addActor(lb_initial_gold);
         spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());
@@ -109,7 +117,7 @@ public class RoomCreateDialog extends BasicDialog {
         spinner_gold.setItems(new Integer[]{500, 1000, 1500, 2000});
         addActor(spinner_gold);
 
-        Label lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
+        lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
         lb_max_population.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 5 - ts / 2, ts * 3, ts);
         addActor(lb_max_population);
         spinner_population = new Spinner<Integer>(ts, getContext().getSkin());
@@ -118,60 +126,151 @@ public class RoomCreateDialog extends BasicDialog {
         addActor(spinner_population);
     }
 
+    @Override
     public LobbyScreen getOwner() {
         return (LobbyScreen) super.getOwner();
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 
     public void setEnabled(boolean enabled) {
         AEIIApplication.setButtonEnabled(btn_back, enabled);
         AEIIApplication.setButtonEnabled(btn_create, enabled);
         AEIIApplication.setButtonEnabled(btn_preview, enabled);
-        map_list.setEnabled(enabled);
+        object_list.setEnabled(enabled);
         spinner_capacity.setEnabled(enabled);
         spinner_gold.setEnabled(enabled);
         spinner_population.setEnabled(enabled);
     }
 
+    private void preview() {
+        if (mode == LobbyScreen.NEW_GAME) {
+            getOwner().showMapPreview((MapFactory.MapSnapshot) object_list.getSelected());
+        }
+        if (mode == LobbyScreen.LOAD_GAME) {
+            String filename = (String) object_list.getSelected();
+            FileHandle save_file = FileProvider.getSaveFile(filename);
+            GameSave save = GameFactory.loadGame(save_file);
+            if (save == null) {
+                getContext().showMessage(Language.getText("MSG_ERR_BSF"), new DialogCallback() {
+                    @Override
+                    public void doCallback() {
+                        Gdx.input.setInputProcessor(getOwner().getDialogLayer());
+                    }
+                });
+            } else {
+                getOwner().showMapPreview(save.game.getMap());
+            }
+        }
+    }
+
     private void doCreateRoom() {
-        setEnabled(false);
-        btn_create.setText(Language.getText("LB_CREATING"));
-        getContext().submitAsyncTask(new AsyncTask<RoomConfig>() {
-            @Override
-            public RoomConfig doTask() throws AEIIException, IOException, ClassNotFoundException {
-                String map_name = map_list.getSelected().file.name();
-                Map map = MapFactory.createMap(map_list.getSelected().file);
-                int capacity = spinner_capacity.getSelectedItem();
-                int gold = spinner_gold.getSelectedItem();
-                int population = spinner_population.getSelectedItem();
-                return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
-            }
+        if (object_list.getSelected() != null) {
+            setEnabled(false);
+            btn_create.setText(Language.getText("LB_CREATING"));
+            getContext().submitAsyncTask(new AsyncTask<RoomConfig>() {
+                @Override
+                public RoomConfig doTask() throws AEIIException, IOException, ClassNotFoundException {
+                    String map_name;
+                    Map map;
+                    int capacity;
+                    int gold;
+                    int population;
+                    if (mode == LobbyScreen.NEW_GAME) {
+                        map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
+                        map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
+                        capacity = spinner_capacity.getSelectedItem();
+                        gold = spinner_gold.getSelectedItem();
+                        population = spinner_population.getSelectedItem();
+                        return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
+                    }
+                    if (mode == LobbyScreen.LOAD_GAME) {
+                        String filename = (String) object_list.getSelected();
+                        FileHandle save_file = FileProvider.getSaveFile(filename);
+                        game_save = GameFactory.loadGame(save_file);
+                        if (game_save == null) {
+                            return null;
+                        } else {
+                            map_name = "unknown map";
+                            map = game_save.game.getMap();
+                            capacity = spinner_capacity.getSelectedItem();
+                            population = game_save.game.getRule().getMaxPopulation();
+                            return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, -1, population);
+                        }
+                    }
+                    return null;
+                }
 
-            @Override
-            public void onFinish(RoomConfig config) {
-                setEnabled(true);
-                btn_create.setText(Language.getText("LB_CREATE"));
-                getContext().gotoNetGameCreateScreen(config);
-            }
+                @Override
+                public void onFinish(RoomConfig config) {
+                    setEnabled(true);
+                    btn_create.setText(Language.getText("LB_CREATE"));
+                    getContext().gotoNetGameCreateScreen(config, game_save);
+                }
 
-            @Override
-            public void onFail(String message) {
-                setEnabled(true);
-                btn_create.setText(Language.getText("LB_CREATE"));
-                getOwner().closeDialog("create");
-                getContext().showMessage(message, null);
+                @Override
+                public void onFail(String message) {
+                    setEnabled(true);
+                    btn_create.setText(Language.getText("LB_CREATE"));
+                    getOwner().closeDialog("create");
+                    getContext().showMessage(message, null);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void display() {
+        game_save = null;
+        if (mode == LobbyScreen.NEW_GAME) {
+            lb_initial_gold.setVisible(true);
+            spinner_gold.setVisible(true);
+            lb_max_population.setVisible(true);
+            spinner_population.setVisible(true);
+            updateMaps();
+        }
+        if (mode == LobbyScreen.LOAD_GAME) {
+            lb_initial_gold.setVisible(false);
+            spinner_gold.setVisible(false);
+            lb_max_population.setVisible(false);
+            spinner_population.setVisible(false);
+
+            FileHandle save_dir = FileProvider.getUserDir("save");
+            FileHandle[] save_files = save_dir.list(filter);
+            Array<Object> list = new Array<Object>();
+            for (FileHandle file : save_files) {
+                list.add(file.name());
             }
-        });
+            object_list.setItems(list);
+        }
     }
 
     public void updateMaps() {
         FileHandle[] available_maps = MapFactory.getAvailableMaps();
-        Array<MapFactory.MapSnapshot> maps = new Array<MapFactory.MapSnapshot>();
+        Array<Object> maps = new Array<Object>();
         for (FileHandle map_file : available_maps) {
             MapFactory.MapSnapshot snapshot = MapFactory.createMapSnapshot(map_file);
             maps.add(snapshot);
         }
-        map_list.setItems(maps);
-        map_list.setSelectedIndex(0);
+        object_list.setItems(maps);
+        object_list.setSelectedIndex(0);
+    }
+
+    private class SaveFileFilter implements FileFilter {
+
+        @Override
+        public boolean accept(File file) {
+            if (file.exists() && !file.isDirectory()) {
+                String filename = file.getName();
+                return filename.endsWith(".sav");
+            } else {
+                return false;
+            }
+
+        }
+
     }
 
 }

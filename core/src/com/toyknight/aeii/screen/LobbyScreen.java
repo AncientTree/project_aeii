@@ -18,6 +18,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.net.NetworkListener;
 import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.dialog.RoomCreateDialog;
 import com.toyknight.aeii.serializable.RoomConfig;
@@ -32,12 +33,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by toyknight on 8/23/2015.
+ * @author toyknight 8/23/2015.
  */
 public class LobbyScreen extends StageScreen implements NetworkListener {
 
+    public static final int NEW_GAME = 0x1;
+    public static final int LOAD_GAME = 0x2;
+
     private StringList<RoomSnapshot> room_list;
 
+    private ModeSelectDialog mode_selected_dialog;
     private RoomCreateDialog room_create_dialog;
     private MiniMapDialog map_preview_dialog;
 
@@ -106,11 +111,13 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_create.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                room_create_dialog.updateMaps();
-                showDialog("create");
+                showDialog("mode");
             }
         });
         addActor(btn_create);
+
+        mode_selected_dialog = new ModeSelectDialog(this);
+        addDialog("mode", mode_selected_dialog);
 
         room_create_dialog = new RoomCreateDialog(this);
         addDialog("create", room_create_dialog);
@@ -138,12 +145,21 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
     public void showMapPreview(MapFactory.MapSnapshot snapshot) {
         try {
             Map map = MapFactory.createMap(snapshot.file);
-            map_preview_dialog.setMap(map);
-            map_preview_dialog.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            showDialog("preview");
+            showMapPreview(map);
         } catch (AEIIException ex) {
-
+            getContext().showMessage(Language.getText("MSG_ERR_BMF"), new DialogCallback() {
+                @Override
+                public void doCallback() {
+                    showDialog("create");
+                }
+            });
         }
+    }
+
+    public void showMapPreview(Map map) {
+        map_preview_dialog.setMap(map);
+        map_preview_dialog.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        showDialog("preview");
     }
 
     public void refreshGameList() {
@@ -195,7 +211,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                         getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
                     } else {
                         if (result instanceof RoomConfig) {
-                            getContext().gotoNetGameCreateScreen((RoomConfig) result);
+                            getContext().gotoNetGameCreateScreen((RoomConfig) result, null);
                         }
                         if (result instanceof GameCore) {
                             GameCore game = (GameCore) result;
@@ -223,6 +239,12 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
     }
 
     @Override
+    public void act(float delta) {
+        super.act(delta);
+        map_preview_dialog.update(delta);
+    }
+
+    @Override
     public void draw() {
         batch.begin();
         batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -237,6 +259,42 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         getContext().getNetworkManager().setNetworkListener(this);
         closeAllDialogs();
         refreshGameList();
+    }
+
+    private class ModeSelectDialog extends BasicDialog {
+
+        private final TextButton btn_new_game;
+        private final TextButton btn_load_game;
+
+        public ModeSelectDialog(StageScreen screen) {
+            super(screen);
+            int width = ts * 4;
+            int height = ts * 2 + ts / 2 * 3;
+            this.setBounds((Gdx.graphics.getWidth() - width) / 2, (Gdx.graphics.getHeight() - height) / 2, width, height);
+
+            this.btn_new_game = new TextButton(Language.getText("LB_NEW_GAME"), getContext().getSkin());
+            this.btn_new_game.setBounds(ts / 2, ts * 2, ts * 3, ts);
+            this.btn_new_game.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    room_create_dialog.setMode(NEW_GAME);
+                    showDialog("create");
+                }
+            });
+            this.addActor(btn_new_game);
+
+            this.btn_load_game = new TextButton(Language.getText("LB_LOAD_GAME"), getContext().getSkin());
+            this.btn_load_game.setBounds(ts / 2, ts / 2, ts * 3, ts);
+            this.btn_load_game.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    room_create_dialog.setMode(LOAD_GAME);
+                    showDialog("create");
+                }
+            });
+            this.addActor(btn_load_game);
+        }
+
     }
 
 }

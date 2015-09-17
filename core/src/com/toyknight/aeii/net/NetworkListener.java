@@ -1,6 +1,7 @@
 package com.toyknight.aeii.net;
 
 import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.serializable.GameSave;
 
 /**
  * Created by toyknight on 8/25/2015.
@@ -17,7 +18,7 @@ public interface NetworkListener {
 
     void onAllianceUpdate(Integer[] alliance);
 
-    void onGameStart();
+    void onGameStart(GameSave game_save);
 
     void onReceiveGameEvent(GameEvent event);
 

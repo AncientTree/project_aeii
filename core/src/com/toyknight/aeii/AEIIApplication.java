@@ -211,8 +211,9 @@ public class AEIIApplication extends Game {
         gotoScreen(lobby_screen);
     }
 
-    public void gotoNetGameCreateScreen(RoomConfig config) {
+    public void gotoNetGameCreateScreen(RoomConfig config, GameSave game_save) {
         net_game_create_screen.setRoomConfig(config);
+        net_game_create_screen.setGameSave(game_save);
         gotoScreen(net_game_create_screen);
     }
 

@@ -20,7 +20,7 @@ import com.toyknight.aeii.screen.widgets.MapList;
 import com.toyknight.aeii.utils.MapFactory;
 
 /**
- * Created by toyknight on 6/21/2015.
+ * @author toyknight 6/21/2015.
  */
 public class TestScreen extends StageScreen {
 
@@ -50,10 +50,10 @@ public class TestScreen extends StageScreen {
             public void clicked(InputEvent event, float x, float y) {
                 Player[] players = new Player[4];
                 for (int i = 0; i < 4; i++) {
-                    if (map_list.getSelectedMap().hasTeamAccess(i) == true) {
+                    if (map_list.getSelectedMap().hasTeamAccess(i)) {
                         players[i] = new Player();
                         players[i].setType(Player.LOCAL);
-                        players[i].setAlliance(i);
+                        players[i].setAlliance(i + 1);
                         players[i].setGold(1000);
                     }
                 }

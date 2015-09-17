@@ -3,6 +3,7 @@ package com.toyknight.aeii.server;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.server.entity.Room;
 import com.toyknight.aeii.serializable.RoomConfig;
@@ -306,6 +307,21 @@ public class AEIIServer {
             for (String service_name : room.getPlayers()) {
                 if (!service_name.equals(requester)) {
                     getService(service_name).notifyGameStart();
+                }
+            }
+            room.setGameStarted(true);
+            return true;
+        }
+    }
+
+    public boolean onResumeGame(long room_number, String requester, GameSave game_save) {
+        Room room = getRoom(room_number);
+        if (room == null || !room.getHostService().equals(requester) || !room.isReady()) {
+            return false;
+        } else {
+            for (String service_name : room.getPlayers()) {
+                if (!service_name.equals(requester)) {
+                    getService(service_name).notifyGameResume(game_save);
                 }
             }
             room.setGameStarted(true);

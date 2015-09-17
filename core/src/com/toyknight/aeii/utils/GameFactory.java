@@ -40,7 +40,7 @@ public class GameFactory {
 
     public static void saveSkirmish(GameCore game, String filename) throws IOException {
         GameSave game_save = new GameSave(game, game.getType());
-        FileHandle save_file = FileProvider.getSaveFile("skirmish-" + filename);
+        FileHandle save_file = FileProvider.getSaveFile("skirmish " + filename);
         ObjectOutputStream oos = new ObjectOutputStream(save_file.write(false));
         oos.writeInt(SAVE);
         oos.writeObject(game_save);
@@ -82,7 +82,7 @@ public class GameFactory {
 
     private static String createFilename(int mode) {
         Date date = new Date(System.currentTimeMillis());
-        DateFormat date_format = new SimpleDateFormat("MM-dd-yyyy-HH-mm-ss");
+        DateFormat date_format = new SimpleDateFormat("MMddyyyy HH-mm");
         switch (mode) {
             case SAVE:
                 return date_format.format(date) + ".sav";

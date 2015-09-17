@@ -10,6 +10,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 import com.toyknight.aeii.serializable.ServerConfig;
@@ -212,6 +213,24 @@ public class NetworkManager {
             }
         }
     }
+    public boolean requestStartGame(GameSave game_save) throws IOException {
+        synchronized (OUTPUT_LOCK) {
+            oos.writeInt(REQUEST);
+            oos.writeInt(Request.RESUME_GAME);
+            oos.writeObject(game_save);
+            oos.flush();
+        }
+        synchronized (INPUT_LOCK) {
+            try {
+                boolean approved = ois.readBoolean();
+                INPUT_LOCK.notifyAll();
+                return approved;
+            } catch (IOException ex) {
+                INPUT_LOCK.notifyAll();
+                throw ex;
+            }
+        }
+    }
 
     public void sendGameEvent(GameEvent event) throws IOException {
         synchronized (OUTPUT_LOCK) {
@@ -277,9 +296,14 @@ public class NetworkManager {
             switch (request) {
                 case Request.START_GAME:
                     synchronized (AEIIApplication.RENDER_LOCK) {
-                        getListener().onGameStart();
+                        getListener().onGameStart(null);
                     }
                     break;
+                case Request.RESUME_GAME:
+                    GameSave game_save = (GameSave) ois.readObject();
+                    synchronized (AEIIApplication.RENDER_LOCK) {
+                        getListener().onGameStart(game_save);
+                    }
                 case Request.GAME_EVENT:
                     GameEvent event = (GameEvent) ois.readObject();
                     Gdx.app.log(TAG, "Receive " + event.toString());
