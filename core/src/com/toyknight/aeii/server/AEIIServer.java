@@ -166,7 +166,9 @@ public class AEIIServer {
         ArrayList<RoomSnapshot> snapshot = new ArrayList<RoomSnapshot>();
         synchronized (ROOM_LOCK) {
             for (Room room : rooms.values()) {
-                snapshot.add(room.createSnapshot());
+                if (room.isOpen()) {
+                    snapshot.add(room.createSnapshot());
+                }
             }
         }
         return snapshot;
