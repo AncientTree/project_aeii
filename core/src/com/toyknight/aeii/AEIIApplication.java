@@ -257,12 +257,12 @@ public class AEIIApplication extends Game {
 
     public void closeDialog() {
         dialog.setVisible(false);
+        if (getScreen() instanceof StageScreen) {
+            Gdx.input.setInputProcessor((StageScreen) getScreen());
+        }
         if (dialog_callback != null) {
             dialog_callback.doCallback();
             dialog_callback = null;
-        }
-        if (getScreen() instanceof StageScreen) {
-            Gdx.input.setInputProcessor((StageScreen) getScreen());
         }
     }
 

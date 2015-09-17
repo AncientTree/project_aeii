@@ -213,6 +213,7 @@ public class NetworkManager {
             }
         }
     }
+
     public boolean requestStartGame(GameSave game_save) throws IOException {
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(REQUEST);

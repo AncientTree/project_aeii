@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.screen.MainMenuScreen;
@@ -118,7 +119,12 @@ public class ServerListDialog extends BasicDialog {
                 public void onFail(String message) {
                     setEnabled(true);
                     btn_connect.setText(Language.getText("LB_CONNECT"));
-                    getContext().showMessage(Language.getText("MSG_ERR_CCS"), null);
+                    getContext().showMessage(Language.getText("MSG_ERR_CCS"), new DialogCallback() {
+                        @Override
+                        public void doCallback() {
+                            Gdx.input.setInputProcessor(getOwner().getDialogLayer());
+                        }
+                    });
                 }
             });
         }
