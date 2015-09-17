@@ -128,6 +128,8 @@ public class GameMenu extends BasicDialog {
 
     public void display() {
         btn_save.setVisible(canSave());
+        btn_load.setVisible(!getContext().getNetworkManager().isConnected()
+                && getOwner().getGame().getCurrentPlayer().isLocalPlayer());
     }
 
     private boolean canSave() {
