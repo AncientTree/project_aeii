@@ -459,6 +459,14 @@ public class NetGameCreateScreen extends StageScreen {
                 team_setting_table.add(sp_username[team]).size(team_setting_table.getWidth() - ts * 11 - ts / 2, ts).padTop(ts / 2).padLeft(ts / 2).row();
             }
         }
+        if (game_save != null && isHost()) {
+            for (int team = 0; team < 4; team++) {
+                if (game_save.game.getPlayer(team) != null) {
+                    room_config.alliance_state[team] = game_save.game.getPlayer(team).getAlliance();
+                }
+            }
+            tryUpdateAlliance();
+        }
         updateStatus();
     }
 
