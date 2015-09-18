@@ -146,22 +146,24 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     private void preview() {
-        if (mode == LobbyScreen.NEW_GAME) {
-            getOwner().showMapPreview((MapFactory.MapSnapshot) object_list.getSelected());
-        }
-        if (mode == LobbyScreen.LOAD_GAME) {
-            String filename = (String) object_list.getSelected();
-            FileHandle save_file = FileProvider.getSaveFile(filename);
-            GameSave save = GameFactory.loadGame(save_file);
-            if (save == null) {
-                getContext().showMessage(Language.getText("MSG_ERR_BSF"), new DialogCallback() {
-                    @Override
-                    public void doCallback() {
-                        Gdx.input.setInputProcessor(getOwner().getDialogLayer());
-                    }
-                });
-            } else {
-                getOwner().showMapPreview(save.game.getMap());
+        if (object_list.getSelected() != null) {
+            if (mode == LobbyScreen.NEW_GAME) {
+                getOwner().showMapPreview((MapFactory.MapSnapshot) object_list.getSelected());
+            }
+            if (mode == LobbyScreen.LOAD_GAME) {
+                String filename = (String) object_list.getSelected();
+                FileHandle save_file = FileProvider.getSaveFile(filename);
+                GameSave save = GameFactory.loadGame(save_file);
+                if (save == null) {
+                    getContext().showMessage(Language.getText("MSG_ERR_BSF"), new DialogCallback() {
+                        @Override
+                        public void doCallback() {
+                            Gdx.input.setInputProcessor(getOwner().getDialogLayer());
+                        }
+                    });
+                } else {
+                    getOwner().showMapPreview(save.game.getMap());
+                }
             }
         }
     }
@@ -224,6 +226,7 @@ public class RoomCreateDialog extends BasicDialog {
     @Override
     public void display() {
         game_save = null;
+        object_list.clearItems();
         if (mode == LobbyScreen.NEW_GAME) {
             lb_initial_gold.setVisible(true);
             spinner_gold.setVisible(true);
@@ -255,7 +258,6 @@ public class RoomCreateDialog extends BasicDialog {
             maps.add(snapshot);
         }
         object_list.setItems(maps);
-        object_list.setSelectedIndex(0);
     }
 
     private class SaveFileFilter implements FileFilter {

@@ -20,8 +20,8 @@ public class StringList<T> extends Widget {
     private float prefWidth;
     private float prefHeight;
 
-    private final Array<T> items = new Array();
-    final ArraySelection<T> selection = new ArraySelection(items);
+    private final Array<T> items = new Array<T>();
+    final ArraySelection<T> selection = new ArraySelection<T>(items);
 
     public StringList(int item_height) {
         this.item_height = item_height;
@@ -77,6 +77,7 @@ public class StringList<T> extends Widget {
         if (items.size > 0) {
             setSelectedIndex(0);
         }
+        invalidateHierarchy();
     }
 
     public void setSelectedIndex(int index) {
