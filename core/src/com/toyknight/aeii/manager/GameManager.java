@@ -79,6 +79,10 @@ public class GameManager implements AnimationDispatcher {
         return manager_listener;
     }
 
+    public boolean isProcessing() {
+        return isAnimating() || !event_queue.isEmpty();
+    }
+
     public void setState(int state) {
         if (state != this.state) {
             this.last_state = this.state;

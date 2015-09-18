@@ -680,12 +680,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public boolean canOperate() {
-        return getGameManager().getCurrentAnimation() == null &&
-                !game_load_dialog.isVisible() &&
-                !unit_store_dialog.isVisible() &&
-                !mini_map.isVisible() &&
-                !menu.isVisible() &&
-                getGame().getCurrentPlayer().isLocalPlayer();
+        return !getGameManager().isProcessing() && getGame().getCurrentPlayer().isLocalPlayer();
     }
 
     public GameCore getGame() {
