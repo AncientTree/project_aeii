@@ -72,7 +72,11 @@ public class Map implements Serializable {
     }
 
     public Tile getTile(int x, int y) {
-        return TileFactory.getTile(map_data[x][y]);
+        if (isWithinMap(x, y)) {
+            return TileFactory.getTile(map_data[x][y]);
+        } else {
+            return null;
+        }
     }
 
     public void addTomb(int x, int y) {

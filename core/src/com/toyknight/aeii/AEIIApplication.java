@@ -88,6 +88,7 @@ public class AEIIApplication extends Game {
             FontRenderer.loadFonts(TILE_SIZE);
             BorderRenderer.init();
             Animator.setTileSize(getTileSize());
+            TileValidator.initialize();
             Gdx.input.setCatchBackKey(true);
 
             V_STRING = createVerificationString(

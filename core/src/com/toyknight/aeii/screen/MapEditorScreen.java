@@ -10,17 +10,17 @@ import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.CursorAnimator;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.TileRenderer;
 import com.toyknight.aeii.renderer.UnitRenderer;
 import com.toyknight.aeii.screen.editor.*;
+import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
 import java.util.Set;
 
 /**
- * Created by toyknight on 6/1/2015.
+ * @author toyknight 6/1/2015.
  */
 public class MapEditorScreen extends StageScreen implements MapCanvas {
 
@@ -37,23 +37,14 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     private final CursorAnimator cursor;
     private final MapViewport viewport;
 
-    private Button btn_tile;
-    private TileSelector tile_selector;
-    private Button btn_unit;
-    private UnitSelector unit_selector;
     private MapResizeDialog map_resize_dialog;
     private MapSaveDialog map_save_dialog;
     private MapOpenDialog map_open_dialog;
     private Dialog dialog;
 
-    private Table button_bar;
-    private SquareButton btn_hand;
-    private SquareButton btn_brush;
-    private SquareButton btn_eraser;
-    private SquareButton btn_resize;
-    private SquareButton btn_load;
-    private SquareButton btn_save;
-    private SquareButton btn_exit;
+    private CircleButton btn_hand;
+    private CircleButton btn_brush;
+    private CircleButton btn_eraser;
 
     private Map map;
     private String filename;
@@ -84,33 +75,13 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     }
 
     private void initComponents() {
-        this.btn_tile = new Button();
-        this.btn_tile.setStyle(new Button.ButtonStyle());
-        this.btn_tile.setBounds(0, 0, ts, ts);
-        this.btn_tile.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                tile_selector.setVisible(!tile_selector.isVisible());
-            }
-        });
-        this.addActor(btn_tile);
-        this.tile_selector = new TileSelector(this);
-        this.tile_selector.setBounds(0, ts, ts * 4, Gdx.graphics.getHeight() - ts);
+        TileSelector tile_selector = new TileSelector(this);
+        tile_selector.setBounds(0, 0, ts * 4, Gdx.graphics.getHeight());
         this.addActor(tile_selector);
 
-        this.btn_unit = new Button();
-        this.btn_unit.setStyle(new Button.ButtonStyle());
-        this.btn_unit.setBounds(Gdx.graphics.getWidth() - ts, 0, ts, ts);
-        this.btn_unit.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                unit_selector.setVisible(!unit_selector.isVisible());
-            }
-        });
-        this.addActor(btn_unit);
         int usw = ts * 2 + ts / 4 * 3;
-        this.unit_selector = new UnitSelector(this);
-        this.unit_selector.setBounds(Gdx.graphics.getWidth() - usw, ts, usw, Gdx.graphics.getHeight() - ts);
+        UnitSelector unit_selector = new UnitSelector(this);
+        unit_selector.setBounds(Gdx.graphics.getWidth() - usw, 0, usw, Gdx.graphics.getHeight());
         this.addActor(unit_selector);
 
         int mrw = ts * 8;
@@ -134,9 +105,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         this.map_open_dialog.setVisible(false);
         this.addActor(map_open_dialog);
 
-        button_bar = new Table();
-        button_bar.setBounds(ts, 0, Gdx.graphics.getWidth() - ts * 2, ts);
-        btn_hand = new SquareButton(ResourceManager.getEditorTexture("icon_hand"), ts);
+        Table button_bar = new Table();
+        btn_hand = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_hand"), ts);
         btn_hand.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -144,7 +114,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             }
         });
         button_bar.add(btn_hand);
-        btn_brush = new SquareButton(ResourceManager.getEditorTexture("icon_brush"), ts);
+        btn_brush = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_brush"), ts);
         btn_brush.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -152,7 +122,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             }
         });
         button_bar.add(btn_brush).padLeft(ts / 4);
-        btn_eraser = new SquareButton(ResourceManager.getEditorTexture("icon_eraser"), ts);
+        btn_eraser = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_eraser"), ts);
         btn_eraser.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -161,7 +131,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         });
         button_bar.add(btn_eraser).padLeft(ts / 4);
 
-        btn_resize = new SquareButton(ResourceManager.getEditorTexture("icon_resize"), ts);
+        CircleButton btn_resize = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_resize"), ts);
         btn_resize.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -175,7 +145,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         });
         button_bar.add(btn_resize).padLeft(ts / 4);
 
-        btn_save = new SquareButton(ResourceManager.getEditorTexture("icon_save"), ts);
+        CircleButton btn_save = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_save"), ts);
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -189,7 +159,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         });
         button_bar.add(btn_save).padLeft(ts / 4);
 
-        btn_load = new SquareButton(ResourceManager.getEditorTexture("icon_load"), ts);
+        CircleButton btn_load = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_load"), ts);
         btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -203,7 +173,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         });
         button_bar.add(btn_load).padLeft(ts / 4);
 
-        btn_exit = new SquareButton(ResourceManager.getEditorTexture("icon_exit"), ts);
+        CircleButton btn_exit = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_exit"), ts);
         btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -213,6 +183,9 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         button_bar.add(btn_exit).padLeft(ts / 4);
 
         button_bar.layout();
+        button_bar.setBounds(
+                tile_selector.getWidth(), 0,
+                Gdx.graphics.getWidth() - tile_selector.getWidth() - unit_selector.getWidth(), ts * 33 / 24);
         this.addActor(button_bar);
 
         int dw = ts * 6;
@@ -285,16 +258,16 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         drawUnits();
         drawBrushTarget();
         drawCursor();
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), ts);
-
-        batch.draw(ResourceManager.getTileTexture(selected_tile_index), 0, 0, ts, ts);
-        batch.draw(
-                ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
-                Gdx.graphics.getWidth() - ts, 0, ts, ts);
-
-        BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
-        BorderRenderer.drawBorder(batch, ts, 0, Gdx.graphics.getWidth() - ts * 2, ts);
-        BorderRenderer.drawBorder(batch, Gdx.graphics.getWidth() - ts, 0, ts, ts);
+//        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), ts);
+//
+//        batch.draw(ResourceManager.getTileTexture(selected_tile_index), 0, 0, ts, ts);
+//        batch.draw(
+//                ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
+//                Gdx.graphics.getWidth() - ts, 0, ts, ts);
+//
+//        BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
+//        BorderRenderer.drawBorder(batch, ts, 0, Gdx.graphics.getWidth() - ts * 2, ts);
+//        BorderRenderer.drawBorder(batch, Gdx.graphics.getWidth() - ts, 0, ts, ts);
         batch.end();
         super.draw();
     }
@@ -351,7 +324,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     }
 
     private void drawCursor() {
-        if (mode != MODE_BRUSH) {
+        if (mode == MODE_ERASER) {
             int cursor_x = getCursorMapX();
             int cursor_y = getCursorMapY();
             cursor.render(batch, cursor_x, cursor_y);
@@ -464,6 +437,15 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             switch (brush_type) {
                 case TYPE_TILE:
                     getMap().setTile(selected_tile_index, map_x, map_y);
+                    if (TileFactory.getTile(selected_tile_index).getType() == Tile.TYPE_WATER) {
+                        TileValidator.validate(getMap(), map_x, map_y);
+                    } else {
+                        for (int dy = -1; dy <= 1; dy++) {
+                            for (int dx = -1; dx <= 1; dx++) {
+                                TileValidator.validate(getMap(), map_x + dx, map_y + dy);
+                            }
+                        }
+                    }
                     break;
                 case TYPE_UNIT:
                     if (getMap().getUnit(map_x, map_y) == null) {
