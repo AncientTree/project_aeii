@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
@@ -21,14 +22,16 @@ import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
 import com.toyknight.aeii.screen.dialog.MessageBox;
 import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.utils.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Created by toyknight on 4/4/2015.
+ * @author toyknight 4/4/2015.
  */
 public class GameScreen extends StageScreen implements MapCanvas, GameManagerListener {
 
@@ -41,6 +44,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private final StatusBarRenderer status_bar_renderer;
     private final RightPanelRenderer right_panel_renderer;
     private final AttackInformationRenderer attack_info_renderer;
+
+    private GameRecord record;
+    private float playback_delay;
+    private boolean playback_finished;
 
     private final GameManager manager;
 
@@ -65,8 +72,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     private MessageBoard message_board;
 
-    private UnitStoreDialog unit_store_dialog;
-    private GameLoadDialog game_load_dialog;
     private MiniMapDialog mini_map;
     private MessageBox message_box;
     private GameMenu menu;
@@ -138,11 +143,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.addActor(action_button_bar);
 
         //game load dialog
-        this.game_load_dialog = new GameLoadDialog(this);
+        GameLoadDialog game_load_dialog = new GameLoadDialog(this);
         this.addDialog("load", game_load_dialog);
 
         //unit store
-        this.unit_store_dialog = new UnitStoreDialog(this);
+        UnitStoreDialog unit_store_dialog = new UnitStoreDialog(this);
         this.addDialog("store", unit_store_dialog);
 
         //game menu
@@ -347,6 +352,23 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         attack_cursor.addStateTime(delta);
         updateViewport();
 
+        if (record != null) {
+            if (record.getEvents().isEmpty()) {
+                if (!playback_finished) {
+                    playback_finished = true;
+                    appendMessage(null, Language.getText("MSG_INFO_RPF"));
+                }
+            } else {
+                if (playback_delay < 1.0f) {
+                    playback_delay += delta;
+                } else {
+                    playback_delay = 0f;
+                    GameEvent event = record.getEvents().poll();
+                    getGameManager().queueGameEvent(event);
+                }
+            }
+        }
+
         super.act(delta);
         manager.updateAnimation(delta);
     }
@@ -370,6 +392,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void prepare(GameCore game) {
+        try {
+            Recorder.prepare(game);
+        } catch (IOException ex) {
+            Recorder.setRecord(false);
+            Gdx.app.log("Record", ex.toString());
+        }
+        this.record = null;
         this.manager.setGame(game);
         this.manager.setGameManagerListener(this);
         GameHost.setGameManager(getGameManager());
@@ -378,6 +407,20 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
+    }
+
+    public void prepare(GameRecord record) {
+        this.manager.setGame(record.getGame());
+        this.manager.setGameManagerListener(this);
+        GameHost.setGameManager(getGameManager());
+        UnitToolkit.setGame(record.getGame());
+        Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
+        this.locateViewport(team_focus.x, team_focus.y);
+        cursor_map_x = team_focus.x;
+        cursor_map_y = team_focus.y;
+
+        this.record = record;
+        this.playback_delay = 0f;
     }
 
     @Override
@@ -661,9 +704,22 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onGameOver() {
-        //for test
-        getContext().gotoMainMenuScreen();
-        getContext().getNetworkManager().disconnect();
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
+            @Override
+            public Void doTask() throws Exception {
+                Recorder.saveRecord();
+                return null;
+            }
+
+            @Override
+            public void onFinish(Void result) {
+            }
+
+            @Override
+            public void onFail(String message) {
+            }
+        });
+        getContext().gotoStatisticsScreen(getGame());
     }
 
     public void appendMessage(String username, String message) {

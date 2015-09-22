@@ -25,18 +25,21 @@ import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.utils.Recorder;
 
 /**
  * @author toyknight 8/28/2015.
  */
 public class NetGameCreateScreen extends StageScreen {
 
+    private boolean record_on;
     private GameSave game_save;
     private RoomConfig room_config;
     private Array<PlayerSnapshot> players = new Array<PlayerSnapshot>();
 
     private TextButton btn_start;
     private TextButton btn_leave;
+    private TextButton btn_record;
 
     private TextButton[] btn_allocate;
     private Image[] team_image;
@@ -100,6 +103,17 @@ public class NetGameCreateScreen extends StageScreen {
             }
         });
         addActor(btn_preview);
+
+        btn_record = new TextButton("", getContext().getSkin());
+        btn_record.setBounds(ts * 11, ts / 2, ts * 3, ts);
+        btn_record.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                record_on = !record_on;
+                updateRecordButton();
+            }
+        });
+        addActor(btn_record);
 
         map_preview = new MiniMapDialog(this);
         map_preview.addClickListener(new ClickListener() {
@@ -371,6 +385,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private void createGame(GameSave game_save) {
         if (game_save == null) {
+            Recorder.setRecord(record_on);
             Player[] players = new Player[4];
             for (int team = 0; team < 4; team++) {
                 if (room_config.map.hasTeamAccess(team) && !room_config.team_allocation[team].equals("NONE")) {
@@ -404,6 +419,14 @@ public class NetGameCreateScreen extends StageScreen {
                 }
             }
             getContext().gotoGameScreen(game_save);
+        }
+    }
+
+    private void updateRecordButton() {
+        if (record_on) {
+            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_ON"));
+        } else {
+            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_OFF"));
         }
     }
 
@@ -468,6 +491,9 @@ public class NetGameCreateScreen extends StageScreen {
             tryUpdateAlliance();
         }
         updateStatus();
+
+        record_on = false;
+        updateRecordButton();
     }
 
     @Override

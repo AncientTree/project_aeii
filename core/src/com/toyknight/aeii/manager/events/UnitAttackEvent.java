@@ -72,6 +72,9 @@ public class UnitAttackEvent implements GameEvent, Serializable {
             UnitToolkit.attachAttackStatus(attacker, defender);
             manager.submitAnimation(new UnitAttackAnimator(attacker, defender, damage));
             if (defender.getCurrentHp() <= 0) {
+                //update statistics
+                game.getStatistics().addDestroy(attacker.getTeam(), game.getUnitPrice(defender.getIndex(), defender.getTeam()));
+                //destroy defender
                 game.destroyUnit(defender.getX(), defender.getY());
                 manager.submitAnimation(new UnitDestroyAnimator(defender));
                 manager.submitAnimation(new DustAriseAnimator(defender.getX(), defender.getY()));

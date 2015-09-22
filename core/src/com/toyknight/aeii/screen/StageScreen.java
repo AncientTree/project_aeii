@@ -67,6 +67,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         for (BasicDialog dialog : dialogs.values()) {
             dialog.setVisible(false);
         }
+        dialog_shown = false;
         Gdx.input.setInputProcessor(this);
     }
 

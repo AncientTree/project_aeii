@@ -3,6 +3,8 @@ package com.toyknight.aeii.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.GameRecord;
+import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.serializable.GameSave;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Queue;
 
 /**
  * @author toyknight 9/17/2015.
@@ -68,6 +71,26 @@ public class GameFactory {
         }
     }
 
+    public static GameRecord loadRecord(FileHandle record_file) {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(record_file.read());
+            int type = ois.readInt();
+            if (type == RECORD) {
+                GameCore game = (GameCore) ois.readObject();
+                Queue<GameEvent> events = (Queue) ois.readObject();
+                return new GameRecord(game, events);
+            } else {
+                return null;
+            }
+        } catch (IOException ex) {
+            Gdx.app.log(TAG, ex.toString());
+            return null;
+        } catch (ClassNotFoundException ex) {
+            Gdx.app.log(TAG, ex.toString());
+            return null;
+        }
+    }
+
     public static int getType(FileHandle save_file) {
         try {
             ObjectInputStream ois = new ObjectInputStream(save_file.read());
@@ -80,7 +103,7 @@ public class GameFactory {
         }
     }
 
-    private static String createFilename(int mode) {
+    public static String createFilename(int mode) {
         Date date = new Date(System.currentTimeMillis());
         DateFormat date_format = new SimpleDateFormat("MMddyyyy HH-mm");
         switch (mode) {

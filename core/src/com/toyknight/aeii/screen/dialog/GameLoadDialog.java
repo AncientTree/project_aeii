@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.GameRecord;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.StringList;
@@ -20,6 +21,7 @@ import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.utils.Recorder;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -101,14 +103,10 @@ public class GameLoadDialog extends BasicDialog {
                     tryStartGame(save_file);
                     break;
                 case GameFactory.RECORD:
+                    tryStartRecord(save_file);
                     break;
                 default:
-                    getContext().showMessage(Language.getText("MSG_ERR_BSF"), new DialogCallback() {
-                        @Override
-                        public void doCallback() {
-                            Gdx.input.setInputProcessor(getOwner().getDialogLayer());
-                        }
-                    });
+                    getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
             }
         }
     }
@@ -116,13 +114,9 @@ public class GameLoadDialog extends BasicDialog {
     public void tryStartGame(FileHandle save_file) {
         GameSave game_save = GameFactory.loadGame(save_file);
         if (game_save == null) {
-            getContext().showMessage(Language.getText("MSG_ERR_BSF"), new DialogCallback() {
-                @Override
-                public void doCallback() {
-                    Gdx.input.setInputProcessor(getOwner().getDialogLayer());
-                }
-            });
+            getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {
+            Recorder.setRecord(false);
             GameCore game = game_save.game;
             for (int team = 0; team < 4; team++) {
                 Player player = game.getPlayer(team);
@@ -131,6 +125,22 @@ public class GameLoadDialog extends BasicDialog {
                 }
             }
             getContext().gotoGameScreen(game_save);
+        }
+    }
+
+    public void tryStartRecord(FileHandle record_file) {
+        GameRecord record = GameFactory.loadRecord(record_file);
+        if (record == null) {
+            getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
+        } else {
+            Recorder.setRecord(false);
+            for (int team = 0; team < 4; team++) {
+                Player player = record.getGame().getPlayer(team);
+                if (player != null) {
+                    player.setType(Player.REMOTE);
+                }
+            }
+            getContext().gotoGameScreen(record);
         }
     }
 

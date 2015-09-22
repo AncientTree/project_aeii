@@ -8,6 +8,7 @@ import com.toyknight.aeii.listener.EventDispatcherListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.manager.events.TurnEndEvent;
+import com.toyknight.aeii.utils.Recorder;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.*;
@@ -213,7 +214,7 @@ public class GameManager implements AnimationDispatcher {
                     manager_listener.onMapFocusRequired(focus.x, focus.y);
                 }
             }
-            //more process with this event
+            Recorder.submitGameEvent(event);
         }
     }
 

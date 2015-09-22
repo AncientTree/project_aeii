@@ -10,6 +10,7 @@ import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.utils.Recorder;
 
 import java.io.IOException;
 
@@ -75,10 +76,22 @@ public class GameMenu extends BasicDialog {
         this.btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getContext().getNetworkManager().isConnected()) {
-                    getContext().getNetworkManager().disconnect();
-                }
-                getContext().gotoMainMenuScreen();
+                getContext().submitAsyncTask(new AsyncTask<Void>() {
+                    @Override
+                    public Void doTask() throws Exception {
+                        Recorder.saveRecord();
+                        return null;
+                    }
+
+                    @Override
+                    public void onFinish(Void result) {
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+                    }
+                });
+                getContext().gotoStatisticsScreen(getOwner().getGame());
             }
         });
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.GameRecord;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
@@ -39,8 +40,8 @@ public class AEIIApplication extends Game {
     private final static String[] HEX_DIGITS =
             {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
-    private static final String VERSION_MODIFIER = "b";
-    private static final String VERSION = "1.0.3";
+    private static final String VERSION_MODIFIER = "";
+    private static final String VERSION = "1.0.4";
     private static final String TAG = "Main";
     private static String V_STRING;
 
@@ -63,6 +64,7 @@ public class AEIIApplication extends Game {
     private NetGameCreateScreen net_game_create_screen;
     private TestScreen test_screen;
     private GameScreen game_screen;
+    private StatisticsScreen statistics_screen;
 
     private Stage dialog_layer;
     private Dialog dialog;
@@ -113,6 +115,7 @@ public class AEIIApplication extends Game {
             net_game_create_screen = new NetGameCreateScreen(this);
             test_screen = new TestScreen(this);
             game_screen = new GameScreen(this);
+            statistics_screen = new StatisticsScreen(this);
             createDialogLayer();
 
             network_manager = new NetworkManager();
@@ -210,6 +213,12 @@ public class AEIIApplication extends Game {
         gotoScreen(game_screen);
     }
 
+    public void gotoGameScreen(GameRecord record) {
+        AudioManager.stopCurrentBGM();
+        game_screen.prepare(record);
+        gotoScreen(game_screen);
+    }
+
     public void gotoLobbyScreen() {
         gotoScreen(lobby_screen);
     }
@@ -218,6 +227,11 @@ public class AEIIApplication extends Game {
         net_game_create_screen.setRoomConfig(config);
         net_game_create_screen.setGameSave(game_save);
         gotoScreen(net_game_create_screen);
+    }
+
+    public void gotoStatisticsScreen(GameCore game) {
+        statistics_screen.setGame(game);
+        gotoScreen(statistics_screen);
     }
 
     public void gotoTestScreen() {
@@ -231,6 +245,9 @@ public class AEIIApplication extends Game {
     public void gotoScreen(Screen screen) {
         this.previous_screen = getScreen();
         this.setScreen(screen);
+        if (screen instanceof StageScreen) {
+            ((StageScreen) screen).onFocus();
+        }
         if (dialog.isVisible()) {
             Gdx.input.setInputProcessor(dialog_layer);
         }

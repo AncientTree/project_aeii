@@ -20,6 +20,7 @@ import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
+import com.toyknight.aeii.utils.Recorder;
 
 /**
  * @author toyknight 6/21/2015.
@@ -93,6 +94,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
 
     private void tryStartGame() {
         if (map != null) {
+            Recorder.setRecord(false);
             Player[] players = new Player[4];
             for (int i = 0; i < 4; i++) {
                 if (map.hasTeamAccess(i)) {

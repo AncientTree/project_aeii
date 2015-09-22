@@ -21,6 +21,8 @@ public class GameCore implements Serializable {
 
     private final int type;
 
+    private final Statistics statistics;
+
     private final Map map;
     private final Rule rule;
     private int current_team;
@@ -32,6 +34,7 @@ public class GameCore implements Serializable {
     private final int[] commander_price_delta;
 
     public GameCore(Map map, Rule rule, int type, Player[] players) {
+        this.statistics = new Statistics();
         this.map = map;
         this.rule = rule;
         this.type = type;
@@ -72,6 +75,10 @@ public class GameCore implements Serializable {
                 }
             }
         }
+    }
+
+    public final Statistics getStatistics() {
+        return statistics;
     }
 
     public final Map getMap() {
@@ -118,7 +125,11 @@ public class GameCore implements Serializable {
     public void destroyUnit(int target_x, int target_y) {
         Unit target = getMap().getUnit(target_x, target_y);
         if (target != null) {
+            //remove unit
             getMap().removeUnit(target_x, target_y);
+            //update statistics
+            getStatistics().addLose(target.getTeam(), getUnitPrice(target.getIndex(), target.getTeam()));
+            //update status
             updatePopulation(target.getTeam());
             if (target.getIndex() != UnitFactory.getSkeletonIndex() && target.getIndex() != UnitFactory.getCommanderIndex()) {
                 getMap().addTomb(target.getX(), target.getY());
@@ -231,6 +242,7 @@ public class GameCore implements Serializable {
     public int gainIncome(int team) {
         int income = calcIncome(team);
         getPlayer(team).changeGold(income);
+        getStatistics().addIncome(team, income);
         return income;
     }
 
