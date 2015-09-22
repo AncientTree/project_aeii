@@ -1,15 +1,13 @@
 package com.toyknight.aeii.screen.widgets;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.ResourceManager;
 
 /**
- * Created by toyknight on 5/30/2015.
+ * @author toyknight 5/30/2015.
  */
 public class CircleButton extends Button {
 
@@ -20,10 +18,17 @@ public class CircleButton extends Button {
     private final int type;
     private final TextureRegion icon;
 
+    private boolean is_held;
+
+    public CircleButton(int type, Texture icon, int ts) {
+        this(type, new TextureRegion(icon, icon.getWidth(), icon.getHeight()), ts);
+    }
+
     public CircleButton(int type, TextureRegion icon, int ts) {
         this.type = type;
         this.icon = icon;
         this.ts = ts;
+        this.is_held = false;
         setStyle(new ButtonStyle());
         setSize(getPrefWidth(), getPrefHeight());
     }
@@ -52,10 +57,18 @@ public class CircleButton extends Button {
         }
     }
 
+    public void setHold(boolean hold) {
+        this.is_held = hold;
+    }
+
+    public boolean isHeld() {
+        return is_held;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        int circle_index = isPressed() ? 1 : 0;
+        int circle_index = isPressed() || isHeld() ? 1 : 0;
         switch (type) {
             case SMALL:
                 batch.draw(ResourceManager.getSmallCircleTexture(circle_index), x, y, width, height);
@@ -64,8 +77,10 @@ public class CircleButton extends Button {
                 batch.draw(ResourceManager.getBigCircleTexture(circle_index), x, y, width, height);
                 break;
         }
-        float icon_height = height / 21 * 16;
-        float icon_width = icon_height * icon.getRegionWidth() / icon.getRegionHeight();
+        int circle_base_width = type == SMALL ? 20 : 32;
+        int circle_base_height = type == SMALL ? 21 : 33;
+        float icon_height = getPrefHeight() * icon.getRegionHeight() / circle_base_height;
+        float icon_width = getPrefWidth() * icon.getRegionWidth() / circle_base_width;
         float dx = (width - icon_width) / 2;
         float dy = (height - icon_height) / 2;
         batch.draw(icon, x + dx, y + dy, icon_width, icon_height);
