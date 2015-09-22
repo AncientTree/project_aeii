@@ -436,8 +436,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         if (mode == MODE_BRUSH) {
             switch (brush_type) {
                 case TYPE_TILE:
+                    getMap().setTile(selected_tile_index, map_x, map_y);
                     if (TileFactory.getTile(selected_tile_index).getType() == Tile.TYPE_WATER) {
-                        getMap().setTile(selected_tile_index, map_x, map_y);
                         TileValidator.validate(getMap(), map_x, map_y);
                     } else {
                         for (int dy = -1; dy <= 1; dy++) {
