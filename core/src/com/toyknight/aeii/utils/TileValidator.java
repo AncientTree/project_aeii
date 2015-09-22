@@ -327,12 +327,20 @@ public class TileValidator {
         return surround;
     }
 
+    private static boolean isCostTile(int index) {
+        return (3 <= index && index <= 14) || (46 <= index && index <= 79);
+    }
+
+    private static boolean isBridge(int index) {
+        return index == 28 || index == 29;
+    }
+
     public static void validate(Map map, int x, int y) {
         short index = map.getTileIndex(x, y);
         if (TileFactory.getTile(index).getType() == Tile.TYPE_WATER) {
             TileSurround surround = createTileSurround(map, x, y);
             Short validated_index = water_mapping.get(surround);
-            if (validated_index != null && (index >= 3 || validated_index >= 3)) {
+            if (validated_index != null && !isBridge(index) && (isCostTile(index) || isCostTile(validated_index))) {
                 map.setTile(validated_index, x, y);
             }
         }
