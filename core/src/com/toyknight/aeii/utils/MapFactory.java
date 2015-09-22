@@ -1,6 +1,7 @@
 package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Point;
@@ -84,33 +85,22 @@ public class MapFactory {
         fos.close();
     }
 
-    public static MapSnapshot createMapSnapshot(FileHandle map_file) {
-        MapSnapshot snapshot = new MapSnapshot();
-        snapshot.file = map_file;
-        snapshot.capacity = getPlayerCount(map_file);
-        return snapshot;
-    }
-
-    public static int getPlayerCount(FileHandle map_file) {
+    public static int getPlayerCount(FileHandle map_file) throws IOException {
         DataInputStream dis = new DataInputStream(map_file.read());
         return getPlayerCount(dis);
     }
 
-    public static int getPlayerCount(DataInputStream dis) {
-        try {
-            int count = 0;
-            dis.readUTF();
-            for (int team = 0; team < 4; team++) {
-                boolean access = dis.readBoolean();
-                if (access == true) {
-                    count++;
-                }
+    public static int getPlayerCount(DataInputStream dis) throws IOException {
+        int count = 0;
+        dis.readUTF();
+        for (int team = 0; team < 4; team++) {
+            boolean has_access = dis.readBoolean();
+            if (has_access) {
+                count++;
             }
-            dis.close();
-            return count;
-        } catch (IOException ex) {
-            return -1;
         }
+        dis.close();
+        return count;
     }
 
     public static void createTeamAccess(Map map) {
@@ -131,21 +121,51 @@ public class MapFactory {
         }
     }
 
-    public static FileHandle[] getAvailableMaps() {
+    public static MapSnapshot createMapSnapshot(FileHandle map_file) {
+        try {
+            MapSnapshot snapshot = new MapSnapshot();
+            snapshot.file = map_file;
+            snapshot.capacity = getPlayerCount(map_file);
+            return snapshot;
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    public static Array<MapSnapshot> getSystemMapSnapshots() {
         FileHandle internal_map_config = FileProvider.getAssetsFile("map/config.dat");
         Scanner din = new Scanner(internal_map_config.read());
-        int internal_map_count = din.nextInt();
-        FileHandle[] internal_maps = new FileHandle[internal_map_count];
+        int map_count = din.nextInt();
         din.nextLine();
-        for (int i = 0; i < internal_map_count; i++) {
+        Array<MapSnapshot> snapshots = new Array<MapSnapshot>();
+        for (int i = 0; i < map_count; i++) {
             String map_name = din.nextLine().trim();
-            internal_maps[i] = FileProvider.getAssetsFile("map/" + map_name);
+            MapSnapshot snapshot = createMapSnapshot(FileProvider.getAssetsFile("map/" + map_name));
+            if (snapshot != null) {
+                snapshots.add(snapshot);
+            }
         }
+        din.close();
+        return snapshots;
+    }
+
+    public static Array<MapSnapshot> getUserMapSnapshots() {
+        Array<MapSnapshot> snapshots = new Array<MapSnapshot>();
         FileHandle[] user_maps = FileProvider.getUserDir("map").list();
-        FileHandle[] maps = new FileHandle[internal_maps.length + user_maps.length];
-        System.arraycopy(internal_maps, 0, maps, 0, internal_maps.length);
-        System.arraycopy(user_maps, 0, maps, internal_maps.length, user_maps.length);
-        return maps;
+        for (FileHandle map_file : user_maps) {
+            MapSnapshot snapshot = createMapSnapshot(map_file);
+            if (snapshot != null) {
+                snapshots.add(snapshot);
+            }
+        }
+        return snapshots;
+    }
+
+    public static Array<MapSnapshot> getAllMapSnapshots() {
+        Array<MapSnapshot> system_maps = getSystemMapSnapshots();
+        Array<MapSnapshot> user_maps = getUserMapSnapshots();
+        system_maps.addAll(user_maps);
+        return system_maps;
     }
 
     public static class MapSnapshot {

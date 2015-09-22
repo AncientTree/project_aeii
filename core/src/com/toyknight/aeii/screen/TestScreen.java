@@ -7,63 +7,54 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Player;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.rule.Rule;
-import com.toyknight.aeii.screen.widgets.MapList;
+import com.toyknight.aeii.screen.widgets.StringList;
+import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
 /**
  * @author toyknight 6/21/2015.
  */
-public class TestScreen extends StageScreen {
+public class TestScreen extends StageScreen implements StringList.SelectionListener {
 
     private final int sts;
 
-    private final MapList map_list;
-
-    private TextButton btn_back;
-    private TextButton btn_start;
+    private final StringList<MapFactory.MapSnapshot> map_list;
+    private Map map;
 
     public TestScreen(AEIIApplication context) {
         super(context);
         this.sts = context.getTileSize() * 10 / 48;
-        this.btn_back = new TextButton("Back", getContext().getSkin());
-        this.btn_back.setBounds(Gdx.graphics.getWidth() - ts * 7, ts / 2, ts * 3, ts);
-        this.btn_back.addListener(new ClickListener() {
+        TextButton btn_back = new TextButton("Back", getContext().getSkin());
+        btn_back.setBounds(Gdx.graphics.getWidth() - ts * 7, ts / 2, ts * 3, ts);
+        btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getContext().gotoMainMenuScreen();
             }
         });
         this.addActor(btn_back);
-        this.btn_start = new TextButton("Start!", getContext().getSkin());
-        this.btn_start.setBounds(Gdx.graphics.getWidth() - ts / 2 - ts * 3, ts / 2, ts * 3, ts);
-        this.btn_start.addListener(new ClickListener() {
+        TextButton btn_start = new TextButton("Start!", getContext().getSkin());
+        btn_start.setBounds(Gdx.graphics.getWidth() - ts / 2 - ts * 3, ts / 2, ts * 3, ts);
+        btn_start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Player[] players = new Player[4];
-                for (int i = 0; i < 4; i++) {
-                    if (map_list.getSelectedMap().hasTeamAccess(i)) {
-                        players[i] = new Player();
-                        players[i].setType(Player.LOCAL);
-                        players[i].setAlliance(i + 1);
-                        players[i].setGold(1000);
-                    }
-                }
-                GameCore game = new GameCore(map_list.getSelectedMap(), Rule.getDefaultRule(), GameCore.SKIRMISH, players);
-                getContext().gotoGameScreen(game);
+                tryStartGame();
             }
         });
         this.addActor(btn_start);
 
-        this.map_list = new MapList(ts);
+        this.map_list = new StringList<MapFactory.MapSnapshot>(ts);
+        this.map_list.setListener(this);
         ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin());
         sp_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
@@ -73,19 +64,46 @@ public class TestScreen extends StageScreen {
     }
 
     private void drawMapPreview() {
-        int preview_width = Gdx.graphics.getWidth() - ts * 9 - ts / 2;
-        int preview_height = Gdx.graphics.getHeight() - ts - ts / 2 * 3;
-        //batch.draw(ResourceManager.getListBackground(), ts * 9, ts * 2, preview_width, preview_height);
-        Map map = map_list.getSelectedMap();
-        int map_offset_x = (preview_width - map.getWidth() * sts) / 2;
-        int map_offset_y = (preview_height - map.getHeight() * sts) / 2;
-        for (int map_x = 0; map_x < map.getWidth(); map_x++) {
-            for (int map_y = 0; map_y < map.getHeight(); map_y++) {
-                Tile tile = map.getTile(map_x, map_y);
-                batch.draw(
-                        ResourceManager.getSTileTexture(tile.getMiniMapIndex()),
-                        ts * 9 + map_x * sts + map_offset_x, ts * 2 + preview_height - map_y * sts - sts - map_offset_y, sts, sts);
+        if (map != null) {
+            int preview_width = Gdx.graphics.getWidth() - ts * 9 - ts / 2;
+            int preview_height = Gdx.graphics.getHeight() - ts - ts / 2 * 3;
+            int map_offset_x = (preview_width - map.getWidth() * sts) / 2;
+            int map_offset_y = (preview_height - map.getHeight() * sts) / 2;
+            for (int map_x = 0; map_x < map.getWidth(); map_x++) {
+                for (int map_y = 0; map_y < map.getHeight(); map_y++) {
+                    Tile tile = map.getTile(map_x, map_y);
+                    batch.draw(
+                            ResourceManager.getSTileTexture(tile.getMiniMapIndex()),
+                            ts * 9 + map_x * sts + map_offset_x, ts * 2 + preview_height - map_y * sts - sts - map_offset_y, sts, sts);
+                }
             }
+        }
+    }
+
+    @Override
+    public void onSelect(int index, Object value) {
+        try {
+            MapFactory.MapSnapshot snapshot = map_list.getSelected();
+            map = MapFactory.createMap(snapshot.file);
+        } catch (AEIIException ex) {
+            map = null;
+            getContext().showMessage(Language.getText("MSG_ERR_BMF"), null);
+        }
+    }
+
+    private void tryStartGame() {
+        if (map != null) {
+            Player[] players = new Player[4];
+            for (int i = 0; i < 4; i++) {
+                if (map.hasTeamAccess(i)) {
+                    players[i] = new Player();
+                    players[i].setType(Player.LOCAL);
+                    players[i].setAlliance(i + 1);
+                    players[i].setGold(1000);
+                }
+            }
+            GameCore game = new GameCore(map, Rule.getDefaultRule(), GameCore.SKIRMISH, players);
+            getContext().gotoGameScreen(game);
         }
     }
 
@@ -101,8 +119,10 @@ public class TestScreen extends StageScreen {
 
     @Override
     public void show() {
-        map_list.setMaps(MapFactory.getAvailableMaps());
         Gdx.input.setInputProcessor(this);
+        Array<MapFactory.MapSnapshot> maps = MapFactory.getAllMapSnapshots();
+        map_list.setItems(maps);
+        onSelect(0, map_list.getSelected());
     }
 
 }

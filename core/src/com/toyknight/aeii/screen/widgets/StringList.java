@@ -23,6 +23,8 @@ public class StringList<T> extends Widget {
     private final Array<T> items = new Array<T>();
     final ArraySelection<T> selection = new ArraySelection<T>(items);
 
+    private SelectionListener listener;
+
     public StringList(int item_height) {
         this.item_height = item_height;
         this.text_offset = (item_height - FontRenderer.getTextFont().getCapHeight()) / 2;
@@ -45,6 +47,9 @@ public class StringList<T> extends Widget {
         index = Math.min(items.size - 1, index);
         if (!selection.contains(items.get(index))) {
             selection.choose(items.get(index));
+            if (listener != null) {
+                listener.onSelect(index, getSelected());
+            }
         }
     }
 
@@ -58,6 +63,10 @@ public class StringList<T> extends Widget {
     public float getPrefHeight() {
         validate();
         return prefHeight;
+    }
+
+    public void setListener(SelectionListener listener) {
+        this.listener = listener;
     }
 
     public void setEnabled(boolean b) {
@@ -112,6 +121,12 @@ public class StringList<T> extends Widget {
             itemY -= item_height;
         }
         super.draw(batch, parentAlpha);
+    }
+
+    public interface SelectionListener {
+
+        public void onSelect(int index, Object value);
+
     }
 
 }

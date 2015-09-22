@@ -1,6 +1,5 @@
 package com.toyknight.aeii.screen.editor;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -8,27 +7,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.MapEditorScreen;
+import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
-public class MapSaveDialog extends Table {
-
-    private final int ts;
-    private final MapEditorScreen editor;
+public class MapSaveDialog extends BasicDialog {
 
     private TextField tf_filename;
     private TextField tf_author;
 
     public MapSaveDialog(MapEditorScreen editor) {
-        this.editor = editor;
-        this.ts = getContext().getTileSize();
-        this.initComponents();
+        super(editor);
+        initComponents();
     }
 
     private void initComponents() {
@@ -42,32 +35,33 @@ public class MapSaveDialog extends Table {
         this.tf_author = new TextField("", getContext().getSkin());
         this.add(tf_author).width(ts * 5).row();
 
+        Table button_bar = new Table();
         TextButton btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                editor.saveMap(tf_filename.getText(), tf_author.getText());
+                getOwner().saveMap(tf_filename.getText(), tf_author.getText());
             }
         });
-        this.add(btn_save).size(ts * 4, ts / 2).padTop(ts / 4);
+        button_bar.add(btn_save).size(ts * 2, ts);
+        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        btn_cancel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("save");
+            }
+        });
+        button_bar.add(btn_cancel).size(ts * 2, ts).padLeft(ts / 2);
+        add(button_bar).size(ts * 5, ts).padTop(ts / 4);
     }
 
-    private AEIIApplication getContext() {
-        return editor.getContext();
+    public MapEditorScreen getOwner() {
+        return (MapEditorScreen) super.getOwner();
     }
 
     public void display() {
-        this.tf_filename.setText(editor.getFilename());
-        this.tf_author.setText(editor.getMap().getAuthor());
-        this.setVisible(true);
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        super.draw(batch, parentAlpha);
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        batch.flush();
+        this.tf_filename.setText(getOwner().getFilename());
+        this.tf_author.setText(getOwner().getMap().getAuthor());
     }
 
 }

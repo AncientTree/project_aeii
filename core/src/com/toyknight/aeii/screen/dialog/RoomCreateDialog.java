@@ -251,12 +251,7 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     public void updateMaps() {
-        FileHandle[] available_maps = MapFactory.getAvailableMaps();
-        Array<Object> maps = new Array<Object>();
-        for (FileHandle map_file : available_maps) {
-            MapFactory.MapSnapshot snapshot = MapFactory.createMapSnapshot(map_file);
-            maps.add(snapshot);
-        }
+        Array<Object> maps = new Array<Object>(MapFactory.getAllMapSnapshots());
         object_list.setItems(maps);
     }
 

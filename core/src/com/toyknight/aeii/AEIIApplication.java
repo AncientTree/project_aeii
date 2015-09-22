@@ -38,6 +38,8 @@ public class AEIIApplication extends Game {
 
     private final static String[] HEX_DIGITS =
             {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+
+    private static final String VERSION_MODIFIER = "b";
     private static final String VERSION = "1.0.3";
     private static final String TAG = "Main";
     private static String V_STRING;
@@ -259,7 +261,7 @@ public class AEIIApplication extends Game {
     public void closeDialog() {
         dialog.setVisible(false);
         if (getScreen() instanceof StageScreen) {
-            Gdx.input.setInputProcessor((StageScreen) getScreen());
+            ((StageScreen) getScreen()).onFocus();
         }
         if (dialog_callback != null) {
             dialog_callback.doCallback();
@@ -300,7 +302,7 @@ public class AEIIApplication extends Game {
     }
 
     public String getVersion() {
-        return VERSION;
+        return VERSION + VERSION_MODIFIER;
     }
 
     public String getVerificationString() {

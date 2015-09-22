@@ -40,7 +40,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     private MapResizeDialog map_resize_dialog;
     private MapSaveDialog map_save_dialog;
     private MapOpenDialog map_open_dialog;
-    private Dialog dialog;
 
     private CircleButton btn_hand;
     private CircleButton btn_brush;
@@ -69,7 +68,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
         this.viewport = new MapViewport();
         this.viewport.width = Gdx.graphics.getWidth();
-        this.viewport.height = Gdx.graphics.getHeight() - ts;
+        this.viewport.height = Gdx.graphics.getHeight();
 
         this.initComponents();
     }
@@ -84,28 +83,12 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         unit_selector.setBounds(Gdx.graphics.getWidth() - usw, 0, usw, Gdx.graphics.getHeight());
         this.addActor(unit_selector);
 
-        int mrw = ts * 8;
-        int mrh = ts * 4;
-        this.map_resize_dialog = new MapResizeDialog(this);
-        this.map_resize_dialog.setBounds((Gdx.graphics.getWidth() - mrw) / 2, (Gdx.graphics.getHeight() - mrh) / 2, mrw, mrh);
-        this.map_resize_dialog.setVisible(false);
-        this.addActor(map_resize_dialog);
-
-        int msw = ts * 6;
-        int msh = ts * 4;
-        this.map_save_dialog = new MapSaveDialog(this);
-        this.map_save_dialog.setBounds((Gdx.graphics.getWidth() - msw) / 2, (Gdx.graphics.getHeight() - msh) / 2, msw, msh);
-        this.map_save_dialog.setVisible(false);
-        this.addActor(map_save_dialog);
-
-        int mow = ts * 6;
-        int moh = ts * 8;
-        this.map_open_dialog = new MapOpenDialog(this);
-        this.map_open_dialog.setBounds((Gdx.graphics.getWidth() - mow) / 2, (Gdx.graphics.getHeight() - moh) / 2, msw, moh);
-        this.map_open_dialog.setVisible(false);
-        this.addActor(map_open_dialog);
-
         Table button_bar = new Table();
+        button_bar.setBounds(
+                tile_selector.getWidth(), 0,
+                Gdx.graphics.getWidth() - tile_selector.getWidth() - unit_selector.getWidth(), ts * 33 / 24);
+        this.addActor(button_bar);
+
         btn_hand = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_hand"), ts);
         btn_hand.addListener(new ClickListener() {
             @Override
@@ -135,12 +118,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         btn_resize.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (map_resize_dialog.isVisible()) {
-                    map_resize_dialog.setVisible(false);
-                } else {
-                    closeAllDialogs();
-                    map_resize_dialog.display();
-                }
+                showDialog("resize");
             }
         });
         button_bar.add(btn_resize).padLeft(ts / 4);
@@ -149,12 +127,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (map_save_dialog.isVisible()) {
-                    map_save_dialog.setVisible(false);
-                } else {
-                    closeAllDialogs();
-                    map_save_dialog.display();
-                }
+                showDialog("save");
             }
         });
         button_bar.add(btn_save).padLeft(ts / 4);
@@ -163,12 +136,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (map_open_dialog.isVisible()) {
-                    map_open_dialog.setVisible(false);
-                } else {
-                    closeAllDialogs();
-                    map_open_dialog.display();
-                }
+                showDialog("open");
             }
         });
         button_bar.add(btn_load).padLeft(ts / 4);
@@ -181,20 +149,25 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             }
         });
         button_bar.add(btn_exit).padLeft(ts / 4);
-
         button_bar.layout();
-        button_bar.setBounds(
-                tile_selector.getWidth(), 0,
-                Gdx.graphics.getWidth() - tile_selector.getWidth() - unit_selector.getWidth(), ts * 33 / 24);
-        this.addActor(button_bar);
 
-        int dw = ts * 6;
-        int dh = ts / 2 * 5;
-        this.dialog = new Dialog("", getContext().getSkin());
-        this.dialog.setBounds((Gdx.graphics.getWidth() - dw) / 2, (Gdx.graphics.getHeight() - dh) / 2, dw, dh);
-        this.dialog.setVisible(false);
-        this.dialog.setModal(true);
-        this.addActor(dialog);
+        int mrw = ts * 8;
+        int mrh = ts * 4 + ts / 2;
+        this.map_resize_dialog = new MapResizeDialog(this);
+        this.map_resize_dialog.setBounds((Gdx.graphics.getWidth() - mrw) / 2, (Gdx.graphics.getHeight() - mrh) / 2, mrw, mrh);
+        this.addDialog("resize", map_resize_dialog);
+
+        int msw = ts * 6;
+        int msh = ts * 4;
+        this.map_save_dialog = new MapSaveDialog(this);
+        this.map_save_dialog.setBounds((Gdx.graphics.getWidth() - msw) / 2, (Gdx.graphics.getHeight() - msh) / 2, msw, msh);
+        this.addDialog("save", map_save_dialog);
+
+        int mow = ts * 8;
+        int moh = ts * 7;
+        this.map_open_dialog = new MapOpenDialog(this);
+        this.map_open_dialog.setBounds((Gdx.graphics.getWidth() - mow) / 2, (Gdx.graphics.getHeight() - moh) / 2, mow, moh);
+        this.addDialog("open", map_open_dialog);
     }
 
     @Override
@@ -586,7 +559,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         this.map = map;
         this.filename = filename;
         locateViewport(0, 0);
-        setMode(MODE_BRUSH);
+        setMode(MODE_HAND);
         setBrushType(TYPE_TILE);
     }
 
@@ -595,90 +568,16 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         getMap().setAuthor(author);
         FileHandle map_file = FileProvider.getUserFile("map/" + filename + ".aem");
         try {
-            if (map_file.exists()) {
-                showOverwriteDialog();
+            MapFactory.createTeamAccess(map);
+            if (map.getPlayerCount() >= 2) {
+                MapFactory.writeMap(map, map_file);
+                map_save_dialog.setVisible(false);
             } else {
-                MapFactory.createTeamAccess(map);
-                if (map.getPlayerCount() >= 2) {
-                    MapFactory.writeMap(map, map_file);
-                    map_save_dialog.setVisible(false);
-                } else {
-                    showTeamErrorDialog();
-                }
+                getContext().showMessage(Language.getText("EDITOR_ERROR_1"), null);
             }
         } catch (IOException ex) {
-            map_save_dialog.setVisible(false);
-            showSaveErrorDialog();
+            getContext().showMessage(Language.getText("EDITOR_ERROR_2"), null);
         }
-    }
-
-    private void showTeamErrorDialog() {
-        dialog.getContentTable().reset();
-        dialog.getContentTable().add(new Label(Language.getText("EDITOR_ERROR_1"), getContext().getSkin()));
-
-        dialog.getButtonTable().reset();
-        TextButton btn_ok = new TextButton("OK", getContext().getSkin());
-        btn_ok.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dialog.setVisible(false);
-            }
-        });
-        dialog.getButtonTable().add(btn_ok).size(ts * 3, ts / 2);
-
-        dialog.setVisible(true);
-    }
-
-    private void showOverwriteDialog() {
-        dialog.getContentTable().reset();
-        dialog.getContentTable().add(new Label(Language.getText("LB_OVERWRITE") + "?", getContext().getSkin()));
-
-        dialog.getButtonTable().reset();
-        TextButton btn_overwrite = new TextButton(Language.getText("LB_OVERWRITE"), getContext().getSkin());
-        btn_overwrite.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                doOverwrite();
-            }
-        });
-        dialog.getButtonTable().add(btn_overwrite).size(ts / 2 * 5, ts / 2);
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
-        btn_cancel.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dialog.setVisible(false);
-            }
-        });
-        dialog.getButtonTable().add(btn_cancel).size(ts / 2 * 5, ts / 2).padLeft(ts / 4);
-
-        dialog.setVisible(true);
-    }
-
-    private void showSaveErrorDialog() {
-        dialog.getContentTable().reset();
-        dialog.getContentTable().add(new Label(Language.getText("EDITOR_ERROR_2"), getContext().getSkin()));
-
-        dialog.getButtonTable().reset();
-        TextButton btn_ok = new TextButton("OK", getContext().getSkin());
-        btn_ok.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dialog.setVisible(false);
-            }
-        });
-        dialog.getButtonTable().add(btn_ok).size(ts * 3, ts / 2);
-
-        dialog.setVisible(true);
-    }
-
-    private void doOverwrite() {
-        try {
-            FileHandle map_file = FileProvider.getUserFile("map/" + filename + ".aem");
-            MapFactory.writeMap(map, map_file);
-        } catch (IOException ex) {
-            showSaveErrorDialog();
-        }
-        map_save_dialog.setVisible(false);
     }
 
 }

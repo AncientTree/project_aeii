@@ -41,6 +41,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         return context;
     }
 
+    public void onFocus() {
+        if(isDialogShown()) {
+            Gdx.input.setInputProcessor(dialog_stage);
+        } else {
+            Gdx.input.setInputProcessor(this);
+        }
+    }
+
     public void addDialog(String name, BasicDialog dialog) {
         dialog_stage.addActor(dialog);
         dialogs.put(name, dialog);

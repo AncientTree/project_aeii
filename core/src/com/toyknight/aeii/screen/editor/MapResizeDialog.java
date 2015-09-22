@@ -1,27 +1,18 @@
 package com.toyknight.aeii.screen.editor;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.toyknight.aeii.AEIIApplication;
-import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.MapEditorScreen;
+import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
-public class MapResizeDialog extends Table {
-
-    private final int ts;
-    private final MapEditorScreen editor;
+public class MapResizeDialog extends BasicDialog {
 
     private Label lb_width;
     private Slider slider_width;
@@ -29,8 +20,7 @@ public class MapResizeDialog extends Table {
     private Slider slider_height;
 
     public MapResizeDialog(MapEditorScreen editor) {
-        this.editor = editor;
-        this.ts = getContext().getTileSize();
+        super(editor);
         this.initComponents();
     }
 
@@ -57,19 +47,29 @@ public class MapResizeDialog extends Table {
         });
         this.add(slider_height).size(ts * 7, ts).row();
 
+        Table button_bar = new Table();
         TextButton btn_confirm = new TextButton(Language.getText("LB_CONFIRM"), getContext().getSkin());
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                editor.createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
-                setVisible(false);
+                getOwner().createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
+                getOwner().closeDialog("resize");
             }
         });
-        this.add(btn_confirm).size(ts *3, ts / 2);
+        button_bar.add(btn_confirm).size(ts * 3, ts);
+        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        btn_cancel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("resize");
+            }
+        });
+        button_bar.add(btn_cancel).size(ts * 3, ts).padLeft(ts / 2);
+        add(button_bar).size(ts * 7, ts);
     }
 
-    private AEIIApplication getContext() {
-        return editor.getContext();
+    public MapEditorScreen getOwner() {
+        return (MapEditorScreen) super.getOwner();
     }
 
     private void onSizeChanged() {
@@ -79,17 +79,8 @@ public class MapResizeDialog extends Table {
     }
 
     public void display() {
-        slider_width.setValue(editor.getMap().getWidth());
-        slider_height.setValue(editor.getMap().getHeight());
-        this.setVisible(true);
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
-        super.draw(batch, parentAlpha);
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        batch.flush();
+        slider_width.setValue(getOwner().getMap().getWidth());
+        slider_height.setValue(getOwner().getMap().getHeight());
     }
 
 }
