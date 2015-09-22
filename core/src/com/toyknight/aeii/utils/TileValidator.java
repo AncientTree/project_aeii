@@ -1,12 +1,10 @@
 package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * @author toyknight 9/21/2015.
@@ -24,6 +22,12 @@ public class TileValidator {
         W = 0;
         L = 1;
         N = -1;
+        TileSurround t0 = new TileSurround(new byte[]{
+                W, W, W,
+                W, W, W,
+                W, W, W
+        });
+        water_mapping.put(t0, (short) 0);
         TileSurround t3 = new TileSurround(new byte[]{
                 W, W, N,
                 W, W, L,
@@ -328,7 +332,7 @@ public class TileValidator {
         if (TileFactory.getTile(index).getType() == Tile.TYPE_WATER) {
             TileSurround surround = createTileSurround(map, x, y);
             Short validated_index = water_mapping.get(surround);
-            if (validated_index != null) {
+            if (validated_index != null && (index >= 3 || validated_index >= 3)) {
                 map.setTile(validated_index, x, y);
             }
         }
