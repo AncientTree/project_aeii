@@ -427,6 +427,13 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     private void doErase(int map_x, int map_y) {
         if (getMap().getUnit(map_x, map_y) == null) {
             getMap().setTile((short) 0, map_x, map_y);
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
+                        TileValidator.validate(getMap(), map_x + dx, map_y + dy);
+                    }
+                }
+            }
         } else {
             getMap().removeUnit(map_x, map_y);
         }
@@ -437,11 +444,9 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             switch (brush_type) {
                 case TYPE_TILE:
                     getMap().setTile(selected_tile_index, map_x, map_y);
-                    if (TileFactory.getTile(selected_tile_index).getType() == Tile.TYPE_WATER) {
-                        TileValidator.validate(getMap(), map_x, map_y);
-                    } else {
-                        for (int dy = -1; dy <= 1; dy++) {
-                            for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        for (int dx = -1; dx <= 1; dx++) {
+                            if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
                                 TileValidator.validate(getMap(), map_x + dx, map_y + dy);
                             }
                         }

@@ -12,7 +12,7 @@ import com.toyknight.aeii.screen.MapEditorScreen;
 import com.toyknight.aeii.utils.TileFactory;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
 public class TileSelector extends Container {
 
@@ -26,19 +26,17 @@ public class TileSelector extends Container {
     }
 
     private void initComponents() {
+        int index = 0;
         Table tile_table = new Table();
         for (int i = 0; i < TileFactory.getTileCount(); i++) {
-            TileButton t_btn = new TileButton(editor, (short) i, ts);
-//            t_btn.addListener(new ClickListener() {
-//                @Override
-//                public void clicked(InputEvent event, float x, float y) {
-//                    setVisible(false);
-//                }
-//            });
-            if (i % 3 == 2) {
-                tile_table.add(t_btn).padTop(ts / 4).row();
-            } else {
-                tile_table.add(t_btn).padRight(ts / 4).padTop(ts / 4);
+            if ((0 <= i && i <= 2) || (15 <= i && i <= 45) || (80 <= i && i < TileFactory.getTileCount())) {
+                TileButton t_btn = new TileButton(editor, (short) i, ts);
+                if (index % 3 == 2) {
+                    tile_table.add(t_btn).padTop(ts / 4).row();
+                } else {
+                    tile_table.add(t_btn).padRight(ts / 4).padTop(ts / 4);
+                }
+                index++;
             }
         }
         tile_table.layout();

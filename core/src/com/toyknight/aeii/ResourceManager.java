@@ -192,9 +192,7 @@ public class ResourceManager {
     }
 
     private static void loadEditorTextures() {
-        editor_textures = new HashMap();
-        editor_textures.put("button_square_active", new Texture(FileProvider.getAssetsFile("images/editor/button_square_active.png")));
-        editor_textures.put("button_square_pressed", new Texture(FileProvider.getAssetsFile("images/editor/button_square_pressed.png")));
+        editor_textures = new HashMap<String, Texture>();
         editor_textures.put("icon_brush", new Texture(FileProvider.getAssetsFile("images/editor/icon_brush.png")));
         editor_textures.put("icon_hand", new Texture(FileProvider.getAssetsFile("images/editor/icon_hand.png")));
         editor_textures.put("icon_eraser", new Texture(FileProvider.getAssetsFile("images/editor/icon_eraser.png")));
