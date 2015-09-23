@@ -14,7 +14,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.GameManagerListener;
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
@@ -352,25 +352,35 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         attack_cursor.addStateTime(delta);
         updateViewport();
 
-        if (record != null) {
-            if (record.getEvents().isEmpty()) {
+        updateRecord(delta);
+
+        super.act(delta);
+        manager.updateAnimation(delta);
+    }
+
+    private void updateRecord(float delta) {
+        if (getRecord() != null) {
+            if (getRecord().getEvents().isEmpty()) {
                 if (!playback_finished) {
                     playback_finished = true;
                     appendMessage(null, Language.getText("MSG_INFO_RPF"));
                 }
             } else {
-                if (playback_delay < 1.0f) {
-                    playback_delay += delta;
-                } else {
-                    playback_delay = 0f;
-                    GameEvent event = record.getEvents().poll();
+                GameEvent preview = getRecord().getEvents().peek();
+                if ((preview instanceof TileDestroyEvent) || (preview instanceof UnitAttackEvent)) {
+                    GameEvent event = getRecord().getEvents().poll();
                     getGameManager().queueGameEvent(event);
+                } else {
+                    if (playback_delay < 1.0f) {
+                        playback_delay += delta;
+                    } else {
+                        playback_delay = 0f;
+                        GameEvent event = getRecord().getEvents().poll();
+                        getGameManager().queueGameEvent(event);
+                    }
                 }
             }
         }
-
-        super.act(delta);
-        manager.updateAnimation(delta);
     }
 
     @Override
@@ -745,6 +755,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     public GameManager getGameManager() {
         return manager;
+    }
+
+    public GameRecord getRecord() {
+        return record;
     }
 
     public UnitRenderer getUnitRenderer() {

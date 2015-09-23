@@ -137,7 +137,7 @@ public class GameLoadDialog extends BasicDialog {
             for (int team = 0; team < 4; team++) {
                 Player player = record.getGame().getPlayer(team);
                 if (player != null) {
-                    player.setType(Player.REMOTE);
+                    player.setType(Player.RECORD);
                 }
             }
             getContext().gotoGameScreen(record);

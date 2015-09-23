@@ -571,7 +571,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             MapFactory.createTeamAccess(map);
             if (map.getPlayerCount() >= 2) {
                 MapFactory.writeMap(map, map_file);
-                map_save_dialog.setVisible(false);
+                closeDialog("save");
             } else {
                 getContext().showMessage(Language.getText("EDITOR_ERROR_1"), null);
             }

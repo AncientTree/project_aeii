@@ -13,6 +13,7 @@ public class Player implements Serializable {
     public static final int LOCAL = 0x1;
     public static final int ROBOT = 0x3;
     public static final int REMOTE = 0x2;
+    public static final int RECORD = 0x4;
 
     private int type;
     private int alliance = 0;

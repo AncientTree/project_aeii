@@ -55,7 +55,7 @@ public class Unit implements Serializable {
     public Unit(int index, String unit_code) {
         this.level = 0;
         this.index = index;
-        this.abilities = new ArrayList();
+        this.abilities = new ArrayList<Integer>();
         this.unit_code = unit_code;
     }
 
@@ -86,7 +86,7 @@ public class Unit implements Serializable {
         this.y_position = unit.getY();
         this.max_attack_range = unit.getMaxAttackRange();
         this.min_attack_range = unit.getMinAttackRange();
-        this.abilities = new ArrayList(unit.getAbilities());
+        this.abilities = new ArrayList<Integer>(unit.getAbilities());
         this.status = unit.getStatus();
     }
 
@@ -350,6 +350,10 @@ public class Unit implements Serializable {
         } else {
             return -1;
         }
+    }
+
+    public void clearStatus() {
+        this.status = null;
     }
 
     public void attachStatus(Status status) {

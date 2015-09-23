@@ -125,10 +125,10 @@ public class GameCore implements Serializable {
     public void destroyUnit(int target_x, int target_y) {
         Unit target = getMap().getUnit(target_x, target_y);
         if (target != null) {
-            //remove unit
-            getMap().removeUnit(target_x, target_y);
             //update statistics
             getStatistics().addLose(target.getTeam(), getUnitPrice(target.getIndex(), target.getTeam()));
+            //remove unit
+            getMap().removeUnit(target_x, target_y);
             //update status
             updatePopulation(target.getTeam());
             if (target.getIndex() != UnitFactory.getSkeletonIndex() && target.getIndex() != UnitFactory.getCommanderIndex()) {
@@ -151,6 +151,7 @@ public class GameCore implements Serializable {
         if (!isCommanderAlive(team)) {
             commanders[team].setX(x);
             commanders[team].setY(y);
+            commanders[team].clearStatus();
             getMap().addUnit(commanders[team]);
             commanders[team].setCurrentHp(commanders[team].getMaxHp());
             restoreUnit(commanders[team]);
@@ -188,7 +189,7 @@ public class GameCore implements Serializable {
     public int getUnitPrice(int index, int team) {
         Unit unit = UnitFactory.getSample(index);
         if (unit.isCommander()) {
-            if (isCommanderAlive(current_team)) {
+            if (isCommanderAlive(team)) {
                 return -1;
             } else {
                 return getCommanderPrice(team);
