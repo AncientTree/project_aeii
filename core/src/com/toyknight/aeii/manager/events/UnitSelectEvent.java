@@ -9,11 +9,11 @@ import com.toyknight.aeii.manager.GameManager;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/28/2015.
+ * @author toyknight 5/28/2015.
  */
 public class UnitSelectEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05272015L;
+    private static final long serialVersionUID = 5272015L;
 
     private final int target_x;
     private final int target_y;
@@ -31,11 +31,7 @@ public class UnitSelectEvent implements GameEvent, Serializable {
     @Override
     public boolean canExecute(GameCore game) {
         Unit target = game.getMap().getUnit(target_x, target_y);
-        if (target == null) {
-            return false;
-        } else {
-            return game.getCurrentTeam() == target.getTeam();
-        }
+        return target != null && game.getCurrentTeam() == target.getTeam();
     }
 
     @Override

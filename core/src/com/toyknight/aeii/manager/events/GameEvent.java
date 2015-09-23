@@ -5,14 +5,14 @@ import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.manager.GameManager;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public interface GameEvent {
 
-    public Point getFocus(GameCore game);
+    Point getFocus(GameCore game);
 
-    public boolean canExecute(GameCore game);
+    boolean canExecute(GameCore game);
 
-    public void execute(GameManager manager);
+    void execute(GameManager manager);
 
 }

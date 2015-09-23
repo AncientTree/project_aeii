@@ -4,18 +4,17 @@ import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.Language;
 
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/25/2015.
+ * @author toyknight 5/25/2015.
  */
 public class RepairEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05252015L;
+    private static final long serialVersionUID = 5252015L;
 
     private final int target_x;
     private final int target_y;

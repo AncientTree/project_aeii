@@ -6,11 +6,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class Unit implements Serializable {
 
-    private static final long serialVersionUID = 04032015L;
+    private static final long serialVersionUID = 4032015L;
 
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGICAL = 1;

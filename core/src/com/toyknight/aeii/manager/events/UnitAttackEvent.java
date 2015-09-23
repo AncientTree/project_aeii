@@ -15,7 +15,7 @@ import com.toyknight.aeii.utils.UnitToolkit;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/6/2015.
+ * @author toyknight 5/6/2015.
  */
 public class UnitAttackEvent implements GameEvent, Serializable {
 
@@ -52,11 +52,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
         if (attacker == null) {
             return false;
         } else {
-            if (target == null) {
-                return attacker.hasAbility(Ability.DESTROYER) && game.getMap().getTile(target_x, target_y).isDestroyable();
-            } else {
-                return true;
-            }
+            return target != null || attacker.hasAbility(Ability.DESTROYER) && game.getMap().getTile(target_x, target_y).isDestroyable();
         }
     }
 

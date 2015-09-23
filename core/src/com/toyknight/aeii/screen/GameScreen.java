@@ -332,7 +332,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onReceiveGameEvent(GameEvent event) {
-        getGameManager().queueGameEvent(event);
+        getGameManager().submitGameEvent(event);
     }
 
     @Override
@@ -369,14 +369,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 GameEvent preview = getRecord().getEvents().peek();
                 if ((preview instanceof TileDestroyEvent) || (preview instanceof UnitAttackEvent)) {
                     GameEvent event = getRecord().getEvents().poll();
-                    getGameManager().queueGameEvent(event);
+                    getGameManager().submitGameEvent(event);
                 } else {
                     if (playback_delay < 1.0f) {
                         playback_delay += delta;
                     } else {
                         playback_delay = 0f;
                         GameEvent event = getRecord().getEvents().poll();
-                        getGameManager().queueGameEvent(event);
+                        getGameManager().submitGameEvent(event);
                     }
                 }
             }

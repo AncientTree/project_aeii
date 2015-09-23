@@ -4,7 +4,6 @@ import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.AnimationListener;
-import com.toyknight.aeii.listener.EventDispatcherListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.manager.events.TurnEndEvent;
@@ -14,7 +13,7 @@ import com.toyknight.aeii.utils.UnitToolkit;
 import java.util.*;
 
 /**
- * Created by toyknight on 5/28/2015.
+ * @author toyknight  5/28/2015.
  */
 public class GameManager implements AnimationDispatcher {
 
@@ -34,11 +33,9 @@ public class GameManager implements AnimationDispatcher {
 
     private GameCore game;
     private GameManagerListener manager_listener;
-    private final ArrayList<EventDispatcherListener> event_dispatcher_listeners;
     private final ArrayList<AnimationListener> animation_listeners;
 
     private int state;
-    private int last_state;
     protected Unit selected_unit;
     protected Point last_position;
 
@@ -53,7 +50,6 @@ public class GameManager implements AnimationDispatcher {
     public GameManager() {
         this.event_queue = new LinkedList<GameEvent>();
         this.animation_queue = new LinkedList<Animator>();
-        this.event_dispatcher_listeners = new ArrayList<EventDispatcherListener>();
         this.animation_listeners = new ArrayList<AnimationListener>();
         this.movable_positions = new HashSet<Point>();
     }
@@ -61,7 +57,6 @@ public class GameManager implements AnimationDispatcher {
     public void setGame(GameCore game) {
         this.game = game;
         this.state = STATE_SELECT;
-        this.event_dispatcher_listeners.clear();
         this.event_queue.clear();
         this.animation_queue.clear();
         this.current_animation = null;
@@ -86,11 +81,10 @@ public class GameManager implements AnimationDispatcher {
 
     public void setState(int state) {
         if (state != this.state) {
-            this.last_state = this.state;
-            this.state = state;
             if (manager_listener != null) {
-                manager_listener.onManagerStateChanged(last_state);
+                manager_listener.onManagerStateChanged(this.state);
             }
+            this.state = state;
         }
     }
 
@@ -155,7 +149,7 @@ public class GameManager implements AnimationDispatcher {
         setState(STATE_ACTION);
     }
 
-    public void onUnitMoveFinished(Unit unit) {
+    public void onUnitMoveFinished() {
         switch (getState()) {
             case GameManager.STATE_MOVE:
                 setState(GameManager.STATE_ACTION);
@@ -179,19 +173,7 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
-    public boolean isActionPhase() {
-        return getState() == STATE_ATTACK || getState() == STATE_SUMMON || getState() == STATE_HEAL;
-    }
-
-    protected void submitGameEvent(GameEvent event) {
-        if (isAnimating()) {
-            event_queue.add(event);
-        } else {
-            executeGameEvent(event);
-        }
-    }
-
-    public void queueGameEvent(GameEvent event) {
+    public void submitGameEvent(GameEvent event) {
         event_queue.add(event);
     }
 
@@ -448,16 +430,16 @@ public class GameManager implements AnimationDispatcher {
         return false;
     }
 
-    public boolean hasAllyWithinRange(Unit unit) {
-        HashSet<Point> attackable_positions = createAttackablePositions(unit);
-        for (Point point : attackable_positions) {
-            Unit target = getGame().getMap().getUnit(point.x, point.y);
-            if (target != null && !getGame().isEnemy(unit, target)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean hasAllyWithinRange(Unit unit) {
+//        HashSet<Point> attackable_positions = createAttackablePositions(unit);
+//        for (Point point : attackable_positions) {
+//            Unit target = getGame().getMap().getUnit(point.x, point.y);
+//            if (target != null && !getGame().isEnemy(unit, target)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public boolean hasTombWithinRange(Unit unit) {
         HashSet<Point> attackable_positions = createAttackablePositions(unit);
@@ -470,11 +452,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public boolean canSelectedUnitAct() {
-        if (getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE)) {
-            return getSelectedUnit().isAt(last_position.x, last_position.y);
-        } else {
-            return true;
-        }
+        return !getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE) || getSelectedUnit().isAt(last_position.x, last_position.y);
     }
 
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {

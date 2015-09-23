@@ -57,7 +57,6 @@ public class AEIIApplication extends Game {
 
     private Screen previous_screen;
 
-    private LogoScreen logo_screen;
     private MainMenuScreen main_menu_screen;
     private MapEditorScreen map_editor_screen;
     private LobbyScreen lobby_screen;
@@ -108,7 +107,7 @@ public class AEIIApplication extends Game {
             skin.get(Dialog.WindowStyle.class).titleFont = FontRenderer.getTextFont();
             skin.get(List.ListStyle.class).font = FontRenderer.getTextFont();
 
-            logo_screen = new LogoScreen(this);
+            LogoScreen logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen(this);
             map_editor_screen = new MapEditorScreen(this);
             lobby_screen = new LobbyScreen(this);

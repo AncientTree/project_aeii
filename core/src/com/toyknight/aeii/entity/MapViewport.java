@@ -1,7 +1,7 @@
 package com.toyknight.aeii.entity;
 
 /**
- * Created by toyknight on 4/20/2015.
+ * @author toyknight 4/20/2015.
  */
 public class MapViewport {
 

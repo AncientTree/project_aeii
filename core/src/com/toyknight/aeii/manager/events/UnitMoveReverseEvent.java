@@ -3,17 +3,16 @@ package com.toyknight.aeii.manager.events;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/28/2015.
+ * @author toyknight 5/28/2015.
  */
 public class UnitMoveReverseEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05272015L;
+    private static final long serialVersionUID = 5272015L;
 
     private final int unit_x;
     private final int unit_y;

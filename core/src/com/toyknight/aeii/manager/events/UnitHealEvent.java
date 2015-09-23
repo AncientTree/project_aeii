@@ -10,7 +10,7 @@ import com.toyknight.aeii.manager.GameManager;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 9/9/2015.
+ * @author toyknight 9/9/2015.
  */
 public class UnitHealEvent implements GameEvent, Serializable {
 

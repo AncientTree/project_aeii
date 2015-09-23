@@ -9,11 +9,11 @@ import com.toyknight.aeii.manager.GameManager;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/17/2015.
+ * @author toyknight 5/17/2015.
  */
 public class TileDestroyEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05172015L;
+    private static final long serialVersionUID = 5172015L;
 
     private final int target_x;
     private final int target_y;

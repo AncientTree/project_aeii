@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Created by toyknight on 5/26/2015.
+ * @author toyknight 5/26/2015.
  */
 public class HpChangeEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05262015L;
+    private static final long serialVersionUID = 5262015L;
 
     private final HashMap<Point, Integer> change_map;
 

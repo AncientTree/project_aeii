@@ -3,7 +3,7 @@ package com.toyknight.aeii.entity;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 9/22/2015.
+ * @author toyknight 9/22/2015.
  */
 public class Statistics implements Serializable {
 

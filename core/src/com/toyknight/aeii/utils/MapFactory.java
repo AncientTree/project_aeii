@@ -14,7 +14,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class MapFactory {
 

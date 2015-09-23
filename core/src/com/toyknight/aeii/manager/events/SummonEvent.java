@@ -5,18 +5,17 @@ import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/21/2015.
+ * @author toyknight 5/21/2015.
  */
 public class SummonEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05212015L;
+    private static final long serialVersionUID = 5212015L;
 
     private final int summoner_x;
     private final int summoner_y;

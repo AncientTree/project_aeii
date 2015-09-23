@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by toyknight on 7/27/2015.
+ * @author toyknight 7/27/2015.
  */
 public class GameHost {
 
@@ -202,33 +202,26 @@ public class GameHost {
                             hp_change_map.put(target_position, 15);
                         }
                     } else {
-//                        Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
-//                        if (!getGame().isEnemy(healer, target)) {
-//                            hp_change_map.put(target_position, 15);
-//                        }
+                        Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
+                        if (target != null && !getGame().isEnemy(healer, target)) {
+                            hp_change_map.put(target_position, 15);
+                        }
                     }
                 }
             }
         }
 
-        dispatchEvent(new HpChangeEvent(hp_change_map)
+        dispatchEvent(new HpChangeEvent(hp_change_map));
 
-        );
         // pre-calculate unit that will be destroyed
-        for (
-                Point position
-                : hp_change_map.keySet())
-
-        {
+        for (Point position : hp_change_map.keySet()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
                 dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
         }
 
-        dispatchEvent(new UnitStatusUpdateEvent(next_team)
-
-        );
+        dispatchEvent(new UnitStatusUpdateEvent(next_team));
     }
 
     public static void updateGameStatus() {
@@ -281,7 +274,7 @@ public class GameHost {
         if (getContext().getNetworkManager().isConnected()) {
             getContext().submitAsyncTask(new GameEventSendingTask(event));
         }
-        getManager().queueGameEvent(event);
+        getManager().submitGameEvent(event);
     }
 
 }

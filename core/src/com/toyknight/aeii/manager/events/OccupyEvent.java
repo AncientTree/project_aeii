@@ -11,11 +11,11 @@ import com.toyknight.aeii.utils.Language;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/25/2015.
+ * @author toyknight 5/25/2015.
  */
 public class OccupyEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05252015L;
+    private static final long serialVersionUID = 5252015L;
 
     private final int target_x;
     private final int target_y;

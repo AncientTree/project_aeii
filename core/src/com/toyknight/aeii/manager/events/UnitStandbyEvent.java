@@ -6,11 +6,11 @@ import com.toyknight.aeii.manager.GameManager;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 4/26/2015.
+ * @author toyknight 4/26/2015.
  */
 public class UnitStandbyEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 04262015L;
+    private static final long serialVersionUID = 4262015L;
 
     private final int unit_x;
     private final int unit_y;

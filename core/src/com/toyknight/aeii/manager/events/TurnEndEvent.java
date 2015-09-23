@@ -9,11 +9,11 @@ import com.toyknight.aeii.utils.Language;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/26/2015.
+ * @author toyknight 5/26/2015.
  */
 public class TurnEndEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05262015L;
+    private static final long serialVersionUID = 5262015L;
 
     @Override
     public boolean canExecute(GameCore game) {

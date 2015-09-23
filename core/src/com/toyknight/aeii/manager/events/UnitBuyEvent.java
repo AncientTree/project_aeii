@@ -9,11 +9,11 @@ import com.toyknight.aeii.utils.UnitFactory;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/30/2015.
+ * @author toyknight 5/30/2015.
  */
 public class UnitBuyEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05272015L;
+    private static final long serialVersionUID = 5272015L;
 
     private final int index;
     private final int team;

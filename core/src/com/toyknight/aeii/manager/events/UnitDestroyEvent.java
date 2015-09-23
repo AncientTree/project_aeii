@@ -11,11 +11,11 @@ import com.toyknight.aeii.manager.GameManager;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 5/26/2015.
+ * @author toyknight 5/26/2015.
  */
 public class UnitDestroyEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05262015L;
+    private static final long serialVersionUID = 5262015L;
 
     private final int target_x;
     private final int target_y;

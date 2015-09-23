@@ -3,11 +3,11 @@ package com.toyknight.aeii.entity;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class Status implements Serializable {
 
-    private static final long serialVersionUID = 04032015L;
+    private static final long serialVersionUID = 4032015L;
 
     public static final int POISONED = 0x1;
     public static final int PETRIFACTED = 0x2;
@@ -35,11 +35,7 @@ public class Status implements Serializable {
 
     @Override
     public boolean equals(Object status) {
-        if (status instanceof Status) {
-            return ((Status) status).getType() == this.type;
-        } else {
-            return false;
-        }
+        return status instanceof Status && ((Status) status).getType() == this.type;
     }
 
     @Override

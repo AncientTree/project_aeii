@@ -4,18 +4,17 @@ import com.toyknight.aeii.animator.UnitMoveAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by toyknight on 4/21/2015.
+ * @author toyknight 4/21/2015.
  */
 public class UnitMoveEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 04232015L;
+    private static final long serialVersionUID = 4232015L;
 
     private final int unit_x;
     private final int unit_y;
@@ -58,7 +57,7 @@ public class UnitMoveEvent implements GameEvent, Serializable {
             manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
 
             if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
-                manager.onUnitMoveFinished(unit);
+                manager.onUnitMoveFinished();
             }
         }
     }

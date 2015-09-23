@@ -1,18 +1,17 @@
 package com.toyknight.aeii.entity;
 
 import com.toyknight.aeii.utils.TileFactory;
-import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
 import java.util.*;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class Map implements Serializable {
 
-    private static final long serialVersionUID = 04032015L;
+    private static final long serialVersionUID = 4032015L;
 
     private String author;
     private final boolean[] team_access;
@@ -27,8 +26,8 @@ public class Map implements Serializable {
         this.author = author;
         this.team_access = team_access;
         this.map_data = map_data;
-        this.unit_map = new HashMap();
-        this.tomb_list = new ArrayList();
+        this.unit_map = new HashMap<Point, Unit>();
+        this.tomb_list = new ArrayList<Tomb>();
 
         upper_unit_layer = new Unit[getWidth()][getHeight()];
         position_map = new Point[getWidth()][getHeight()];
@@ -109,7 +108,7 @@ public class Map implements Serializable {
     }
 
     public void updateTombs() {
-        ArrayList<Tomb> list = new ArrayList(tomb_list);
+        ArrayList<Tomb> list = new ArrayList<Tomb>(tomb_list);
         for (Tomb tomb : list) {
             tomb.update();
             if (tomb.getRemains() < 0) {
@@ -262,7 +261,7 @@ public class Map implements Serializable {
     public int getPlayerCount() {
         int count = 0;
         for (int team = 0; team < 4; team++) {
-            if (hasTeamAccess(team) == true) {
+            if (hasTeamAccess(team)) {
                 count++;
             }
         }

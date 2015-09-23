@@ -3,11 +3,11 @@ package com.toyknight.aeii.entity;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class Player implements Serializable {
 
-    private static final long serialVersionUID = 04032015L;
+    private static final long serialVersionUID = 4032015L;
 
     public static final int NONE = 0x0;
     public static final int LOCAL = 0x1;
@@ -42,14 +42,6 @@ public class Player implements Serializable {
 
     public void changeGold(int change) {
         this.gold += change;
-    }
-
-    public void reduceGold(int reduction) {
-        if (gold > reduction) {
-            this.gold -= reduction;
-        } else {
-            this.gold = 0;
-        }
     }
 
     public int getGold() {

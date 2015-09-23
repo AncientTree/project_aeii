@@ -101,11 +101,6 @@ public class AEIIServer {
         return services.get(service_name);
     }
 
-    public PlayerService getHostService(long room_number) {
-        String host_service = getRoom(room_number).getHostService();
-        return getService(host_service);
-    }
-
     public void removeService(String service_name) {
         synchronized (SERVICE_LOCK) {
             services.remove(service_name);
