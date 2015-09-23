@@ -5,7 +5,7 @@ import com.toyknight.aeii.entity.Map;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 8/31/2015.
+ * @author toyknight 8/31/2015.
  */
 public class RoomConfig implements Serializable {
 

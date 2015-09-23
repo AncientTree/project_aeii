@@ -55,10 +55,6 @@ public class Room {
         setGameStarted(false);
     }
 
-    public boolean hasPlayer(String service_name) {
-        return players.contains(service_name);
-    }
-
     public Set<String> getPlayers() {
         synchronized (PLAYER_LOCK) {
             return new HashSet<String>(players);
@@ -115,10 +111,6 @@ public class Room {
 
     public void setPlayerType(int team, int type) {
         player_type[team] = type;
-    }
-
-    public int getPlayerType(int team) {
-        return player_type[team];
     }
 
     public Integer[] getPlayerType() {

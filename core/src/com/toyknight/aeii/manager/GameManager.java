@@ -81,10 +81,10 @@ public class GameManager implements AnimationDispatcher {
 
     public void setState(int state) {
         if (state != this.state) {
-            if (manager_listener != null) {
-                manager_listener.onManagerStateChanged(this.state);
-            }
             this.state = state;
+            if (manager_listener != null) {
+                manager_listener.onManagerStateChanged();
+            }
         }
     }
 

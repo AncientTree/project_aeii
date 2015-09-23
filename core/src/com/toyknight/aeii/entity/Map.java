@@ -155,7 +155,7 @@ public class Map implements Serializable {
     }
 
     public Unit getUnit(int x, int y) {
-        if (0 <= x && x < getWidth() && 0 <= y && y < getHeight()) {
+        if (isWithinMap(x, y)) {
             if (upper_unit_layer[x][y] != null) {
                 return upper_unit_layer[x][y];
             } else {

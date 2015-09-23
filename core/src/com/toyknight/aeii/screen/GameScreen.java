@@ -699,7 +699,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onManagerStateChanged(int last_state) {
+    public void onManagerStateChanged() {
         onButtonUpdateRequested();
     }
 

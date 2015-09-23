@@ -12,7 +12,6 @@ import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -164,12 +163,14 @@ public class GameHost {
 
     public static void doEndTurn() {
         int next_team = getGame().getNextTeam();
+
         dispatchEvent(new TurnEndEvent());
+
         //calculate hp change at turn start
-        HashSet<Point> unit_position_set = new HashSet<Point>(getGame().getMap().getUnitPositionSet());
         HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
-        Set<Point> unit_position_set_copy = new HashSet<Point>(unit_position_set);
-        for (Point position : unit_position_set_copy) {
+
+        //terrain and poison
+        for (Point position : getGame().getMap().getUnitPositionSet()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == next_team) {
                 int change = 0;
@@ -180,30 +181,24 @@ public class GameHost {
                     change -= getGame().getRule().getPoisonDamage();
                 }
                 hp_change_map.put(position, change);
-            } else {
-                //remove other teams' unit position
-                unit_position_set.remove(position);
             }
         }
+
         //the healing aura
-        for (Point position : unit_position_set) {
+        for (Point position : getGame().getMap().getUnitPositionSet()) {
             Unit healer = getGame().getMap().getUnit(position.x, position.y);
-            if (healer.hasAbility(Ability.HEALING_AURA)) {
+            if (healer.hasAbility(Ability.HEALING_AURA) && healer.getTeam() == next_team) {
                 Set<Point> attackable_positions = getManager().createAttackablePositions(healer);
                 attackable_positions.add(getGame().getMap().getPosition(healer.getX(), healer.getY()));
                 for (Point target_position : attackable_positions) {
                     //there's a unit at the position
-                    if (unit_position_set.contains(target_position)) {
+                    Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
+                    if (target != null && !getGame().isEnemy(healer, target)) {
                         //see if this unit already has hp change
                         if (hp_change_map.keySet().contains(target_position)) {
                             int change = hp_change_map.get(target_position) + 15;
                             hp_change_map.put(target_position, change);
                         } else {
-                            hp_change_map.put(target_position, 15);
-                        }
-                    } else {
-                        Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
-                        if (target != null && !getGame().isEnemy(healer, target)) {
                             hp_change_map.put(target_position, 15);
                         }
                     }
@@ -216,7 +211,7 @@ public class GameHost {
         // pre-calculate unit that will be destroyed
         for (Point position : hp_change_map.keySet()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
-            if (unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
+            if (unit != null && unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
                 dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
         }

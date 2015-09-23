@@ -1,7 +1,7 @@
 package com.toyknight.aeii.serializable;
 
 /**
- * Created by toyknight on 8/24/2015.
+ * @author toyknight 8/24/2015.
  */
 public class ServerConfig {
 

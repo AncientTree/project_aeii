@@ -3,7 +3,7 @@ package com.toyknight.aeii.serializable;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 8/27/2015.
+ * @author toyknight 8/27/2015.
  */
 public class RoomSnapshot implements Serializable {
 
@@ -52,7 +52,7 @@ public class RoomSnapshot implements Serializable {
     @Override
     public String toString() {
         String str = getRoomName() + " | Map: " + getMapName() + " | (" + (getCapacity() - getRemaining()) + "/" + getCapacity() + ")";
-        if (!open) {
+        if (!isOpen()) {
             str += " - Started";
         }
         return str;

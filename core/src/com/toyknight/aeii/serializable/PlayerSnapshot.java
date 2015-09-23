@@ -3,7 +3,7 @@ package com.toyknight.aeii.serializable;
 import java.io.Serializable;
 
 /**
- * Created by toyknight on 9/1/2015.
+ * @author toyknight 9/1/2015.
  */
 public class PlayerSnapshot implements Serializable {
 

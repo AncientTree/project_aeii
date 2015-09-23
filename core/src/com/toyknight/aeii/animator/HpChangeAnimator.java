@@ -4,14 +4,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.renderer.UnitRenderer;
 import com.toyknight.aeii.screen.GameScreen;
 
 import java.util.HashMap;
 import java.util.Set;
 
 /**
- * Created by toyknight on 5/26/2015.
+ * @author toyknight 5/26/2015.
  */
 public class HpChangeAnimator extends UnitAnimator {
 
