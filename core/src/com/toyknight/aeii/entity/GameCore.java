@@ -31,7 +31,6 @@ public class GameCore implements Serializable {
     private int turn;
 
     private final Unit[] commanders;
-    private final int[] commander_price_delta;
 
     public GameCore(Map map, Rule rule, int type, Player[] players) {
         this.statistics = new Statistics();
@@ -42,12 +41,14 @@ public class GameCore implements Serializable {
         for (int team = 0; team < 4; team++) {
             if (team < players.length) {
                 player_list[team] = players[team];
+                if (players[team] != null) {
+                    statistics.addIncome(team, players[team].getGold());
+                }
             } else {
                 break;
             }
         }
         this.turn = 1;
-        this.commander_price_delta = new int[4];
         this.commanders = new Unit[4];
     }
 
@@ -113,20 +114,11 @@ public class GameCore implements Serializable {
         return turn;
     }
 
-    public int getCommanderPrice(int team) {
-        if (commander_price_delta[team] >= 0) {
-            int commander_index = UnitFactory.getCommanderIndex();
-            return UnitFactory.getSample(commander_index).getPrice() + commander_price_delta[team];
-        } else {
-            return -1;
-        }
-    }
-
     public void destroyUnit(int target_x, int target_y) {
         Unit target = getMap().getUnit(target_x, target_y);
         if (target != null) {
             //update statistics
-            getStatistics().addLose(target.getTeam(), getUnitPrice(target.getIndex(), target.getTeam()));
+            getStatistics().addLose(target.getTeam(), target.getPrice());
             //remove unit
             getMap().removeUnit(target_x, target_y);
             //update status
@@ -135,7 +127,8 @@ public class GameCore implements Serializable {
                 getMap().addTomb(target.getX(), target.getY());
             }
             if (target.isCommander()) {
-                changeCommanderPriceDelta(target.getTeam(), getRule().getCommanderPriceGrowth());
+                int price = getCommander(target.getTeam()).getPrice();
+                getCommander(target.getTeam()).setPrice(price + getRule().getCommanderPriceGrowth());
             }
         }
     }
@@ -192,17 +185,10 @@ public class GameCore implements Serializable {
             if (isCommanderAlive(team)) {
                 return -1;
             } else {
-                return getCommanderPrice(team);
+                return commanders[team].getPrice();
             }
         } else {
             return unit.getPrice();
-        }
-    }
-
-    public void changeCommanderPriceDelta(int team, int change) {
-        commander_price_delta[team] += change;
-        if (commander_price_delta[team] < 0) {
-            commander_price_delta[team] = 0;
         }
     }
 

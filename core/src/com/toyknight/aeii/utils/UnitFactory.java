@@ -7,7 +7,7 @@ import com.toyknight.aeii.entity.Unit;
 import java.util.*;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class UnitFactory {
 
@@ -112,10 +112,6 @@ public class UnitFactory {
 
     public static Unit getSample(int index) {
         return cloneUnit(default_units[index]);
-    }
-
-    public static int getUnitPrice(int index) {
-        return default_units[index].getPrice();
     }
 
     public static Unit createUnit(int index, int team) {
