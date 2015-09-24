@@ -210,12 +210,17 @@ public class GameCore implements Serializable {
 
     private int calcIncome(int team) {
         int income = 0;
+        boolean commander_alive = isCommanderAlive(team);
         for (int x = 0; x < getMap().getWidth(); x++) {
             for (int y = 0; y < getMap().getHeight(); y++) {
                 Tile tile = getMap().getTile(x, y);
                 if (tile.getTeam() == team) {
                     if (tile.isVillage()) {
-                        income += 100;
+                        if (commander_alive) {
+                            income += 100;
+                        } else {
+                            income += 50;
+                        }
                     }
                     if (tile.isCastle()) {
                         income += 50;
@@ -269,13 +274,17 @@ public class GameCore implements Serializable {
         if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
             Unit defender = getMap().getUnit(x, y);
             if (defender != null) {
-                return isEnemy(attacker, defender);
+                return isEnemy(attacker, defender) || defender.hasAbility(Ability.LAST_POWER);
             } else {
                 return attacker.hasAbility(Ability.DESTROYER) && getMap().getTile(x, y).isDestroyable();
             }
         } else {
             return false;
         }
+    }
+
+    public boolean canAttack(Unit attacker, Unit defender) {
+        return canAttack(attacker, defender.getX(), defender.getY());
     }
 
     public boolean canOccupy(Unit conqueror, int x, int y) {

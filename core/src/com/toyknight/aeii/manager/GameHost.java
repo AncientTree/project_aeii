@@ -95,7 +95,7 @@ public class GameHost {
                     dispatchEvent(new TileDestroyEvent(target_x, target_y));
                 }
             } else {
-                if (getGame().isEnemy(attacker, defender)) {
+                if (getGame().canAttack(attacker, target_x, target_y)) {
                     //attack pre-calculation
                     attacker = UnitFactory.cloneUnit(attacker);
                     defender = UnitFactory.cloneUnit(defender);
@@ -181,6 +181,11 @@ public class GameHost {
                     change -= getGame().getRule().getPoisonDamage();
                 }
                 hp_change_map.put(position, change);
+            } else {
+                Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
+                if (getGame().isEnemy(unit.getTeam(), next_team) && tile.isCastle() && tile.getTeam() == next_team) {
+                    hp_change_map.put(position, -50);
+                }
             }
         }
 
@@ -188,6 +193,7 @@ public class GameHost {
         for (Point position : getGame().getMap().getUnitPositionSet()) {
             Unit healer = getGame().getMap().getUnit(position.x, position.y);
             if (healer.hasAbility(Ability.HEALING_AURA) && healer.getTeam() == next_team) {
+                int heal = 15 + healer.getLevel() * 10;
                 Set<Point> attackable_positions = getManager().createAttackablePositions(healer);
                 attackable_positions.add(getGame().getMap().getPosition(healer.getX(), healer.getY()));
                 for (Point target_position : attackable_positions) {
@@ -196,10 +202,10 @@ public class GameHost {
                     if (target != null && !getGame().isEnemy(healer, target)) {
                         //see if this unit already has hp change
                         if (hp_change_map.keySet().contains(target_position)) {
-                            int change = hp_change_map.get(target_position) + 15;
+                            int change = hp_change_map.get(target_position) + heal;
                             hp_change_map.put(target_position, change);
                         } else {
-                            hp_change_map.put(target_position, 15);
+                            hp_change_map.put(target_position, heal);
                         }
                     }
                 }

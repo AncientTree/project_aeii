@@ -418,13 +418,17 @@ public class GameManager implements AnimationDispatcher {
     public boolean hasEnemyWithinRange(Unit unit) {
         HashSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
+            if (getSelectedUnit().hasAbility(Ability.DESTROYER) && getGame().getMap().getUnit(point.x, point.y) == null
+                    && getGame().getMap().getTile(point.x, point.y).isDestroyable()) {
+                return true;
+            }
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (getGame().isEnemy(unit, target)) {
                 return true;
-            }
-            if (getSelectedUnit().hasAbility(Ability.DESTROYER)
-                    && getGame().getMap().getTile(point.x, point.y).isDestroyable()) {
-                return true;
+            } else {
+                if (target != null && target.hasAbility(Ability.LAST_POWER)) {
+                    return true;
+                }
             }
         }
         return false;

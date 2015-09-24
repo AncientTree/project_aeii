@@ -279,7 +279,11 @@ public class Unit implements Serializable {
     }
 
     public int getMaxAttackRange() {
-        return max_attack_range;
+        if (hasStatus(Status.BLINDED)) {
+            return min_attack_range;
+        } else {
+            return max_attack_range;
+        }
     }
 
     public void setMaxAttackRange(int max_attack_range) {

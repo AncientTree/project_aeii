@@ -31,9 +31,7 @@ public class AttackInformationRenderer {
             int cursor_y = screen.getCursorMapY();
             Unit attacker = getManager().getSelectedUnit();
             Unit defender = getManager().getGame().getMap().getUnit(cursor_x, cursor_y);
-            if (defender != null &&
-                    UnitToolkit.isWithinRange(attacker, defender.getX(), defender.getY()) &&
-                    getManager().getGame().isEnemy(attacker, defender)) {
+            if (attacker!= null && defender != null && getManager().getGame().canAttack(attacker, defender)) {
                 drawInformation(batch, attacker, defender);
             }
         }

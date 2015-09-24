@@ -75,6 +75,9 @@ public class UnitRenderer {
                 case Status.INSPIRED:
                     batch.draw(ResourceManager.getStatusTexture(1), screen_x + offset_x, screen_y + ts - sh + offset_y, sw, sh);
                     break;
+                case Status.BLINDED:
+                    batch.draw(ResourceManager.getStatusTexture(3), screen_x + offset_x, screen_y + ts - sh + offset_y, sw, sh);
+                    break;
                 default:
                     //do nothing
             }

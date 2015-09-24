@@ -6,14 +6,13 @@ import com.toyknight.aeii.entity.Map;
 import java.util.*;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class UnitToolkit {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
     private static GameCore game;
-    private static int enemy_count;
 
     public static void setGame(GameCore game) {
         UnitToolkit.game = game;
@@ -31,6 +30,12 @@ public class UnitToolkit {
         if (attacker.hasAbility(Ability.SLOWING_GAZE) && !defender.hasAbility(Ability.SLOWING_GAZE)) {
             defender.attachStatus(new Status(Status.PETRIFACTED, 1));
             defender.setCurrentMovementPoint(defender.getMovementPoint());
+        }
+        if (attacker.hasAbility(Ability.BLINDER)) {
+            defender.attachStatus(new Status(Status.BLINDED, 2));
+        }
+        if (defender.hasAbility(Ability.BLINDER)) {
+            attacker.attachStatus(new Status(Status.BLINDED, 2));
         }
     }
 
@@ -81,15 +86,7 @@ public class UnitToolkit {
     }
 
     public static boolean isTheSameUnit(Unit unit_a, Unit unit_b) {
-        if (unit_a == null || unit_b == null) {
-            return false;
-        } else {
-            if (unit_a.isAt(unit_b.getX(), unit_b.getY())) {
-                return unit_a.getUnitCode().equals(unit_b.getUnitCode());
-            } else {
-                return false;
-            }
-        }
+        return !(unit_a == null || unit_b == null) && unit_a.isAt(unit_b.getX(), unit_b.getY()) && unit_a.getUnitCode().equals(unit_b.getUnitCode());
     }
 
     public static boolean isWithinRange(Unit unit, int target_x, int target_y) {
@@ -98,11 +95,15 @@ public class UnitToolkit {
     }
 
     public static boolean canCounter(Unit counter, Unit attacker) {
-        if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
-            return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) <= 2;
+        if (getGame().isEnemy(counter, attacker)) {
+            if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
+                return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) <= 2;
+            } else {
+                return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) == 1
+                        && isWithinRange(counter, attacker.getX(), attacker.getY());
+            }
         } else {
-            return getRange(counter.getX(), counter.getY(), attacker.getX(), attacker.getY()) == 1
-                    && isWithinRange(counter, attacker.getX(), attacker.getY());
+            return false;
         }
     }
 
@@ -126,7 +127,6 @@ public class UnitToolkit {
         }
         if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(unit, 2);
-            enemy_count = enemy_count < 4 ? enemy_count : 3;
             defence_bonus += enemy_count * 5;
         }
         switch (tile.getType()) {
@@ -161,6 +161,9 @@ public class UnitToolkit {
             attack_bonus += 10;
         }
         if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
+            attack_bonus += 15;
+        }
+        if (attacker.hasAbility(Ability.DESTROYER) && defender.hasAbility(Ability.CONQUEROR)) {
             attack_bonus += 10;
         }
         if (attacker.hasAbility(Ability.GUARDIAN)
@@ -168,7 +171,7 @@ public class UnitToolkit {
             attack_bonus += 10;
         }
         if (attacker.hasStatus(Status.INSPIRED)) {
-            attack_bonus += 10;
+            attack_bonus += 5;
         }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
@@ -197,17 +200,21 @@ public class UnitToolkit {
         int offset = random.nextInt(5) - 2;
         //calculate final damage
         damage = attacker.hasAbility(Ability.LAST_POWER) ?
-                damage * (attacker_max_hp * 2 - attacker_hp) / attacker_max_hp : damage * attacker_hp / attacker_max_hp;
+                damage * attacker_max_hp / attacker_hp : damage * attacker_hp / attacker_max_hp;
         damage += offset;
         damage = damage > 0 ? damage : 0;
+        //final damage percentage calculation
+        float percentage_modifier = 1.0f;
         if (!attacker.hasAbility(Ability.LORD_OF_TERROR) || !defender.hasAbility(Ability.LORD_OF_TERROR)) {
             if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
-                damage /= 2;
+                percentage_modifier -= 0.5f;
             }
             if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
-                damage = damage * 3 / 2;
+                percentage_modifier += 0.5f;
             }
         }
+        percentage_modifier = percentage_modifier >= 0f ? percentage_modifier : 0f;
+        damage = (int) (damage * percentage_modifier);
         //validate damage
         damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
         return damage;
