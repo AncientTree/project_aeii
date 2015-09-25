@@ -210,17 +210,12 @@ public class GameCore implements Serializable {
 
     private int calcIncome(int team) {
         int income = 0;
-        boolean commander_alive = isCommanderAlive(team);
         for (int x = 0; x < getMap().getWidth(); x++) {
             for (int y = 0; y < getMap().getHeight(); y++) {
                 Tile tile = getMap().getTile(x, y);
                 if (tile.getTeam() == team) {
                     if (tile.isVillage()) {
-                        if (commander_alive) {
-                            income += 100;
-                        } else {
-                            income += 50;
-                        }
+                        income += 100;
                     }
                     if (tile.isCastle()) {
                         income += 50;

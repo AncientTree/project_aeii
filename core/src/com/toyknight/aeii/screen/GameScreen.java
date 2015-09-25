@@ -320,8 +320,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
                     @Override
                     public void doCallback() {
-                        getContext().getNetworkManager().disconnect();
-                        getContext().gotoMainMenuScreen();
+                        getContext().gotoStatisticsScreen(getGame());
                     }
                 });
             } else {
