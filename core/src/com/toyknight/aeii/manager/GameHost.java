@@ -12,7 +12,6 @@ import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * @author toyknight 7/27/2015.
@@ -185,29 +184,6 @@ public class GameHost {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 if (getGame().isEnemy(unit.getTeam(), next_team) && tile.isCastle() && tile.getTeam() == next_team) {
                     hp_change_map.put(position, -50);
-                }
-            }
-        }
-
-        //the healing aura
-        for (Point position : getGame().getMap().getUnitPositionSet()) {
-            Unit healer = getGame().getMap().getUnit(position.x, position.y);
-            if (healer.hasAbility(Ability.HEALING_AURA) && healer.getTeam() == next_team) {
-                int heal = 15 + healer.getLevel() * 10;
-                Set<Point> attackable_positions = getManager().createAttackablePositions(healer);
-                attackable_positions.add(getGame().getMap().getPosition(healer.getX(), healer.getY()));
-                for (Point target_position : attackable_positions) {
-                    //there's a unit at the position
-                    Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
-                    if (target != null && !getGame().isEnemy(healer, target)) {
-                        //see if this unit already has hp change
-                        if (hp_change_map.keySet().contains(target_position)) {
-                            int change = hp_change_map.get(target_position) + heal;
-                            hp_change_map.put(target_position, change);
-                        } else {
-                            hp_change_map.put(target_position, heal);
-                        }
-                    }
                 }
             }
         }

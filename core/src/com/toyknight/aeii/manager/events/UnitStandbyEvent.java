@@ -4,6 +4,8 @@ import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author toyknight 4/26/2015.
@@ -35,11 +37,12 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
     public void execute(GameManager manager) {
         Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
         manager.getGame().standbyUnit(unit_x, unit_y);
-        attachAuraStatus(unit, manager.getGame());
+        processAuraEffects(unit, manager);
         manager.setState(GameManager.STATE_SELECT);
     }
 
-    private void attachAuraStatus(Unit unit, GameCore game) {
+    private void processAuraEffects(Unit unit, GameManager manager) {
+        GameCore game = manager.getGame();
         if (unit.hasAbility(Ability.ATTACK_AURA)) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
@@ -51,6 +54,21 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
                     }
                 }
             }
+        }
+
+        HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
+        if (unit.hasAbility(Ability.HEALING_AURA)) {
+            int heal = 15 + unit.getLevel() * 10;
+            Set<Point> attackable_positions = manager.createAttackablePositions(unit);
+            attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
+            for (Point target_position : attackable_positions) {
+                //there's a unit at the position
+                Unit target = game.getMap().getUnit(target_position.x, target_position.y);
+                if (target != null && !game.isEnemy(unit, target)) {
+                    hp_change_map.put(target_position, heal);
+                }
+            }
+            manager.executeGameEvent(new HpChangeEvent(hp_change_map));
         }
     }
 

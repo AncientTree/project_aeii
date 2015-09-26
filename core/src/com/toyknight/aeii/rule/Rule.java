@@ -1,9 +1,12 @@
 package com.toyknight.aeii.rule;
 
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.utils.UnitFactory;
+import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -100,7 +103,6 @@ public class Rule implements Serializable {
         return available_unit_list;
     }
 
-
     public static Rule getDefaultRule() {
         Rule rule = new Rule();
         rule.setPoisonDamage(10);
@@ -121,9 +123,20 @@ public class Rule implements Serializable {
                 unit_list.add(index);
             }
         }
-        unit_list.add(commander);
+        sortUnitList(unit_list).add(commander);
         rule.setAvailableUnits(unit_list);
         return rule;
+    }
+
+    private static ArrayList<Integer> sortUnitList(ArrayList<Integer> list) {
+        for (int i = list.size() - 1; i > 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (UnitFactory.getSample(list.get(j)).getPrice() > UnitFactory.getSample(list.get(j + 1)).getPrice()) {
+                    Collections.swap(list, j, j + 1);
+                }
+            }
+        }
+        return list;
     }
 
 }
