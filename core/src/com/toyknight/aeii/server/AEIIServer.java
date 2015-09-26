@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 public class AEIIServer {
 
     private static final Logger logger = Logger.getLogger("com.toyknight.aeii.server");
-    private static final String V_STRING = "42993acc21dec43c4b79f2fbd9bcccef";
 
     private final Object SERVICE_LOCK = new Object();
     private final Object ROOM_LOCK = new Object();
@@ -75,6 +74,7 @@ public class AEIIServer {
 
     private void useDefaultConfiguration() {
         config.put("PASSWORD", "password");
+        config.put("V_STRING", "42993acc21dec43c4b79f2fbd9bcccef");
     }
 
     public boolean isRunning() {
@@ -82,7 +82,7 @@ public class AEIIServer {
     }
 
     public String getVerificationString() {
-        return V_STRING;
+        return getConfiguration().getProperty("V_STRING");
     }
 
     public Properties getConfiguration() {
