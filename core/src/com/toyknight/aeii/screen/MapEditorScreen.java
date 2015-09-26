@@ -61,10 +61,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
     public MapEditorScreen(AEIIApplication context) {
         super(context);
-        this.tile_renderer = new TileRenderer(ts);
-        this.unit_renderer = new UnitRenderer(this, ts);
+        this.tile_renderer = new TileRenderer(this);
+        this.unit_renderer = new UnitRenderer(this);
 
-        this.cursor = new CursorAnimator(this, ts);
+        this.cursor = new CursorAnimator(this);
 
         this.viewport = new MapViewport();
         this.viewport.width = Gdx.graphics.getWidth();
@@ -469,6 +469,11 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         }
     }
 
+    @Override
+    public UnitRenderer getUnitRenderer() {
+        return unit_renderer;
+    }
+
     public void dragViewport(int delta_x, int delta_y) {
         viewport.x += delta_x;
         viewport.y += delta_y;
@@ -545,7 +550,13 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         return screen_height - ((map_y - sy) * ts + y_offset) - ts;
     }
 
-    private boolean isWithinPaintArea(int sx, int sy) {
+    @Override
+    public int ts() {
+        return ts;
+    }
+
+    @Override
+    public boolean isWithinPaintArea(int sx, int sy) {
         return -ts <= sx && sx <= viewport.width && -ts <= sy && sy <= viewport.height + ts;
     }
 

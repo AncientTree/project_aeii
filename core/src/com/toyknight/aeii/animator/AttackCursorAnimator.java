@@ -2,36 +2,35 @@ package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.screen.MapCanvas;
 
 /**
- * Created by toyknight on 4/19/2015.
+ * @author toyknight 4/19/2015.
  */
-public class AttackCursorAnimator extends Animator {
+public class AttackCursorAnimator extends MapAnimator {
 
-    private final int dx;
-    private final int dy;
-    private final int width;
-    private final int height;
-    private final MapCanvas canvas;
+
     private final Animation attack_cursor_animation;
 
-    public AttackCursorAnimator(MapCanvas canvas, int ts) {
-        this.width = ts * 40 / 24;
-        this.height = ts * 41 / 24;
-        this.dx = (ts - width) / 2;
-        this.dy = (ts - height) / 2;
-        this.canvas = canvas;
+    public AttackCursorAnimator(MapCanvas canvas) {
+        super(canvas);
         Texture attack_cursor_texture = ResourceManager.getAttackCursorTexture();
         this.attack_cursor_animation = ResourceManager.createAnimation(attack_cursor_texture, 3, 1, 0.3f);
     }
 
-    public void render(SpriteBatch batch, int map_x, int map_y) {
-        int screen_x = canvas.getXOnScreen(map_x);
-        int screen_y = canvas.getYOnScreen(map_y);
+    @Override
+    public void render(Batch batch) {
+        int map_x = getCanvas().getCursorMapX();
+        int map_y = getCanvas().getCursorMapY();
+        int width = ts() * 40 / 24;
+        int height = ts() * 41 / 24;
+        int dx = (ts() - width) / 2;
+        int dy = (ts() - height) / 2;
+        int screen_x = getCanvas().getXOnScreen(map_x);
+        int screen_y = getCanvas().getYOnScreen(map_y);
         TextureRegion current_frame = attack_cursor_animation.getKeyFrame(getStateTime(), true);
         batch.draw(current_frame, screen_x + dx, screen_y + dy, width, height);
         batch.flush();

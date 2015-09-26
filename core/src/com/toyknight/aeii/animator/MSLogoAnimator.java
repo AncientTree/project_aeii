@@ -2,15 +2,15 @@ package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.toyknight.aeii.ResourceManager;
 
 /**
- * Created by toyknight on 4/2/2015.
+ * @author toyknight 4/2/2015.
  */
-public class MSLogoAnimator extends ScreenAnimator {
+public class MSLogoAnimator extends Animator {
 
     private final int WIDTH = 178;
     private final int HEIGHT = 178;
@@ -27,7 +27,7 @@ public class MSLogoAnimator extends ScreenAnimator {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(Batch batch) {
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
         shape_renderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);

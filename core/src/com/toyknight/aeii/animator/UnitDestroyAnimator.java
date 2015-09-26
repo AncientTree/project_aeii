@@ -1,30 +1,31 @@
 package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.MapCanvas;
 
 /**
- * Created by toyknight on 5/20/2015.
+ * @author toyknight 5/20/2015.
  */
 public class UnitDestroyAnimator extends UnitAnimator {
 
     private final Animation spark_animation;
 
-    public UnitDestroyAnimator(Unit unit) {
+    public UnitDestroyAnimator(MapCanvas canvas, Unit unit) {
+        super(canvas);
         this.addUnit(unit, "target");
         this.spark_animation = new Animation(1f / 15, ResourceManager.getWhiteSparkFrames());
     }
 
     @Override
-    public void render(SpriteBatch batch, GameScreen screen) {
+    public void render(Batch batch) {
         Unit unit = getUnit("target");
-        screen.getUnitRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
-        int screen_x = screen.getXOnScreen(unit.getX());
-        int screen_y = screen.getYOnScreen(unit.getY());
-        batch.draw(spark_animation.getKeyFrame(getStateTime()), screen_x, screen_y, ts, ts);
+        getCanvas().getUnitRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
+        int screen_x = getCanvas().getXOnScreen(unit.getX());
+        int screen_y = getCanvas().getYOnScreen(unit.getY());
+        batch.draw(spark_animation.getKeyFrame(getStateTime()), screen_x, screen_y, ts(), ts());
         batch.flush();
     }
 

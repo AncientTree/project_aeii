@@ -1,15 +1,17 @@
 package com.toyknight.aeii.animator;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.UnitRenderer;
 import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.MapCanvas;
 
 import java.util.ArrayList;
 
 /**
- * Created by toyknight on 4/21/2015.
+ * @author toyknight 4/21/2015.
  */
 public class UnitMoveAnimator extends UnitAnimator {
 
@@ -21,7 +23,8 @@ public class UnitMoveAnimator extends UnitAnimator {
     private float x_offset;
     private float y_offset;
 
-    public UnitMoveAnimator(Unit unit, ArrayList<Point> path) {
+    public UnitMoveAnimator(MapCanvas canvas, Unit unit, ArrayList<Point> path) {
+        super(canvas);
         this.addUnit(unit, MOVER_KEY);
         this.path = path;
 
@@ -31,13 +34,10 @@ public class UnitMoveAnimator extends UnitAnimator {
     }
 
     @Override
-    public void render(SpriteBatch batch, GameScreen screen) {
+    public void render(Batch batch) {
         if (path.size() > 0) {
             Point current = path.get(current_location);
-            screen.getUnitRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
-//            int sx = (int) (screen.getXOnScreen(current.x) + x_offset);
-//            int sy = (int) (screen.getYOnScreen(current.y) + y_offset);
-//            validateViewport(screen, sx, sy);
+            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
         }
     }
 

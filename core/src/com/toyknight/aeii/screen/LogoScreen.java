@@ -9,25 +9,25 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Created by toyknight on 4/2/2015.
+ * @author toyknight 4/2/2015.
  */
 public class LogoScreen implements Screen {
 
     private final AEIIApplication context;
     private final SpriteBatch batch;
-    private final Queue<ScreenAnimator> logo_animator_queue;
+    private final Queue<Animator> logo_animator_queue;
 
-    private ScreenAnimator current_animator;
+    private Animator current_animator;
 
     public LogoScreen(AEIIApplication context) {
         this.context = context;
         this.batch = new SpriteBatch();
-        this.logo_animator_queue = new LinkedList();
+        this.logo_animator_queue = new LinkedList<Animator>();
 
-        ScreenAnimator ms_logo_animator = new MSLogoAnimator();
+        Animator ms_logo_animator = new MSLogoAnimator();
         logo_animator_queue.add(ms_logo_animator);
 
-        ScreenAnimator bg_fade_animator = new BackgroundFadeAnimator(1.0f, 1.0f, 1.0f);
+        Animator bg_fade_animator = new BackgroundFadeAnimator(1.0f, 1.0f, 1.0f);
         logo_animator_queue.add(bg_fade_animator);
     }
 

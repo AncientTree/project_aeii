@@ -2,14 +2,14 @@ package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
-public class AELogoAnimator extends ScreenAnimator {
+public class AELogoAnimator extends Animator {
 
     private final int WIDTH = 240 * ts / 48;
     private final int HEIGHT = 85 * ts / 48;
@@ -21,7 +21,7 @@ public class AELogoAnimator extends ScreenAnimator {
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void render(Batch batch) {
         batch.begin();
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
         int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH) / 2;

@@ -1,12 +1,31 @@
 package com.toyknight.aeii.screen;
 
+import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.renderer.UnitRenderer;
+
 /**
- * Created by toyknight on 7/8/2015.
+ * @author toyknight 7/8/2015.
  */
 public interface MapCanvas {
 
-    public int getXOnScreen(int map_x);
+    Map getMap();
 
-    public int getYOnScreen(int map_y);
+    UnitRenderer getUnitRenderer();
+
+    boolean isWithinPaintArea(int sx, int sy);
+
+    int getViewportWidth();
+
+    int getViewportHeight();
+
+    int getXOnScreen(int map_x);
+
+    int getYOnScreen(int map_y);
+
+    int getCursorMapX();
+
+    int getCursorMapY();
+
+    int ts();
 
 }

@@ -1,13 +1,12 @@
 package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.screen.GameScreen;
 
 /**
- * Created by toyknight on 5/21/2015.
+ * @author toyknight 5/21/2015.
  */
 public class SummonAnimator extends UnitAnimator {
 
@@ -27,12 +26,12 @@ public class SummonAnimator extends UnitAnimator {
     }
 
     @Override
-    public void render(SpriteBatch batch, GameScreen screen) {
+    public void render(Batch batch) {
         int offset = ts * 2 / 24;
         Unit summoner = getUnit("summoner");
-        int target_sx = screen.getXOnScreen(target_x);
-        int target_sy = screen.getYOnScreen(target_y);
-        screen.getUnitRenderer().drawUnitWithInformation(batch, summoner, summoner.getX(), summoner.getY());
+        int target_sx = getCanvas().getXOnScreen(target_x);
+        int target_sy = getCanvas().getYOnScreen(target_y);
+        getCanvas().getUnitRenderer().drawUnitWithInformation(batch, summoner, summoner.getX(), summoner.getY());
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy - offset, ts, ts);
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy + offset, ts, ts);
         batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy - offset, ts, ts);

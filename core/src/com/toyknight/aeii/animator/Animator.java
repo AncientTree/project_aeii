@@ -1,7 +1,9 @@
 package com.toyknight.aeii.animator;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 /**
- * Created by toyknight on 4/2/2015.
+ * @author toyknight 4/2/2015.
  */
 public class Animator {
 
@@ -18,6 +20,9 @@ public class Animator {
     }
 
     public void update(float delta_time) {
+    }
+
+    public void render(Batch batch) {
     }
 
     public boolean isAnimationFinished() {

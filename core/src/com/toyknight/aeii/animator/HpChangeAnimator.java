@@ -1,10 +1,9 @@
 package com.toyknight.aeii.animator;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.screen.GameScreen;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -17,7 +16,6 @@ public class HpChangeAnimator extends UnitAnimator {
     private final int[] y_offset = {2, 0, -1, -1, -2, -2, -2, -2, -1, -1, 0, 1, 2, 4, 6, 4, 3, 4, 6, 6, 6, 6};
 
     private final HashMap<Point, Integer> change_map;
-    private final int dy;
 
     private int current_frame = 0;
 
@@ -28,31 +26,30 @@ public class HpChangeAnimator extends UnitAnimator {
             index++;
         }
         this.change_map = change_map;
-        this.dy = (ts - FontRenderer.getLCharHeight()) / 2;
     }
 
     public HpChangeAnimator(Unit unit, int change) {
         addUnit(unit, Integer.toString(0));
         this.change_map = new HashMap<Point, Integer>();
         this.change_map.put(new Point(unit.getX(), unit.getY()), change);
-        this.dy = (ts - FontRenderer.getLCharHeight()) / 2;
     }
 
     @Override
-    public void render(SpriteBatch batch, GameScreen screen) {
+    public void render(Batch batch) {
+        int dy = (ts() - FontRenderer.getLCharHeight()) / 2;
         for (int index = 0; index < getUnitCount(); index++) {
             Unit unit = getUnit(Integer.toString(index));
-            int change = change_map.get(screen.getGame().getMap().getPosition(unit.getX(), unit.getY()));
-            screen.getUnitRenderer().drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
-            int sx = screen.getXOnScreen(unit.getX());
-            int sy = screen.getYOnScreen(unit.getY());
-            if (screen.isWithinPaintArea(sx, sy)) {
-                int dx = (ts - FontRenderer.getLNumberWidth(Math.abs(change), true)) / 2;
+            int change = change_map.get(new Point(unit.getX(), unit.getY()));
+            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
+            int sx = getCanvas().getXOnScreen(unit.getX());
+            int sy = getCanvas().getYOnScreen(unit.getY());
+            if (getCanvas().isWithinPaintArea(sx, sy)) {
+                int dx = (ts() - FontRenderer.getLNumberWidth(Math.abs(change), true)) / 2;
                 if (change > 0) {
-                    FontRenderer.drawPositiveLNumber(batch, change, sx + dx, sy + dy - y_offset[current_frame] * ts / 24);
+                    FontRenderer.drawPositiveLNumber(batch, change, sx + dx, sy + dy - y_offset[current_frame] * ts() / 24);
                 }
                 if (change < 0) {
-                    FontRenderer.drawNegativeLNumber(batch, Math.abs(change), sx + dx, sy + dy - y_offset[current_frame] * ts / 24);
+                    FontRenderer.drawNegativeLNumber(batch, Math.abs(change), sx + dx, sy + dy - y_offset[current_frame] * ts() / 24);
                 }
                 batch.flush();
             }

@@ -1,22 +1,32 @@
 package com.toyknight.aeii.animator;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.MapCanvas;
 
 import java.util.HashSet;
 
 /**
- * Created by toyknight on 4/21/2015.
+ * @author toyknight 4/21/2015.
  */
 public class MapAnimator extends Animator {
 
-    private final HashSet<Point> locations = new HashSet();
+    private final HashSet<Point> locations = new HashSet<Point>();
+    private final MapCanvas canvas;
 
-    public MapAnimator() {
+    public MapAnimator(MapCanvas canvas) {
+        this.canvas = canvas;
     }
 
-    public MapAnimator(int x, int y) {
+    protected MapCanvas getCanvas() {
+        return canvas;
+    }
+
+    protected int ts() {
+        return getCanvas().ts();
+    }
+
+    public MapAnimator(MapCanvas canvas, int x, int y) {
+        this(canvas);
         if (x >= 0 && y >= 0) {
             this.addLocation(x, y);
         }
@@ -28,9 +38,6 @@ public class MapAnimator extends Animator {
 
     public final boolean hasLocation(int x, int y) {
         return locations.contains(new Point(x, y));
-    }
-
-    public void render(SpriteBatch batch, GameScreen screen) {
     }
 
 }

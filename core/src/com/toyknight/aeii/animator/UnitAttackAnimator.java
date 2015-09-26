@@ -1,16 +1,16 @@
 package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.MapCanvas;
 
 import java.util.Random;
 
 /**
- * Created by toyknight on 5/17/2015.
+ * @author toyknight 5/17/2015.
  */
 public class UnitAttackAnimator extends UnitAnimator {
 
@@ -29,7 +29,8 @@ public class UnitAttackAnimator extends UnitAnimator {
 
     private final Animation attack_spark_animation;
 
-    public UnitAttackAnimator(Unit attacker, Unit target, int damage) {
+    public UnitAttackAnimator(MapCanvas canvas, Unit attacker, Unit target, int damage) {
+        super(canvas);
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.getAttackSparkFrames());
         this.addUnit(attacker, ATTACKER_KEY);
         this.addUnit(target, TARGET_KEY);
@@ -38,7 +39,8 @@ public class UnitAttackAnimator extends UnitAnimator {
         this.damage = damage;
     }
 
-    public UnitAttackAnimator(Unit attacker, int target_x, int target_y) {
+    public UnitAttackAnimator(MapCanvas canvas, Unit attacker, int target_x, int target_y) {
+        super(canvas);
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.getAttackSparkFrames());
         this.addUnit(attacker, ATTACKER_KEY);
         this.damage = -1;
@@ -47,28 +49,30 @@ public class UnitAttackAnimator extends UnitAnimator {
     }
 
     @Override
-    public void render(SpriteBatch batch, GameScreen screen) {
+    public void render(Batch batch) {
         Unit attacker = getUnit(ATTACKER_KEY);
         Unit target = getUnit(TARGET_KEY);
-        int target_sx = screen.getXOnScreen(target_x);
-        int target_sy = screen.getYOnScreen(target_y);
+        int target_sx = getCanvas().getXOnScreen(target_x);
+        int target_sy = getCanvas().getYOnScreen(target_y);
         //paint tile
-        int tile_index = screen.getGame().getMap().getTileIndex(target_x, target_y);
-        batch.draw(ResourceManager.getTileTexture(tile_index), target_sx, target_sy, ts, ts);
+        int tile_index = getCanvas().getMap().getTileIndex(target_x, target_y);
+        batch.draw(ResourceManager.getTileTexture(tile_index), target_sx, target_sy, ts(), ts());
         //paint units
-        screen.getUnitRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
+        getCanvas().getUnitRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
         if (target != null) {
-            screen.getUnitRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
+            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
         }
         //paint spark
-        int spark_size = ts * 20 / 24;
-        int spark_offset = (ts - spark_size) / 2;
+        int spark_size = ts() * 20 / 24;
+        int spark_offset = (ts() - spark_size) / 2;
         batch.draw(
                 attack_spark_animation.getKeyFrame(getStateTime(), true),
-                screen.getXOnScreen(target_x) + spark_offset, screen.getYOnScreen(target_y) + spark_offset, spark_size, spark_size);
+                getCanvas().getXOnScreen(target_x) + spark_offset,
+                getCanvas().getYOnScreen(target_y) + spark_offset,
+                spark_size, spark_size);
         //paint damage
         if (damage >= 0) {
-            int damage_dx = (ts - FontRenderer.getLNumberWidth(damage, true)) / 2;
+            int damage_dx = (ts() - FontRenderer.getLNumberWidth(damage, true)) / 2;
             FontRenderer.drawNegativeLNumber(batch, damage, target_sx + damage_dx, target_sy);
         }
         batch.flush();

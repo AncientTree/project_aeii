@@ -56,6 +56,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     private final MapViewport viewport;
 
+    private float scale;
+
     private int pointer_x;
     private int pointer_y;
     private int cursor_map_x;
@@ -84,16 +86,16 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.viewport.width = Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH;
         this.viewport.height = Gdx.graphics.getHeight() - ts;
 
-        this.tile_renderer = new TileRenderer(ts);
-        this.unit_renderer = new UnitRenderer(this, ts);
-        this.alpha_renderer = new AlphaRenderer(this, ts);
-        this.move_path_renderer = new MovePathRenderer(this, ts);
+        this.tile_renderer = new TileRenderer(this);
+        this.unit_renderer = new UnitRenderer(this);
+        this.alpha_renderer = new AlphaRenderer(this);
+        this.move_path_renderer = new MovePathRenderer(this);
         this.status_bar_renderer = new StatusBarRenderer(this, ts);
         this.right_panel_renderer = new RightPanelRenderer(this, ts);
         this.attack_info_renderer = new AttackInformationRenderer(this);
 
-        this.cursor = new CursorAnimator(this, ts);
-        this.attack_cursor = new AttackCursorAnimator(this, ts);
+        this.cursor = new CursorAnimator(this);
+        this.attack_cursor = new AttackCursorAnimator(this);
 
         this.manager = new GameManager();
         GameHost.setGameManager(manager);
@@ -220,7 +222,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts);
+                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts());
                     }
                 }
             }
@@ -232,7 +234,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         for (Tomb tomb : tomb_list) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
-            batch.draw(ResourceManager.getTombTexture(), tomb_sx, tomb_sy, ts, ts);
+            batch.draw(ResourceManager.getTombTexture(), tomb_sx, tomb_sy, ts(), ts());
             batch.flush();
         }
     }
@@ -262,21 +264,21 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             switch (manager.getState()) {
                 case GameManager.STATE_ATTACK:
                     if (getGame().canAttack(selected_unit, cursor_x, cursor_y)) {
-                        attack_cursor.render(batch, cursor_x, cursor_y);
+                        attack_cursor.render(batch);
                     } else {
                         cursor.render(batch, cursor_x, cursor_y);
                     }
                     break;
                 case GameManager.STATE_SUMMON:
                     if (getGame().canSummon(cursor_x, cursor_y)) {
-                        attack_cursor.render(batch, cursor_x, cursor_y);
+                        attack_cursor.render(batch);
                     } else {
                         cursor.render(batch, cursor_x, cursor_y);
                     }
                     break;
                 case GameManager.STATE_HEAL:
                     if (getGame().canHeal(selected_unit, cursor_x, cursor_y)) {
-                        attack_cursor.render(batch, cursor_x, cursor_y);
+                        attack_cursor.render(batch);
                     } else {
                         cursor.render(batch, cursor_x, cursor_y);
                     }
@@ -290,12 +292,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private void drawAnimation() {
         if (manager.isAnimating()) {
             Animator animator = manager.getCurrentAnimation();
-            if (animator instanceof MapAnimator) {
-                ((MapAnimator) animator).render(batch, this);
-            }
-            if (animator instanceof ScreenAnimator) {
-                ((ScreenAnimator) animator).render(batch);
-            }
+            animator.render(batch);
         }
     }
 
@@ -407,29 +404,48 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             Recorder.setRecord(false);
             Gdx.app.log("Record", ex.toString());
         }
-        this.record = null;
-        this.manager.setGame(game);
-        this.manager.setGameManagerListener(this);
+        record = null;
+        manager.setGame(game);
+        manager.setGameManagerListener(this);
         GameHost.setGameManager(getGameManager());
         UnitToolkit.setGame(game);
         Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
-        this.locateViewport(team_focus.x, team_focus.y);
+        locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
+        scale = 1.0f;
     }
 
     public void prepare(GameRecord record) {
-        this.manager.setGame(record.getGame());
-        this.manager.setGameManagerListener(this);
+        manager.setGame(record.getGame());
+        manager.setGameManagerListener(this);
         GameHost.setGameManager(getGameManager());
         UnitToolkit.setGame(record.getGame());
         Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
-        this.locateViewport(team_focus.x, team_focus.y);
+        locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
+        scale = 1.0f;
 
         this.record = record;
-        this.playback_delay = 0f;
+        playback_delay = 0f;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        boolean event_handled = super.scrolled(amount);
+        if (!event_handled) {
+            float delta = 0.05f * amount;
+            scale += delta;
+            if (scale < 0.25f) {
+                scale = 0.25f;
+            }
+            if (scale > 1.0f) {
+                scale = 1.0f;
+            }
+            locateViewport(cursor_map_x, cursor_map_y);
+        }
+        return true;
     }
 
     @Override
@@ -801,18 +817,22 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public int getXOnScreen(int map_x) {
-        int sx = viewport.x / ts;
+        int sx = viewport.x / ts();
         sx = sx > 0 ? sx : 0;
-        int x_offset = sx * ts - viewport.x;
-        return (map_x - sx) * ts + x_offset;
+        int x_offset = sx * ts() - viewport.x;
+        return (map_x - sx) * ts() + x_offset;
     }
 
     public int getYOnScreen(int map_y) {
         int screen_height = Gdx.graphics.getHeight();
-        int sy = viewport.y / ts;
+        int sy = viewport.y / ts();
         sy = sy > 0 ? sy : 0;
-        int y_offset = sy * ts - viewport.y;
-        return screen_height - ((map_y - sy) * ts + y_offset) - ts;
+        int y_offset = sy * ts() - viewport.y;
+        return screen_height - ((map_y - sy) * ts() + y_offset) - ts();
+    }
+
+    public int ts() {
+        return (int) (ts * scale);
     }
 
     public boolean isWithinPaintArea(int sx, int sy) {
@@ -842,12 +862,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void locateViewport(int map_x, int map_y) {
-        int center_sx = map_x * ts;
-        int center_sy = map_y * ts;
-        int map_width = getGame().getMap().getWidth() * ts;
-        int map_height = getGame().getMap().getHeight() * ts;
+        int center_sx = map_x * ts();
+        int center_sy = map_y * ts();
+        int map_width = getGame().getMap().getWidth() * ts();
+        int map_height = getGame().getMap().getHeight() * ts();
         if (viewport.width < map_width) {
-            viewport.x = center_sx - (viewport.width - ts) / 2;
+            viewport.x = center_sx - (viewport.width - ts()) / 2;
             if (viewport.x < 0) {
                 viewport.x = 0;
             }
@@ -858,7 +878,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             viewport.x = (map_width - viewport.width) / 2;
         }
         if (viewport.height < map_height) {
-            viewport.y = center_sy - (viewport.height - ts) / 2;
+            viewport.y = center_sy - (viewport.height - ts()) / 2;
             if (viewport.y < 0) {
                 viewport.y = 0;
             }
@@ -871,8 +891,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void dragViewport(int delta_x, int delta_y) {
-        int map_width = getGame().getMap().getWidth() * ts;
-        int map_height = getGame().getMap().getHeight() * ts;
+        int map_width = getGame().getMap().getWidth() * ts();
+        int map_height = getGame().getMap().getHeight() * ts();
         if (viewport.width < map_width + ts * 2) {
             if (-ts <= viewport.x + delta_x
                     && viewport.x + delta_x <= map_width - viewport.width + ts) {
@@ -893,14 +913,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         } else {
             viewport.y = (map_height - viewport.height) / 2;
         }
-    }
-
-    public int getViewportX() {
-        return viewport.x;
-    }
-
-    public int getViewportY() {
-        return viewport.y;
     }
 
     public int getViewportWidth() {

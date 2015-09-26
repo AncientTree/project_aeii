@@ -1,13 +1,15 @@
 package com.toyknight.aeii.animator;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.GameScreen;
+import com.toyknight.aeii.screen.MapCanvas;
 
 /**
- * Created by toyknight on 5/25/2015.
+ * @author toyknight on 5/25/2015.
  */
 public class MessageAnimator extends MapAnimator {
 
@@ -17,22 +19,23 @@ public class MessageAnimator extends MapAnimator {
 
     private float alpha = 1.0f;
 
-    public MessageAnimator(String message, float delay) {
-        this(message, null, delay);
+    public MessageAnimator(MapCanvas canvas, String message, float delay) {
+        this(canvas, message, null, delay);
     }
 
-    public MessageAnimator(String message_upper, String message_lower, float delay) {
+    public MessageAnimator(MapCanvas canvas, String message_upper, String message_lower, float delay) {
+        super(canvas);
         this.delay = delay;
         this.message_upper = message_upper;
         this.message_lower = message_lower;
     }
 
     @Override
-    public void render(SpriteBatch batch, GameScreen screen) {
-        int width = screen.getViewportWidth();
+    public void render(Batch batch) {
+        int width = getCanvas().getViewportWidth();
         int height = message_lower == null ? ts : 2 * ts;
         int x = 0;
-        int y = (screen.getViewportHeight() - height) / 2 + ts;
+        int y = (getCanvas().getViewportHeight() - height) / 2 + ts;
         FontRenderer.setTextAlpha(alpha);
         ResourceManager.setBatchAlpha(batch, alpha);
         batch.draw(ResourceManager.getPanelBackground(), x, y, width, height);
