@@ -1,12 +1,8 @@
 package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.renderer.UnitRenderer;
-import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.screen.MapCanvas;
 
 import java.util.ArrayList;
 
@@ -23,8 +19,7 @@ public class UnitMoveAnimator extends UnitAnimator {
     private float x_offset;
     private float y_offset;
 
-    public UnitMoveAnimator(MapCanvas canvas, Unit unit, ArrayList<Point> path) {
-        super(canvas);
+    public UnitMoveAnimator(Unit unit, ArrayList<Point> path) {
         this.addUnit(unit, MOVER_KEY);
         this.path = path;
 
@@ -44,7 +39,7 @@ public class UnitMoveAnimator extends UnitAnimator {
     @Override
     public void update(float delta) {
         if (current_location < path.size() - 1) {
-            float offset_delta = ts / (4 * (1f / delta) / 30f);
+            float offset_delta = ts() / (4 * (1f / delta) / 30f);
             Point current = path.get(current_location);
             Point next = path.get(current_location + 1);
             if (current.x > next.x) {
@@ -59,16 +54,12 @@ public class UnitMoveAnimator extends UnitAnimator {
             if (current.y < next.y) {
                 y_offset -= offset_delta;
             }
-            if (Math.abs(x_offset) >= ts || Math.abs(y_offset) >= ts) {
+            if (Math.abs(x_offset) >= ts() || Math.abs(y_offset) >= ts()) {
                 x_offset = 0;
                 y_offset = 0;
                 current_location++;
             }
         }
-    }
-
-    private void validateViewport(GameScreen screen, int sx, int sy) {
-
     }
 
     @Override

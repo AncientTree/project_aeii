@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.CursorAnimator;
+import com.toyknight.aeii.animator.MapAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.renderer.TileRenderer;
 import com.toyknight.aeii.renderer.UnitRenderer;
@@ -37,16 +38,14 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     private final CursorAnimator cursor;
     private final MapViewport viewport;
 
-    private MapResizeDialog map_resize_dialog;
-    private MapSaveDialog map_save_dialog;
-    private MapOpenDialog map_open_dialog;
-
     private CircleButton btn_hand;
     private CircleButton btn_brush;
     private CircleButton btn_eraser;
 
     private Map map;
     private String filename;
+
+    private float scale;
 
     private int mode;
     private int brush_type;
@@ -64,7 +63,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         this.tile_renderer = new TileRenderer(this);
         this.unit_renderer = new UnitRenderer(this);
 
-        this.cursor = new CursorAnimator(this);
+        this.cursor = new CursorAnimator();
 
         this.viewport = new MapViewport();
         this.viewport.width = Gdx.graphics.getWidth();
@@ -153,28 +152,21 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
         int mrw = ts * 8;
         int mrh = ts * 4 + ts / 2;
-        this.map_resize_dialog = new MapResizeDialog(this);
-        this.map_resize_dialog.setBounds((Gdx.graphics.getWidth() - mrw) / 2, (Gdx.graphics.getHeight() - mrh) / 2, mrw, mrh);
+        MapResizeDialog map_resize_dialog = new MapResizeDialog(this);
+        map_resize_dialog.setBounds((Gdx.graphics.getWidth() - mrw) / 2, (Gdx.graphics.getHeight() - mrh) / 2, mrw, mrh);
         this.addDialog("resize", map_resize_dialog);
 
         int msw = ts * 6;
         int msh = ts * 4;
-        this.map_save_dialog = new MapSaveDialog(this);
-        this.map_save_dialog.setBounds((Gdx.graphics.getWidth() - msw) / 2, (Gdx.graphics.getHeight() - msh) / 2, msw, msh);
+        MapSaveDialog map_save_dialog = new MapSaveDialog(this);
+        map_save_dialog.setBounds((Gdx.graphics.getWidth() - msw) / 2, (Gdx.graphics.getHeight() - msh) / 2, msw, msh);
         this.addDialog("save", map_save_dialog);
 
         int mow = ts * 8;
         int moh = ts * 7;
-        this.map_open_dialog = new MapOpenDialog(this);
-        this.map_open_dialog.setBounds((Gdx.graphics.getWidth() - mow) / 2, (Gdx.graphics.getHeight() - moh) / 2, mow, moh);
+        MapOpenDialog map_open_dialog = new MapOpenDialog(this);
+        map_open_dialog.setBounds((Gdx.graphics.getWidth() - mow) / 2, (Gdx.graphics.getHeight() - moh) / 2, mow, moh);
         this.addDialog("open", map_open_dialog);
-    }
-
-    @Override
-    public void closeAllDialogs() {
-        map_resize_dialog.setVisible(false);
-        map_save_dialog.setVisible(false);
-        map_open_dialog.setVisible(false);
     }
 
     public void setMode(int mode) {
@@ -231,16 +223,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         drawUnits();
         drawBrushTarget();
         drawCursor();
-//        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), ts);
-//
-//        batch.draw(ResourceManager.getTileTexture(selected_tile_index), 0, 0, ts, ts);
-//        batch.draw(
-//                ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
-//                Gdx.graphics.getWidth() - ts, 0, ts, ts);
-//
-//        BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
-//        BorderRenderer.drawBorder(batch, ts, 0, Gdx.graphics.getWidth() - ts * 2, ts);
-//        BorderRenderer.drawBorder(batch, Gdx.graphics.getWidth() - ts, 0, ts, ts);
         batch.end();
         super.draw();
     }
@@ -256,7 +238,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts);
+                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts());
                     }
                 }
             }
@@ -283,12 +265,12 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             int sy = getYOnScreen(cursor_map_y);
             switch (brush_type) {
                 case TYPE_TILE:
-                    batch.draw(ResourceManager.getTileTexture(selected_tile_index), sx, sy, ts, ts);
+                    batch.draw(ResourceManager.getTileTexture(selected_tile_index), sx, sy, ts(), ts());
                     break;
                 case TYPE_UNIT:
                     batch.draw(
                             ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
-                            sx, sy, ts, ts);
+                            sx, sy, ts(), ts());
                     break;
                 default:
                     //do nothing
@@ -314,22 +296,43 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
     @Override
     public void show() {
+        MapAnimator.setCanvas(this);
         Gdx.input.setInputProcessor(this);
-        createEmptyMap(15, 15);
-        locateViewport(0, 0);
+        Map map = createEmptyMap(15, 15);
+        setMap(map, "not defined");
         cursor_map_x = 0;
         cursor_map_y = 0;
         setMode(MODE_BRUSH);
-        this.filename = "not defined";
+        this.scale = 1.0f;
         this.brush_type = TYPE_TILE;
         this.selected_tile_index = 0;
         this.selected_unit = UnitFactory.getSample(0);
         this.setSelectedTeam(0);
         setBrushType(TYPE_TILE);
+        locateViewport(0, 0);
     }
 
+    @Override
     public Map getMap() {
         return map;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        int previous_map_width = getMap().getWidth() * ts();
+        int previous_map_height = getMap().getWidth() * ts();
+        float delta = 0.05f * amount;
+        scale -= delta;
+        if (scale < 0.5f) {
+            scale = 0.5f;
+        }
+        if (scale > 1.0f) {
+            scale = 1.0f;
+        }
+        int new_map_width = getMap().getWidth() * ts();
+        int new_map_height = getMap().getWidth() * ts();
+        dragViewport(-(previous_map_width - new_map_width) / 2, -(previous_map_height - new_map_height) / 2);
+        return true;
     }
 
     @Override
@@ -501,13 +504,14 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 //        }
     }
 
+    @Override
     public int getCursorMapX() {
         return cursor_map_x;
     }
 
     private int createCursorMapX(int pointer_x) {
         int map_width = getMap().getWidth();
-        int cursor_x = (pointer_x + viewport.x) / ts;
+        int cursor_x = (pointer_x + viewport.x) / ts();
         if (cursor_x >= map_width) {
             return map_width - 1;
         }
@@ -517,13 +521,14 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         return cursor_x;
     }
 
+    @Override
     public int getCursorMapY() {
         return cursor_map_y;
     }
 
     private int createCursorMapY(int pointer_y) {
         int map_height = getMap().getHeight();
-        int cursor_y = (pointer_y + viewport.y) / ts;
+        int cursor_y = (pointer_y + viewport.y) / ts();
         if (cursor_y >= map_height) {
             return map_height - 1;
         }
@@ -535,43 +540,57 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
     @Override
     public int getXOnScreen(int map_x) {
-        int sx = viewport.x / ts;
+        int sx = viewport.x / ts();
         sx = sx > 0 ? sx : 0;
-        int x_offset = sx * ts - viewport.x;
-        return (map_x - sx) * ts + x_offset;
+        int x_offset = sx * ts() - viewport.x;
+        return (map_x - sx) * ts() + x_offset;
     }
 
     @Override
     public int getYOnScreen(int map_y) {
         int screen_height = Gdx.graphics.getHeight();
-        int sy = viewport.y / ts;
+        int sy = viewport.y / ts();
         sy = sy > 0 ? sy : 0;
-        int y_offset = sy * ts - viewport.y;
-        return screen_height - ((map_y - sy) * ts + y_offset) - ts;
+        int y_offset = sy * ts() - viewport.y;
+        return screen_height - ((map_y - sy) * ts() + y_offset) - ts();
     }
 
     @Override
     public int ts() {
-        return ts;
+        return (int) (ts * scale);
     }
 
     @Override
     public boolean isWithinPaintArea(int sx, int sy) {
-        return -ts <= sx && sx <= viewport.width && -ts <= sy && sy <= viewport.height + ts;
+        return -ts() <= sx && sx <= viewport.width && -ts() <= sy && sy <= viewport.height;
     }
 
-    public void createEmptyMap(int width, int height) {
+    @Override
+    public int getViewportWidth() {
+        return viewport.width;
+    }
+
+    @Override
+    public int getViewportHeight() {
+        return viewport.height;
+    }
+
+    public Map createEmptyMap(int width, int height) {
         short[][] map_data = new short[width][height];
         boolean[] team_access = new boolean[4];
-        this.map = new Map(map_data, team_access, "default");
+        return new Map(map_data, team_access, "default");
     }
 
     public void setMap(Map map, String filename) {
+        this.scale = 1.0f;
         this.map = map;
         this.filename = filename;
-        locateViewport(0, 0);
         setMode(MODE_HAND);
         setBrushType(TYPE_TILE);
+        int map_width = map.getWidth() * ts();
+        int map_height = map.getHeight() * ts();
+        viewport.x = (map_width - viewport.width) / 2;
+        viewport.y = (map_height - viewport.height) / 2;
     }
 
     public void saveMap(String filename, String author) {

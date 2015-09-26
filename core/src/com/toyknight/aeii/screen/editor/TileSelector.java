@@ -14,7 +14,7 @@ import com.toyknight.aeii.utils.TileFactory;
 /**
  * @author toyknight 7/9/2015.
  */
-public class TileSelector extends Container {
+public class TileSelector extends Container<ScrollPane> {
 
     private final int ts;
     private final MapEditorScreen editor;
@@ -44,7 +44,7 @@ public class TileSelector extends Container {
         sp_tile_table.setScrollBarPositions(false, true);
         sp_tile_table.setFadeScrollBars(false);
         sp_tile_table.setBounds(0, 0, ts * 4, Gdx.graphics.getHeight() - ts);
-        this.setActor(sp_tile_table);
+        setActor(sp_tile_table);
     }
 
     private AEIIApplication getContext() {

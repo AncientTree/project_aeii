@@ -1,7 +1,6 @@
 package com.toyknight.aeii.animator;
 
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.screen.MapCanvas;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.util.HashMap;
@@ -13,10 +12,6 @@ import java.util.Map;
 public class UnitAnimator extends MapAnimator {
 
     private final Map<String, Unit> units = new HashMap<String, Unit>();
-
-    public UnitAnimator(MapCanvas canvas) {
-        super(canvas);
-    }
 
     public void addUnit(Unit unit, String key) {
         if (unit != null) {

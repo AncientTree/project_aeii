@@ -27,16 +27,16 @@ public class SummonAnimator extends UnitAnimator {
 
     @Override
     public void render(Batch batch) {
-        int offset = ts * 2 / 24;
+        int offset = ts() * 2 / 24;
         Unit summoner = getUnit("summoner");
         int target_sx = getCanvas().getXOnScreen(target_x);
         int target_sy = getCanvas().getYOnScreen(target_y);
         getCanvas().getUnitRenderer().drawUnitWithInformation(batch, summoner, summoner.getX(), summoner.getY());
-        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy - offset, ts, ts);
-        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy + offset, ts, ts);
-        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy - offset, ts, ts);
-        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy + offset, ts, ts);
-        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx, target_sy, ts, ts);
+        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy - offset, ts(), ts());
+        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx - offset, target_sy + offset, ts(), ts());
+        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy - offset, ts(), ts());
+        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx + offset, target_sy + offset, ts(), ts());
+        batch.draw(spark_animation.getKeyFrame(getStateTime(), true), target_sx, target_sy, ts(), ts());
         batch.flush();
     }
 

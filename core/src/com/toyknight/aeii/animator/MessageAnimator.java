@@ -1,12 +1,9 @@
 package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight on 5/25/2015.
@@ -19,12 +16,11 @@ public class MessageAnimator extends MapAnimator {
 
     private float alpha = 1.0f;
 
-    public MessageAnimator(MapCanvas canvas, String message, float delay) {
-        this(canvas, message, null, delay);
+    public MessageAnimator(String message, float delay) {
+        this(message, null, delay);
     }
 
-    public MessageAnimator(MapCanvas canvas, String message_upper, String message_lower, float delay) {
-        super(canvas);
+    public MessageAnimator(String message_upper, String message_lower, float delay) {
         this.delay = delay;
         this.message_upper = message_upper;
         this.message_lower = message_lower;

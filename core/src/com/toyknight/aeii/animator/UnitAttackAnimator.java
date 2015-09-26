@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.screen.MapCanvas;
 
 import java.util.Random;
 
@@ -29,8 +28,7 @@ public class UnitAttackAnimator extends UnitAnimator {
 
     private final Animation attack_spark_animation;
 
-    public UnitAttackAnimator(MapCanvas canvas, Unit attacker, Unit target, int damage) {
-        super(canvas);
+    public UnitAttackAnimator(Unit attacker, Unit target, int damage) {
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.getAttackSparkFrames());
         this.addUnit(attacker, ATTACKER_KEY);
         this.addUnit(target, TARGET_KEY);
@@ -39,8 +37,7 @@ public class UnitAttackAnimator extends UnitAnimator {
         this.damage = damage;
     }
 
-    public UnitAttackAnimator(MapCanvas canvas, Unit attacker, int target_x, int target_y) {
-        super(canvas);
+    public UnitAttackAnimator(Unit attacker, int target_x, int target_y) {
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.getAttackSparkFrames());
         this.addUnit(attacker, ATTACKER_KEY);
         this.damage = -1;
@@ -84,8 +81,8 @@ public class UnitAttackAnimator extends UnitAnimator {
         int new_current_step = (int) (getStateTime() / (1f / 15));
         if (new_current_step != current_step) {
             current_step = new_current_step;
-            target_dx = random.nextInt(ts / 12) - ts / 24;
-            target_dy = random.nextInt(ts / 12) - ts / 24;
+            target_dx = random.nextInt(ts() / 12) - ts() / 24;
+            target_dy = random.nextInt(ts() / 12) - ts() / 24;
         }
     }
 

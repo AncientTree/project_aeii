@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight 5/20/2015.
@@ -13,8 +12,7 @@ public class UnitDestroyAnimator extends UnitAnimator {
 
     private final Animation spark_animation;
 
-    public UnitDestroyAnimator(MapCanvas canvas, Unit unit) {
-        super(canvas);
+    public UnitDestroyAnimator(Unit unit) {
         this.addUnit(unit, "target");
         this.spark_animation = new Animation(1f / 15, ResourceManager.getWhiteSparkFrames());
     }

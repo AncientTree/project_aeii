@@ -3,7 +3,6 @@ package com.toyknight.aeii.animator;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight 5/20/2015.
@@ -12,8 +11,7 @@ public class UnitLevelUpAnimator extends UnitAnimator {
 
     private int current_frame = 0;
 
-    public UnitLevelUpAnimator(MapCanvas canvas, Unit unit) {
-        super(canvas);
+    public UnitLevelUpAnimator(Unit unit) {
         addUnit(unit, "target");
     }
 

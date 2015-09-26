@@ -24,17 +24,13 @@ public class UnitRenderer {
         return canvas.ts();
     }
 
-    public void drawUnit(Batch batch, Unit unit, float screen_x, float screen_y, boolean is_static) {
+    public void drawUnit(Batch batch, Unit unit, float screen_x, float screen_y) {
         TextureRegion unit_texture;
-        if (is_static) {
+        if (unit.isStandby()) {
+            batch.setShader(ResourceManager.getGrayscaleShader(0f));
             unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), 0);
         } else {
-            if (unit.isStandby()) {
-                batch.setShader(ResourceManager.getGrayscaleShader(0f));
-                unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), 0);
-            } else {
-                unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
-            }
+            unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
         }
         batch.draw(unit_texture, screen_x, screen_y, ts(), ts());
         batch.setShader(null);
@@ -48,7 +44,7 @@ public class UnitRenderer {
     public void drawUnit(Batch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         int screen_x = canvas.getXOnScreen(map_x);
         int screen_y = canvas.getYOnScreen(map_y);
-        drawUnit(batch, unit, screen_x + offset_x, screen_y + offset_y, false);
+        drawUnit(batch, unit, screen_x + offset_x, screen_y + offset_y);
     }
 
     public void drawUnitWithInformation(Batch batch, Unit unit, int map_x, int map_y) {

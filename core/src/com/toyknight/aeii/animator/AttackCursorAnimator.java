@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight 4/19/2015.
@@ -15,8 +14,7 @@ public class AttackCursorAnimator extends MapAnimator {
 
     private final Animation attack_cursor_animation;
 
-    public AttackCursorAnimator(MapCanvas canvas) {
-        super(canvas);
+    public AttackCursorAnimator() {
         Texture attack_cursor_texture = ResourceManager.getAttackCursorTexture();
         this.attack_cursor_animation = ResourceManager.createAnimation(attack_cursor_texture, 3, 1, 0.3f);
     }

@@ -3,7 +3,6 @@ package com.toyknight.aeii.animator;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight 5/17/2015.
@@ -15,8 +14,8 @@ public class DustAriseAnimator extends MapAnimator {
 
     private final Animation dust_animation;
 
-    public DustAriseAnimator(MapCanvas canvas, int map_x, int map_y) {
-        super(canvas, map_x, map_y);
+    public DustAriseAnimator(int map_x, int map_y) {
+        super(map_x, map_y);
         this.dust_animation = new Animation(1f / 15, ResourceManager.getDustFrames());
         this.map_x = map_x;
         this.map_y = map_y;

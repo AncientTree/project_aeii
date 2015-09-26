@@ -94,8 +94,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.right_panel_renderer = new RightPanelRenderer(this, ts);
         this.attack_info_renderer = new AttackInformationRenderer(this);
 
-        this.cursor = new CursorAnimator(this);
-        this.attack_cursor = new AttackCursorAnimator(this);
+        this.cursor = new CursorAnimator();
+        this.attack_cursor = new AttackCursorAnimator();
 
         this.manager = new GameManager();
         GameHost.setGameManager(manager);
@@ -250,7 +250,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 int sx = getXOnScreen(unit_x);
                 int sy = getYOnScreen(unit_y);
                 if (isWithinPaintArea(sx, sy)) {
-                    unit_renderer.drawUnitWithInformation(batch, unit, unit_x, unit_y);
+                    getUnitRenderer().drawUnitWithInformation(batch, unit, unit_x, unit_y);
                 }
             }
         }
@@ -381,6 +381,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void show() {
+        MapAnimator.setCanvas(this);
         Gdx.input.setInputProcessor(this);
         if (getContext().getNetworkManager().isConnected()) {
             btn_message.setVisible(true);
@@ -404,6 +405,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             Recorder.setRecord(false);
             Gdx.app.log("Record", ex.toString());
         }
+        scale = 1.0f;
         record = null;
         manager.setGame(game);
         manager.setGameManagerListener(this);
@@ -413,10 +415,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
-        scale = 1.0f;
     }
 
     public void prepare(GameRecord record) {
+        scale = 1.0f;
         manager.setGame(record.getGame());
         manager.setGameManagerListener(this);
         GameHost.setGameManager(getGameManager());
@@ -425,27 +427,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
-        scale = 1.0f;
 
         this.record = record;
         playback_delay = 0f;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        boolean event_handled = super.scrolled(amount);
-        if (!event_handled) {
-            float delta = 0.05f * amount;
-            scale += delta;
-            if (scale < 0.25f) {
-                scale = 0.25f;
-            }
-            if (scale > 1.0f) {
-                scale = 1.0f;
-            }
-            locateViewport(cursor_map_x, cursor_map_y);
-        }
-        return true;
     }
 
     @Override
@@ -768,6 +752,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return manager.getGame();
     }
 
+    @Override
+    public Map getMap() {
+        return getGame().getMap();
+    }
+
     public GameManager getGameManager() {
         return manager;
     }
@@ -776,6 +765,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return record;
     }
 
+    @Override
     public UnitRenderer getUnitRenderer() {
         return unit_renderer;
     }
@@ -784,13 +774,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return RIGHT_PANEL_WIDTH;
     }
 
+    @Override
     public int getCursorMapX() {
         return cursor_map_x;
     }
 
     private int createCursorMapX(int pointer_x) {
         int map_width = getGame().getMap().getWidth();
-        int cursor_x = (pointer_x + viewport.x) / ts;
+        int cursor_x = (pointer_x + viewport.x) / ts();
         if (cursor_x >= map_width) {
             return map_width - 1;
         }
@@ -800,13 +791,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return cursor_x;
     }
 
+    @Override
     public int getCursorMapY() {
         return cursor_map_y;
     }
 
     private int createCursorMapY(int pointer_y) {
         int map_height = getGame().getMap().getHeight();
-        int cursor_y = (pointer_y + viewport.y) / ts;
+        int cursor_y = (pointer_y + viewport.y) / ts();
         if (cursor_y >= map_height) {
             return map_height - 1;
         }
@@ -816,6 +808,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return cursor_y;
     }
 
+    @Override
     public int getXOnScreen(int map_x) {
         int sx = viewport.x / ts();
         sx = sx > 0 ? sx : 0;
@@ -823,6 +816,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return (map_x - sx) * ts() + x_offset;
     }
 
+    @Override
     public int getYOnScreen(int map_y) {
         int screen_height = Gdx.graphics.getHeight();
         int sy = viewport.y / ts();
@@ -831,12 +825,24 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return screen_height - ((map_y - sy) * ts() + y_offset) - ts();
     }
 
+    @Override
     public int ts() {
         return (int) (ts * scale);
     }
 
+    @Override
     public boolean isWithinPaintArea(int sx, int sy) {
-        return -ts <= sx && sx <= viewport.width && -ts <= sy && sy <= viewport.height + ts;
+        return -ts() <= sx && sx <= viewport.width && -ts() <= sy && sy <= viewport.height + ts;
+    }
+
+    @Override
+    public int getViewportWidth() {
+        return viewport.width;
+    }
+
+    @Override
+    public int getViewportHeight() {
+        return viewport.height;
     }
 
     private void updateViewport() {
@@ -913,14 +919,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         } else {
             viewport.y = (map_height - viewport.height) / 2;
         }
-    }
-
-    public int getViewportWidth() {
-        return viewport.width;
-    }
-
-    public int getViewportHeight() {
-        return viewport.height;
     }
 
 }

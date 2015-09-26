@@ -13,7 +13,7 @@ import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.Language;
 
 /**
- * Created by toyknight on 4/2/2015.
+ * @author toyknight 4/2/2015.
  */
 public class FontRenderer {
 
