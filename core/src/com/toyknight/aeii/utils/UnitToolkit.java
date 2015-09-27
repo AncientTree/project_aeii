@@ -177,7 +177,7 @@ public class UnitToolkit {
         }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
-            attack_bonus += enemy_count * 5;
+            attack_bonus += enemy_count * 10;
         }
         if (attacker.hasStatus(Status.INSPIRED)) {
             attack_bonus += 5;
