@@ -315,7 +315,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean canHeal(Unit healer, Unit target) {
-        return target != null &&
+        return target != null && UnitToolkit.isWithinRange(healer, target) &&
                 (target.isSkeleton() || !isEnemy(healer, target) && !target.hasStatus(Status.POISONED) && target.getCurrentHp() <= target.getMaxHp());
     }
 

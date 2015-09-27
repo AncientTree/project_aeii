@@ -94,6 +94,10 @@ public class UnitToolkit {
         return unit.getMinAttackRange() <= range && range <= unit.getMaxAttackRange();
     }
 
+    public static boolean isWithinRange(Unit unit, Unit target) {
+        return isWithinRange(unit, target.getX(), target.getY());
+    }
+
     public static boolean canCounter(Unit counter, Unit attacker) {
         if (getGame().isEnemy(counter, attacker)) {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
