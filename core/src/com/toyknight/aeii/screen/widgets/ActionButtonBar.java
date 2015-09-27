@@ -18,7 +18,7 @@ import com.toyknight.aeii.utils.Platform;
 import java.util.HashMap;
 
 /**
- * Created by toyknight on 4/26/2015.
+ * @author toyknight 4/26/2015.
  */
 public class ActionButtonBar extends HorizontalGroup {
 
@@ -164,7 +164,8 @@ public class ActionButtonBar extends HorizontalGroup {
                                 && getGameManager().hasTombWithinRange(selected_unit)) {
                             addActor(buttons.get("summon"));
                         }
-                        if (selected_unit.hasAbility(Ability.HEALER)) {
+                        if (selected_unit.hasAbility(Ability.HEALER)
+                                && getGameManager().hasAllyCanHealWithinRange(selected_unit)) {
                             addActor(buttons.get("heal"));
                         }
                         if (getGameManager().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {

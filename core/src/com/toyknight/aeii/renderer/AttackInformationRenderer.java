@@ -9,7 +9,7 @@ import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 /**
- * Created by toyknight on 6/3/2015.
+ * @author toyknight 6/3/2015.
  */
 public class AttackInformationRenderer {
 
@@ -31,7 +31,7 @@ public class AttackInformationRenderer {
             int cursor_y = screen.getCursorMapY();
             Unit attacker = getManager().getSelectedUnit();
             Unit defender = getManager().getGame().getMap().getUnit(cursor_x, cursor_y);
-            if (attacker!= null && defender != null && getManager().getGame().canAttack(attacker, defender)) {
+            if (attacker != null && defender != null && getManager().getGame().canAttack(attacker, defender)) {
                 drawInformation(batch, attacker, defender);
             }
         }
@@ -108,6 +108,14 @@ public class AttackInformationRenderer {
                     aw, ah);
         }
 
+        if (attacker_atk_bonus < 0) {
+            float attack_width = FontRenderer.getTextLayout(attacker_attack_str).width;
+            batch.draw(ResourceManager.getArrowIcon(2),
+                    lmargin + hw + ts * 4 / 24 + ts / 4 + attack_width,
+                    infoy + ts / 24 + (tfh - ah) / 2,
+                    aw, ah);
+        }
+
         switch (defender.getAttackType()) {
             case Unit.ATTACK_PHYSICAL:
                 FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
@@ -131,11 +139,20 @@ public class AttackInformationRenderer {
                     aw, ah);
         }
 
+        if (modified_defender_atk > 0 && defender_atk_bonus < 0) {
+            float attack_width = FontRenderer.getTextLayout(defender_attack_str).width;
+            batch.draw(ResourceManager.getArrowIcon(2),
+                    lmargin + hw + ts * 4 / 24 + ts / 4 + attack_width,
+                    infoy + tfh + ts * 2 / 24 + (tfh - ah) / 2,
+                    aw, ah);
+        }
+
         //paint defence
         FontRenderer.setTextColor(Color.WHITE);
         int attacker_defence_bonus = UnitToolkit.getDefenceBonus(attacker, attacker_tile);
+        int attacker_bdb = UnitToolkit.getBloodthirstyDefenceBonus(attacker);
         int attacker_p_defence = attacker.getPhysicalDefence();
-        String attacker_p_defence_str = Integer.toString(attacker_p_defence + attacker_defence_bonus);
+        String attacker_p_defence_str = Integer.toString(attacker_p_defence + attacker_defence_bonus + attacker_bdb);
         FontRenderer.drawText(batch, attacker_p_defence_str,
                 lmargin + hw * 2 + tfw + ts * 5 / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
@@ -144,7 +161,7 @@ public class AttackInformationRenderer {
         FontRenderer.drawText(batch, attacker_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
-        if (attacker_defence_bonus > 0) {
+        if (attacker_defence_bonus > 0 || attacker_bdb > 0) {
             float p_defence_width = FontRenderer.getTextLayout(attacker_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
@@ -158,8 +175,9 @@ public class AttackInformationRenderer {
         }
 
         int defender_defence_bonus = UnitToolkit.getDefenceBonus(defender, defender_tile);
+        int defender_bdb = UnitToolkit.getBloodthirstyDefenceBonus(defender);
         int defender_p_defence = defender.getPhysicalDefence();
-        String defender_p_defence_str = Integer.toString(defender_p_defence + defender_defence_bonus);
+        String defender_p_defence_str = Integer.toString(defender_p_defence + defender_defence_bonus + defender_bdb);
         FontRenderer.drawText(batch, defender_p_defence_str,
                 lmargin + hw * 2 + tfw + 5 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
@@ -168,7 +186,7 @@ public class AttackInformationRenderer {
         FontRenderer.drawText(batch, defender_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
-        if (defender_defence_bonus > 0) {
+        if (defender_defence_bonus > 0 || defender_bdb > 0) {
             float p_defence_width = FontRenderer.getTextLayout(defender_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,

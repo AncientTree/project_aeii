@@ -434,16 +434,16 @@ public class GameManager implements AnimationDispatcher {
         return false;
     }
 
-//    public boolean hasAllyWithinRange(Unit unit) {
-//        HashSet<Point> attackable_positions = createAttackablePositions(unit);
-//        for (Point point : attackable_positions) {
-//            Unit target = getGame().getMap().getUnit(point.x, point.y);
-//            if (target != null && !getGame().isEnemy(unit, target)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public boolean hasAllyCanHealWithinRange(Unit unit) {
+        HashSet<Point> attackable_positions = createAttackablePositions(unit);
+        for (Point point : attackable_positions) {
+            Unit target = getGame().getMap().getUnit(point.x, point.y);
+            if (getGame().canHeal(unit, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean hasTombWithinRange(Unit unit) {
         HashSet<Point> attackable_positions = createAttackablePositions(unit);

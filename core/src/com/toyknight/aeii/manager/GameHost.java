@@ -131,9 +131,11 @@ public class GameHost {
 
     public static void doHeal(int target_x, int target_y) {
         Unit healer = getManager().getSelectedUnit();
+        Unit target = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canHeal(healer, target_x, target_y)) {
-            int heal = UnitToolkit.getHeal(healer);
-            int experience = getGame().getRule().getAttackExperience();
+            int heal = UnitToolkit.getHeal(healer, target);
+            int experience = target.getCurrentHp() + heal > 0 ?
+                    getGame().getRule().getAttackExperience() : getGame().getRule().getKillExperience();
             dispatchEvent(new UnitHealEvent(healer.getX(), healer.getY(), target_x, target_y, heal, experience));
         }
     }
@@ -172,12 +174,13 @@ public class GameHost {
         for (Point position : getGame().getMap().getUnitPositionSet()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == next_team) {
-                int change = 0;
-                //deal with terrain heal issues
-                change += UnitToolkit.getTerrainHeal(unit, getGame().getMap().getTile(unit.getX(), unit.getY()));
-                //deal with buff issues
-                if (unit.getStatus() != null && unit.getStatus().getType() == Status.POISONED) {
-                    change -= getGame().getRule().getPoisonDamage();
+                int change;
+                if (unit.hasStatus(Status.POISONED)) {
+                    //the poison damage
+                    change = -getGame().getRule().getPoisonDamage();
+                } else {
+                    //deal with terrain heal issues
+                    change = UnitToolkit.getTerrainHeal(unit, getGame().getMap().getTile(unit.getX(), unit.getY()));
                 }
                 hp_change_map.put(position, change);
             } else {

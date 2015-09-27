@@ -311,9 +311,12 @@ public class GameCore implements Serializable {
 
     public boolean canHeal(Unit healer, int x, int y) {
         Unit target = getMap().getUnit(x, y);
-        return target != null
-                && target.getIndex() != UnitFactory.getSkeletonIndex()
-                && !isEnemy(healer, target);
+        return canHeal(healer, target);
+    }
+
+    public boolean canHeal(Unit healer, Unit target) {
+        return target != null &&
+                (target.isSkeleton() || !isEnemy(healer, target) && !target.hasStatus(Status.POISONED) && target.getCurrentHp() <= target.getMaxHp());
     }
 
     public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {

@@ -23,7 +23,7 @@ public class UnitToolkit {
     }
 
     public static void attachAttackStatus(Unit attacker, Unit defender) {
-        if (attacker.hasAbility(Ability.POISONER)) {
+        if (attacker.hasAbility(Ability.POISONER) && !defender.hasAbility(Ability.POISONER)) {
             defender.attachStatus(new Status(Status.POISONED, 1));
             return;
         }
@@ -31,10 +31,10 @@ public class UnitToolkit {
             defender.attachStatus(new Status(Status.PETRIFACTED, 1));
             defender.setCurrentMovementPoint(defender.getMovementPoint());
         }
-        if (attacker.hasAbility(Ability.BLINDER)) {
+        if (attacker.hasAbility(Ability.BLINDER) && defender.getBaseMaxAttackRange() > 1) {
             defender.attachStatus(new Status(Status.BLINDED, 2));
         }
-        if (defender.hasAbility(Ability.BLINDER)) {
+        if (defender.hasAbility(Ability.BLINDER) && attacker.getBaseMaxAttackRange() > 1) {
             attacker.attachStatus(new Status(Status.BLINDED, 2));
         }
     }
@@ -125,10 +125,6 @@ public class UnitToolkit {
                 && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
             defence_bonus += 5;
         }
-        if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
-            int enemy_count = getGame().getEnemyAroundCount(unit, 2);
-            defence_bonus += enemy_count * 5;
-        }
         switch (tile.getType()) {
             case Tile.TYPE_FOREST:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_FOREST)) {
@@ -144,6 +140,15 @@ public class UnitToolkit {
                 }
             default:
                 //do nothing
+        }
+        return defence_bonus;
+    }
+
+    public static int getBloodthirstyDefenceBonus(Unit unit) {
+        int defence_bonus = 0;
+        if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
+            int enemy_count = getGame().getEnemyAroundCount(unit, 2);
+            defence_bonus += enemy_count * 5;
         }
         return defence_bonus;
     }
@@ -170,12 +175,15 @@ public class UnitToolkit {
                 && getGame().getAlliance(attacker.getTeam()) == getGame().getAlliance(tile.getTeam())) {
             attack_bonus += 10;
         }
-        if (attacker.hasStatus(Status.INSPIRED)) {
-            attack_bonus += 5;
-        }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
             attack_bonus += enemy_count * 5;
+        }
+        if (attacker.hasStatus(Status.INSPIRED)) {
+            attack_bonus += 5;
+        }
+        if (attacker.hasStatus(Status.BLINDED) && getRange(attacker, defender) > 1) {
+            attack_bonus -= 10;
         }
         return attack_bonus;
     }
@@ -190,7 +198,7 @@ public class UnitToolkit {
         //calculate defence bonus
         int defence_bonus = getDefenceBonus(defender, defender_tile_index);
         int defence = attacker.getAttackType() == Unit.ATTACK_PHYSICAL
-                ? defender.getPhysicalDefence() : defender.getMagicalDefence();
+                ? defender.getPhysicalDefence() + getBloodthirstyDefenceBonus(defender) : defender.getMagicalDefence();
         defence += defence_bonus;
         //calculate base damage
         int damage = attack > defence ? attack - defence : 0;
@@ -220,9 +228,13 @@ public class UnitToolkit {
         return damage;
     }
 
-    public static int getHeal(Unit unit) {
+    public static int getHeal(Unit unit, Unit target) {
         if (unit.hasAbility(Ability.HEALER)) {
-            return 50 + 10 * unit.getLevel();
+            if (target.isSkeleton()) {
+                return -(50 + 10 * unit.getLevel());
+            } else {
+                return 50 + 10 * unit.getLevel();
+            }
         } else {
             return 0;
         }

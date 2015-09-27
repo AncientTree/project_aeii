@@ -43,12 +43,14 @@ public class HpChangeEvent implements GameEvent, Serializable {
         HashSet<Unit> units = new HashSet<Unit>();
         for (Point position : change_map.keySet()) {
             Unit unit = manager.getGame().getMap().getUnit(position.x, position.y);
-            int change = validateChange(unit, change_map.get(position));
-            if (unit != null && change != 0) {
-                change_count++;
-                change_map.put(position, change);
-                unit.changeCurrentHp(change);
-                units.add(unit);
+            if (unit != null) {
+                int change = validateChange(unit, change_map.get(position));
+                if (change != 0) {
+                    change_count++;
+                    change_map.put(position, change);
+                    unit.changeCurrentHp(change);
+                    units.add(unit);
+                }
             }
         }
         if (change_count > 0) {

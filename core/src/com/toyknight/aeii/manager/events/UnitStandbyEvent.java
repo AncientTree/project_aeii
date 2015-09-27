@@ -58,13 +58,13 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
 
         HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
         if (unit.hasAbility(Ability.HEALING_AURA)) {
-            int heal = 15 + unit.getLevel() * 10;
+            int heal = 15 + unit.getLevel() * 5;
             Set<Point> attackable_positions = manager.createAttackablePositions(unit);
             attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
             for (Point target_position : attackable_positions) {
                 //there's a unit at the position
                 Unit target = game.getMap().getUnit(target_position.x, target_position.y);
-                if (target != null && !game.isEnemy(unit, target)) {
+                if (game.canHeal(unit, target)) {
                     hp_change_map.put(target_position, heal);
                 }
             }
