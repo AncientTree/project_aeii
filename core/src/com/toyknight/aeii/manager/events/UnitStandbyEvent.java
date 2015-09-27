@@ -64,7 +64,7 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
             for (Point target_position : attackable_positions) {
                 //there's a unit at the position
                 Unit target = game.getMap().getUnit(target_position.x, target_position.y);
-                if (!target.isSkeleton() && game.canHeal(unit, target)) {
+                if (game.canHeal(unit, target) && !target.isSkeleton()) {
                     hp_change_map.put(target_position, heal);
                 }
             }
