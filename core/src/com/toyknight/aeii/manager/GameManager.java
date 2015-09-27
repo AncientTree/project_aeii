@@ -442,7 +442,7 @@ public class GameManager implements AnimationDispatcher {
                 return true;
             }
         }
-        return false;
+        return getGame().canHeal(unit, unit);
     }
 
     public boolean hasTombWithinRange(Unit unit) {
