@@ -1,11 +1,9 @@
 package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -16,7 +14,6 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.screen.MainMenuScreen;
 import com.toyknight.aeii.serializable.ServerConfig;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 
