@@ -184,6 +184,10 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public void executeGameEvent(GameEvent event) {
+        executeGameEvent(event, true);
+    }
+
+    public void executeGameEvent(GameEvent event, boolean record) {
         if (event.canExecute(getGame()) && !GameHost.isGameOver()) {
             event.execute(this);
             Point focus = event.getFocus(getGame());
@@ -196,7 +200,9 @@ public class GameManager implements AnimationDispatcher {
                     manager_listener.onMapFocusRequired(focus.x, focus.y);
                 }
             }
-            Recorder.submitGameEvent(event);
+            if (record) {
+                Recorder.submitGameEvent(event);
+            }
         }
     }
 

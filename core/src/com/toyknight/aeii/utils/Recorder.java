@@ -1,5 +1,6 @@
 package com.toyknight.aeii.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.events.GameEvent;
@@ -13,6 +14,8 @@ import java.util.Queue;
  * @author toyknight 9/22/2015.
  */
 public class Recorder {
+
+    private static final String TAG = "Recorder";
 
     private final static Queue<GameEvent> event_queue = new LinkedList<GameEvent>();
 
@@ -41,6 +44,7 @@ public class Recorder {
 
     public static void submitGameEvent(GameEvent event) {
         if (record_on) {
+            Gdx.app.log(TAG, "Record " + event.toString());
             event_queue.add(event);
         }
     }
