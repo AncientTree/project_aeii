@@ -119,7 +119,7 @@ public class UnitToolkit {
         return getRange(unit_a.getX(), unit_a.getY(), unit_b.getX(), unit_b.getY());
     }
 
-    public static int getDefenceBonus(Unit unit, int tile_index) {
+    public static int getTileDefenceBonus(Unit unit, int tile_index) {
         int defence_bonus = 0;
         Tile tile = TileFactory.getTile(tile_index);
         if (!unit.hasAbility(Ability.AIR_FORCE)) {
@@ -148,12 +148,17 @@ public class UnitToolkit {
         return defence_bonus;
     }
 
-    public static int getBloodthirstyDefenceBonus(Unit unit) {
-        int defence_bonus = 0;
-        if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
-            int enemy_count = getGame().getEnemyAroundCount(unit, 2);
+    public static int getPhysicalDefenceBonus(Unit attacker, Unit defender, int tile_index) {
+        int defence_bonus = getTileDefenceBonus(defender, tile_index);
+        if (defender.hasAbility(Ability.BLOODTHIRSTY)) {
+            int enemy_count = getGame().getEnemyAroundCount(defender, 2);
             defence_bonus += enemy_count * 5;
         }
+        return defence_bonus;
+    }
+
+    public static int getMagicDefenceBonus(Unit attacker, Unit defender, int tile_index) {
+        int defence_bonus = getTileDefenceBonus(defender, tile_index);
         return defence_bonus;
     }
 
@@ -200,10 +205,9 @@ public class UnitToolkit {
         int attack_bonus = getAttackBonus(attacker, defender, attacker_tile_index);
         int attack = attacker.getAttack() + attack_bonus;
         //calculate defence bonus
-        int defence_bonus = getDefenceBonus(defender, defender_tile_index);
         int defence = attacker.getAttackType() == Unit.ATTACK_PHYSICAL
-                ? defender.getPhysicalDefence() + getBloodthirstyDefenceBonus(defender) : defender.getMagicalDefence();
-        defence += defence_bonus;
+                ? defender.getPhysicalDefence() + getPhysicalDefenceBonus(attacker, defender, defender_tile_index)
+                : defender.getMagicalDefence() + getMagicDefenceBonus(attacker, defender, defender_tile_index);
         //calculate base damage
         int damage = attack > defence ? attack - defence : 0;
         int attacker_hp = attacker.getCurrentHp();

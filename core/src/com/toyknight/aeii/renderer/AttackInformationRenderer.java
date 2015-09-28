@@ -149,51 +149,87 @@ public class AttackInformationRenderer {
 
         //paint defence
         FontRenderer.setTextColor(Color.WHITE);
-        int attacker_defence_bonus = UnitToolkit.getDefenceBonus(attacker, attacker_tile);
-        int attacker_bdb = UnitToolkit.getBloodthirstyDefenceBonus(attacker);
+        int attacker_p_defence_bonus = UnitToolkit.getPhysicalDefenceBonus(defender, attacker, attacker_tile);
         int attacker_p_defence = attacker.getPhysicalDefence();
-        String attacker_p_defence_str = Integer.toString(attacker_p_defence + attacker_defence_bonus + attacker_bdb);
+        String attacker_p_defence_str = Integer.toString(attacker_p_defence + attacker_p_defence_bonus);
         FontRenderer.drawText(batch, attacker_p_defence_str,
                 lmargin + hw * 2 + tfw + ts * 5 / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
+        int attacker_m_defence_bonus = UnitToolkit.getMagicDefenceBonus(defender, attacker, attacker_tile);
         int attacker_m_defence = attacker.getMagicalDefence();
-        String attacker_m_defence_str = Integer.toString(attacker_m_defence + attacker_defence_bonus);
+        String attacker_m_defence_str = Integer.toString(attacker_m_defence + attacker_m_defence_bonus);
         FontRenderer.drawText(batch, attacker_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
-        if (attacker_defence_bonus > 0 || attacker_bdb > 0) {
+
+        if (attacker_p_defence_bonus > 0) {
             float p_defence_width = FontRenderer.getTextLayout(attacker_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
                     aw, ah);
+
+        }
+        if (attacker_p_defence_bonus < 0) {
+            float p_defence_width = FontRenderer.getTextLayout(attacker_p_defence_str).width;
+            batch.draw(ResourceManager.getArrowIcon(2),
+                    lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
+                    infoy + ts / 24 + (tfh - ah) / 2,
+                    aw, ah);
+
+        }
+        if (attacker_m_defence_bonus > 0) {
             float m_defence_width = FontRenderer.getTextLayout(attacker_m_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 3 + tfw * 2 + 8 * ts / 24 + ts / 4 + m_defence_width,
                     infoy + ts / 24 + (tfh - ah) / 2,
                     aw, ah);
         }
+        if (attacker_m_defence_bonus < 0) {
+            float m_defence_width = FontRenderer.getTextLayout(attacker_m_defence_str).width;
+            batch.draw(ResourceManager.getArrowIcon(2),
+                    lmargin + hw * 3 + tfw * 2 + 8 * ts / 24 + ts / 4 + m_defence_width,
+                    infoy + ts / 24 + (tfh - ah) / 2,
+                    aw, ah);
+        }
 
-        int defender_defence_bonus = UnitToolkit.getDefenceBonus(defender, defender_tile);
-        int defender_bdb = UnitToolkit.getBloodthirstyDefenceBonus(defender);
+        int defender_p_defence_bonus = UnitToolkit.getPhysicalDefenceBonus(attacker, defender, defender_tile);
         int defender_p_defence = defender.getPhysicalDefence();
-        String defender_p_defence_str = Integer.toString(defender_p_defence + defender_defence_bonus + defender_bdb);
+        String defender_p_defence_str = Integer.toString(defender_p_defence + defender_p_defence_bonus);
         FontRenderer.drawText(batch, defender_p_defence_str,
                 lmargin + hw * 2 + tfw + 5 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
+        int defender_m_defence_bonus = UnitToolkit.getMagicDefenceBonus(attacker, defender, defender_tile);
         int defender_m_defence = defender.getMagicalDefence();
-        String defender_m_defence_str = Integer.toString(defender_m_defence + defender_defence_bonus);
+        String defender_m_defence_str = Integer.toString(defender_m_defence + defender_m_defence_bonus);
         FontRenderer.drawText(batch, defender_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
-        if (defender_defence_bonus > 0 || defender_bdb > 0) {
+        if (defender_p_defence_bonus > 0) {
             float p_defence_width = FontRenderer.getTextLayout(defender_p_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
                     lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
                     infoy + tfh + 2 * ts / 24 + (tfh - ah) / 2,
                     aw, ah);
+
+        }
+        if (defender_m_defence_bonus < 0) {
+            float p_defence_width = FontRenderer.getTextLayout(defender_p_defence_str).width;
+            batch.draw(ResourceManager.getArrowIcon(2),
+                    lmargin + hw * 2 + tfw + 6 * ts / 24 + ts / 4 + p_defence_width,
+                    infoy + tfh + 2 * ts / 24 + (tfh - ah) / 2,
+                    aw, ah);
+        }
+        if (defender_m_defence_bonus > 0) {
             float m_defence_width = FontRenderer.getTextLayout(defender_m_defence_str).width;
             batch.draw(ResourceManager.getArrowIcon(1),
+                    lmargin + hw * 3 + tfw * 2 + 8 * ts / 24 + ts / 4 + m_defence_width,
+                    infoy + tfh + 2 * ts / 24 + (tfh - ah) / 2,
+                    aw, ah);
+        }
+        if (defender_m_defence_bonus < 0) {
+            float m_defence_width = FontRenderer.getTextLayout(defender_m_defence_str).width;
+            batch.draw(ResourceManager.getArrowIcon(2),
                     lmargin + hw * 3 + tfw * 2 + 8 * ts / 24 + ts / 4 + m_defence_width,
                     infoy + tfh + 2 * ts / 24 + (tfh - ah) / 2,
                     aw, ah);
