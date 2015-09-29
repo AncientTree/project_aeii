@@ -190,9 +190,6 @@ public class UnitToolkit {
         if (attacker.hasStatus(Status.INSPIRED)) {
             attack_bonus += 10;
         }
-        if (attacker.hasStatus(Status.BLINDED) && getRange(attacker, defender) > 1) {
-            attack_bonus -= 10;
-        }
         return attack_bonus;
     }
 
