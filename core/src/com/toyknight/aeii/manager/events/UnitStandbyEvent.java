@@ -68,6 +68,8 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
                     hp_change_map.put(target_position, heal);
                 }
             }
+        }
+        if (!hp_change_map.isEmpty()) {
             manager.executeGameEvent(new HpChangeEvent(hp_change_map), false);
         }
     }

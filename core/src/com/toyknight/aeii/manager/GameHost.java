@@ -123,7 +123,7 @@ public class GameHost {
 
     public static void doSummon(int target_x, int target_y) {
         Unit summoner = getManager().getSelectedUnit();
-        if (UnitToolkit.isWithinRange(summoner, target_x, target_y) && getGame().canSummon(target_x, target_y)) {
+        if (getGame().canSummon(summoner, target_x, target_y)) {
             int experience = getGame().getRule().getAttackExperience();
             dispatchEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
         }

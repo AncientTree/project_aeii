@@ -270,7 +270,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                     break;
                 case GameManager.STATE_SUMMON:
-                    if (getGame().canSummon(cursor_x, cursor_y)) {
+                    if (getGame().canSummon(selected_unit, cursor_x, cursor_y)) {
                         attack_cursor.render(batch);
                     } else {
                         cursor.render(batch, cursor_x, cursor_y);

@@ -305,8 +305,8 @@ public class GameCore implements Serializable {
         return repairer.hasAbility(Ability.REPAIRER) && tile.isRepairable();
     }
 
-    public boolean canSummon(int x, int y) {
-        return getMap().isTomb(x, y) && getMap().getUnit(x, y) == null;
+    public boolean canSummon(Unit summoner, int x, int y) {
+        return UnitToolkit.isWithinRange(summoner, x, y) && getMap().isTomb(x, y) && getMap().getUnit(x, y) == null;
     }
 
     public boolean canHeal(Unit healer, int x, int y) {
