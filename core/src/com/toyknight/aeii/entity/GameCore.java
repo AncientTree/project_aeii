@@ -315,9 +315,22 @@ public class GameCore implements Serializable {
     }
 
     public boolean canHeal(Unit healer, Unit target) {
-        return target != null
-                && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target))
-                && (target.isSkeleton() || !isEnemy(healer, target) && !target.hasStatus(Status.POISONED) && target.getCurrentHp() <= target.getMaxHp());
+        if (healer == null || target == null) {
+            return false;
+        } else {
+            if (canReceiveHeal(target)) {
+                return !isEnemy(healer, target)
+                        && UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target)
+                        && (healer.hasAbility(Ability.HEALING_AURA) || (healer.hasAbility(Ability.HEALER) && !target.hasAbility(Ability.AIR_FORCE)));
+            } else {
+                //heal becomes damage
+                return healer.hasAbility(Ability.HEALER) && target.isSkeleton();
+            }
+        }
+    }
+
+    public boolean canReceiveHeal(Unit target) {
+        return !target.isSkeleton() && !target.hasStatus(Status.POISONED) && target.getCurrentHp() <= target.getMaxHp();
     }
 
     public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {
