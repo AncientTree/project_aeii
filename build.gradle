@@ -4,7 +4,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.1.1'
         classpath 'org.robovm:robovm-gradle-plugin:1.0.0'
     }
 }
@@ -13,7 +13,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.0'
+    version = '1.0.5c'
     ext {
         appName = 'project_aeii'
         gdxVersion = '1.6.5'
@@ -80,10 +80,10 @@ project(":ios") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "org.mozilla:rhino:1.7.6"
     }
 }
 
