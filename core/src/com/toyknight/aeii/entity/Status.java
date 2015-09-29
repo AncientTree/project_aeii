@@ -10,7 +10,7 @@ public class Status implements Serializable {
     private static final long serialVersionUID = 4032015L;
 
     public static final int POISONED = 0x1;
-    public static final int PETRIFACTED = 0x2;
+    public static final int SLOWED = 0x2;
     public static final int INSPIRED = 0x3;
     public static final int BLINDED = 0x4;
 

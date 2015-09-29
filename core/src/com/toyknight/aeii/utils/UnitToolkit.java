@@ -23,19 +23,18 @@ public class UnitToolkit {
     }
 
     public static void attachAttackStatus(Unit attacker, Unit defender) {
-        if (attacker.hasAbility(Ability.POISONER) && !defender.hasAbility(Ability.POISONER)) {
-            defender.attachStatus(new Status(Status.POISONED, 1));
-            return;
-        }
-        if (attacker.hasAbility(Ability.SLOWING_GAZE) && !defender.hasAbility(Ability.SLOWING_GAZE)) {
-            defender.attachStatus(new Status(Status.PETRIFACTED, 1));
-            defender.setCurrentMovementPoint(defender.getMovementPoint());
-        }
-        if (attacker.hasAbility(Ability.BLINDER) && defender.getBaseMaxAttackRange() > 1) {
-            defender.attachStatus(new Status(Status.BLINDED, 2));
-        }
-        if (defender.hasAbility(Ability.BLINDER) && attacker.getBaseMaxAttackRange() > 1) {
-            attacker.attachStatus(new Status(Status.BLINDED, 2));
+        if (!defender.hasAbility(Ability.HEAVY_MACHINE)) {
+            if (attacker.hasAbility(Ability.POISONER) && !defender.hasAbility(Ability.POISONER)) {
+                defender.attachStatus(new Status(Status.POISONED, 1));
+                return;
+            }
+            if (attacker.hasAbility(Ability.SLOWING_MASTER) && !defender.hasAbility(Ability.SLOWING_MASTER)) {
+                defender.attachStatus(new Status(Status.SLOWED, 1));
+                defender.setCurrentMovementPoint(defender.getMovementPoint());
+            }
+            if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
+                defender.attachStatus(new Status(Status.BLINDED, 1));
+            }
         }
     }
 

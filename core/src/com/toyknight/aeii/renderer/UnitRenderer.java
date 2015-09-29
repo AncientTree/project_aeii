@@ -67,7 +67,7 @@ public class UnitRenderer {
                 case Status.POISONED:
                     batch.draw(ResourceManager.getStatusTexture(0), screen_x + offset_x, screen_y + ts() - sh + offset_y, sw, sh);
                     break;
-                case Status.PETRIFACTED:
+                case Status.SLOWED:
                     batch.draw(ResourceManager.getStatusTexture(2), screen_x + offset_x, screen_y + ts() - sh + offset_y, sw, sh);
                     break;
                 case Status.INSPIRED:

@@ -462,7 +462,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public boolean canSelectedUnitAct() {
-        return !getSelectedUnit().hasAbility(Ability.SIEGE_MACHINE) || getSelectedUnit().isAt(last_position.x, last_position.y);
+        return !getSelectedUnit().hasAbility(Ability.HEAVY_MACHINE) || getSelectedUnit().isAt(last_position.x, last_position.y);
     }
 
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {

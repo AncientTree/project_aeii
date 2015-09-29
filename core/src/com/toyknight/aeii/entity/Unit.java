@@ -191,7 +191,7 @@ public class Unit implements Serializable {
     }
 
     public int getMovementPoint() {
-        if (hasStatus(Status.PETRIFACTED)) {
+        if (hasStatus(Status.SLOWED)) {
             return 1;
         } else {
             return movement_point;
@@ -280,14 +280,10 @@ public class Unit implements Serializable {
 
     public int getMaxAttackRange() {
         if (hasStatus(Status.BLINDED)) {
-            return getMinAttackRange();
+            return 0;
         } else {
-            return getBaseMaxAttackRange();
+            return max_attack_range;
         }
-    }
-
-    public int getBaseMaxAttackRange() {
-        return max_attack_range;
     }
 
     public void setMaxAttackRange(int max_attack_range) {
@@ -295,7 +291,11 @@ public class Unit implements Serializable {
     }
 
     public int getMinAttackRange() {
-        return min_attack_range;
+        if (hasStatus(Status.BLINDED)) {
+            return 0;
+        } else {
+            return min_attack_range;
+        }
     }
 
     public void setMinAttackRange(int min_attack_range) {
@@ -368,6 +368,10 @@ public class Unit implements Serializable {
         if (getStatus() == null || getStatus().getType() == status.getType()) {
             this.status = status;
         }
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void updateStatus() {
