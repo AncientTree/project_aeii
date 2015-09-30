@@ -235,9 +235,9 @@ public class UnitToolkit {
     public static int getHeal(Unit unit, Unit target) {
         if (unit.hasAbility(Ability.HEALER)) {
             if (target.isSkeleton()) {
-                return -(50 + 10 * unit.getLevel());
+                return -(60 + 10 * unit.getLevel());
             } else {
-                return 50 + 10 * unit.getLevel();
+                return 40 + 10 * unit.getLevel();
             }
         } else {
             return 0;
