@@ -46,19 +46,16 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
         if (unit.hasAbility(Ability.ATTACK_AURA)) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    if (i != 0 || j != 0) {
-                        Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
-                        if (target != null && !game.isEnemy(unit, target) && !target.hasAbility(Ability.HEAVY_MACHINE)) {
-                            target.attachStatus(new Status(Status.INSPIRED, 0));
-                        }
+                    Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
+                    if (target != null && !game.isEnemy(unit, target) && !target.hasAbility(Ability.HEAVY_MACHINE)) {
+                        target.attachStatus(new Status(Status.INSPIRED, 0));
                     }
                 }
             }
         }
 
-
+        HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
         if (unit.hasAbility(Ability.HEALING_AURA)) {
-            HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
             int heal = 15 + unit.getLevel() * 5;
             Set<Point> attackable_positions = manager.createAttackablePositions(unit);
             attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
@@ -69,12 +66,25 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
                     hp_change_map.put(target_position, heal);
                 }
             }
-            manager.executeGameEvent(new HpChangeEvent(hp_change_map), false);
         }
-        if (game.getMap().isTomb(unit_x, unit_y) && !unit.hasAbility(Ability.HEAVY_MACHINE)) {
+
+        if (game.getMap().isTomb(unit_x, unit_y)) {
             game.getMap().removeTomb(unit_x, unit_y);
-            unit.setStatus(new Status(Status.POISONED, 2));
+            if (unit.hasAbility(Ability.NECROMANCER) && !unit.hasStatus(Status.POISONED)) {
+                Point unit_position = game.getMap().getPosition(unit_x, unit_y);
+                if (hp_change_map.keySet().contains(unit_position)) {
+                    int change = hp_change_map.get(unit_position);
+                    hp_change_map.put(unit_position, change + 20);
+                } else {
+                    hp_change_map.put(unit_position, 20);
+                }
+            } else {
+                if (!unit.hasAbility(Ability.HEAVY_MACHINE) && !unit.isSkeleton()) {
+                    unit.attachStatus(new Status(Status.POISONED, 2));
+                }
+            }
         }
+        manager.executeGameEvent(new HpChangeEvent(hp_change_map), false);
     }
 
 }

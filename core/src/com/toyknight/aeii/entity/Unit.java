@@ -370,10 +370,6 @@ public class Unit implements Serializable {
         }
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public void updateStatus() {
         if (status != null) {
             status.update();
