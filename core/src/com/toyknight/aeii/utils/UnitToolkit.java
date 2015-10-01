@@ -25,7 +25,7 @@ public class UnitToolkit {
     public static void attachAttackStatus(Unit attacker, Unit defender) {
         if (!defender.hasAbility(Ability.HEAVY_MACHINE)) {
             if (attacker.hasAbility(Ability.POISONER) && !defender.hasAbility(Ability.POISONER)) {
-                defender.attachStatus(new Status(Status.POISONED, 1));
+                defender.attachStatus(new Status(Status.POISONED, 2));
                 return;
             }
             if (attacker.hasAbility(Ability.SLOWING_MASTER) && !defender.hasAbility(Ability.SLOWING_MASTER)) {

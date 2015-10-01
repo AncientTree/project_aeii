@@ -167,6 +167,8 @@ public class GameHost {
 
         dispatchEvent(new TurnEndEvent());
 
+        dispatchEvent(new UnitStatusUpdateEvent(next_team));
+
         //calculate hp change at turn start
         HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
 
@@ -175,7 +177,7 @@ public class GameHost {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == next_team) {
                 int change;
-                if (unit.hasStatus(Status.POISONED)) {
+                if (unit.hasStatus(Status.POISONED) && unit.getStatus().getRemainingTurn() > 0) {
                     //the poison damage
                     change = -getGame().getRule().getPoisonDamage();
                 } else {
@@ -200,8 +202,6 @@ public class GameHost {
                 dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
         }
-
-        dispatchEvent(new UnitStatusUpdateEvent(next_team));
     }
 
     public static void updateGameStatus() {

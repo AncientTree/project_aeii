@@ -80,7 +80,7 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
                 }
             } else {
                 if (!unit.hasAbility(Ability.HEAVY_MACHINE) && !unit.isSkeleton()) {
-                    unit.attachStatus(new Status(Status.POISONED, 2));
+                    unit.attachStatus(new Status(Status.POISONED, 3));
                 }
             }
         }
