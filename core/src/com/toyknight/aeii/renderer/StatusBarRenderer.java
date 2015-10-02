@@ -8,7 +8,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.screen.GameScreen;
 
 /**
- * Created by toyknight on 4/19/2015.
+ * @author toyknight 4/19/2015.
  */
 public class StatusBarRenderer {
 

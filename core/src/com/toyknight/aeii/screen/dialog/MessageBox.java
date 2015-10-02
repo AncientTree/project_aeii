@@ -1,11 +1,21 @@
 package com.toyknight.aeii.screen.dialog;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.DialogCallback;
+import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.task.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
+import com.toyknight.aeii.screen.widgets.PlayerList;
+import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -15,13 +25,8 @@ public class MessageBox extends BasicDialog {
 
     private DialogCallback callback;
 
-    private TextButton btn_greetings;
-    private TextButton btn_gg;
-    private TextButton btn_thinking;
-    private TextButton btn_sorry;
-    private TextButton btn_oops;
-    private TextButton btn_irritate;
-    private TextButton btn_close;
+    private PlayerList player_list;
+    private TextField tf_message;
 
     public MessageBox(StageScreen owner) {
         super(owner);
@@ -29,87 +34,87 @@ public class MessageBox extends BasicDialog {
     }
 
     private void initComponents() {
-        btn_greetings = new TextButton(Language.getText("LB_GREETINGS"), getContext().getSkin());
-        btn_greetings.setBounds(ts / 2, ts / 2, ts * 3, ts);
-        btn_greetings.addListener(new ClickListener() {
+        player_list = new PlayerList(ts * 3 / 2, ts);
+        ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (getContext().hasTeamAccess()) {
-                    sendMessage("MSG_GREETINGS_1");
-                } else {
-                    sendMessage("MSG_GREETINGS_2");
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(
+                        ResourceManager.getBorderDarkColor(),
+                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
+                super.draw(batch, parentAlpha);
+            }
+        };
+        sp_player_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
+        sp_player_list.getStyle().background =
+                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+        sp_player_list.setScrollBarPositions(false, true);
+        sp_player_list.setFadeScrollBars(false);
+
+        add(sp_player_list).size(ts * 6 + ts / 2, ts * 5).pad(ts / 2).row();
+
+        tf_message = new TextField("", getContext().getSkin()) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(
+                        ResourceManager.getBorderDarkColor(),
+                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
+                super.draw(batch, parentAlpha);
+            }
+        };
+        tf_message.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char key) {
+                if ((key == '\r' || key == '\n')) {
+                    sendMessage();
                 }
             }
         });
-        addActor(btn_greetings);
+        tf_message.setFocusTraversal(false);
+        add(tf_message).width(ts * 6 + ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
 
-        btn_gg = new TextButton(Language.getText("LB_GG"), getContext().getSkin());
-        btn_gg.setBounds(ts / 2 + ts * 4, ts / 2, ts * 3, ts);
-        btn_gg.addListener(new ClickListener() {
+        Table button_bar = new Table();
+        TextButton btn_send = new TextButton(Language.getText("LB_SEND"), getContext().getSkin());
+        btn_send.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sendMessage("MSG_GG");
+                sendMessage();
             }
         });
-        addActor(btn_gg);
-
-        btn_thinking = new TextButton(Language.getText("LB_THINKING"), getContext().getSkin());
-        btn_thinking.setBounds(ts / 2, ts * 2, ts * 7, ts);
-        btn_thinking.addListener(new ClickListener() {
+        button_bar.add(btn_send).size(ts * 3, ts);
+        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sendMessage("MSG_THINKING");
+                getOwner().closeDialog("message");
             }
         });
-        addActor(btn_thinking);
+        button_bar.add(btn_cancel).size(ts * 3, ts).padLeft(ts / 2);
+        add(button_bar).size(ts * 6 + ts / 2, ts).pad(ts / 2);
 
-        btn_sorry = new TextButton(Language.getText("LB_SORRY"), getContext().getSkin());
-        btn_sorry.setBounds(ts / 2, ts * 2 + ts / 2 * 3, ts * 7, ts);
-        btn_sorry.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (getContext().hasTeamAccess()) {
-                    sendMessage("MSG_SORRY_1");
-                } else {
-                    sendMessage("MSG_SORRY_2");
-                }
-            }
-        });
-        addActor(btn_sorry);
+        pack();
+    }
 
-        btn_oops = new TextButton(Language.getText("LB_OOPS"), getContext().getSkin());
-        btn_oops.setBounds(ts / 2, ts * 5, ts * 7, ts);
-        btn_oops.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                sendMessage("MSG_OOPS");
-            }
-        });
-        addActor(btn_oops);
+    @Override
+    public void display() {
+        tf_message.setText("");
+    }
 
-        btn_irritate = new TextButton(Language.getText("LB_IRRITATE"), getContext().getSkin());
-        btn_irritate.setBounds(ts / 2, ts * 4 + ts / 2 * 5, ts * 4 + ts / 2 * 3, ts);
-        btn_irritate.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (getContext().hasTeamAccess()) {
-                    sendMessage("MSG_IRRITATE_1");
-                } else {
-                    sendMessage("MSG_IRRITATE_2");
-                }
-            }
-        });
-        addActor(btn_irritate);
+    public void setPlayers(Array<PlayerSnapshot> players, String[] allocation) {
+        player_list.setItems(players, allocation);
+    }
 
-        btn_close = new TextButton("x", getContext().getSkin());
-        btn_close.setBounds(ts * 6 + ts / 2, ts * 4 + ts / 2 * 5, ts, ts);
-        btn_close.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                callback.doCallback();
-            }
-        });
-        addActor(btn_close);
+    public void removePlayer(String service_name) {
+        player_list.removePlayer(service_name);
+    }
+
+    public void addPlayer(String service_name, String username) {
+        player_list.addPlayer(service_name, username);
+    }
+
+    public void sendMessage() {
+        sendMessage(tf_message.getText());
+        getOwner().closeDialog("message");
+        getOwner().setKeyboardFocus(null);
     }
 
     public void sendMessage(String message) {

@@ -11,16 +11,16 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 
 /**
- * Created by toyknight on 8/25/2015.
+ * @author toyknight 8/25/2015.
  */
 public class StringList<T> extends Widget {
 
-    private final int item_height;
-    private final float text_offset;
+    protected final int item_height;
+    protected final float text_offset;
     private float prefWidth;
     private float prefHeight;
 
-    private final Array<T> items = new Array<T>();
+    protected final Array<T> items = new Array<T>();
     final ArraySelection<T> selection = new ArraySelection<T>(items);
 
     private SelectionListener listener;
@@ -81,6 +81,10 @@ public class StringList<T> extends Widget {
         if (items == null) throw new IllegalArgumentException("list items cannot be null.");
         this.items.clear();
         this.items.addAll(items);
+        updateList();
+    }
+
+    public void updateList() {
         this.prefWidth = getWidth();
         this.prefHeight = items.size * item_height;
         if (items.size > 0) {
@@ -108,12 +112,11 @@ public class StringList<T> extends Widget {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        float itemY = height;
+        float x = getX(), y = getY(), width = getWidth();
+        float itemY = getHeight();
         for (int index = 0; index < items.size; index++) {
             T item = items.get(index);
-            boolean selected = selection.contains(item);
-            if (selected) {
+            if (selection.contains(item)) {
                 batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
             FontRenderer.setTextColor(Color.WHITE);
@@ -125,7 +128,7 @@ public class StringList<T> extends Widget {
 
     public interface SelectionListener {
 
-        public void onSelect(int index, Object value);
+        void onSelect(int index, Object value);
 
     }
 

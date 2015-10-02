@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
@@ -21,6 +22,8 @@ import com.toyknight.aeii.screen.widgets.ActionButtonBar;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
 import com.toyknight.aeii.screen.dialog.MessageBox;
+import com.toyknight.aeii.serializable.PlayerSnapshot;
+import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
@@ -157,7 +160,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.addDialog("menu", menu);
 
         this.message_box = new MessageBox(this);
-        this.message_box.setBounds((viewport.width - ts * 8) / 2, (viewport.height - ts * 8) / 2 + ts, ts * 8, ts * 8);
+        this.message_box.setPosition(
+                (viewport.width - message_box.getWidth()) / 2,
+                (viewport.height - message_box.getHeight()) / 2 + ts);
         this.message_box.setCallback(new DialogCallback() {
             @Override
             public void doCallback() {
@@ -298,11 +303,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onPlayerJoin(String service_name, String username) {
+        message_box.addPlayer(service_name, username);
         appendMessage(null, username + " " + Language.getText("LB_JOINS"));
     }
 
     @Override
     public void onPlayerLeave(String service_name, String username) {
+        message_box.removePlayer(service_name);
         if (getContext().isGameHost()) {
             String[] team_allocation = getContext().getRoomConfig().team_allocation;
             for (int team = 0; team < 4; team++) {
@@ -333,7 +340,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onReceiveMessage(String username, String message) {
-        message_board.appendMessage(username, Language.getText(message));
+        message_board.appendMessage(username, message);
     }
 
     @Override
@@ -389,6 +396,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         } else {
             btn_message.setVisible(false);
         }
+
+        if (getContext().getNetworkManager().isConnected()) {
+            RoomConfig config = getContext().getRoomConfig();
+            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>();
+            players.addAll(config.players, 0, config.players.length);
+            message_box.setPlayers(players, config.team_allocation);
+        }
+
         message_board.clearMessages();
         mini_map.setMap(getGame().getMap());
         mini_map.updateBounds(0, ts, viewport.width, viewport.height);
@@ -441,6 +456,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             if (keyCode == Input.Keys.BACK) {
                 doCancel();
                 return true;
+            }
+            if (keyCode == Input.Keys.ENTER && !isDialogShown()) {
+                showDialog("message");
             }
             switch (getGameManager().getState()) {
                 case GameManager.STATE_BUY:

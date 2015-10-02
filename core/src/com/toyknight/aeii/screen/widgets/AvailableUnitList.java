@@ -12,10 +12,9 @@ import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- * Created by toyknight on 5/29/2015.
+ * @author toyknight 5/29/2015.
  */
 public class AvailableUnitList extends Widget implements Cullable {
 
@@ -118,8 +117,8 @@ public class AvailableUnitList extends Widget implements Cullable {
     public void draw(Batch batch, float parentAlpha) {
         int index = 0;
         int current_team = getGame().getCurrentTeam();
-        float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        float itemY = height;
+        float x = getX(), y = getY(), width = getWidth();
+        float itemY = getHeight();
         for (Integer unit_index : available_units) {
             if (index == selected_index) {
                 batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
