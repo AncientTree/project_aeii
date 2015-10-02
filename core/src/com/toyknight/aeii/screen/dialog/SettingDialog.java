@@ -43,13 +43,19 @@ public class SettingDialog extends BasicDialog {
 
         tf_username = new TextField("", getContext().getSkin());
         tf_username.setPosition(ts * 3 + ts / 2, getHeight() - ts / 2 - tf_username.getPrefHeight());
+        tf_username.setTextFieldFilter(new TextFilter());
         tf_username.setMaxLength(10);
         tf_username.setWidth(getWidth() - ts * 4);
         addActor(tf_username);
     }
 
     private void save() {
-        getContext().updateConfiguration("username", tf_username.getText());
+        String username = tf_username.getText();
+        if (username.length() > 0) {
+            getContext().updateConfiguration("username", username);
+        } else {
+            getContext().updateConfiguration("username", "nobody");
+        }
     }
 
     @Override
@@ -62,6 +68,15 @@ public class SettingDialog extends BasicDialog {
         String username = getContext().getUsername();
         tf_username.setText(username);
         setVisible(true);
+    }
+
+    private class TextFilter implements TextField.TextFieldFilter {
+
+        @Override
+        public boolean acceptChar(TextField textField, char c) {
+            return c == 32 || (65 <= c && c <= 90) || (97 <= c && c <= 122);
+        }
+
     }
 
 }
