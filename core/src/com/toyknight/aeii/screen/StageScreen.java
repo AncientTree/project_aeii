@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkListener;
@@ -22,13 +22,13 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     protected final int ts;
     protected final SpriteBatch batch;
 
-    private final AEIIApplication context;
+    private final AEIIApplet context;
 
     private boolean dialog_shown;
     private final Stage dialog_stage;
     private final HashMap<String, BasicDialog> dialogs;
 
-    public StageScreen(AEIIApplication context) {
+    public StageScreen(AEIIApplet context) {
         this.context = context;
         this.ts = context.getTileSize();
         this.batch = new SpriteBatch();
@@ -37,7 +37,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         this.dialog_shown = false;
     }
 
-    public AEIIApplication getContext() {
+    public AEIIApplet getContext() {
         return context;
     }
 

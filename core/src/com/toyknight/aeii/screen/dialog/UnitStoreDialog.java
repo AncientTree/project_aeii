@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
@@ -15,12 +14,10 @@ import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.widgets.UnitListListener;
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.widgets.AvailableUnitList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
-import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.ArrayList;
 

@@ -1,17 +1,11 @@
 package com.toyknight.aeii.screen.dialog;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.toyknight.aeii.AEIIApplication;
 import com.toyknight.aeii.DialogCallback;
-import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.task.MessageSendingTask;
-import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.StageScreen;
-import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
 /**

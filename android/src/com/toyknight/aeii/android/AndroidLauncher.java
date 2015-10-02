@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.utils.Platform;
 
 public class AndroidLauncher extends AndroidApplication {
@@ -15,7 +15,7 @@ public class AndroidLauncher extends AndroidApplication {
         config.useAccelerometer = false;
         config.useCompass = false;
         int tileSize = this.getTileSize();
-        initialize(new AEIIApplication(Platform.Android, tileSize), config);
+        initialize(new AEIIApplet(Platform.Android, tileSize), config);
 
 
     }

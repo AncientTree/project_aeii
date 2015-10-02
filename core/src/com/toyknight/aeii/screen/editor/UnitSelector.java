@@ -10,13 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.MapEditorScreen;
 import com.toyknight.aeii.utils.UnitFactory;
-
-import java.util.Set;
 
 /**
  * Created by toyknight on 7/9/2015.
@@ -93,7 +91,7 @@ public class UnitSelector extends Container {
         this.setActor(sp_unit_table);
     }
 
-    private AEIIApplication getContext() {
+    private AEIIApplet getContext() {
         return editor.getContext();
     }
 

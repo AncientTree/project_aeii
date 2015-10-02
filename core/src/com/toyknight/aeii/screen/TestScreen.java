@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
@@ -32,7 +32,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
     private final StringList<MapFactory.MapSnapshot> map_list;
     private Map map;
 
-    public TestScreen(AEIIApplication context) {
+    public TestScreen(AEIIApplet context) {
         super(context);
         this.sts = context.getTileSize() * 10 / 48;
         TextButton btn_back = new TextButton("Back", getContext().getSkin());

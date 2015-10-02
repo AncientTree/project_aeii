@@ -111,6 +111,11 @@ public class AEIIServer {
         return rooms.get(room_number);
     }
 
+    public boolean isRoomOpen(long room_number) {
+        Room room = getRoom(room_number);
+        return room != null && room.isOpen();
+    }
+
     public RoomConfig createRoomConfig(Room room) {
         RoomConfig config = new RoomConfig();
         config.room_number = room.getRoomNumber();

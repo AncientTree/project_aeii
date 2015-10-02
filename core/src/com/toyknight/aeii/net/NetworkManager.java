@@ -4,12 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.serializable.RoomSnapshot;
@@ -17,10 +16,9 @@ import com.toyknight.aeii.serializable.ServerConfig;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.concurrent.*;
 
 /**
- * Created by toyknight on 8/25/2015.
+ * @author toyknight 8/25/2015.
  */
 public class NetworkManager {
 
@@ -263,7 +261,89 @@ public class NetworkManager {
                         switch (type) {
                             case REQUEST:
                                 int request = ois.readInt();
-                                processRequest(request);
+                                String service_name, username, message;
+                                switch (request) {
+                                    case Request.START_GAME:
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            getListener().onGameStart(null);
+                                        }
+                                        break;
+                                    case Request.RESUME_GAME:
+                                        GameSave game_save = (GameSave) ois.readObject();
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            getListener().onGameStart(game_save);
+                                        }
+                                    case Request.GAME_EVENT:
+                                        GameEvent event = (GameEvent) ois.readObject();
+                                        Gdx.app.log(TAG, "Receive " + event.toString());
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            getListener().onReceiveGameEvent(event);
+                                        }
+                                        break;
+                                    case Request.MESSAGE:
+                                        username = ois.readUTF();
+                                        message = ois.readUTF();
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            if (getListener() != null) {
+                                                getListener().onReceiveMessage(username, message);
+                                            }
+                                        }
+                                        break;
+                                    case Request.PLAYER_JOINING:
+                                        service_name = ois.readUTF();
+                                        username = ois.readUTF();
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            if (getListener() != null) {
+                                                getListener().onPlayerJoin(service_name, username);
+                                            }
+                                        }
+                                        break;
+                                    case Request.PLAYER_LEAVING:
+                                        service_name = ois.readUTF();
+                                        username = ois.readUTF();
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            if (getListener() != null) {
+                                                getListener().onPlayerLeave(service_name, username);
+                                            }
+                                        }
+                                        break;
+                                    case Request.UPDATE_ALLOCATION:
+                                        String[] allocation = new String[4];
+                                        for (int team = 0; team < 4; team++) {
+                                            allocation[team] = ois.readUTF();
+                                        }
+                                        Integer[] types = new Integer[4];
+                                        for (int team = 0; team < 4; team++) {
+                                            types[team] = ois.readInt();
+                                        }
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            if (getListener() != null) {
+                                                getListener().onAllocationUpdate(allocation, types);
+                                            }
+                                        }
+                                        break;
+                                    case Request.UPDATE_ALLIANCE:
+                                        Integer[] alliance = new Integer[4];
+                                        for (int team = 0; team < 4; team++) {
+                                            alliance[team] = ois.readInt();
+                                        }
+                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                            if (getListener() != null) {
+                                                getListener().onAllianceUpdate(alliance);
+                                            }
+                                        }
+                                        break;
+                                    case Request.GET_GAME:
+                                        GameCore game = GameHost.getGame();
+                                        synchronized (OUTPUT_LOCK) {
+                                            oos.writeInt(NetworkManager.RESPONSE);
+                                            oos.writeObject(game);
+                                            oos.flush();
+                                        }
+                                        break;
+                                    default:
+                                        //do nothing
+                                }
                                 break;
                             case RESPONSE:
                                 //It's a server response. Free the input stream for task thread to read the response
@@ -290,92 +370,6 @@ public class NetworkManager {
                 }
             }
             Gdx.app.log(TAG, "Disconnected from server");
-        }
-
-        private void processRequest(int request) throws IOException, ClassNotFoundException {
-            String service_name, username, message;
-            switch (request) {
-                case Request.START_GAME:
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        getListener().onGameStart(null);
-                    }
-                    break;
-                case Request.RESUME_GAME:
-                    GameSave game_save = (GameSave) ois.readObject();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        getListener().onGameStart(game_save);
-                    }
-                case Request.GAME_EVENT:
-                    GameEvent event = (GameEvent) ois.readObject();
-                    Gdx.app.log(TAG, "Receive " + event.toString());
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        getListener().onReceiveGameEvent(event);
-                    }
-                    break;
-                case Request.MESSAGE:
-                    username = ois.readUTF();
-                    message = ois.readUTF();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        if (getListener() != null) {
-                            getListener().onReceiveMessage(username, message);
-                        }
-                    }
-                    break;
-                case Request.PLAYER_JOINING:
-                    service_name = ois.readUTF();
-                    username = ois.readUTF();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        if (getListener() != null) {
-                            getListener().onPlayerJoin(service_name, username);
-                        }
-                    }
-                    break;
-                case Request.PLAYER_LEAVING:
-                    service_name = ois.readUTF();
-                    username = ois.readUTF();
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        if (getListener() != null) {
-                            getListener().onPlayerLeave(service_name, username);
-                        }
-                    }
-                    break;
-                case Request.UPDATE_ALLOCATION:
-                    String[] allocation = new String[4];
-                    for (int team = 0; team < 4; team++) {
-                        allocation[team] = ois.readUTF();
-                    }
-                    Integer[] types = new Integer[4];
-                    for (int team = 0; team < 4; team++) {
-                        types[team] = ois.readInt();
-                    }
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        if (getListener() != null) {
-                            getListener().onAllocationUpdate(allocation, types);
-                        }
-                    }
-                    break;
-                case Request.UPDATE_ALLIANCE:
-                    Integer[] alliance = new Integer[4];
-                    for (int team = 0; team < 4; team++) {
-                        alliance[team] = ois.readInt();
-                    }
-                    synchronized (AEIIApplication.RENDER_LOCK) {
-                        if (getListener() != null) {
-                            getListener().onAllianceUpdate(alliance);
-                        }
-                    }
-                    break;
-                case Request.GET_GAME:
-                    GameCore game = GameHost.getGame();
-                    synchronized (OUTPUT_LOCK) {
-                        oos.writeInt(NetworkManager.RESPONSE);
-                        oos.writeObject(game);
-                        oos.flush();
-                    }
-                    break;
-                default:
-                    //do nothing
-            }
         }
 
     }

@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
@@ -49,7 +49,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
     private TextButton btn_refresh;
     private TextButton btn_join;
 
-    public LobbyScreen(AEIIApplication context) {
+    public LobbyScreen(AEIIApplet context) {
         super(context);
         this.initComponents();
     }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.AELogoAnimator;
@@ -33,7 +33,7 @@ public class MainMenuScreen extends StageScreen {
 
     private boolean logo_shown;
 
-    public MainMenuScreen(AEIIApplication context) {
+    public MainMenuScreen(AEIIApplet context) {
         super(context);
         this.logo_animator = new AELogoAnimator();
         this.logo_glow_animator = new AELogoGlowAnimator();

@@ -159,18 +159,18 @@ public class PlayerService extends Thread {
     }
 
     private void respondJoinRoom(long room_number) throws IOException {
-        RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
-        if (config == null) {
+        if (getContext().isRoomOpen(room_number)) {
+            RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
             synchronized (OUTPUT_LOCK) {
-                GameCore game = getContext().onPlayerJoinStartedGame(getName(), room_number);
                 oos.writeInt(NetworkManager.RESPONSE);
-                oos.writeObject(game);
+                oos.writeObject(config);
                 oos.flush();
             }
         } else {
             synchronized (OUTPUT_LOCK) {
+                GameCore game = getContext().onPlayerJoinStartedGame(getName(), room_number);
                 oos.writeInt(NetworkManager.RESPONSE);
-                oos.writeObject(config);
+                oos.writeObject(game);
                 oos.flush();
             }
         }
@@ -186,12 +186,7 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondCreateRoom() throws IOException, ClassNotFoundException {
-        String map_name = ois.readUTF();
-        Map map = (Map) ois.readObject();
-        int capacity = ois.readInt();
-        int gold = ois.readInt();
-        int population = ois.readInt();
+    private void respondCreateRoom(String map_name, Map map, int capacity, int gold, int population) throws IOException {
         RoomConfig config = getContext().onPlayerCreateRoom(getName(), map_name, map, capacity, gold, population);
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
@@ -204,24 +199,6 @@ public class PlayerService extends Thread {
                     "Player {0}@{1} creates room-{2}",
                     new Object[]{getUsername(), getClientAddress(), room_number});
         }
-    }
-
-    private void respondUpdateAllocation() throws IOException {
-        String[] allocation = new String[4];
-        Integer[] types = new Integer[4];
-        for (int team = 0; team < 4; team++) {
-            allocation[team] = ois.readUTF();
-            types[team] = ois.readInt();
-        }
-        getContext().onUpdateAllocation(getName(), allocation, types);
-    }
-
-    private void respondUpdateAlliance() throws IOException {
-        Integer[] alliance = new Integer[4];
-        for (int team = 0; team < 4; team++) {
-            alliance[team] = ois.readInt();
-        }
-        getContext().onUpdateAlliance(getName(), alliance);
     }
 
     private void respondStartGame() throws IOException {
@@ -239,8 +216,7 @@ public class PlayerService extends Thread {
         }
     }
 
-    private void respondResumeGame() throws IOException, ClassNotFoundException {
-        GameSave game_save = (GameSave) ois.readObject();
+    private void respondResumeGame(GameSave game_save) throws IOException {
         boolean approved = getContext().onResumeGame(room_number, getName(), game_save);
         synchronized (OUTPUT_LOCK) {
             oos.writeInt(NetworkManager.RESPONSE);
@@ -253,11 +229,6 @@ public class PlayerService extends Thread {
                     "Player {0}@{1} starts game",
                     new Object[]{getUsername(), getClientAddress()});
         }
-    }
-
-    public void receiveGameEvent() throws IOException, ClassNotFoundException {
-        GameEvent event = (GameEvent) ois.readObject();
-        getContext().onSubmitGameEvent(getName(), event);
     }
 
     @Override
@@ -293,7 +264,63 @@ public class PlayerService extends Thread {
                     switch (type) {
                         case NetworkManager.REQUEST:
                             int request = ois.readInt();
-                            processRequest(request);
+                            switch (request) {
+                                case Request.LIST_ROOMS:
+                                    respondOpenRooms();
+                                    break;
+                                case Request.JOIN_ROOM:
+                                    long room_number = ois.readLong();
+                                    respondJoinRoom(room_number);
+                                    break;
+                                case Request.LEAVE_ROOM:
+                                    respondLeaveRoom();
+                                    break;
+                                case Request.CREATE_ROOM:
+                                    String map_name = ois.readUTF();
+                                    Map map = (Map) ois.readObject();
+                                    int capacity = ois.readInt();
+                                    int gold = ois.readInt();
+                                    int population = ois.readInt();
+                                    respondCreateRoom(map_name, map, capacity, gold, population);
+                                    break;
+                                case Request.UPDATE_ALLOCATION:
+                                    String[] allocation = new String[4];
+                                    Integer[] types = new Integer[4];
+                                    for (int team = 0; team < 4; team++) {
+                                        allocation[team] = ois.readUTF();
+                                        types[team] = ois.readInt();
+                                    }
+                                    getContext().onUpdateAllocation(getName(), allocation, types);
+                                    break;
+                                case Request.UPDATE_ALLIANCE:
+                                    Integer[] alliance = new Integer[4];
+                                    for (int team = 0; team < 4; team++) {
+                                        alliance[team] = ois.readInt();
+                                    }
+                                    getContext().onUpdateAlliance(getName(), alliance);
+                                    break;
+                                case Request.START_GAME:
+                                    respondStartGame();
+                                    break;
+                                case Request.RESUME_GAME:
+                                    GameSave game_save = (GameSave) ois.readObject();
+                                    respondResumeGame(game_save);
+                                    break;
+                                case Request.GAME_EVENT:
+                                    GameEvent event = (GameEvent) ois.readObject();
+                                    getContext().onSubmitGameEvent(getName(), event);
+                                    break;
+                                case Request.MESSAGE:
+                                    String message = ois.readUTF();
+                                    getContext().onSubmitMessage(getName(), message);
+                                    break;
+                                case Request.SHUTDOWN:
+                                    String password = ois.readUTF();
+                                    getContext().onShutdownRequested(password);
+                                    break;
+                                default:
+                                    //do nothing
+                            }
                             break;
                         case NetworkManager.RESPONSE:
                             try {
@@ -314,49 +341,6 @@ public class PlayerService extends Thread {
             }
         }
         getContext().onPlayerDisconnect(getName());
-    }
-
-    private void processRequest(int request) throws IOException, ClassNotFoundException {
-        switch (request) {
-            case Request.LIST_ROOMS:
-                respondOpenRooms();
-                break;
-            case Request.JOIN_ROOM:
-                long room_number = ois.readLong();
-                respondJoinRoom(room_number);
-                break;
-            case Request.LEAVE_ROOM:
-                respondLeaveRoom();
-                break;
-            case Request.CREATE_ROOM:
-                respondCreateRoom();
-                break;
-            case Request.UPDATE_ALLOCATION:
-                respondUpdateAllocation();
-                break;
-            case Request.UPDATE_ALLIANCE:
-                respondUpdateAlliance();
-                break;
-            case Request.START_GAME:
-                respondStartGame();
-                break;
-            case Request.RESUME_GAME:
-                respondResumeGame();
-                break;
-            case Request.GAME_EVENT:
-                receiveGameEvent();
-                break;
-            case Request.MESSAGE:
-                String message = ois.readUTF();
-                getContext().onSubmitMessage(getName(), message);
-                break;
-            case Request.SHUTDOWN:
-                String password = ois.readUTF();
-                getContext().onShutdownRequested(password);
-                break;
-            default:
-                //do nothing
-        }
     }
 
     private class NotificationTask implements Runnable {

@@ -1,6 +1,6 @@
 package com.toyknight.aeii.manager;
 
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Player;
@@ -20,13 +20,13 @@ public class GameHost {
 
     private static boolean is_game_over;
 
-    private static AEIIApplication context;
+    private static AEIIApplet context;
     private static GameManager manager;
 
     private GameHost() {
     }
 
-    public static void setContext(AEIIApplication context) {
+    public static void setContext(AEIIApplet context) {
         GameHost.context = context;
     }
 
@@ -43,7 +43,7 @@ public class GameHost {
         GameHost.is_game_over = false;
     }
 
-    public static AEIIApplication getContext() {
+    public static AEIIApplet getContext() {
         return context;
     }
 

@@ -33,7 +33,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AEIIApplication extends Game {
+public class AEIIApplet extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
@@ -72,7 +72,7 @@ public class AEIIApplication extends Game {
 
     private NetworkManager network_manager;
 
-    public AEIIApplication(Platform platform, int ts) {
+    public AEIIApplet(Platform platform, int ts) {
         this.TILE_SIZE = ts;
         this.PLATFORM = platform;
     }

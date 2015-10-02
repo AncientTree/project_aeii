@@ -2,7 +2,7 @@ package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.animator.*;
 
 import java.util.LinkedList;
@@ -13,13 +13,13 @@ import java.util.Queue;
  */
 public class LogoScreen implements Screen {
 
-    private final AEIIApplication context;
+    private final AEIIApplet context;
     private final SpriteBatch batch;
     private final Queue<Animator> logo_animator_queue;
 
     private Animator current_animator;
 
-    public LogoScreen(AEIIApplication context) {
+    public LogoScreen(AEIIApplet context) {
         this.context = context;
         this.batch = new SpriteBatch();
         this.logo_animator_queue = new LinkedList<Animator>();

@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.manager.GameHost;
@@ -78,7 +78,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private MessageBox message_box;
     private GameMenu menu;
 
-    public GameScreen(AEIIApplication context) {
+    public GameScreen(AEIIApplet context) {
         super(context);
         this.RIGHT_PANEL_WIDTH = 3 * ts;
 
@@ -706,9 +706,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void onButtonUpdateRequested() {
         int state = getGameManager().getState();
         this.action_button_bar.updateButtons();
-        AEIIApplication.setButtonEnabled(btn_end_turn,
+        AEIIApplet.setButtonEnabled(btn_end_turn,
                 canOperate() && (state == GameManager.STATE_SELECT || state == GameManager.STATE_PREVIEW));
-        AEIIApplication.setButtonEnabled(btn_menu, !menu.isVisible());
+        AEIIApplet.setButtonEnabled(btn_menu, !menu.isVisible());
     }
 
     @Override

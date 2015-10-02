@@ -136,9 +136,9 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     public void setEnabled(boolean enabled) {
-        AEIIApplication.setButtonEnabled(btn_back, enabled);
-        AEIIApplication.setButtonEnabled(btn_create, enabled);
-        AEIIApplication.setButtonEnabled(btn_preview, enabled);
+        AEIIApplet.setButtonEnabled(btn_back, enabled);
+        AEIIApplet.setButtonEnabled(btn_create, enabled);
+        AEIIApplet.setButtonEnabled(btn_preview, enabled);
         object_list.setEnabled(enabled);
         spinner_capacity.setEnabled(enabled);
         spinner_gold.setEnabled(enabled);

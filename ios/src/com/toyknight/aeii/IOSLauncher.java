@@ -6,13 +6,12 @@ import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.toyknight.aeii.AEIIApplication;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new AEIIApplication(Platform.iOS, 48), config);
+        return new IOSApplication(new AEIIApplet(Platform.iOS, 48), config);
     }
 
     public static void main(String[] argv) {

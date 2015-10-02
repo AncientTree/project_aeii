@@ -2,7 +2,7 @@ package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.StageScreen;
@@ -20,7 +20,7 @@ public class BasicDialog extends Table {
         this.ts = getContext().getTileSize();
     }
 
-    public AEIIApplication getContext() {
+    public AEIIApplet getContext() {
         return getOwner().getContext();
     }
 

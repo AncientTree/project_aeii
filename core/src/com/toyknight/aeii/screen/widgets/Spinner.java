@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 
@@ -96,8 +96,8 @@ public class Spinner<T> extends Table {
     }
 
     public void setEnabled(boolean enabled) {
-        AEIIApplication.setButtonEnabled(btn_left, enabled);
-        AEIIApplication.setButtonEnabled(btn_right, enabled);
+        AEIIApplet.setButtonEnabled(btn_left, enabled);
+        AEIIApplet.setButtonEnabled(btn_right, enabled);
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.AEIIApplication;
+import com.toyknight.aeii.AEIIApplet;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
@@ -57,7 +57,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private MiniMapDialog map_preview;
 
-    public NetGameCreateScreen(AEIIApplication context) {
+    public NetGameCreateScreen(AEIIApplet context) {
         super(context);
         this.initComponents();
     }
@@ -470,7 +470,7 @@ public class NetGameCreateScreen extends StageScreen {
         team_setting_table.clear();
         for (int team = 0; team < 4; team++) {
             if (room_config.map.hasTeamAccess(team)) {
-                AEIIApplication.setButtonEnabled(btn_allocate[team], isHost());
+                AEIIApplet.setButtonEnabled(btn_allocate[team], isHost());
                 spinner_alliance[team].setEnabled(isHost() && game_save == null);
                 spinner_type[team].setSelectedIndex(0);
                 spinner_type[team].setEnabled(isHost());
