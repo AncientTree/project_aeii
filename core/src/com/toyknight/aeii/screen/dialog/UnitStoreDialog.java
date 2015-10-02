@@ -22,12 +22,9 @@ import com.toyknight.aeii.utils.UnitFactory;
 import java.util.ArrayList;
 
 /**
- * Created by toyknight on 4/20/2015.
+ * @author toyknight 4/20/2015.
  */
 public class UnitStoreDialog extends BasicDialog implements UnitListListener {
-
-    private final int UNIT_STORE_WIDTH;
-    private final int UNIT_STORE_HEIGHT;
 
     private TextButton btn_buy;
     private AvailableUnitList unit_list;
@@ -40,8 +37,8 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
     public UnitStoreDialog(GameScreen screen) {
         super(screen);
-        this.UNIT_STORE_WIDTH = 11 * ts;
-        this.UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
+        int UNIT_STORE_WIDTH = 11 * ts;
+        int UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
         this.setBounds(
                 (getOwner().getViewportWidth() - UNIT_STORE_WIDTH) / 2,
                 (getOwner().getViewportHeight() - UNIT_STORE_HEIGHT) / 2 + ts,
@@ -144,7 +141,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
     @Override
     protected void drawCustom(Batch batch, float parentAlpha) {
-        float x = getX(), y = getY(), width = getWidth(), height = getHeight();
+        float x = getX(), y = getY(), height = getHeight();
         int interval = ts * 13 / 24;
         int lw = FontRenderer.getLNumberWidth(0, false);
         int lh = FontRenderer.getLCharHeight();
@@ -176,13 +173,13 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         int acs = ts * 16 / 24;
         int hw = ts * 13 / 24;
         int hh = ts * 16 / 24;
-        int itemh = sch + ts / 6;
+        int item_h = sch + ts / 6;
         int tfh = sch - ts / 4;
         float lbh = FontRenderer.getTextFont().getCapHeight();
         //attack
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 6 + scw / 2,
-                y + height - (ts / 2 + interval + (itemh - tfh) / 2 + tfh),
+                y + height - (ts / 2 + interval + (item_h - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
         if (selected_unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
             FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
@@ -192,75 +189,75 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getAttack()),
                 x + ts * 6 + scw + ts / 12,
-                y + height - (ts / 2 + interval + (itemh - lbh) / 2));
+                y + height - (ts / 2 + interval + (item_h - lbh) / 2));
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 6,
-                y + height - (ts / 2 + interval + (itemh - sch) / 2 + sch),
+                y + height - (ts / 2 + interval + (item_h - sch) / 2 + sch),
                 20 * ts / 24,
                 21 * ts / 24);
         batch.draw(ResourceManager.getBattleHudIcon(0),
                 x + ts * 6 + (scw - hw) / 2,
-                y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                y + height - (ts / 2 + interval + (item_h - sch) / 2 + (sch - hh) / 2 + hh),
                 hw, hh);
         FontRenderer.setTextColor(Color.WHITE);
         //movement point
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 8 + ts / 4 + scw / 2,
-                y + height - (ts / 2 + interval + (itemh - tfh) / 2 + tfh),
+                y + height - (ts / 2 + interval + (item_h - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
         FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getMovementPoint()),
                 x + ts * 8 + ts / 4 + scw + ts / 12,
-                y + height - (ts / 2 + interval + (itemh - lbh) / 2));
+                y + height - (ts / 2 + interval + (item_h - lbh) / 2));
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 8 + ts / 4,
-                y + height - (ts / 2 + interval + (itemh - sch) / 2 + sch),
+                y + height - (ts / 2 + interval + (item_h - sch) / 2 + sch),
                 20 * ts / 24,
                 21 * ts / 24);
         batch.draw(ResourceManager.getActionIcon(4),
                 x + ts * 8 + ts / 4 + (scw - acs) / 2,
-                y + height - (ts / 2 + interval + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                y + height - (ts / 2 + interval + (item_h - sch) / 2 + (sch - hh) / 2 + hh),
                 acs, acs);
         //physical defence
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 6 + scw / 2,
-                y + height - (ts / 2 + interval + itemh + (itemh - tfh) / 2 + tfh),
+                y + height - (ts / 2 + interval + item_h + (item_h - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
         FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getPhysicalDefence()),
                 x + ts * 6 + scw + ts / 12,
-                y + height - (ts / 2 + interval + itemh + (itemh - lbh) / 2));
+                y + height - (ts / 2 + interval + item_h + (item_h - lbh) / 2));
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 6,
-                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + sch),
+                y + height - (ts / 2 + interval + item_h + (item_h - sch) / 2 + sch),
                 20 * ts / 24,
                 21 * ts / 24);
         batch.draw(ResourceManager.getBattleHudIcon(1),
                 x + ts * 6 + (scw - hw) / 2,
-                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                y + height - (ts / 2 + interval + item_h + (item_h - sch) / 2 + (sch - hh) / 2 + hh),
                 hw, hh);
         //magical defence
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 8 + ts / 4 + scw / 2,
-                y + height - (ts / 2 + interval + itemh + (itemh - tfh) / 2 + tfh),
+                y + height - (ts / 2 + interval + item_h + (item_h - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
         FontRenderer.drawText(batch,
                 Integer.toString(selected_unit.getMagicalDefence()),
                 x + ts * 8 + ts / 4 + scw + ts / 12,
-                y + height - (ts / 2 + interval + itemh + (itemh - lbh) / 2));
+                y + height - (ts / 2 + interval + item_h + (item_h - lbh) / 2));
         batch.draw(ResourceManager.getSmallCircleTexture(0),
                 x + ts * 8 + ts / 4,
-                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + sch),
+                y + height - (ts / 2 + interval + item_h + (item_h - sch) / 2 + sch),
                 20 * ts / 24,
                 21 * ts / 24);
         batch.draw(ResourceManager.getBattleHudIcon(2),
                 x + ts * 8 + ts / 4 + (scw - hw) / 2,
-                y + height - (ts / 2 + interval + itemh + (itemh - sch) / 2 + (sch - hh) / 2 + hh),
+                y + height - (ts / 2 + interval + item_h + (item_h - sch) / 2 + (sch - hh) / 2 + hh),
                 hw, hh);
         //split line
         batch.draw(ResourceManager.getWhiteColor(),
                 x + ts * 6,
-                y + height - (ts / 2 + interval + itemh * 2),
+                y + height - (ts / 2 + interval + item_h * 2),
                 ts * 4 + ts / 2,
                 1);
     }

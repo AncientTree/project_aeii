@@ -435,7 +435,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public boolean keyDown(int keyCode) {
         boolean event_handled = super.keyDown(keyCode);
-        if (!event_handled) {
+        if (event_handled) {
+            return true;
+        } else {
             if (keyCode == Input.Keys.BACK) {
                 doCancel();
                 return true;
@@ -445,43 +447,49 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     if (keyCode == Input.Keys.B) {
                         getGameManager().setState(GameManager.STATE_SELECT);
                         showDialog("store");
+                        return true;
                     }
                     if (keyCode == Input.Keys.M) {
                         getGameManager().beginMovePhase();
                         onButtonUpdateRequested();
+                        return true;
                     }
-                    return true;
+                    return false;
                 case GameManager.STATE_ACTION:
                     if (keyCode == Input.Keys.A && action_button_bar.isButtonAvailable("attack")) {
                         getGameManager().beginAttackPhase();
                         onButtonUpdateRequested();
+                        return true;
                     }
                     if (keyCode == Input.Keys.O && action_button_bar.isButtonAvailable("occupy")) {
                         GameHost.doOccupy();
                         onButtonUpdateRequested();
+                        return true;
                     }
                     if (keyCode == Input.Keys.R && action_button_bar.isButtonAvailable("repair")) {
                         GameHost.doRepair();
                         onButtonUpdateRequested();
+                        return true;
                     }
                     if (keyCode == Input.Keys.S && action_button_bar.isButtonAvailable("summon")) {
                         getGameManager().beginSummonPhase();
                         onButtonUpdateRequested();
+                        return true;
                     }
                     if (keyCode == Input.Keys.H && action_button_bar.isButtonAvailable("heal")) {
                         getGameManager().beginHealPhase();
                         onButtonUpdateRequested();
+                        return true;
                     }
                     if (keyCode == Input.Keys.SPACE) {
                         GameHost.doStandbyUnit();
                         onButtonUpdateRequested();
+                        return true;
                     }
-                    return true;
+                    return false;
                 default:
                     return false;
             }
-        } else {
-            return true;
         }
     }
 
