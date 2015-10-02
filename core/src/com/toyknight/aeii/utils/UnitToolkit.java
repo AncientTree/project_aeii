@@ -211,8 +211,7 @@ public class UnitToolkit {
         //calculate random damage offset
         int offset = random.nextInt(5) - 2;
         //calculate final damage
-        damage = attacker.hasAbility(Ability.LAST_POWER) ?
-                damage * attacker_max_hp / attacker_hp : damage * attacker_hp / attacker_max_hp;
+        damage = damage * attacker_hp / attacker_max_hp;
         damage += offset;
         damage = damage > 0 ? damage : 0;
         //final damage percentage calculation
