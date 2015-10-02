@@ -269,7 +269,7 @@ public class GameCore implements Serializable {
         if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
             Unit defender = getMap().getUnit(x, y);
             if (defender != null) {
-                return isEnemy(attacker, defender) || defender.hasAbility(Ability.LAST_POWER);
+                return isEnemy(attacker, defender);
             } else {
                 return attacker.hasAbility(Ability.DESTROYER) && getMap().getTile(x, y).isDestroyable();
             }

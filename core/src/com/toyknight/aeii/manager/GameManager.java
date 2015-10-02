@@ -431,10 +431,6 @@ public class GameManager implements AnimationDispatcher {
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (getGame().isEnemy(unit, target)) {
                 return true;
-            } else {
-                if (target != null && target.hasAbility(Ability.LAST_POWER)) {
-                    return true;
-                }
             }
         }
         return false;
