@@ -24,8 +24,6 @@ public class MainMenuScreen extends StageScreen {
     private final AELogoGlowAnimator logo_glow_animator;
 
     private final MainMenu menu;
-    private final ServerListDialog server_list;
-    private final GameLoadDialog load_dialog;
     private final SettingDialog setting_dialog;
 
     private final CircleButton btn_setting;
@@ -42,11 +40,11 @@ public class MainMenuScreen extends StageScreen {
         this.menu.setVisible(false);
         this.addActor(menu);
 
-        this.server_list = new ServerListDialog(this);
+        ServerListDialog server_list = new ServerListDialog(this);
         this.addDialog("server", server_list);
 
-        this.load_dialog = new GameLoadDialog(this);
-        this.load_dialog.setCancelAction(new ClickListener() {
+        GameLoadDialog load_dialog = new GameLoadDialog(this);
+        load_dialog.setCancelAction(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 closeDialog("load");

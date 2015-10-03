@@ -83,10 +83,14 @@ public class NetworkManager {
     }
 
     public void disconnect() {
-        if (server_socket != null) {
-            server_socket.dispose();
-            server_socket = null;
-            listener = null;
+        if (isConnected()) {
+            try {
+                server_socket.dispose();
+                server_socket = null;
+                listener = null;
+            } catch (Exception ex) {
+                Gdx.app.log(TAG, ex.toString());
+            }
         }
     }
 
@@ -363,11 +367,13 @@ public class NetworkManager {
                     Gdx.app.log(TAG, e.toString());
                 }
             }
-            if (server_socket != null) {
-                disconnect();
+            if (isConnected()) {
                 if (listener != null) {
-                    listener.onDisconnect();
+                    synchronized (AEIIApplet.RENDER_LOCK) {
+                        listener.onDisconnect();
+                    }
                 }
+                disconnect();
             }
             Gdx.app.log(TAG, "Disconnected from server");
         }
