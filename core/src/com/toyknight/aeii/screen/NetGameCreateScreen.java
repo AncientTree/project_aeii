@@ -501,8 +501,10 @@ public class NetGameCreateScreen extends StageScreen {
         PlayerSnapshot snapshot = new PlayerSnapshot();
         snapshot.service_name = service_name;
         snapshot.username = username;
+        snapshot.is_host = false;
         players.add(snapshot);
         player_list.setItems(players);
+        room_config.players = players.toArray();
         //show in message box
     }
 
@@ -523,6 +525,7 @@ public class NetGameCreateScreen extends StageScreen {
                 }
             }
             player_list.setItems(players);
+            room_config.players = players.toArray();
             //show in message box
         }
     }
