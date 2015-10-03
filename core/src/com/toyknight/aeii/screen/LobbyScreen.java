@@ -189,7 +189,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             @Override
             public void onFail(String message) {
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
-                getContext().showMessage(message, null);
+                getContext().showMessage(Language.getText("MSG_ERR_AEA"), null);
             }
         });
     }

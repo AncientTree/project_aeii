@@ -368,6 +368,7 @@ public class NetGameCreateScreen extends StageScreen {
             public void onFinish(Boolean success) {
                 if (success) {
                     btn_start.setText(Language.getText("LB_START"));
+                    updateRoomConfigure();
                     createGame(game_save);
                 } else {
                     btn_start.setText(Language.getText("LB_START"));
@@ -427,6 +428,13 @@ public class NetGameCreateScreen extends StageScreen {
             btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_ON"));
         } else {
             btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_OFF"));
+        }
+    }
+
+    private void updateRoomConfigure() {
+        room_config.players = new PlayerSnapshot[players.size];
+        for (int i = 0; i < players.size; i++) {
+            room_config.players[i] = players.get(i);
         }
     }
 
@@ -504,7 +512,6 @@ public class NetGameCreateScreen extends StageScreen {
         snapshot.is_host = false;
         players.add(snapshot);
         player_list.setItems(players);
-        room_config.players = players.toArray();
         //show in message box
     }
 
@@ -525,7 +532,6 @@ public class NetGameCreateScreen extends StageScreen {
                 }
             }
             player_list.setItems(players);
-            room_config.players = players.toArray();
             //show in message box
         }
     }
@@ -545,6 +551,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     @Override
     public void onGameStart(GameSave game_save) {
+        updateRoomConfigure();
         createGame(game_save);
     }
 
