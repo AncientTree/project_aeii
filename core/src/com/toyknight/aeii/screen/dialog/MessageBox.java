@@ -44,12 +44,10 @@ public class MessageBox extends BasicDialog {
                 super.draw(batch, parentAlpha);
             }
         };
-        sp_player_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
         sp_player_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_player_list.setScrollBarPositions(false, true);
         sp_player_list.setFadeScrollBars(false);
-
         add(sp_player_list).size(ts * 6 + ts / 2, ts * 5).pad(ts / 2).row();
 
         tf_message = new TextField("", getContext().getSkin()) {

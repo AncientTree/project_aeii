@@ -7,7 +7,7 @@ import com.toyknight.aeii.manager.events.GameEvent;
 import java.io.IOException;
 
 /**
- * Created by toyknight on 8/29/2015.
+ * @author toyknight 8/29/2015.
  */
 public class GameEventSendingTask extends AsyncTask<Void> {
 
