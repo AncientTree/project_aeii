@@ -47,13 +47,15 @@ public class PlayerList extends StringList<PlayerSnapshot> {
                 index = i;
             }
         }
-        items.removeIndex(index);
-        for (int team = 0; team < 4; team++) {
-            if (allocation[team].equals(service_name)) {
-                allocation[team] = "NONE";
+        if (index >= 0) {
+            items.removeIndex(index);
+            for (int team = 0; team < 4; team++) {
+                if (allocation[team].equals(service_name)) {
+                    allocation[team] = "NONE";
+                }
             }
+            updateList();
         }
-        updateList();
     }
 
     public void addPlayer(String service_name, String username) {
