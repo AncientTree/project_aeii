@@ -172,17 +172,20 @@ public class GameHost {
         //calculate hp change at turn start
         HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
 
-        //terrain and poison
+        //terrain and poison hp change
         for (Point position : getGame().getMap().getUnitPositionSet()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == next_team) {
-                int change;
+                //the terrain heal
+                Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
+                int change = UnitToolkit.getTerrainHeal(unit, tile);
+                //the poison damage
                 if (unit.hasStatus(Status.POISONED) && unit.getStatus().getRemainingTurn() > 0) {
-                    //the poison damage
-                    change = -getGame().getRule().getPoisonDamage();
-                } else {
-                    //deal with terrain heal issues
-                    change = UnitToolkit.getTerrainHeal(unit, getGame().getMap().getTile(unit.getX(), unit.getY()));
+                    if (unit.hasAbility(Ability.UNDEAD)) {
+                        change += getGame().getRule().getPoisonDamage();
+                    } else {
+                        change = -getGame().getRule().getPoisonDamage();
+                    }
                 }
                 hp_change_map.put(position, change);
             } else {

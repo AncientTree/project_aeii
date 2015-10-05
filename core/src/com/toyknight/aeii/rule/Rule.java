@@ -1,20 +1,17 @@
 package com.toyknight.aeii.rule;
 
-import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.utils.UnitFactory;
-import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 /**
- * Created by toyknight on 4/15/2015.
+ * @author toyknight 4/15/2015.
  */
 public class Rule implements Serializable {
 
-    private static final long serialVersionUID = 04152015L;
+    private static final long serialVersionUID = 4152015L;
 
     private int poison_damage;
 
@@ -109,7 +106,7 @@ public class Rule implements Serializable {
         rule.setKillExperience(60);
         rule.setAttackExperience(30);
         rule.setCounterExperience(10);
-        rule.setCommanderPriceGrowth(250);
+        rule.setCommanderPriceGrowth(100);
         rule.setMaxPopulation(20);
         rule.setEnemyClearNeeded(true);
         rule.setCastleClearNeeded(true);

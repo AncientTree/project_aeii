@@ -16,7 +16,7 @@ public class Ability {
     public static final int CHARGER = 8;
     public static final int POISONER = 9;
     public static final int REPAIRER = 10;
-    public static final int REHABILITATION = 11;
+    public static final int UNDEAD = 11;
     public static final int MARKSMAN = 12;
     public static final int SON_OF_THE_SEA = 13;
     public static final int SON_OF_THE_FOREST = 14;
@@ -28,7 +28,7 @@ public class Ability {
     public static final int ATTACK_AURA = 20;
     public static final int BLOODTHIRSTY = 21;
     public static final int GUARDIAN = 22;
-    public static final int HEALING_AURA = 23;
+    public static final int REFRESH_AURA = 23;
     public static final int LORD_OF_TERROR = 24;
     public static final int COUNTER_MADNESS = 25;
     public static final int BLINDER = 26;

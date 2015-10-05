@@ -43,46 +43,48 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
 
     private void processAuraEffects(Unit unit, GameManager manager) {
         GameCore game = manager.getGame();
-        if (unit.hasAbility(Ability.ATTACK_AURA)) {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
-                    if (target != null && !game.isEnemy(unit, target) && !target.hasAbility(Ability.HEAVY_MACHINE)) {
+        //all the buff auras
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
+                if (target != null && !target.hasAbility(Ability.HEAVY_MACHINE)) {
+                    if (unit.hasAbility(Ability.ATTACK_AURA) && !game.isEnemy(unit, target)) {
                         target.attachStatus(new Status(Status.INSPIRED, 0));
+                    }
+                    if (unit.hasAbility(Ability.SLOWING_MASTER) && game.isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.SLOWED, 1));
                     }
                 }
             }
         }
-
+        //the refresh aura
         HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
-        if (unit.hasAbility(Ability.HEALING_AURA)) {
-            int heal = 15 + unit.getLevel() * 5;
+        if (unit.hasAbility(Ability.REFRESH_AURA)) {
+            int heal = 10 + unit.getLevel() * 5;
             Set<Point> attackable_positions = manager.createAttackablePositions(unit);
             attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
             for (Point target_position : attackable_positions) {
-                //there's a unit at the position
                 Unit target = game.getMap().getUnit(target_position.x, target_position.y);
-                if (game.canHeal(unit, target) && !target.isSkeleton()) {
+                if (target != null && !game.isEnemy(unit, target) && target.hasDebuff()) {
+                    target.clearStatus();
+                }
+                if (game.canHeal(unit, target)) {
                     hp_change_map.put(target_position, heal);
                 }
+
             }
         }
-
+        //deal with tombs
         if (game.getMap().isTomb(unit_x, unit_y)) {
             game.getMap().removeTomb(unit_x, unit_y);
-            if (unit.hasAbility(Ability.NECROMANCER) && !unit.hasStatus(Status.POISONED)) {
-                Point unit_position = game.getMap().getPosition(unit_x, unit_y);
-                if (hp_change_map.keySet().contains(unit_position)) {
-                    int change = hp_change_map.get(unit_position);
-                    hp_change_map.put(unit_position, change + 20);
-                } else {
-                    hp_change_map.put(unit_position, 20);
-                }
-            } else {
-                if (!unit.hasAbility(Ability.HEAVY_MACHINE) && !unit.isSkeleton()) {
-                    unit.attachStatus(new Status(Status.POISONED, 3));
-                }
+            if (!unit.hasAbility(Ability.HEAVY_MACHINE) && !unit.hasAbility(Ability.NECROMANCER)) {
+                unit.attachStatus(new Status(Status.POISONED, 3));
             }
+        }
+        //
+        if (unit.getCurrentHp() > unit.getMaxHp()) {
+            Point position = game.getMap().getPosition(unit_x, unit_y);
+            hp_change_map.put(position, unit.getMaxHp() - unit.getCurrentHp());
         }
         manager.executeGameEvent(new HpChangeEvent(hp_change_map), false);
     }

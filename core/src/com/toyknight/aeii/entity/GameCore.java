@@ -123,7 +123,7 @@ public class GameCore implements Serializable {
             getMap().removeUnit(target_x, target_y);
             //update status
             updatePopulation(target.getTeam());
-            if (target.getIndex() != UnitFactory.getSkeletonIndex() && target.getIndex() != UnitFactory.getCommanderIndex()) {
+            if (!target.hasAbility(Ability.UNDEAD) && !target.isCommander()) {
                 getMap().addTomb(target.getX(), target.getY());
             }
             if (target.isCommander()) {
@@ -223,6 +223,9 @@ public class GameCore implements Serializable {
                 }
             }
         }
+        if (isCommanderAlive(team)) {
+            income += 100 * (getCommander(team).getLevel() + 1);
+        }
         return income;
     }
 
@@ -269,7 +272,7 @@ public class GameCore implements Serializable {
         if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
             Unit defender = getMap().getUnit(x, y);
             if (defender != null) {
-                return isEnemy(attacker, defender);
+                return !(attacker.hasAbility(Ability.HEAVY_MACHINE) && defender.hasAbility(Ability.AIR_FORCE)) && isEnemy(attacker, defender);
             } else {
                 return attacker.hasAbility(Ability.DESTROYER) && getMap().getTile(x, y).isDestroyable();
             }
@@ -321,16 +324,16 @@ public class GameCore implements Serializable {
             if (canReceiveHeal(target)) {
                 return !isEnemy(healer, target)
                         && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target))
-                        && (healer.hasAbility(Ability.HEALING_AURA) || (healer.hasAbility(Ability.HEALER) && !target.hasAbility(Ability.LORD_OF_TERROR)));
+                        && (healer.hasAbility(Ability.REFRESH_AURA) || (healer.hasAbility(Ability.HEALER) && !target.hasAbility(Ability.AIR_FORCE)));
             } else {
                 //heal becomes damage
-                return healer.hasAbility(Ability.HEALER) && target.isSkeleton();
+                return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
             }
         }
     }
 
     public boolean canReceiveHeal(Unit target) {
-        return !target.isSkeleton() && !target.hasStatus(Status.POISONED) && target.getCurrentHp() <= target.getMaxHp();
+        return !target.hasAbility(Ability.UNDEAD) && !target.hasStatus(Status.POISONED) && target.getCurrentHp() <= target.getMaxHp();
     }
 
     public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {
