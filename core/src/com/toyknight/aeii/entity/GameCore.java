@@ -327,7 +327,7 @@ public class GameCore implements Serializable {
                         && (healer.hasAbility(Ability.REFRESH_AURA) || (healer.hasAbility(Ability.HEALER) && !target.hasAbility(Ability.AIR_FORCE)));
             } else {
                 //heal becomes damage
-                return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
+                return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD) && !target.hasAbility(Ability.AIR_FORCE);
             }
         }
     }
