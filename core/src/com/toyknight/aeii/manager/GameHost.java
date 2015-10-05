@@ -187,6 +187,9 @@ public class GameHost {
                         change = -getGame().getRule().getPoisonDamage();
                     }
                 }
+                if (unit.hasAbility(Ability.REHABILITATION)) {
+                    change += unit.getMaxHp() / 4;
+                }
                 hp_change_map.put(position, change);
             } else {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
