@@ -1,7 +1,7 @@
 package com.toyknight.aeii.utils;
 
 /**
- * Created by toyknight on 4/4/2015.
+ * @author toyknight 4/4/2015.
  */
 public enum Platform {
 

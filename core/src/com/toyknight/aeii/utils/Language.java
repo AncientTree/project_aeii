@@ -1,7 +1,6 @@
 package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.AEIIException;
@@ -10,14 +9,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Created by Majirefy on 5/22/15.
+ * @author Majirefy 5/22/15.
  */
 public class Language {
 
     private static ObjectMap<String, String> languageMap = new ObjectMap<String, String>();
 
     public static void init() throws AEIIException {
-        String locale = java.util.Locale.getDefault().toString();
         try {
             FileHandle languageFile = FileProvider.getLanguageFile();
             InputStreamReader reader = new InputStreamReader(languageFile.read(), "UTF8");
@@ -65,8 +63,7 @@ public class Language {
                 }
             }
         }
-        String result = String.copyValueOf(temp).substring(0, length);
-        return result;
+        return String.copyValueOf(temp).substring(0, length);
     }
 
 }

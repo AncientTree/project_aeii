@@ -12,7 +12,7 @@ import java.io.FilenameFilter;
 import java.util.Random;
 
 /**
- * Created by Zeo on 4/7/15.
+ * @author Zeo 4/7/15.
  */
 public class AudioManager {
     private static final String AUDIO_PATH = "audio/";

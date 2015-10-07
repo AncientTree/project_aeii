@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.SuffixFileFilter;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitFactory;
 
@@ -20,7 +19,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * Created by toyknight on 4/2/2015.
+ * @author toyknight 4/2/2015.
  */
 public class ResourceManager {
 
@@ -61,7 +60,6 @@ public class ResourceManager {
 
     private static HashMap<String, Texture> editor_textures;
 
-    private static Texture menu_icon_texture;
     private static TextureRegion[] menu_icon_textures;
 
     private static TextureRegion[] dust_frames;
@@ -203,7 +201,7 @@ public class ResourceManager {
     }
 
     private static void createMenuIconTextures() {
-        menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
+        Texture menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
         int size = menu_icon_texture.getHeight();
         menu_icon_textures = new TextureRegion[menu_icon_texture.getWidth() / size];
         for (int i = 0; i < menu_icon_textures.length; i++) {
@@ -351,10 +349,6 @@ public class ResourceManager {
         return arrow_icons[index];
     }
 
-    public static Texture getMenuIconTexture() {
-        return menu_icon_texture;
-    }
-
     public static TextureRegion getMenuIcon(int index) {
         return menu_icon_textures[index];
     }
@@ -431,10 +425,6 @@ public class ResourceManager {
         grayscale_shader.setUniformf("grayscale", scale);
         color_filter_shader.end();
         return color_filter_shader;
-    }
-
-    public static int getTopTileCount() {
-        return top_tile_textures.length;
     }
 
     public static TextureRegion[] createFrames(Texture sheet, int cols, int rows) {

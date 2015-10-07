@@ -1,7 +1,7 @@
 package com.toyknight.aeii;
 
 /**
- * Created by toyknight on 8/26/2015.
+ * @author toyknight 8/26/2015.
  */
 public interface DialogCallback {
 

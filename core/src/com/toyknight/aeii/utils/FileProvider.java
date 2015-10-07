@@ -3,10 +3,8 @@ package com.toyknight.aeii.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import java.io.File;
-
 /**
- * Created by toyknight on 4/4/2015.
+ * @author toyknight 4/4/2015.
  */
 public class FileProvider {
 
