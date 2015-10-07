@@ -96,25 +96,25 @@ public class GameHost {
             } else {
                 if (getGame().canAttack(attacker, target_x, target_y)) {
                     //attack pre-calculation
-                    attacker = UnitFactory.cloneUnit(UnitToolkit.getAttacker(attacker, defender));
-                    defender = UnitFactory.cloneUnit(UnitToolkit.getDefender(attacker, defender));
-                    int attack_damage = UnitToolkit.getDamage(attacker, defender, getGame().getMap());
-                    UnitToolkit.attachAttackStatus(attacker, defender);
-                    defender.changeCurrentHp(-attack_damage);
-                    if (defender.getCurrentHp() > 0) {
-                        attacker.gainExperience(attack_experience);
-                        dispatchEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, attack_experience));
-                        if (UnitToolkit.canCounter(defender, attacker)) {
-                            int counter_damage = UnitToolkit.getDamage(defender, attacker, getGame().getMap());
-                            attacker.changeCurrentHp(-counter_damage);
-                            if (attacker.getCurrentHp() > 0) {
-                                dispatchEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, counter_experience));
+                    Unit real_attacker = UnitFactory.cloneUnit(UnitToolkit.getAttacker(attacker, defender));
+                    Unit real_defender = UnitFactory.cloneUnit(UnitToolkit.getDefender(attacker, defender));
+                    int attack_damage = UnitToolkit.getDamage(real_attacker, real_defender, getGame().getMap());
+                    UnitToolkit.attachAttackStatus(real_attacker, real_defender);
+                    real_defender.changeCurrentHp(-attack_damage);
+                    if (real_defender.getCurrentHp() > 0) {
+                        real_attacker.gainExperience(attack_experience);
+                        dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, attack_experience));
+                        if (UnitToolkit.canCounter(real_defender, real_attacker) || UnitToolkit.isAmbushed(attacker, defender)) {
+                            int counter_damage = UnitToolkit.getDamage(real_defender, real_attacker, getGame().getMap());
+                            real_attacker.changeCurrentHp(-counter_damage);
+                            if (real_attacker.getCurrentHp() > 0) {
+                                dispatchEvent(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, counter_experience));
                             } else {
-                                dispatchEvent(new UnitAttackEvent(defender.getX(), defender.getY(), attacker.getX(), attacker.getY(), counter_damage, kill_experience));
+                                dispatchEvent(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, kill_experience));
                             }
                         }
                     } else {
-                        dispatchEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), defender.getX(), defender.getY(), attack_damage, kill_experience));
+                        dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, kill_experience));
                     }
                 }
             }

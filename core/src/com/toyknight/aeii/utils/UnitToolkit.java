@@ -103,13 +103,13 @@ public class UnitToolkit {
     public static boolean canCounter(Unit counter, Unit attacker) {
         if (getGame().isEnemy(counter, attacker)) {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
-                if (attacker.hasAbility(Ability.AMBUSH)) {
+                if (attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) {
                     return getRange(counter, attacker) == 2;
                 } else {
                     return getRange(counter, attacker) <= 2;
                 }
             } else {
-                return !attacker.hasAbility(Ability.AMBUSH) && getRange(counter, attacker) == 1 && isWithinRange(counter, attacker);
+                return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) && getRange(counter, attacker) == 1 && isWithinRange(counter, attacker);
             }
         } else {
             return false;
@@ -132,7 +132,7 @@ public class UnitToolkit {
         }
         if (unit.hasAbility(Ability.GUARDIAN)
                 && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
-            defence_bonus += 5;
+            defence_bonus += 10;
         }
         switch (tile.getType()) {
             case Tile.TYPE_FOREST:
@@ -183,10 +183,6 @@ public class UnitToolkit {
             attack_bonus += 15;
         }
         if (attacker.hasAbility(Ability.DESTROYER) && defender.hasAbility(Ability.CONQUEROR)) {
-            attack_bonus += 10;
-        }
-        if (attacker.hasAbility(Ability.GUARDIAN)
-                && getGame().getAlliance(attacker.getTeam()) == getGame().getAlliance(tile.getTeam())) {
             attack_bonus += 10;
         }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
@@ -277,6 +273,11 @@ public class UnitToolkit {
                 return defender;
             }
         }
+    }
+
+    public static boolean isAmbushed(Unit attacker, Unit defender) {
+        return defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH)
+                && isWithinRange(attacker, defender) && getRange(attacker, defender) == 1;
     }
 
 }
