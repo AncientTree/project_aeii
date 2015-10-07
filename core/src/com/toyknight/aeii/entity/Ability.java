@@ -22,7 +22,7 @@ public class Ability {
     public static final int SON_OF_THE_FOREST = 14;
     public static final int SON_OF_THE_MOUNTAIN = 15;
     public static final int CRAWLER = 16;
-    public static final int SLOWING_MASTER = 17;
+    public static final int SLOWING_AURA = 17;
     public static final int COMMANDER = 18;
     public static final int HEAVY_MACHINE = 19;
     public static final int ATTACK_AURA = 20;

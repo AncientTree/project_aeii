@@ -28,7 +28,7 @@ public class UnitToolkit {
                 defender.attachStatus(new Status(Status.POISONED, 2));
                 return;
             }
-            if (attacker.hasAbility(Ability.SLOWING_MASTER) && !defender.hasAbility(Ability.SLOWING_MASTER)) {
+            if (attacker.hasAbility(Ability.SLOWING_AURA) && !defender.hasAbility(Ability.SLOWING_AURA)) {
                 defender.attachStatus(new Status(Status.SLOWED, 1));
                 defender.setCurrentMovementPoint(defender.getMovementPoint());
             }
