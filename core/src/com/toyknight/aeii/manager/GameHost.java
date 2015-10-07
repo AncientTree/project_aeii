@@ -96,8 +96,8 @@ public class GameHost {
             } else {
                 if (getGame().canAttack(attacker, target_x, target_y)) {
                     //attack pre-calculation
-                    attacker = UnitFactory.cloneUnit(attacker);
-                    defender = UnitFactory.cloneUnit(defender);
+                    attacker = UnitFactory.cloneUnit(UnitToolkit.getAttacker(attacker, defender));
+                    defender = UnitFactory.cloneUnit(UnitToolkit.getDefender(attacker, defender));
                     int attack_damage = UnitToolkit.getDamage(attacker, defender, getGame().getMap());
                     UnitToolkit.attachAttackStatus(attacker, defender);
                     defender.changeCurrentHp(-attack_damage);

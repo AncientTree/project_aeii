@@ -33,5 +33,6 @@ public class Ability {
     public static final int COUNTER_MADNESS = 25;
     public static final int BLINDER = 26;
     public static final int REHABILITATION = 27;
+    public static final int AMBUSH = 28;
 
 }
