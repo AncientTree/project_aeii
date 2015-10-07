@@ -2,8 +2,6 @@ package com.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
@@ -15,7 +13,7 @@ import com.toyknight.aeii.screen.StageScreen;
 import java.util.Set;
 
 /**
- * Created by toyknight on 8/31/2015.
+ * @author toyknight 8/31/2015.
  */
 public class MiniMapDialog extends BasicDialog {
 

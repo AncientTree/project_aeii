@@ -28,6 +28,7 @@ public class TileSelector extends Container<ScrollPane> {
     private void initComponents() {
         int index = 0;
         Table tile_table = new Table();
+        tile_table.padBottom(ts / 4);
         for (int i = 0; i < TileFactory.getTileCount(); i++) {
             if ((0 <= i && i <= 2) || (15 <= i && i <= 45) || (80 <= i && i < TileFactory.getTileCount())) {
                 TileButton t_btn = new TileButton(editor, (short) i, ts);

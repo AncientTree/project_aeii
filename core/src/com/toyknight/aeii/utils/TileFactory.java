@@ -1,6 +1,5 @@
 package com.toyknight.aeii.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Tile;
@@ -9,7 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * Created by toyknight on 4/3/2015.
+ * @author toyknight 4/3/2015.
  */
 public class TileFactory {
 
@@ -108,7 +107,7 @@ public class TileFactory {
         return tile_list.length;
     }
 
-    public static String getVarificationString() {
+    public static String getVerificationString() {
         String str = "";
         for (Tile tile : tile_list) {
             str += tile.getVerificationString();

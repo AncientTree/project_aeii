@@ -95,7 +95,7 @@ public class AEIIApplet extends Game {
             Gdx.input.setCatchBackKey(true);
 
             V_STRING = createVerificationString(
-                    TileFactory.getVarificationString()
+                    TileFactory.getVerificationString()
                             + UnitFactory.getVerificationString()
                             + VERSION);
             System.out.println(V_STRING);

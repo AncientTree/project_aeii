@@ -17,14 +17,12 @@ import com.toyknight.aeii.screen.MapEditorScreen;
 import com.toyknight.aeii.utils.UnitFactory;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
-public class UnitSelector extends Container {
+public class UnitSelector extends Container<ScrollPane> {
 
     private final int ts;
     private final MapEditorScreen editor;
-
-    private ImageButton[] btn_team;
 
     public UnitSelector(MapEditorScreen editor) {
         this.editor = editor;
@@ -33,7 +31,7 @@ public class UnitSelector extends Container {
     }
 
     private void initComponents() {
-        this.btn_team = new ImageButton[4];
+        ImageButton[] btn_team = new ImageButton[4];
         for (int i = 0; i < 4; i++) {
             TextureRegionDrawable team_bg = new TextureRegionDrawable(new TextureRegion(ResourceManager.getTeamBackground(i)));
             team_bg.setMinWidth(ts);
@@ -41,6 +39,7 @@ public class UnitSelector extends Container {
             btn_team[i] = new ImageButton(team_bg);
         }
         Table unit_table = new Table();
+        unit_table.padBottom(ts / 4);
         btn_team[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
