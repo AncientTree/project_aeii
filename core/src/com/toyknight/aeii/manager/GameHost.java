@@ -104,7 +104,7 @@ public class GameHost {
                     if (real_defender.getCurrentHp() > 0) {
                         real_attacker.gainExperience(attack_experience);
                         dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, attack_experience));
-                        if (UnitToolkit.canCounter(real_defender, real_attacker) || UnitToolkit.isAmbushed(attacker, defender)) {
+                        if (UnitToolkit.canCounter(real_defender, real_attacker) || UnitToolkit.isAttackAmbushed(attacker, defender)) {
                             int counter_damage = UnitToolkit.getDamage(real_defender, real_attacker, getGame().getMap());
                             real_attacker.changeCurrentHp(-counter_damage);
                             if (real_attacker.getCurrentHp() > 0) {

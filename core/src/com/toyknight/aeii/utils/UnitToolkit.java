@@ -103,11 +103,7 @@ public class UnitToolkit {
     public static boolean canCounter(Unit counter, Unit attacker) {
         if (getGame().isEnemy(counter, attacker)) {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
-                if (attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) {
-                    return getRange(counter, attacker) == 2;
-                } else {
-                    return getRange(counter, attacker) <= 2;
-                }
+                return getRange(counter, attacker) <= 2;
             } else {
                 return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) && getRange(counter, attacker) == 1 && isWithinRange(counter, attacker);
             }
@@ -275,9 +271,10 @@ public class UnitToolkit {
         }
     }
 
-    public static boolean isAmbushed(Unit attacker, Unit defender) {
-        return defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH)
-                && isWithinRange(attacker, defender) && getRange(attacker, defender) == 1;
+    public static boolean isAttackAmbushed(Unit attacker, Unit defender) {
+        return attacker != null && defender != null
+                && isWithinRange(attacker, defender) && getRange(attacker, defender) == 1
+                && defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH);
     }
 
 }
