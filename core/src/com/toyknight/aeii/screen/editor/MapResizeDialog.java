@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.screen.MapEditorScreen;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
@@ -52,7 +53,8 @@ public class MapResizeDialog extends BasicDialog {
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
+                Map map = getOwner().createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
+                getOwner().setMap(map, "not defined");
                 getOwner().closeDialog("resize");
             }
         });
