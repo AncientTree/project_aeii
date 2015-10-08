@@ -7,6 +7,7 @@ import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomCreationSetup;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.io.IOException;
@@ -332,11 +333,12 @@ public class PlayerService extends Thread {
                                     respondLeaveRoom();
                                     break;
                                 case Request.CREATE_ROOM:
-                                    String map_name = ois.readUTF();
-                                    Map map = (Map) ois.readObject();
-                                    int capacity = ois.readInt();
-                                    int gold = ois.readInt();
-                                    int population = ois.readInt();
+                                    RoomCreationSetup setup = (RoomCreationSetup) ois.readObject();
+                                    String map_name = setup.map_name;
+                                    Map map = setup.map;
+                                    int capacity = setup.capacity;
+                                    int gold = setup.initial_gold;
+                                    int population = setup.population;
                                     respondCreateRoom(map_name, map, capacity, gold, population);
                                     break;
                                 case Request.UPDATE_ALLOCATION:

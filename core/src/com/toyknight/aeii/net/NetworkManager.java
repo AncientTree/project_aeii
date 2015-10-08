@@ -9,10 +9,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.RoomConfig;
-import com.toyknight.aeii.serializable.RoomSnapshot;
-import com.toyknight.aeii.serializable.ServerConfig;
+import com.toyknight.aeii.serializable.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -122,14 +119,16 @@ public class NetworkManager {
     }
 
     public RoomConfig requestCreateRoom(String map_name, Map map, int capacity, int gold, int population) throws IOException, ClassNotFoundException {
+        RoomCreationSetup setup = new RoomCreationSetup();
+        setup.map_name = map_name;
+        setup.map = map;
+        setup.capacity = capacity;
+        setup.initial_gold = gold;
+        setup.population = population;
         synchronized (OUTPUT_LOCK) {
             sendInteger(REQUEST);
             sendInteger(Request.CREATE_ROOM);
-            sendString(map_name);
-            sendObject(map);
-            sendInteger(capacity);
-            sendInteger(gold);
-            sendInteger(population);
+            sendObject(setup);
         }
         synchronized (INPUT_LOCK) {
             synchronized (INPUT_LOCK) {
