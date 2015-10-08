@@ -1,6 +1,5 @@
 package com.toyknight.aeii.server;
 
-import com.badlogic.gdx.Gdx;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
