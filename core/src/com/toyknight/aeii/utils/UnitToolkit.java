@@ -128,7 +128,7 @@ public class UnitToolkit {
         }
         if (unit.hasAbility(Ability.GUARDIAN)
                 && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
-            defence_bonus += 10;
+            defence_bonus += 5;
         }
         switch (tile.getType()) {
             case Tile.TYPE_FOREST:
