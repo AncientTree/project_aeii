@@ -9,10 +9,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.RoomConfig;
-import com.toyknight.aeii.serializable.RoomSnapshot;
-import com.toyknight.aeii.serializable.ServerConfig;
+import com.toyknight.aeii.serializable.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -71,9 +68,8 @@ public class NetworkManager {
         oos = new ObjectOutputStream(server_socket.getOutputStream());
         ois = new ObjectInputStream(server_socket.getInputStream());
 
-        oos.writeUTF(username);
-        oos.writeUTF(v_string);
-        oos.flush();
+        sendString(username);
+        sendString(v_string);
         boolean approved = ois.readBoolean();
         if (approved) {
             service_name = ois.readUTF();
@@ -104,9 +100,8 @@ public class NetworkManager {
 
     public ArrayList<RoomSnapshot> requestOpenRoomList() throws IOException, ClassNotFoundException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.LIST_ROOMS);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.LIST_ROOMS);
         }
         synchronized (INPUT_LOCK) {
             try {
@@ -124,15 +119,16 @@ public class NetworkManager {
     }
 
     public RoomConfig requestCreateRoom(String map_name, Map map, int capacity, int gold, int population) throws IOException, ClassNotFoundException {
+        RoomCreationSetup setup = new RoomCreationSetup();
+        setup.map_name = map_name;
+        setup.map = map;
+        setup.capacity = capacity;
+        setup.initial_gold = gold;
+        setup.population = population;
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.CREATE_ROOM);
-            oos.writeUTF(map_name);
-            oos.writeObject(map);
-            oos.writeInt(capacity);
-            oos.writeInt(gold);
-            oos.writeInt(population);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.CREATE_ROOM);
+            sendObject(setup);
         }
         synchronized (INPUT_LOCK) {
             synchronized (INPUT_LOCK) {
@@ -150,10 +146,9 @@ public class NetworkManager {
 
     public Object requestJoinRoom(long room_number) throws IOException, ClassNotFoundException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.JOIN_ROOM);
-            oos.writeLong(room_number);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.JOIN_ROOM);
+            sendLong(room_number);
         }
         synchronized (INPUT_LOCK) {
             try {
@@ -169,40 +164,36 @@ public class NetworkManager {
 
     public void requestLeaveRoom() throws IOException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.LEAVE_ROOM);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.LEAVE_ROOM);
         }
     }
 
     public void requestUpdateAllocation(String[] allocation, Integer[] types) throws IOException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.UPDATE_ALLOCATION);
+            sendInteger(REQUEST);
+            sendInteger(Request.UPDATE_ALLOCATION);
             for (int team = 0; team < 4; team++) {
-                oos.writeUTF(allocation[team]);
-                oos.writeInt(types[team]);
+                sendString(allocation[team]);
+                sendInteger(types[team]);
             }
-            oos.flush();
         }
     }
 
     public void requestUpdateAlliance(Integer[] alliance) throws IOException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.UPDATE_ALLIANCE);
+            sendInteger(REQUEST);
+            sendInteger(Request.UPDATE_ALLIANCE);
             for (int team = 0; team < 4; team++) {
-                oos.writeInt(alliance[team]);
+                sendInteger(alliance[team]);
             }
-            oos.flush();
         }
     }
 
     public boolean requestStartGame() throws IOException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.START_GAME);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.START_GAME);
         }
         synchronized (INPUT_LOCK) {
             try {
@@ -218,10 +209,9 @@ public class NetworkManager {
 
     public boolean requestStartGame(GameSave game_save) throws IOException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.RESUME_GAME);
-            oos.writeObject(game_save);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.RESUME_GAME);
+            sendObject(game_save);
         }
         synchronized (INPUT_LOCK) {
             try {
@@ -235,22 +225,72 @@ public class NetworkManager {
         }
     }
 
-    public void sendGameEvent(GameEvent event) throws IOException {
+    public void sendGameEvent(GameEvent event) {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.GAME_EVENT);
-            oos.writeObject(event);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.GAME_EVENT);
+            sendObject(event);
         }
         Gdx.app.log(TAG, "Send " + event.toString());
     }
 
-    public void requestSubmitMessage(String message) throws IOException {
+    public void requestSubmitMessage(String message) {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(REQUEST);
-            oos.writeInt(Request.MESSAGE);
-            oos.writeUTF(message);
-            oos.flush();
+            sendInteger(REQUEST);
+            sendInteger(Request.MESSAGE);
+            sendString(message);
+        }
+    }
+
+    public void sendInteger(int n) {
+        boolean sent = false;
+        while (!sent && isConnected()) {
+            try {
+                oos.writeInt(n);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                Gdx.app.log(TAG, ex.toString());
+            }
+        }
+    }
+
+    public void sendLong(long n) {
+        boolean sent = false;
+        while (!sent && isConnected()) {
+            try {
+                oos.writeLong(n);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                Gdx.app.log(TAG, ex.toString());
+            }
+        }
+    }
+
+    public void sendObject(Object obj) {
+        boolean sent = false;
+        while (!sent && isConnected()) {
+            try {
+                oos.writeObject(obj);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                Gdx.app.log(TAG, ex.toString());
+            }
+        }
+    }
+
+    public void sendString(String str) {
+        boolean sent = false;
+        while (!sent && isConnected()) {
+            try {
+                oos.writeUTF(str);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                Gdx.app.log(TAG, ex.toString());
+            }
         }
     }
 

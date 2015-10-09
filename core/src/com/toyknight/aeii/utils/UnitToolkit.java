@@ -101,11 +101,11 @@ public class UnitToolkit {
     }
 
     public static boolean canCounter(Unit counter, Unit attacker) {
-        if (getGame().isEnemy(counter, attacker)) {
+        if (getGame().isEnemy(counter, attacker) && isWithinRange(counter, attacker)) {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
                 return getRange(counter, attacker) <= 2;
             } else {
-                return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) && getRange(counter, attacker) == 1 && isWithinRange(counter, attacker);
+                return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) && getRange(counter, attacker) == 1;
             }
         } else {
             return false;
@@ -128,7 +128,7 @@ public class UnitToolkit {
         }
         if (unit.hasAbility(Ability.GUARDIAN)
                 && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
-            defence_bonus += 10;
+            defence_bonus += 5;
         }
         switch (tile.getType()) {
             case Tile.TYPE_FOREST:
@@ -251,7 +251,7 @@ public class UnitToolkit {
         if (getRange(attacker, defender) > 1) {
             return attacker;
         } else {
-            if (defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH)) {
+            if (defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH) && isWithinRange(defender, attacker)) {
                 return defender;
             } else {
                 return attacker;
@@ -263,7 +263,7 @@ public class UnitToolkit {
         if (getRange(attacker, defender) > 1) {
             return defender;
         } else {
-            if (defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH)) {
+            if (defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH) && isWithinRange(defender, attacker)) {
                 return attacker;
             } else {
                 return defender;
@@ -273,7 +273,7 @@ public class UnitToolkit {
 
     public static boolean isAttackAmbushed(Unit attacker, Unit defender) {
         return attacker != null && defender != null
-                && isWithinRange(attacker, defender) && getRange(attacker, defender) == 1
+                && isWithinRange(defender, attacker) && getRange(attacker, defender) == 1
                 && defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH);
     }
 

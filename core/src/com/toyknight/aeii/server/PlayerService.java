@@ -7,6 +7,7 @@ import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomCreationSetup;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.io.IOException;
@@ -134,9 +135,8 @@ public class PlayerService extends Thread {
 
     public GameCore requestGame() throws IOException, ClassNotFoundException {
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.REQUEST);
-            oos.writeInt(Request.GET_GAME);
-            oos.flush();
+            sendInteger(NetworkManager.REQUEST);
+            sendInteger(Request.GET_GAME);
         }
         synchronized (INPUT_LOCK) {
             GameCore game = (GameCore) ois.readObject();
@@ -148,9 +148,8 @@ public class PlayerService extends Thread {
     private void respondOpenRooms() throws IOException {
         ArrayList<RoomSnapshot> snapshot = getContext().getRoomSnapshot();
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            oos.writeObject(snapshot);
-            oos.flush();
+            sendInteger(NetworkManager.RESPONSE);
+            sendObject(snapshot);
         }
         getContext().getLogger().log(
                 Level.INFO,
@@ -162,16 +161,14 @@ public class PlayerService extends Thread {
         if (getContext().isRoomOpen(room_number)) {
             RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
             synchronized (OUTPUT_LOCK) {
-                oos.writeInt(NetworkManager.RESPONSE);
-                oos.writeObject(config);
-                oos.flush();
+                sendInteger(NetworkManager.RESPONSE);
+                sendObject(config);
             }
         } else {
             synchronized (OUTPUT_LOCK) {
                 GameCore game = getContext().onPlayerJoinStartedGame(getName(), room_number);
-                oos.writeInt(NetworkManager.RESPONSE);
-                oos.writeObject(game);
-                oos.flush();
+                sendInteger(NetworkManager.RESPONSE);
+                sendObject(game);
             }
         }
         getContext().getLogger().log(
@@ -189,9 +186,8 @@ public class PlayerService extends Thread {
     private void respondCreateRoom(String map_name, Map map, int capacity, int gold, int population) throws IOException {
         RoomConfig config = getContext().onPlayerCreateRoom(getName(), map_name, map, capacity, gold, population);
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            oos.writeObject(config);
-            oos.flush();
+            sendInteger(NetworkManager.RESPONSE);
+            sendObject(config);
         }
         if (config != null) {
             getContext().getLogger().log(
@@ -204,9 +200,8 @@ public class PlayerService extends Thread {
     private void respondStartGame() throws IOException {
         boolean approved = getContext().onStartGame(room_number, getName());
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            oos.writeBoolean(approved);
-            oos.flush();
+            sendInteger(NetworkManager.RESPONSE);
+            sendBoolean(approved);
         }
         if (approved) {
             getContext().getLogger().log(
@@ -219,9 +214,8 @@ public class PlayerService extends Thread {
     private void respondResumeGame(GameSave game_save) throws IOException {
         boolean approved = getContext().onResumeGame(room_number, getName(), game_save);
         synchronized (OUTPUT_LOCK) {
-            oos.writeInt(NetworkManager.RESPONSE);
-            oos.writeBoolean(approved);
-            oos.flush();
+            sendInteger(NetworkManager.RESPONSE);
+            sendBoolean(approved);
         }
         if (approved) {
             getContext().getLogger().log(
@@ -231,23 +225,86 @@ public class PlayerService extends Thread {
         }
     }
 
+    public void sendInteger(int n) {
+        boolean sent = false;
+        while (!sent && client.isConnected()) {
+            try {
+                oos.writeInt(n);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
+            }
+        }
+    }
+
+    public void sendLong(long n) {
+        boolean sent = false;
+        while (!sent && client.isConnected()) {
+            try {
+                oos.writeLong(n);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
+            }
+        }
+    }
+
+    public void sendBoolean(boolean b) {
+        boolean sent = false;
+        while (!sent && client.isConnected()) {
+            try {
+                oos.writeBoolean(b);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
+            }
+        }
+    }
+
+    public void sendObject(Object obj) {
+        boolean sent = false;
+        while (!sent && client.isConnected()) {
+            try {
+                oos.writeObject(obj);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
+            }
+        }
+    }
+
+    public void sendString(String str) {
+        boolean sent = false;
+        while (!sent && client.isConnected()) {
+            try {
+                oos.writeUTF(str);
+                oos.flush();
+                sent = true;
+            } catch (IOException ex) {
+                getContext().getLogger().log(Level.SEVERE, ex.toString());
+            }
+        }
+    }
+
     @Override
     public void run() {
         try {
             username = ois.readUTF();
             String v_string = ois.readUTF();
             if (getContext().getVerificationString().equals(v_string)) {
-                oos.writeBoolean(true);
-                oos.writeUTF(getName());
-                oos.flush();
+                sendBoolean(true);
+                sendString(getName());
 
                 getContext().getLogger().log(
                         Level.INFO,
                         "Player {0}@{1} connected",
                         new Object[]{getUsername(), getClientAddress()});
             } else {
-                oos.writeBoolean(false);
-                oos.flush();
+                sendBoolean(false);
                 getContext().getLogger().log(
                         Level.INFO,
                         "Player {0}@{1} verification failed",
@@ -276,11 +333,12 @@ public class PlayerService extends Thread {
                                     respondLeaveRoom();
                                     break;
                                 case Request.CREATE_ROOM:
-                                    String map_name = ois.readUTF();
-                                    Map map = (Map) ois.readObject();
-                                    int capacity = ois.readInt();
-                                    int gold = ois.readInt();
-                                    int population = ois.readInt();
+                                    RoomCreationSetup setup = (RoomCreationSetup) ois.readObject();
+                                    String map_name = setup.map_name;
+                                    Map map = setup.map;
+                                    int capacity = setup.capacity;
+                                    int gold = setup.initial_gold;
+                                    int population = setup.population;
                                     respondCreateRoom(map_name, map, capacity, gold, population);
                                     break;
                                 case Request.UPDATE_ALLOCATION:
@@ -355,34 +413,28 @@ public class PlayerService extends Thread {
 
         @Override
         public void run() {
-            try {
-                synchronized (OUTPUT_LOCK) {
-                    oos.writeInt(NetworkManager.REQUEST);
-                    oos.writeInt(request);
-                    for (Object obj : params) {
-                        if (obj instanceof Integer) {
-                            oos.writeInt((Integer) obj);
-                            continue;
-                        }
-                        if (obj instanceof Long) {
-                            oos.writeLong((Long) obj);
-                            continue;
-                        }
-                        if (obj instanceof String) {
-                            oos.writeUTF((String) obj);
-                            continue;
-                        }
-                        if (obj instanceof Serializable) {
-                            oos.writeObject(obj);
-                        }
+            synchronized (OUTPUT_LOCK) {
+                sendInteger(NetworkManager.REQUEST);
+                sendInteger(request);
+                for (Object obj : params) {
+                    if (obj instanceof Integer) {
+                        sendInteger((Integer) obj);
+                        continue;
                     }
-                    oos.flush();
+                    if (obj instanceof Long) {
+                        sendLong((Long) obj);
+                        continue;
+                    }
+                    if (obj instanceof String) {
+                        sendString((String) obj);
+                        continue;
+                    }
+                    if (obj instanceof Serializable) {
+                        sendObject(obj);
+                    }
                 }
-            } catch (IOException ex) {
-                getContext().getLogger().log(Level.SEVERE, ex.toString());
             }
         }
-
     }
 
 }
