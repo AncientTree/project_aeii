@@ -59,15 +59,15 @@ public class StatusBarRenderer {
         FontRenderer.drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);
         //draw gold
         batch.draw(ResourceManager.getStatusHudIcon(1), ts + margin_left * 2 + hud_size + max_pop_width, margin_bottom, hud_size, hud_size);
-        Player player = getManager().getGame().getCurrentPlayer();
-        if (player.isLocalPlayer() || player.getType() == Player.RECORD) {
-            FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
-        } else {
-            batch.draw(
-                    FontRenderer.getLMinus(),
-                    ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom,
-                    char_width, char_height);
-        }
+//        Player player = getManager().getGame().getCurrentPlayer();
+//        if (player.isLocalPlayer() || player.getType() == Player.RECORD) {
+        FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
+//        } else {
+//            batch.draw(
+//                    FontRenderer.getLMinus(),
+//                    ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom,
+//                    char_width, char_height);
+//        }
         batch.flush();
     }
 

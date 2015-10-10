@@ -34,6 +34,8 @@ public class RoomCreateDialog extends BasicDialog {
 
     private final SaveFileFilter filter = new SaveFileFilter();
 
+    private final Integer[] gold_preset = new Integer[]{200, 250, 300, 450, 500, 550, 700, 850, 1000, 1500, 2000};
+
     private int mode;
     private GameSave game_save;
 
@@ -114,7 +116,7 @@ public class RoomCreateDialog extends BasicDialog {
         addActor(lb_initial_gold);
         spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());
         spinner_gold.setPosition(ts * 6 + ts / 2 * 3, getHeight() - ts * 4 - ts / 2);
-        spinner_gold.setItems(new Integer[]{500, 1000, 1500, 2000});
+        spinner_gold.setItems(gold_preset);
         addActor(spinner_gold);
 
         lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
