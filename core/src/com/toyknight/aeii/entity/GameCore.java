@@ -224,7 +224,7 @@ public class GameCore implements Serializable {
             }
         }
         if (isCommanderAlive(team)) {
-            income += 100 * (getCommander(team).getLevel() + 1);
+            income += 50 * (getCommander(team).getLevel() + 1);
         }
         return income;
     }
