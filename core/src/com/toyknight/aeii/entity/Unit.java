@@ -379,8 +379,8 @@ public class Unit implements Serializable {
         }
     }
 
-    public boolean hasDebuff() {
-        return hasStatus(Status.POISONED) || hasStatus(Status.SLOWED) || hasStatus(Status.BLINDED);
+    public boolean hasClearableDebuff() {
+        return hasStatus(Status.POISONED) || hasStatus(Status.SLOWED);
     }
 
     public boolean isAt(int x, int y) {
