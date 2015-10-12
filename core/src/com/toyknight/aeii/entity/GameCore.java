@@ -215,10 +215,10 @@ public class GameCore implements Serializable {
                 Tile tile = getMap().getTile(x, y);
                 if (tile.getTeam() == team) {
                     if (tile.isVillage()) {
-                        income += 100;
+                        income += 50;
                     }
                     if (tile.isCastle()) {
-                        income += 50;
+                        income += 100;
                     }
                 }
             }
