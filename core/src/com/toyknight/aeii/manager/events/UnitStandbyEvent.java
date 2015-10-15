@@ -65,7 +65,7 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
             attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
             for (Point target_position : attackable_positions) {
                 Unit target = game.getMap().getUnit(target_position.x, target_position.y);
-                if (target != null && !game.isEnemy(unit, target) && target.hasDebuff()) {
+                if (target != null && !game.isEnemy(unit, target) && target.hasClearableDebuff()) {
                     target.clearStatus();
                 }
                 if (game.canHeal(unit, target)) {
