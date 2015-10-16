@@ -74,7 +74,7 @@ public class AEIIServer {
 
     private void useDefaultConfiguration() {
         config.put("PASSWORD", "password");
-        config.put("V_STRING", "912040ed6ad54092e0107a61ac793889");
+        config.put("V_STRING", "1fa4cd77bdae5f92a1ab377315d8b0c4");
     }
 
     public boolean isRunning() {
