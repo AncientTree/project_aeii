@@ -47,15 +47,12 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
-                if (target != null && !target.hasAbility(Ability.HEAVY_MACHINE)) {
-                    if (unit.hasAbility(Ability.ATTACK_AURA)
-                            && !game.isEnemy(unit, target) && !target.hasAbility(Ability.LORD_OF_TERROR)) {
-                        target.attachStatus(new Status(Status.INSPIRED, 0));
-                    }
-                    if (unit.hasAbility(Ability.SLOWING_AURA)
-                            && !target.hasAbility(Ability.SLOWING_AURA) && game.isEnemy(unit, target)) {
-                        target.attachStatus(new Status(Status.SLOWED, 1));
-                    }
+                if (unit.hasAbility(Ability.ATTACK_AURA) && !game.isEnemy(unit, target)) {
+                    target.attachStatus(new Status(Status.INSPIRED, 0));
+                }
+                if (unit.hasAbility(Ability.SLOWING_AURA)
+                        && !target.hasAbility(Ability.SLOWING_AURA) && game.isEnemy(unit, target)) {
+                    target.attachStatus(new Status(Status.SLOWED, 1));
                 }
             }
         }
@@ -67,7 +64,7 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
             attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
             for (Point target_position : attackable_positions) {
                 Unit target = game.getMap().getUnit(target_position.x, target_position.y);
-                if (target != null && !game.isEnemy(unit, target) && target.hasClearableDebuff()) {
+                if (target != null && !game.isEnemy(unit, target) && target.hasStatus(Status.POISONED)) {
                     target.clearStatus();
                 }
                 if (game.canHeal(unit, target)) {

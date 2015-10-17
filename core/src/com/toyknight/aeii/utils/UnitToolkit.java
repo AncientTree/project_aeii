@@ -23,18 +23,16 @@ public class UnitToolkit {
     }
 
     public static void attachAttackStatus(Unit attacker, Unit defender) {
-        if (!defender.hasAbility(Ability.HEAVY_MACHINE)) {
-            if (attacker.hasAbility(Ability.POISONER)) {
-                defender.attachStatus(new Status(Status.POISONED, 2));
-                return;
-            }
-            if (defender.hasAbility(Ability.SLOWING_AURA) && !attacker.hasAbility(Ability.SLOWING_AURA)) {
-                attacker.attachStatus(new Status(Status.SLOWED, 1));
-                attacker.setCurrentMovementPoint(defender.getMovementPoint());
-            }
-            if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
-                defender.attachStatus(new Status(Status.BLINDED, 1));
-            }
+        if (attacker.hasAbility(Ability.POISONER)) {
+            defender.attachStatus(new Status(Status.POISONED, 2));
+            return;
+        }
+        if (defender.hasAbility(Ability.SLOWING_AURA) && !attacker.hasAbility(Ability.SLOWING_AURA)) {
+            attacker.attachStatus(new Status(Status.SLOWED, 1));
+            attacker.setCurrentMovementPoint(defender.getMovementPoint());
+        }
+        if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
+            defender.attachStatus(new Status(Status.BLINDED, 1));
         }
     }
 

@@ -34,6 +34,10 @@ public class Status implements Serializable {
         return remaining_turn;
     }
 
+    public void setRemainingTurn(int turn) {
+        this.remaining_turn = turn;
+    }
+
     @Override
     public boolean equals(Object status) {
         return status instanceof Status && ((Status) status).getType() == this.type;
@@ -44,6 +48,14 @@ public class Status implements Serializable {
         int hash = 3;
         hash = 89 * hash + this.type;
         return hash;
+    }
+
+    public static boolean isBuff(int type) {
+        return type == INSPIRED;
+    }
+
+    public static boolean isDebuff(int type) {
+        return type == POISONED || type == SLOWED || type == BLINDED;
     }
 
 }
