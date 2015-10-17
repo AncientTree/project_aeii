@@ -47,12 +47,14 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
-                if (unit.hasAbility(Ability.ATTACK_AURA) && !game.isEnemy(unit, target)) {
-                    target.attachStatus(new Status(Status.INSPIRED, 0));
-                }
-                if (unit.hasAbility(Ability.SLOWING_AURA)
-                        && !target.hasAbility(Ability.SLOWING_AURA) && game.isEnemy(unit, target)) {
-                    target.attachStatus(new Status(Status.SLOWED, 1));
+                if (target != null) {
+                    if (unit.hasAbility(Ability.ATTACK_AURA) && !game.isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.INSPIRED, 0));
+                    }
+                    if (unit.hasAbility(Ability.SLOWING_AURA)
+                            && !target.hasAbility(Ability.SLOWING_AURA) && game.isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.SLOWED, 1));
+                    }
                 }
             }
         }
