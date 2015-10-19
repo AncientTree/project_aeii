@@ -31,7 +31,7 @@ public class Unit implements Serializable {
     private int attack;
     private int attack_type;
     private int physical_defence;
-    private int magical_defence;
+    private int magic_defence;
     private int movement_point;
     private int current_movement_point;
 
@@ -41,7 +41,7 @@ public class Unit implements Serializable {
     private int hp_growth;
     private int attack_growth;
     private int physical_defence_growth;
-    private int magical_defence_growth;
+    private int magic_defence_growth;
     private int movement_growth;
 
     private int x_position;
@@ -57,6 +57,7 @@ public class Unit implements Serializable {
         this.index = index;
         this.abilities = new ArrayList<Integer>();
         this.unit_code = unit_code;
+        this.is_standby = false;
     }
 
     public Unit(int index) {
@@ -74,13 +75,13 @@ public class Unit implements Serializable {
         this.attack = unit.getAttack();
         this.attack_type = unit.getAttackType();
         this.physical_defence = unit.getPhysicalDefence();
-        this.magical_defence = unit.getMagicalDefence();
+        this.magic_defence = unit.getMagicDefence();
         this.movement_point = unit.getMovementPoint();
         this.current_movement_point = unit.getCurrentMovementPoint();
         this.hp_growth = unit.getHpGrowth();
         this.attack_growth = unit.getAttackGrowth();
         this.physical_defence_growth = unit.getPhysicalDefenceGrowth();
-        this.magical_defence_growth = unit.getMagicalDefenceGrowth();
+        this.magic_defence_growth = unit.getMagicDefenceGrowth();
         this.movement_growth = unit.getMovementGrowth();
         this.x_position = unit.getX();
         this.y_position = unit.getY();
@@ -88,6 +89,25 @@ public class Unit implements Serializable {
         this.min_attack_range = unit.getMinAttackRange();
         this.abilities = new ArrayList<Integer>(unit.getAbilities());
         this.status = unit.getStatus();
+    }
+
+    public Unit(UnitDefinition definition, int index) {
+        this(index);
+        this.price = definition.price;
+        this.max_hp = definition.max_hp;
+        this.attack = definition.attack;
+        this.attack_type = definition.attack_type;
+        this.physical_defence = definition.physical_defence;
+        this.magic_defence = definition.magic_defence;
+        this.movement_point = definition.movement_point;
+        this.abilities = definition.abilities;
+        this.hp_growth = definition.hp_growth;
+        this.attack_growth = definition.attack_growth;
+        this.physical_defence_growth = definition.physical_defence_growth;
+        this.magic_defence_growth = definition.magic_defence_growth;
+        this.movement_growth = definition.movement_growth;
+        this.max_attack_range = definition.max_attack_range;
+        this.min_attack_range = definition.min_attack_range;
     }
 
     public int getIndex() {
@@ -174,12 +194,12 @@ public class Unit implements Serializable {
         this.physical_defence = physical_defence;
     }
 
-    public int getMagicalDefence() {
-        return magical_defence;
+    public int getMagicDefence() {
+        return magic_defence;
     }
 
-    public void setMagicalDefence(int magical_defence) {
-        this.magical_defence = magical_defence;
+    public void setMagicDefence(int magical_defence) {
+        this.magic_defence = magical_defence;
     }
 
     public int getMovementGrowth() {
@@ -254,12 +274,12 @@ public class Unit implements Serializable {
         this.physical_defence_growth = physical_defence_growth;
     }
 
-    public int getMagicalDefenceGrowth() {
-        return magical_defence_growth;
+    public int getMagicDefenceGrowth() {
+        return magic_defence_growth;
     }
 
-    public void setMagicalDefenceGrowth(int magical_defence_growth) {
-        this.magical_defence_growth = magical_defence_growth;
+    public void setMagicDefenceGrowth(int magical_defence_growth) {
+        this.magic_defence_growth = magical_defence_growth;
     }
 
     public int getX() {
@@ -318,7 +338,7 @@ public class Unit implements Serializable {
             this.changeCurrentHp(getHpGrowth());
             this.movement_point += this.getMovementGrowth();
             this.physical_defence += this.getPhysicalDefenceGrowth();
-            this.magical_defence += this.getMagicalDefenceGrowth();
+            this.magic_defence += this.getMagicDefenceGrowth();
         }
     }
 
@@ -401,12 +421,12 @@ public class Unit implements Serializable {
                 + attack
                 + attack_type
                 + physical_defence
-                + magical_defence
+                + magic_defence
                 + movement_point
                 + hp_growth
                 + attack_growth
                 + physical_defence_growth
-                + magical_defence_growth
+                + magic_defence_growth
                 + movement_growth
                 + max_attack_range
                 + min_attack_range;
@@ -414,6 +434,60 @@ public class Unit implements Serializable {
             str += ability;
         }
         return str;
+    }
+
+    public UnitDefinition createDefinition() {
+        UnitDefinition definition = new UnitDefinition();
+        definition.price = price;
+        definition.max_hp = max_hp;
+        definition.attack = attack;
+        definition.attack_type = attack_type;
+        definition.physical_defence = physical_defence;
+        definition.magic_defence = magic_defence;
+        definition.movement_point = movement_point;
+        definition.abilities = abilities;
+        definition.hp_growth = hp_growth;
+        definition.attack_growth = attack_growth;
+        definition.physical_defence_growth = physical_defence_growth;
+        definition.magic_defence_growth = magic_defence_growth;
+        definition.movement_growth = movement_growth;
+        definition.max_attack_range = max_attack_range;
+        definition.min_attack_range = min_attack_range;
+        return definition;
+    }
+
+    public static class UnitDefinition {
+
+        public int price;
+
+        public int max_hp;
+
+        public int attack;
+
+        public int attack_type;
+
+        public int physical_defence;
+
+        public int magic_defence;
+
+        public int movement_point;
+
+        public ArrayList<Integer> abilities;
+
+        public int hp_growth;
+
+        public int attack_growth;
+
+        public int physical_defence_growth;
+
+        public int magic_defence_growth;
+
+        public int movement_growth;
+
+        public int max_attack_range;
+
+        public int min_attack_range;
+
     }
 
 }

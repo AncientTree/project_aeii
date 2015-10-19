@@ -27,9 +27,6 @@ import com.toyknight.aeii.utils.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,13 +34,9 @@ public class AEIIApplet extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
-    private final static String[] HEX_DIGITS =
-            {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
-
     private static final String VERSION_MODIFIER = "b";
     private static final String VERSION = "1.0.7";
     private static final String TAG = "Main";
-    private static String V_STRING;
 
     private final int TILE_SIZE;
     private final Platform PLATFORM;
@@ -93,12 +86,6 @@ public class AEIIApplet extends Game {
             Animator.setTileSize(getTileSize());
             TileValidator.initialize();
             Gdx.input.setCatchBackKey(true);
-
-            V_STRING = createVerificationString(
-                    TileFactory.getVerificationString()
-                            + UnitFactory.getVerificationString()
-                            + VERSION);
-            System.out.println(V_STRING);
 
             skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
             skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();
@@ -307,22 +294,13 @@ public class AEIIApplet extends Game {
         return net_game_create_screen.getRoomConfig();
     }
 
-    public boolean hasTeamAccess() {
-        String service_name = getNetworkManager().getServiceName();
-        for (String player_service : getRoomConfig().team_allocation) {
-            if (service_name.equals(player_service)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public String getVersion() {
         return VERSION + VERSION_MODIFIER;
     }
 
     public String getVerificationString() {
-        return V_STRING;
+        String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + VERSION;
+        return new Encryptor().encryptString(V_STRING);
     }
 
     @Override
@@ -351,36 +329,5 @@ public class AEIIApplet extends Game {
         }
     }
 
-    private String createVerificationString(String str) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] origin = str.getBytes("UTF-8");
-            byte[] encrypted = md.digest(origin);
-            return byteArrayToHexString(encrypted);
-        } catch (UnsupportedEncodingException ex) {
-            Gdx.app.log(TAG, str);
-            return str;
-        } catch (NoSuchAlgorithmException ex) {
-            Gdx.app.log(TAG, str);
-            return str;
-        }
-    }
-
-    private static String byteArrayToHexString(byte[] b) {
-        StringBuilder resultSb = new StringBuilder();
-        for (byte aB : b) {
-            resultSb.append(byteToHexString(aB));
-        }
-        return resultSb.toString();
-    }
-
-    private static String byteToHexString(byte b) {
-        int n = b;
-        if (n < 0)
-            n = 256 + n;
-        int d1 = n / 16;
-        int d2 = n % 16;
-        return HEX_DIGITS[d1] + HEX_DIGITS[d2];
-    }
 
 }

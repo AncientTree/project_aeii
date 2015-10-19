@@ -156,7 +156,7 @@ public class AttackInformationRenderer {
                 lmargin + hw * 2 + tfw + ts * 5 / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
         int attacker_m_defence_bonus = UnitToolkit.getMagicDefenceBonus(defender, attacker, attacker_tile);
-        int attacker_m_defence = attacker.getMagicalDefence();
+        int attacker_m_defence = attacker.getMagicDefence();
         String attacker_m_defence_str = Integer.toString(attacker_m_defence + attacker_m_defence_bonus);
         FontRenderer.drawText(batch, attacker_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,
@@ -200,7 +200,7 @@ public class AttackInformationRenderer {
                 lmargin + hw * 2 + tfw + 5 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
         int defender_m_defence_bonus = UnitToolkit.getMagicDefenceBonus(attacker, defender, defender_tile);
-        int defender_m_defence = defender.getMagicalDefence();
+        int defender_m_defence = defender.getMagicDefence();
         String defender_m_defence_str = Integer.toString(defender_m_defence + defender_m_defence_bonus);
         FontRenderer.drawText(batch, defender_m_defence_str,
                 lmargin + hw * 3 + tfw * 2 + 7 * ts / 24 + ts / 4,

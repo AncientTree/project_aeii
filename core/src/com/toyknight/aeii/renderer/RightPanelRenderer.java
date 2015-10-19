@@ -100,7 +100,7 @@ public class RightPanelRenderer {
                     screen.getViewportWidth() + pad + hw + (f_size - hw - FontRenderer.getTextLayout(pdefence_str).width) / 2,
                     screen.getViewportHeight() - f_size - pad - hh * 2 - (hh - lbh) / 2);
             //draw magical defence
-            String mdefence_str = Integer.toString(target_unit.getMagicalDefence());
+            String mdefence_str = Integer.toString(target_unit.getMagicDefence());
             FontRenderer.drawText(batch, mdefence_str,
                     screen.getViewportWidth() + pad + hw + (f_size - hw - FontRenderer.getTextLayout(mdefence_str).width) / 2,
                     screen.getViewportHeight() - f_size - pad - hh * 3 - (hh - lbh) / 2);

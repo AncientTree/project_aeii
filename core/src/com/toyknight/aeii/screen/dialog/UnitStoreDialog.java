@@ -242,7 +242,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
                 y + height - (ts / 2 + interval + item_h + (item_h - tfh) / 2 + tfh),
                 ts * 2 + ts / 4 - scw / 2 - ts / 12, tfh);
         FontRenderer.drawText(batch,
-                Integer.toString(selected_unit.getMagicalDefence()),
+                Integer.toString(selected_unit.getMagicDefence()),
                 x + ts * 8 + ts / 4 + scw + ts / 12,
                 y + height - (ts / 2 + interval + item_h + (item_h - lbh) / 2));
         batch.draw(ResourceManager.getSmallCircleTexture(0),

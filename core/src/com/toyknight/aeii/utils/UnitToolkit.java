@@ -199,7 +199,7 @@ public class UnitToolkit {
         //calculate defence bonus
         int defence = attacker.getAttackType() == Unit.ATTACK_PHYSICAL
                 ? defender.getPhysicalDefence() + getPhysicalDefenceBonus(attacker, defender, defender_tile_index)
-                : defender.getMagicalDefence() + getMagicDefenceBonus(attacker, defender, defender_tile_index);
+                : defender.getMagicDefence() + getMagicDefenceBonus(attacker, defender, defender_tile_index);
         //calculate base damage
         int damage = attack > defence ? attack - defence : 0;
         int attacker_hp = attacker.getCurrentHp();
