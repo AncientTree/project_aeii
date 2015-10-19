@@ -108,6 +108,7 @@ public class AEIIApplet extends Game {
             GameHost.setContext(this);
 
             setScreen(logo_screen);
+//            System.out.println(getVerificationString());
         } catch (AEIIException ex) {
             Gdx.app.log(TAG, ex.toString());
         }
