@@ -365,8 +365,17 @@ public class Unit implements Serializable {
     }
 
     public void attachStatus(Status status) {
-        if (getStatus() == null || getStatus().getType() == status.getType()) {
-            this.status = status;
+        if ((getStatus() == null || getStatus().getType() == status.getType()) && !hasAbility(Ability.HEAVY_MACHINE)) {
+            if (Status.isBuff(status.getType()) && !hasAbility(Ability.CHARGER)) {
+                this.status = status;
+            }
+            if (Status.isDebuff(status.getType())) {
+                if (hasAbility(Ability.CHARGER)) {
+                    int turn = status.getRemainingTurn();
+                    status.setRemainingTurn(turn + 1);
+                }
+                this.status = status;
+            }
         }
     }
 
@@ -377,10 +386,6 @@ public class Unit implements Serializable {
                 status = null;
             }
         }
-    }
-
-    public boolean hasClearableDebuff() {
-        return hasStatus(Status.POISONED) || hasStatus(Status.SLOWED);
     }
 
     public boolean isAt(int x, int y) {

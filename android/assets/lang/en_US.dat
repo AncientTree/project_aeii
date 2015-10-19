@@ -87,6 +87,7 @@ UNIT_NAME_12=Paladin
 UNIT_NAME_13=Berserker
 UNIT_NAME_14=Wolfrider
 UNIT_NAME_15=Black Mage
+UNIT_NAME_16=Wolfarcher
 
 MSG_ERR_AEA=An error occurred :(
 MSG_ERR_BMF=Broken map file :(
