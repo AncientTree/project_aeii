@@ -154,10 +154,6 @@ public class Unit implements Serializable {
         return max_hp;
     }
 
-    public void setMaxHp(int max_hp) {
-        this.max_hp = max_hp;
-    }
-
     public int getCurrentHp() {
         return current_hp;
     }
@@ -174,40 +170,20 @@ public class Unit implements Serializable {
         return attack;
     }
 
-    public void setAttack(int attack) {
-        this.attack = attack;
-    }
-
     public int getAttackType() {
         return attack_type;
-    }
-
-    public void setAttackType(int attack_type) {
-        this.attack_type = attack_type;
     }
 
     public int getPhysicalDefence() {
         return physical_defence;
     }
 
-    public void setPhysicalDefence(int physical_defence) {
-        this.physical_defence = physical_defence;
-    }
-
     public int getMagicDefence() {
         return magic_defence;
     }
 
-    public void setMagicDefence(int magical_defence) {
-        this.magic_defence = magical_defence;
-    }
-
     public int getMovementGrowth() {
         return movement_growth;
-    }
-
-    public void setMovementGrowth(int movement_growth) {
-        this.movement_growth = movement_growth;
     }
 
     public int getMovementPoint() {
@@ -216,10 +192,6 @@ public class Unit implements Serializable {
         } else {
             return movement_point;
         }
-    }
-
-    public void setMovementPoint(int movement_point) {
-        this.movement_point = movement_point;
     }
 
     public int getCurrentMovementPoint() {
@@ -254,14 +226,6 @@ public class Unit implements Serializable {
         return hp_growth;
     }
 
-    public void setHpGrowth(int growth) {
-        this.hp_growth = growth;
-    }
-
-    public void setAttackGrowth(int attack_growth) {
-        this.attack_growth = attack_growth;
-    }
-
     public int getAttackGrowth() {
         return attack_growth;
     }
@@ -270,16 +234,8 @@ public class Unit implements Serializable {
         return physical_defence_growth;
     }
 
-    public void setPhysicalDefenceGrowth(int physical_defence_growth) {
-        this.physical_defence_growth = physical_defence_growth;
-    }
-
     public int getMagicDefenceGrowth() {
         return magic_defence_growth;
-    }
-
-    public void setMagicDefenceGrowth(int magical_defence_growth) {
-        this.magic_defence_growth = magical_defence_growth;
     }
 
     public int getX() {
@@ -306,20 +262,12 @@ public class Unit implements Serializable {
         }
     }
 
-    public void setMaxAttackRange(int max_attack_range) {
-        this.max_attack_range = max_attack_range;
-    }
-
     public int getMinAttackRange() {
         if (hasStatus(Status.BLINDED)) {
             return 0;
         } else {
             return min_attack_range;
         }
-    }
-
-    public void setMinAttackRange(int min_attack_range) {
-        this.min_attack_range = min_attack_range;
     }
 
     public void setStandby(boolean b) {
@@ -434,26 +382,6 @@ public class Unit implements Serializable {
             str += ability;
         }
         return str;
-    }
-
-    public UnitDefinition createDefinition() {
-        UnitDefinition definition = new UnitDefinition();
-        definition.price = price;
-        definition.max_hp = max_hp;
-        definition.attack = attack;
-        definition.attack_type = attack_type;
-        definition.physical_defence = physical_defence;
-        definition.magic_defence = magic_defence;
-        definition.movement_point = movement_point;
-        definition.abilities = abilities;
-        definition.hp_growth = hp_growth;
-        definition.attack_growth = attack_growth;
-        definition.physical_defence_growth = physical_defence_growth;
-        definition.magic_defence_growth = magic_defence_growth;
-        definition.movement_growth = movement_growth;
-        definition.max_attack_range = max_attack_range;
-        definition.min_attack_range = min_attack_range;
-        return definition;
     }
 
     public static class UnitDefinition {
