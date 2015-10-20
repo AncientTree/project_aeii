@@ -101,7 +101,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.attack_cursor = new AttackCursorAnimator();
 
         this.manager = new GameManager();
-        GameHost.setGameManager(manager);
         initComponents();
     }
 
@@ -420,8 +419,18 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             Recorder.setRecord(false);
             Gdx.app.log("Record", ex.toString());
         }
-        scale = 1.0f;
+        initialize(game);
         record = null;
+    }
+
+    public void prepare(GameRecord record) {
+        initialize(record.getGame());
+        this.record = record;
+        playback_delay = 0f;
+    }
+
+    private void initialize(GameCore game) {
+        scale = 1.0f;
         manager.setGame(game);
         manager.setGameManagerListener(this);
         GameHost.setGameManager(getGameManager());
@@ -430,21 +439,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
-    }
-
-    public void prepare(GameRecord record) {
-        scale = 1.0f;
-        manager.setGame(record.getGame());
-        manager.setGameManagerListener(this);
-        GameHost.setGameManager(getGameManager());
-        UnitToolkit.setGame(record.getGame());
-        Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
-        locateViewport(team_focus.x, team_focus.y);
-        cursor_map_x = team_focus.x;
-        cursor_map_y = team_focus.y;
-
-        this.record = record;
-        playback_delay = 0f;
     }
 
     @Override

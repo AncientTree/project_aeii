@@ -166,6 +166,10 @@ public class Map implements Serializable {
         }
     }
 
+    public Unit getUnit(Point position) {
+        return getUnit(position.x, position.y);
+    }
+
     public Unit getUnit(String unit_code) {
         Collection<Unit> units = unit_map.values();
         for (Unit unit : units) {

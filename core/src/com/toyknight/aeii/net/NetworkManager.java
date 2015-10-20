@@ -407,7 +407,7 @@ public class NetworkManager {
                     Gdx.app.log(TAG, e.toString());
                 }
             }
-            if (isConnected()) {
+            if (server_socket != null) {
                 if (listener != null) {
                     synchronized (AEIIApplet.RENDER_LOCK) {
                         listener.onDisconnect();

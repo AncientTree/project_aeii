@@ -18,24 +18,17 @@ import java.util.HashMap;
  */
 public class GameHost {
 
-    private static boolean is_game_over;
-
     private static AEIIApplet context;
+
     private static GameManager manager;
+
+    private static boolean is_game_over;
 
     private GameHost() {
     }
 
     public static void setContext(AEIIApplet context) {
         GameHost.context = context;
-    }
-
-    public static void setGameOver(boolean b) {
-        GameHost.is_game_over = b;
-    }
-
-    public static boolean isGameOver() {
-        return is_game_over;
     }
 
     public static void setGameManager(GameManager manager) {
@@ -53,6 +46,10 @@ public class GameHost {
 
     public static GameCore getGame() {
         return manager.getGame();
+    }
+
+    public static boolean isGameOver() {
+        return is_game_over;
     }
 
     public static void doSelect(int x, int y) {
@@ -252,7 +249,7 @@ public class GameHost {
         }
         if (winning_flag) {
             getManager().submitAnimation(new MessageAnimator(Language.getText("LB_TEAM") + " " + alliance + " " + Language.getText("LB_WIN") + "!", 1.5f));
-            GameHost.setGameOver(true);
+            is_game_over = true;
         }
     }
 

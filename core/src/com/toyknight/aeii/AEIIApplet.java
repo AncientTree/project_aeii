@@ -20,6 +20,7 @@ import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
+import com.toyknight.aeii.script.JavaScriptEngine;
 import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.RoomConfig;
 import com.toyknight.aeii.utils.*;
@@ -43,9 +44,10 @@ public class AEIIApplet extends Game {
 
     private ExecutorService executor;
 
+    private JavaScriptEngine script_engine;
+
     private Skin skin;
 
-    FileHandle config_file;
     private ObjectMap<String, String> configuration;
 
     private Screen previous_screen;
@@ -105,17 +107,18 @@ public class AEIIApplet extends Game {
             createDialogLayer();
 
             network_manager = new NetworkManager();
+            script_engine = new JavaScriptEngine();
             GameHost.setContext(this);
 
             setScreen(logo_screen);
-//            System.out.println(getVerificationString());
+            System.out.println(getVerificationString());
         } catch (AEIIException ex) {
             Gdx.app.log(TAG, ex.toString());
         }
     }
 
     private void loadConfiguration() throws AEIIException {
-        config_file = FileProvider.getUserFile("user.config");
+        FileHandle config_file = FileProvider.getUserFile("user.config");
         configuration = new ObjectMap<String, String>();
         try {
             if (config_file.exists() && !config_file.isDirectory()) {
@@ -132,6 +135,7 @@ public class AEIIApplet extends Game {
     }
 
     public void updateConfiguration(String key, String value) {
+        FileHandle config_file = FileProvider.getUserFile("user.config");
         try {
             configuration.put(key, value);
             OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
@@ -275,6 +279,10 @@ public class AEIIApplet extends Game {
 
     public NetworkManager getNetworkManager() {
         return network_manager;
+    }
+
+    public JavaScriptEngine getScriptEngine() {
+        return script_engine;
     }
 
     public String getUsername() {

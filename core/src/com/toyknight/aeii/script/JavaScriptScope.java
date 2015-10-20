@@ -1,9 +1,6 @@
 package com.toyknight.aeii.script;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 
 /**
  * @author toyknight 10/19/2015.
@@ -24,13 +21,17 @@ public class JavaScriptScope {
         ScriptableObject.putProperty(scope, name, wrappedObject);
     }
 
-    public Object invokeFunction(String name, Object... args) throws NoSuchMethodException {
+    public Object invokeFunction(String name, Object... args) throws ScriptException {
         Object function_object = scope.get(name, scope);
         if (function_object instanceof Function) {
             Function function = (Function) function_object;
-            return function.call(context, scope, scope, args);
+            try {
+                return function.call(context, scope, scope, args);
+            } catch (EvaluatorException ex) {
+                throw new ScriptException(ex.getMessage(), ex);
+            }
         } else {
-            throw new NoSuchMethodException("function not found: " + name);
+            throw new ScriptException("function not found: " + name);
         }
     }
 
