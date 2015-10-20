@@ -17,7 +17,6 @@ public class CircleButton extends Button {
     private final int ts;
     private final int type;
     private final TextureRegion icon;
-
     private boolean is_held;
 
     public CircleButton(int type, Texture icon, int ts) {
@@ -77,10 +76,9 @@ public class CircleButton extends Button {
                 batch.draw(ResourceManager.getBigCircleTexture(circle_index), x, y, width, height);
                 break;
         }
-        int circle_base_width = type == SMALL ? 20 : 32;
-        int circle_base_height = type == SMALL ? 21 : 33;
-        float icon_height = getPrefHeight() * icon.getRegionHeight() / circle_base_height;
-        float icon_width = getPrefWidth() * icon.getRegionWidth() / circle_base_width;
+        float scale = width / getPrefWidth();
+        float icon_height = icon.getRegionHeight() * ts / 24 * scale;
+        float icon_width = icon.getRegionWidth() * ts / 24 * scale;
         float dx = (width - icon_width) / 2;
         float dy = (height - icon_height) / 2;
         batch.draw(icon, x + dx, y + dy, icon_width, icon_height);
