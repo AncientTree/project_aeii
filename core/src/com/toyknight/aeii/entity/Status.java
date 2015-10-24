@@ -50,11 +50,12 @@ public class Status implements Serializable {
         return hash;
     }
 
-    public static boolean isBuff(int type) {
-        return type == INSPIRED;
+    public static boolean isBuff(Status status) {
+        return status.getType() == INSPIRED;
     }
 
-    public static boolean isDebuff(int type) {
+    public static boolean isDebuff(Status status) {
+        int type = status.getType();
         return type == POISONED || type == SLOWED || type == BLINDED;
     }
 

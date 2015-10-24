@@ -25,7 +25,6 @@ public class UnitToolkit {
     public static void attachAttackStatus(Unit attacker, Unit defender) {
         if (attacker.hasAbility(Ability.POISONER)) {
             defender.attachStatus(new Status(Status.POISONED, 2));
-            return;
         }
         if (defender.hasAbility(Ability.SLOWING_AURA) && !attacker.hasAbility(Ability.SLOWING_AURA)) {
             attacker.attachStatus(new Status(Status.SLOWED, 1));

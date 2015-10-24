@@ -333,11 +333,11 @@ public class Unit implements Serializable {
     }
 
     public void attachStatus(Status status) {
-        if ((getStatus() == null || getStatus().getType() == status.getType()) && !hasAbility(Ability.HEAVY_MACHINE)) {
-            if (Status.isBuff(status.getType()) && !hasAbility(Ability.CHARGER)) {
+        if ((getStatus() == null || getStatus().equals(status)) && !hasAbility(Ability.HEAVY_MACHINE)) {
+            if (Status.isBuff(status) && !hasAbility(Ability.CHARGER)) {
                 this.status = status;
             }
-            if (Status.isDebuff(status.getType())) {
+            if (Status.isDebuff(status)) {
                 if (hasAbility(Ability.CHARGER)) {
                     int turn = status.getRemainingTurn();
                     status.setRemainingTurn(turn + 1);
