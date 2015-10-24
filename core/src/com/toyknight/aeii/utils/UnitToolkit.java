@@ -29,7 +29,9 @@ public class UnitToolkit {
         }
         if (defender.hasAbility(Ability.SLOWING_AURA) && !attacker.hasAbility(Ability.SLOWING_AURA)) {
             attacker.attachStatus(new Status(Status.SLOWED, 1));
-            attacker.setCurrentMovementPoint(defender.getMovementPoint());
+            if (defender.getCurrentMovementPoint() > 0) {
+                defender.setCurrentMovementPoint(1);
+            }
         }
         if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
             defender.attachStatus(new Status(Status.BLINDED, 1));

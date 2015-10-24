@@ -37,7 +37,6 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
             Unit unit = game.getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 unit.updateStatus();
-                unit.setCurrentMovementPoint(unit.getMovementPoint());
             }
         }
     }
