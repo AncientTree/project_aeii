@@ -236,7 +236,7 @@ public class GameHost {
         boolean winning_flag = true;
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
-            if (player != null) {
+            if (player != null && player.getType() != Player.NONE) {
                 if (alliance == -1) {
                     alliance = player.getAlliance();
                 } else {
@@ -248,7 +248,6 @@ public class GameHost {
             }
         }
         if (winning_flag) {
-            getManager().submitAnimation(new MessageAnimator(Language.getText("LB_TEAM") + " " + alliance + " " + Language.getText("LB_WIN") + "!", 1.5f));
             is_game_over = true;
         }
     }

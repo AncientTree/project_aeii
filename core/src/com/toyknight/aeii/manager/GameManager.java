@@ -228,20 +228,20 @@ public class GameManager implements AnimationDispatcher {
                 for (AnimationListener listener : animation_listeners) {
                     listener.animationCompleted(current_animation);
                 }
-                if (GameHost.isGameOver()) {
+                if (GameHost.isGameOver() && animation_queue.isEmpty()) {
                     manager_listener.onGameOver();
                 }
                 finish_flag = true;
             }
             current_animation = animation_queue.poll();
-            if (current_animation != null) {
-                for (AnimationListener listener : animation_listeners) {
-                    listener.animationStarted(current_animation);
+            if (current_animation == null) {
+                dispatchGameEvents();
+                if (finish_flag) {
+                    manager_listener.onButtonUpdateRequested();
                 }
             } else {
-                dispatchGameEvents();
-                if (finish_flag && current_animation == null) {
-                    manager_listener.onButtonUpdateRequested();
+                for (AnimationListener listener : animation_listeners) {
+                    listener.animationStarted(current_animation);
                 }
             }
         } else {

@@ -95,7 +95,7 @@ public class GameCore implements Serializable {
     }
 
     public void removePlayer(int team) {
-        player_list[team] = null;
+        player_list[team].setType(Player.NONE);
     }
 
     public Player getPlayer(int team) {
@@ -402,7 +402,7 @@ public class GameCore implements Serializable {
             } else {
                 team = 0;
             }
-        } while (getPlayer(team) == null);
+        } while (getCurrentPlayer() == null || getCurrentPlayer().getType() == Player.NONE);
         return team;
     }
 
@@ -420,7 +420,7 @@ public class GameCore implements Serializable {
                 current_team = 0;
                 getMap().updateTombs();
             }
-        } while (getCurrentPlayer() == null);
+        } while (getCurrentPlayer() == null || getCurrentPlayer().getType() == Player.NONE);
         turn++;
     }
 

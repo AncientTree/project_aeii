@@ -4,10 +4,7 @@ import com.toyknight.aeii.animator.DustAriseAnimator;
 import com.toyknight.aeii.animator.UnitAttackAnimator;
 import com.toyknight.aeii.animator.UnitDestroyAnimator;
 import com.toyknight.aeii.animator.UnitLevelUpAnimator;
-import com.toyknight.aeii.entity.Ability;
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -49,11 +46,9 @@ public class UnitAttackEvent implements GameEvent, Serializable {
     public boolean canExecute(GameCore game) {
         Unit attacker = game.getMap().getUnit(attacker_x, attacker_y);
         Unit target = game.getMap().getUnit(target_x, target_y);
-        if (attacker == null) {
-            return false;
-        } else {
-            return target != null || attacker.hasAbility(Ability.DESTROYER) && game.getMap().getTile(target_x, target_y).isDestroyable();
-        }
+        return attacker != null
+                && (target != null || attacker.hasAbility(Ability.DESTROYER)
+                && game.getMap().getTile(target_x, target_y).isDestroyable());
     }
 
     @Override
