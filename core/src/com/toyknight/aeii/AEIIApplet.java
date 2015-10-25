@@ -35,7 +35,7 @@ public class AEIIApplet extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
-    private static final String VERSION_MODIFIER = "b";
+    private static final String VERSION_MODIFIER = "c";
     private static final String VERSION = "1.0.7";
     private static final String TAG = "Main";
 
