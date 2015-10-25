@@ -147,7 +147,7 @@ public class GameCore implements Serializable {
             commanders[team].clearStatus();
             getMap().addUnit(commanders[team]);
             commanders[team].setCurrentHp(commanders[team].getMaxHp());
-            restoreUnit(commanders[team]);
+            resetUnit(commanders[team]);
             updatePopulation(team);
         }
     }
@@ -236,7 +236,7 @@ public class GameCore implements Serializable {
         return income;
     }
 
-    public void restoreUnit(Unit unit) {
+    public void resetUnit(Unit unit) {
         unit.setCurrentMovementPoint(unit.getMovementPoint());
         unit.setStandby(false);
     }
@@ -410,7 +410,7 @@ public class GameCore implements Serializable {
         Collection<Unit> units = getMap().getUnitSet();
         for (Unit unit : units) {
             if (unit.getTeam() == getCurrentTeam()) {
-                restoreUnit(unit);
+                resetUnit(unit);
             }
         }
         do {
