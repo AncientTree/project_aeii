@@ -344,6 +344,11 @@ public class Unit implements Serializable {
                 }
                 this.status = status;
             }
+            if (status.getType() == Status.SLOWED) {
+                if (getCurrentMovementPoint() > 0) {
+                    setCurrentMovementPoint(1);
+                }
+            }
         }
     }
 

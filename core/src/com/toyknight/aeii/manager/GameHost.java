@@ -1,12 +1,10 @@
 package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.AEIIApplet;
-import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.net.task.GameEventSendingTask;
-import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -226,7 +224,8 @@ public class GameHost {
 
         //remove failed player
         for (int team = 0; team < 4; team++) {
-            if (population[team] == 0 && castle_count[team] == 0 && getGame().getPlayer(team) != null) {
+            if (population[team] == 0 && castle_count[team] == 0
+                    && getGame().getPlayer(team) != null && getGame().getPlayer(team).getType() != Player.NONE) {
                 getGame().removePlayer(team);
             }
         }
