@@ -402,7 +402,7 @@ public class GameCore implements Serializable {
             } else {
                 team = 0;
             }
-        } while (getCurrentPlayer() == null || getCurrentPlayer().getType() == Player.NONE);
+        } while (getPlayer(team) == null || getPlayer(team).getType() == Player.NONE);
         return team;
     }
 
