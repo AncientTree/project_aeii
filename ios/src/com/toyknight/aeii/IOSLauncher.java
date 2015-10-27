@@ -11,7 +11,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new AEIIApplet(Platform.iOS, 48), config);
+        return new IOSApplication(new GameContext(Platform.iOS, 48), config);
     }
 
     public static void main(String[] argv) {

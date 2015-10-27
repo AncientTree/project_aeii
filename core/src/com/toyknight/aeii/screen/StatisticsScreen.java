@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
@@ -35,7 +35,7 @@ public class StatisticsScreen extends StageScreen {
 
     private TextButton btn_leave;
 
-    public StatisticsScreen(AEIIApplet context) {
+    public StatisticsScreen(GameContext context) {
         super(context);
         initComponents();
     }

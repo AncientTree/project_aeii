@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.MapEditorScreen;
@@ -90,7 +90,7 @@ public class UnitSelector extends Container<ScrollPane> {
         this.setActor(sp_unit_table);
     }
 
-    private AEIIApplet getContext() {
+    private GameContext getContext() {
         return editor.getContext();
     }
 

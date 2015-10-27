@@ -20,14 +20,7 @@ public class FileProvider {
     }
 
     public static FileHandle getAssetsFile(String path) {
-        switch (platform) {
-            case Android:
-            case iOS:
-            case Desktop:
-                return Gdx.files.internal(path);
-            default:
-                return Gdx.files.internal(path);
-        }
+        return Gdx.files.internal(path);
     }
 
     public static FileHandle getUserFile(String path) {

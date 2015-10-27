@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.Json;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Unit;
 
+import java.io.InputStreamReader;
+
 /**
  * @author toyknight 4/3/2015.
  */
@@ -20,22 +22,15 @@ public class UnitFactory {
 
     public static void loadUnitData() throws AEIIException {
         Json json = new Json();
-        String unit_data_dir = "data/units/";
-        FileHandle unit_config_file = FileProvider.getAssetsFile(unit_data_dir + "unit_config.json");
-        unit_config = json.fromJson(UnitConfiguration.class, unit_config_file);
-        if (unit_config_file.exists()) {
-            default_units = new Unit[unit_config.unit_count];
-            for (int index = 0; index < default_units.length; index++) {
-                FileHandle unit_file = FileProvider.getAssetsFile(unit_data_dir + "unit_" + index + ".json");
-                if (unit_file.exists()) {
-                    Unit.UnitDefinition definition = json.fromJson(Unit.UnitDefinition.class, unit_file);
-                    default_units[index] = new Unit(definition, index);
-                } else {
-                    throw new AEIIException("unit_" + index + ".dat not found!");
-                }
-            }
-        } else {
-            throw new AEIIException("unit_config.dat not found!");
+        InputStreamReader configure_reader = new InputStreamReader(
+                UnitFactory.class.getResourceAsStream("/com/toyknight/aeii/data/units/unit_config.json"));
+        unit_config = json.fromJson(UnitConfiguration.class, configure_reader);
+        default_units = new Unit[unit_config.unit_count];
+        for (int index = 0; index < default_units.length; index++) {
+            InputStreamReader unit_reader = new InputStreamReader(
+                    UnitFactory.class.getResourceAsStream("/com/toyknight/aeii/data/units/unit_" + index + ".json"));
+            Unit.UnitDefinition definition = json.fromJson(Unit.UnitDefinition.class, unit_reader);
+            default_units[index] = new Unit(definition, index);
         }
     }
 

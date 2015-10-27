@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.AsyncTask;
@@ -80,8 +80,8 @@ public class ServerListDialog extends BasicDialog {
     }
 
     private void setEnabled(boolean enabled) {
-        AEIIApplet.setButtonEnabled(btn_connect, enabled);
-        AEIIApplet.setButtonEnabled(btn_back, enabled);
+        GameContext.setButtonEnabled(btn_connect, enabled);
+        GameContext.setButtonEnabled(btn_back, enabled);
         server_list.setEnabled(enabled);
     }
 

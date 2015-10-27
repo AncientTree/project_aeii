@@ -2,14 +2,14 @@ package com.toyknight.aeii.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.server.AEIIServer;
 import com.toyknight.aeii.utils.Platform;
 
 public class DesktopLauncher implements Runnable {
 
     private final LwjglApplicationConfiguration config;
-    private final AEIIApplet application;
+    private final GameContext application;
 
     public DesktopLauncher(int ts, int width, int height, boolean fs, int fps) {
         config = new LwjglApplicationConfiguration();
@@ -22,7 +22,7 @@ public class DesktopLauncher implements Runnable {
             config.useHDPI = true;
         }
         config.foregroundFPS = fps;
-        application = new AEIIApplet(Platform.Desktop, ts);
+        application = new GameContext(Platform.Desktop, ts);
     }
 
     @Override

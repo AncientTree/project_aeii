@@ -31,7 +31,7 @@ import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AEIIApplet extends Game {
+public class GameContext extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
@@ -67,7 +67,7 @@ public class AEIIApplet extends Game {
 
     private NetworkManager network_manager;
 
-    public AEIIApplet(Platform platform, int ts) {
+    public GameContext(Platform platform, int ts) {
         this.TILE_SIZE = ts;
         this.PLATFORM = platform;
     }
@@ -113,7 +113,7 @@ public class AEIIApplet extends Game {
             setScreen(logo_screen);
             System.out.println(getVerificationString());
         } catch (AEIIException ex) {
-            Gdx.app.log(TAG, ex.toString());
+            Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
         }
     }
 

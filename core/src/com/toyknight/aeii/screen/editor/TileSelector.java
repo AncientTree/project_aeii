@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.MapEditorScreen;
@@ -48,7 +48,7 @@ public class TileSelector extends Container<ScrollPane> {
         setActor(sp_tile_table);
     }
 
-    private AEIIApplet getContext() {
+    private GameContext getContext() {
         return editor.getContext();
     }
 

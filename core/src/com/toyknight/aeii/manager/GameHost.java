@@ -1,6 +1,6 @@
 package com.toyknight.aeii.manager;
 
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
@@ -16,7 +16,7 @@ import java.util.HashMap;
  */
 public class GameHost {
 
-    private static AEIIApplet context;
+    private static GameContext context;
 
     private static GameManager manager;
 
@@ -25,7 +25,7 @@ public class GameHost {
     private GameHost() {
     }
 
-    public static void setContext(AEIIApplet context) {
+    public static void setContext(GameContext context) {
         GameHost.context = context;
     }
 
@@ -34,7 +34,7 @@ public class GameHost {
         GameHost.is_game_over = false;
     }
 
-    public static AEIIApplet getContext() {
+    public static GameContext getContext() {
         return context;
     }
 

@@ -1,10 +1,9 @@
 package com.toyknight.aeii.utils;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Tile;
 
-import java.util.NoSuchElementException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 /**
@@ -18,33 +17,21 @@ public class TileFactory {
     }
 
     public static void loadTileData() throws AEIIException {
-        String tile_data_dir = "data/tiles/";
-        FileHandle tile_config = FileProvider.getAssetsFile(tile_data_dir + "tile_config.dat");
-        if (tile_config.exists()) {
-            try {
-                Scanner din = new Scanner(tile_config.read());
-                int tile_count = din.nextInt();
-                din.close();
-                tile_list = new Tile[tile_count];
-                for (int index = 0; index < tile_count; index++) {
-                    FileHandle tile_data = FileProvider.getAssetsFile(tile_data_dir + "tile_" + index + ".dat");
-                    if (tile_data.exists()) {
-                        loadTileData(tile_data, index);
-                    } else {
-                        throw new AEIIException("tile_" + index + ".dat not found!");
-                    }
-                }
-            } catch (NoSuchElementException ex) {
-                throw new AEIIException("tile_config.dat is broken!");
-            }
-        } else {
-            throw new AEIIException("tile_config.dat not found!");
+        Scanner din = new Scanner(
+                TileFactory.class.getResourceAsStream("/com/toyknight/aeii/data/tiles/tile_config.dat"));
+        int tile_count = din.nextInt();
+        din.close();
+        tile_list = new Tile[tile_count];
+        for (int index = 0; index < tile_count; index++) {
+            InputStream tile_input =
+                    TileFactory.class.getResourceAsStream("/com/toyknight/aeii/data/tiles/tile_" + index + ".dat");
+            loadTileData(tile_input, index);
         }
     }
 
-    private static void loadTileData(FileHandle data, int index) throws AEIIException {
+    private static void loadTileData(InputStream is, int index) throws AEIIException {
         try {
-            Scanner din = new Scanner(data.read());
+            Scanner din = new Scanner(is);
             int defence_bonus = din.nextInt();
             int step_cost = din.nextInt();
             int hp_recovery = din.nextInt();

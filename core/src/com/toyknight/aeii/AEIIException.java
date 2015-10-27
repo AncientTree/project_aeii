@@ -5,8 +5,12 @@ package com.toyknight.aeii;
  */
 public class AEIIException extends Exception {
 
-    public AEIIException(String msg) {
-        super(msg);
+    public AEIIException(String message) {
+        super(message);
+    }
+
+    public AEIIException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

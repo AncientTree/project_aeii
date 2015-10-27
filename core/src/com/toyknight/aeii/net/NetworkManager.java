@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.toyknight.aeii.AEIIApplet;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
@@ -308,26 +308,26 @@ public class NetworkManager {
                                 String service_name, username, message;
                                 switch (request) {
                                     case Request.START_GAME:
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             getListener().onGameStart(null);
                                         }
                                         break;
                                     case Request.RESUME_GAME:
                                         GameSave game_save = (GameSave) ois.readObject();
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             getListener().onGameStart(game_save);
                                         }
                                     case Request.GAME_EVENT:
                                         GameEvent event = (GameEvent) ois.readObject();
                                         Gdx.app.log(TAG, "Receive " + event.toString());
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             getListener().onReceiveGameEvent(event);
                                         }
                                         break;
                                     case Request.MESSAGE:
                                         username = ois.readUTF();
                                         message = ois.readUTF();
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             if (getListener() != null) {
                                                 getListener().onReceiveMessage(username, message);
                                             }
@@ -336,7 +336,7 @@ public class NetworkManager {
                                     case Request.PLAYER_JOINING:
                                         service_name = ois.readUTF();
                                         username = ois.readUTF();
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             if (getListener() != null) {
                                                 getListener().onPlayerJoin(service_name, username);
                                             }
@@ -345,7 +345,7 @@ public class NetworkManager {
                                     case Request.PLAYER_LEAVING:
                                         service_name = ois.readUTF();
                                         username = ois.readUTF();
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             if (getListener() != null) {
                                                 getListener().onPlayerLeave(service_name, username);
                                             }
@@ -360,7 +360,7 @@ public class NetworkManager {
                                         for (int team = 0; team < 4; team++) {
                                             types[team] = ois.readInt();
                                         }
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             if (getListener() != null) {
                                                 getListener().onAllocationUpdate(allocation, types);
                                             }
@@ -371,7 +371,7 @@ public class NetworkManager {
                                         for (int team = 0; team < 4; team++) {
                                             alliance[team] = ois.readInt();
                                         }
-                                        synchronized (AEIIApplet.RENDER_LOCK) {
+                                        synchronized (GameContext.RENDER_LOCK) {
                                             if (getListener() != null) {
                                                 getListener().onAllianceUpdate(alliance);
                                             }
@@ -409,7 +409,7 @@ public class NetworkManager {
             }
             if (server_socket != null) {
                 if (listener != null) {
-                    synchronized (AEIIApplet.RENDER_LOCK) {
+                    synchronized (GameContext.RENDER_LOCK) {
                         listener.onDisconnect();
                     }
                 }
