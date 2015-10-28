@@ -22,6 +22,10 @@ public class Map implements Serializable {
     private final ArrayList<Tomb> tomb_list;
     private final Point[][] position_map;
 
+    public Map() {
+        this(null, null, null);
+    }
+
     public Map(short[][] map_data, boolean[] team_access, String author) {
         this.author = author;
         this.team_access = team_access;

@@ -13,11 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.*;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.net.Response;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;
@@ -25,7 +26,6 @@ import com.toyknight.aeii.utils.MapFactory;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 
 /**
  * @author toyknight 8/31/2015.
@@ -174,9 +174,9 @@ public class RoomCreateDialog extends BasicDialog {
         if (object_list.getSelected() != null) {
             setEnabled(false);
             btn_create.setText(Language.getText("LB_CREATING"));
-            getContext().submitAsyncTask(new AsyncTask<RoomConfig>() {
+            getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
                 @Override
-                public RoomConfig doTask() throws AEIIException, IOException, ClassNotFoundException {
+                public RoomConfiguration doTask() throws AEIIException {
                     String map_name;
                     Map map;
                     int capacity;
@@ -208,7 +208,7 @@ public class RoomCreateDialog extends BasicDialog {
                 }
 
                 @Override
-                public void onFinish(RoomConfig config) {
+                public void onFinish(RoomConfiguration config) {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
                     getContext().gotoNetGameCreateScreen(config, game_save);

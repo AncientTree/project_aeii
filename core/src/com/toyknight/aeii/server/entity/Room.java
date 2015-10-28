@@ -213,7 +213,13 @@ public class Room {
     }
 
     public RoomSnapshot createSnapshot() {
-        return new RoomSnapshot(getRoomNumber(), isOpen(), getRoomName(), getMapName(), getCapacity(), getRemaining());
+        RoomSnapshot snapshot = new RoomSnapshot();
+        snapshot.room_number = getRoomNumber();
+        snapshot.open = isOpen();
+        snapshot.room_name = getRoomName();
+        snapshot.capacity = getCapacity();
+        snapshot.remaining = getRemaining();
+        return snapshot;
     }
 
 }

@@ -22,7 +22,7 @@ import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
 import com.toyknight.aeii.script.JavaScriptEngine;
 import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
@@ -35,8 +35,8 @@ public class GameContext extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
-    private static final String VERSION_MODIFIER = "c";
-    private static final String VERSION = "1.0.7";
+    public static final String VERSION_MODIFIER = "c";
+    public static final String VERSION = "1.0.7";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -111,7 +111,6 @@ public class GameContext extends Game {
             GameHost.setContext(this);
 
             setScreen(logo_screen);
-            System.out.println(getVerificationString());
         } catch (AEIIException ex) {
             Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
         }
@@ -214,8 +213,8 @@ public class GameContext extends Game {
         gotoScreen(lobby_screen);
     }
 
-    public void gotoNetGameCreateScreen(RoomConfig config, GameSave game_save) {
-        net_game_create_screen.setRoomConfig(config);
+    public void gotoNetGameCreateScreen(RoomConfiguration config, GameSave game_save) {
+        net_game_create_screen.setRoomConfiguration(config);
         net_game_create_screen.setGameSave(game_save);
         gotoScreen(net_game_create_screen);
     }
@@ -245,25 +244,27 @@ public class GameContext extends Game {
     }
 
     public void showMessage(String content, DialogCallback callback) {
-        dialog_callback = callback;
+        if (!dialog.isVisible()) {
+            dialog_callback = callback;
 
-        //set the message and title
-        dialog.getContentTable().reset();
-        dialog.getContentTable().add(new Label(content, getSkin()));
-        dialog.setWidth(Math.max(TILE_SIZE * 6, FontRenderer.getTextLayout(content).width + TILE_SIZE));
+            //set the message and title
+            dialog.getContentTable().reset();
+            dialog.getContentTable().add(new Label(content, getSkin()));
+            dialog.setWidth(Math.max(TILE_SIZE * 6, FontRenderer.getTextLayout(content).width + TILE_SIZE));
 
-        //set the button
-        dialog.getButtonTable().reset();
-        dialog.getButtonTable().add(btn_ok).size(TILE_SIZE / 2 * 5, TILE_SIZE / 2);
-        btn_ok.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                closeDialog();
-            }
-        });
+            //set the button
+            dialog.getButtonTable().reset();
+            dialog.getButtonTable().add(btn_ok).size(TILE_SIZE / 2 * 5, TILE_SIZE / 2);
+            btn_ok.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    closeDialog();
+                }
+            });
 
-        dialog.setVisible(true);
-        Gdx.input.setInputProcessor(dialog_layer);
+            dialog.setVisible(true);
+            Gdx.input.setInputProcessor(dialog_layer);
+        }
     }
 
     public void closeDialog() {
@@ -299,7 +300,7 @@ public class GameContext extends Game {
         return getRoomConfig().host;
     }
 
-    public RoomConfig getRoomConfig() {
+    public RoomConfiguration getRoomConfig() {
         return net_game_create_screen.getRoomConfig();
     }
 

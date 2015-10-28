@@ -23,7 +23,7 @@ import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Recorder;
 
@@ -34,7 +34,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private boolean record_on;
     private GameSave game_save;
-    private RoomConfig room_config;
+    private RoomConfiguration room_config;
     private Array<PlayerSnapshot> players = new Array<PlayerSnapshot>();
 
     private TextButton btn_start;
@@ -212,7 +212,7 @@ public class NetGameCreateScreen extends StageScreen {
         this.game_save = game_save;
     }
 
-    public void setRoomConfig(RoomConfig config) {
+    public void setRoomConfiguration(RoomConfiguration config) {
         this.room_config = config;
         players.clear();
         for (PlayerSnapshot player : config.players) {
@@ -222,7 +222,7 @@ public class NetGameCreateScreen extends StageScreen {
         player_list.setSelectedIndex(0);
     }
 
-    public RoomConfig getRoomConfig() {
+    public RoomConfiguration getRoomConfig() {
         return room_config;
     }
 

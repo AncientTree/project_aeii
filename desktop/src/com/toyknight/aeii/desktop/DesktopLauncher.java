@@ -3,7 +3,7 @@ package com.toyknight.aeii.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.server.AEIIServer;
+import com.toyknight.aeii.net.server.GameServer;
 import com.toyknight.aeii.utils.Platform;
 
 public class DesktopLauncher implements Runnable {
@@ -33,7 +33,7 @@ public class DesktopLauncher implements Runnable {
     public static void main(String[] args) {
         if (args.length >= 1) {
             if (args[0].equals("-server")) {
-                new AEIIServer().start();
+                new GameServer().start();
             } else {
                 if (args.length >= 5) {
                     int ts = Integer.parseInt(args[0]);

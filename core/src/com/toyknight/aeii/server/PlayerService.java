@@ -6,7 +6,7 @@ import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.serializable.RoomCreationSetup;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 
@@ -159,7 +159,7 @@ public class PlayerService extends Thread {
 
     private void respondJoinRoom(long room_number) throws IOException {
         if (getContext().isRoomOpen(room_number)) {
-            RoomConfig config = getContext().onPlayerJoinRoom(getName(), room_number);
+            RoomConfiguration config = getContext().onPlayerJoinRoom(getName(), room_number);
             synchronized (OUTPUT_LOCK) {
                 sendInteger(NetworkManager.RESPONSE);
                 sendObject(config);
@@ -184,7 +184,7 @@ public class PlayerService extends Thread {
     }
 
     private void respondCreateRoom(String map_name, Map map, int capacity, int gold, int population) throws IOException {
-        RoomConfig config = getContext().onPlayerCreateRoom(getName(), map_name, map, capacity, gold, population);
+        RoomConfiguration config = getContext().onPlayerCreateRoom(getName(), map_name, map, capacity, gold, population);
         synchronized (OUTPUT_LOCK) {
             sendInteger(NetworkManager.RESPONSE);
             sendObject(config);

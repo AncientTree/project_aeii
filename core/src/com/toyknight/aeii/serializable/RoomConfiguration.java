@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @author toyknight 8/31/2015.
  */
-public class RoomConfig implements Serializable {
+public class RoomConfiguration implements Serializable {
 
     private static final long serialVersionUID = 8312015L;
 

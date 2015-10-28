@@ -6,7 +6,7 @@ import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.server.entity.Room;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.io.*;
@@ -116,8 +116,8 @@ public class AEIIServer {
         return room != null && room.isOpen();
     }
 
-    public RoomConfig createRoomConfig(Room room) {
-        RoomConfig config = new RoomConfig();
+    public RoomConfiguration createRoomConfig(Room room) {
+        RoomConfiguration config = new RoomConfiguration();
         config.room_number = room.getRoomNumber();
         config.host = room.getHostService();
         config.map = room.getMap();
@@ -175,7 +175,7 @@ public class AEIIServer {
         return snapshot;
     }
 
-    public RoomConfig onPlayerCreateRoom(String service_name, String map_name, Map map, int capacity, int gold, int population) {
+    public RoomConfiguration onPlayerCreateRoom(String service_name, String map_name, Map map, int capacity, int gold, int population) {
         PlayerService player = getService(service_name);
         Room room = new Room(current_room_number++, player.getUsername() + "'s game");
         room.setMapName(map_name);
@@ -190,7 +190,7 @@ public class AEIIServer {
         return createRoomConfig(room);
     }
 
-    public RoomConfig onPlayerJoinRoom(String service_name, long room_number) {
+    public RoomConfiguration onPlayerJoinRoom(String service_name, long room_number) {
         Room room = getRoom(room_number);
         if (isOpen(room) && room.getRemaining() > 0 && getService(service_name).getRoomNumber() == -1 && room.getHostService() != null) {
             room.addPlayer(service_name);

@@ -52,6 +52,10 @@ public class Unit implements Serializable {
 
     private boolean is_standby;
 
+    public Unit() {
+        this(-1);
+    }
+
     public Unit(int index, String unit_code) {
         this.level = 0;
         this.index = index;

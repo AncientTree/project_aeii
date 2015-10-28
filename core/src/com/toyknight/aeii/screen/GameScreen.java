@@ -23,7 +23,7 @@ import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
 import com.toyknight.aeii.screen.dialog.MessageBox;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
@@ -397,7 +397,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         }
 
         if (getContext().getNetworkManager().isConnected()) {
-            RoomConfig config = getContext().getRoomConfig();
+            RoomConfiguration config = getContext().getRoomConfig();
             Array<PlayerSnapshot> players = new Array<PlayerSnapshot>();
             players.addAll(config.players, 0, config.players.length);
             message_box.setPlayers(players, config.team_allocation);

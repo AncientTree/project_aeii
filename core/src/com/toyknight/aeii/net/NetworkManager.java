@@ -1,15 +1,20 @@
 package com.toyknight.aeii.net;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.serializable.*;
+import com.toyknight.aeii.utils.ClassRegister;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,6 +25,11 @@ import java.util.ArrayList;
 public class NetworkManager {
 
     public static final String TAG = "Network";
+
+    private Client client;
+
+    private final Object RESPONSE_LOCK = new Object();
+    private ObjectMap<Long, Response> responses;
 
     public static final int REQUEST = 0x1;
     public static final int RESPONSE = 0x2;
@@ -39,7 +49,7 @@ public class NetworkManager {
     private ObjectOutputStream oos;
 
     public NetworkManager() {
-        this.running = true;
+        responses = new ObjectMap<Long, Response>();
     }
 
     public boolean isRunning() {
@@ -59,88 +69,107 @@ public class NetworkManager {
     }
 
     public boolean connect(ServerConfig server, String username, String v_string) throws IOException {
-        if (server_socket != null) {
-            disconnect();
-        }
+        responses.clear();
+        client = new Client();
+        client.addListener(new Listener() {
+            @Override
+            public void disconnected(Connection connection) {
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onDisconnect();
+                    }
+                }
+            }
 
-        SocketHints hints = new SocketHints();
-        server_socket = Gdx.net.newClientSocket(Net.Protocol.TCP, server.getAddress(), server.getPort(), hints);
-        oos = new ObjectOutputStream(server_socket.getOutputStream());
-        ois = new ObjectInputStream(server_socket.getInputStream());
-
-        sendString(username);
-        sendString(v_string);
-        boolean approved = ois.readBoolean();
-        if (approved) {
-            service_name = ois.readUTF();
-            new ReceivingThread().start();
-        }
-        return approved;
+            @Override
+            public void received(Connection connection, Object object) {
+                onReceive(object);
+            }
+        });
+        new ClassRegister().register(client.getKryo());
+        client.start();
+        client.connect(5000, server.getAddress(), server.getPort());
+        return requestAuthentication(username, v_string);
     }
 
     public void disconnect() {
-        if (isConnected()) {
-            try {
-                server_socket.dispose();
-                server_socket = null;
-                listener = null;
-            } catch (Exception ex) {
-                Gdx.app.log(TAG, ex.toString());
-            }
+        try {
+            client.dispose();
+        } catch (IOException ex) {
+            Gdx.app.log(TAG, ex.toString());
+        }
+        client = null;
+        synchronized (RESPONSE_LOCK) {
+            RESPONSE_LOCK.notifyAll();
         }
     }
 
     public boolean isConnected() {
-        return server_socket != null && server_socket.isConnected();
+        return client != null && client.isConnected();
+    }
+
+    public void onReceive(Object object) {
+        if (object instanceof Response) {
+            synchronized (RESPONSE_LOCK) {
+                Response response = (Response) object;
+                responses.put(response.getRequestID(), response);
+                RESPONSE_LOCK.notifyAll();
+            }
+        }
     }
 
     public String getServiceName() {
         return service_name;
     }
 
-    public ArrayList<RoomSnapshot> requestOpenRoomList() throws IOException, ClassNotFoundException {
-        synchronized (OUTPUT_LOCK) {
-            sendInteger(REQUEST);
-            sendInteger(Request.LIST_ROOMS);
-        }
-        synchronized (INPUT_LOCK) {
-            try {
-                ArrayList list = (ArrayList) ois.readObject();
-                INPUT_LOCK.notifyAll();
-                return list;
-            } catch (IOException ex) {
-                INPUT_LOCK.notifyAll();
-                throw ex;
-            } catch (ClassNotFoundException ex) {
-                INPUT_LOCK.notifyAll();
-                throw ex;
+    private Response sendRequest(Request request) {
+        long id = request.getID();
+        client.sendTCP(request);
+        synchronized (RESPONSE_LOCK) {
+            while (responses.get(id) == null && isConnected()) {
+                try {
+                    RESPONSE_LOCK.wait();
+                } catch (InterruptedException ex) {
+                    //do nothing
+                }
+            }
+            if (isConnected()) {
+                return responses.get(id);
+            } else {
+                return null;
             }
         }
     }
 
-    public RoomConfig requestCreateRoom(String map_name, Map map, int capacity, int gold, int population) throws IOException, ClassNotFoundException {
-        RoomCreationSetup setup = new RoomCreationSetup();
-        setup.map_name = map_name;
-        setup.map = map;
-        setup.capacity = capacity;
-        setup.initial_gold = gold;
-        setup.population = population;
-        synchronized (OUTPUT_LOCK) {
-            sendInteger(REQUEST);
-            sendInteger(Request.CREATE_ROOM);
-            sendObject(setup);
+    public boolean requestAuthentication(String username, String v_string) {
+        Request request = Request.getInstance(Request.AUTHENTICATION);
+        request.setParameters(username, v_string);
+        Response response = sendRequest(request);
+        if (response == null) {
+            return false;
+        } else {
+            return (Boolean) response.getParameter(0);
         }
-        synchronized (INPUT_LOCK) {
-            synchronized (INPUT_LOCK) {
-                try {
-                    RoomConfig config = (RoomConfig) ois.readObject();
-                    INPUT_LOCK.notifyAll();
-                    return config;
-                } catch (IOException ex) {
-                    INPUT_LOCK.notifyAll();
-                    throw ex;
-                }
-            }
+    }
+
+    public Array<RoomSnapshot> requestRoomList() {
+        Request request = Request.getInstance(Request.LIST_ROOMS);
+        Response response = sendRequest(request);
+        if (response == null) {
+            return null;
+        } else {
+            return (Array) response.getParameter(0);
+        }
+    }
+
+    public RoomConfiguration requestCreateRoom(String map_name, Map map, int capacity, int gold, int population) {
+        Request request = Request.getInstance(Request.CREATE_ROOM);
+        request.setParameters(map_name, map, capacity, gold, population);
+        Response response = sendRequest(request);
+        if (response == null) {
+            return null;
+        } else {
+            return (RoomConfiguration) response.getParameter(0);
         }
     }
 
@@ -413,7 +442,7 @@ public class NetworkManager {
                         listener.onDisconnect();
                     }
                 }
-                disconnect();
+                //disconnect();
             }
             Gdx.app.log(TAG, "Disconnected from server");
         }

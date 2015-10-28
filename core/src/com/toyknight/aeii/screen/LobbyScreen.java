@@ -21,7 +21,7 @@ import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.dialog.RoomCreateDialog;
-import com.toyknight.aeii.serializable.RoomConfig;
+import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -30,7 +30,6 @@ import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * @author toyknight 8/23/2015.
@@ -42,7 +41,6 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
     private StringList<RoomSnapshot> room_list;
 
-    private ModeSelectDialog mode_selected_dialog;
     private RoomCreateDialog room_create_dialog;
     private MiniMapDialog map_preview_dialog;
 
@@ -116,7 +114,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         });
         addActor(btn_create);
 
-        mode_selected_dialog = new ModeSelectDialog(this);
+        ModeSelectDialog mode_selected_dialog = new ModeSelectDialog(this);
         addDialog("mode", mode_selected_dialog);
 
         room_create_dialog = new RoomCreateDialog(this);
@@ -166,21 +164,21 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         room_list.clearItems();
         Gdx.input.setInputProcessor(null);
         btn_refresh.setText(Language.getText("LB_REFRESHING"));
-        getContext().submitAsyncTask(new AsyncTask<ArrayList<RoomSnapshot>>() {
+        getContext().submitAsyncTask(new AsyncTask<Array<RoomSnapshot>>() {
             @Override
-            public ArrayList<RoomSnapshot> doTask() throws IOException, ClassNotFoundException {
-                return getContext().getNetworkManager().requestOpenRoomList();
+            public Array<RoomSnapshot> doTask() throws IOException, ClassNotFoundException {
+                return getContext().getNetworkManager().requestRoomList();
             }
 
             @Override
-            public void onFinish(ArrayList<RoomSnapshot> result) {
-                Array<RoomSnapshot> list = new Array<RoomSnapshot>();
-                for (RoomSnapshot room : result) {
-                    list.add(room);
-                }
-                room_list.setItems(list);
-                if (list.size > 0) {
-                    room_list.setSelectedIndex(0);
+            public void onFinish(Array<RoomSnapshot> result) {
+                if (result == null) {
+
+                } else {
+                    room_list.setItems(result);
+                    if (result.size > 0) {
+                        room_list.setSelectedIndex(0);
+                    }
                 }
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
                 Gdx.input.setInputProcessor(LobbyScreen.this);
@@ -201,7 +199,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             getContext().submitAsyncTask(new AsyncTask<Object>() {
                 @Override
                 public Object doTask() throws IOException, ClassNotFoundException {
-                    return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().getRoomNumber());
+                    return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().room_number);
                 }
 
                 @Override
@@ -210,8 +208,8 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                     if (result == null) {
                         getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
                     } else {
-                        if (result instanceof RoomConfig) {
-                            getContext().gotoNetGameCreateScreen((RoomConfig) result, null);
+                        if (result instanceof RoomConfiguration) {
+                            getContext().gotoNetGameCreateScreen((RoomConfiguration) result, null);
                         }
                         if (result instanceof GameCore) {
                             GameCore game = (GameCore) result;

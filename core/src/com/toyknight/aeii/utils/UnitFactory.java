@@ -1,6 +1,5 @@
 package com.toyknight.aeii.utils;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Unit;

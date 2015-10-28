@@ -7,6 +7,8 @@ import com.badlogic.gdx.Gdx;
  */
 public abstract class AsyncTask<T> implements Runnable {
 
+    private static final String TAG = "Task";
+
     private T result;
 
     private String message;
@@ -29,6 +31,7 @@ public abstract class AsyncTask<T> implements Runnable {
             });
         } catch (Exception e) {
             message = e.getMessage();
+            Gdx.app.log(TAG, e.toString());
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
