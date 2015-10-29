@@ -68,11 +68,7 @@ public class NetworkManager {
 
     public void disconnect() {
         if (isConnected()) {
-            try {
-                client.dispose();
-            } catch (IOException ex) {
-                Gdx.app.log(TAG, ex.toString());
-            }
+            client.close();
         }
         client = null;
         synchronized (RESPONSE_LOCK) {
