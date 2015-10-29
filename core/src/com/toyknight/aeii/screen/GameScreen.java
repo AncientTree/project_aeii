@@ -28,7 +28,6 @@ import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
-import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.IOException;
 
@@ -431,7 +430,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         scale = 1.0f;
         manager.setGame(game);
         manager.setGameManagerListener(this);
-        UnitToolkit.setGame(game);
         Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
         locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;

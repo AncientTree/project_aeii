@@ -12,13 +12,13 @@ public class UnitToolkit {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
-    private static GameCore game;
+    private GameCore game;
 
-    public static void setGame(GameCore game) {
-        UnitToolkit.game = game;
+    public UnitToolkit(GameCore game) {
+        this.game = game;
     }
 
-    public static GameCore getGame() {
+    public GameCore getGame() {
         return game;
     }
 
@@ -34,7 +34,7 @@ public class UnitToolkit {
         }
     }
 
-    public static int getTerrainHeal(Unit unit, Tile tile) {
+    public int getTerrainHeal(Unit unit, Tile tile) {
         int heal = 0;
         if (!unit.hasAbility(Ability.CRAWLER)) {
             if (tile.getTeam() == -1) {
@@ -96,7 +96,7 @@ public class UnitToolkit {
         return isWithinRange(unit, target.getX(), target.getY());
     }
 
-    public static boolean canCounter(Unit counter, Unit attacker) {
+    public boolean canCounter(Unit counter, Unit attacker) {
         if (getGame().isEnemy(counter, attacker) && isWithinRange(counter, attacker)) {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
                 return getRange(counter, attacker) <= 2;
@@ -116,7 +116,7 @@ public class UnitToolkit {
         return getRange(unit_a.getX(), unit_a.getY(), unit_b.getX(), unit_b.getY());
     }
 
-    public static int getTileDefenceBonus(Unit unit, int tile_index) {
+    public int getTileDefenceBonus(Unit unit, int tile_index) {
         int defence_bonus = 0;
         Tile tile = TileFactory.getTile(tile_index);
         if (!unit.hasAbility(Ability.AIR_FORCE)) {
@@ -145,7 +145,7 @@ public class UnitToolkit {
         return defence_bonus;
     }
 
-    public static int getPhysicalDefenceBonus(Unit attacker, Unit defender, int tile_index) {
+    public int getPhysicalDefenceBonus(Unit attacker, Unit defender, int tile_index) {
         int defence_bonus = getTileDefenceBonus(defender, tile_index);
         if (defender.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(defender, 2);
@@ -154,12 +154,12 @@ public class UnitToolkit {
         return defence_bonus;
     }
 
-    public static int getMagicDefenceBonus(Unit attacker, Unit defender, int tile_index) {
+    public int getMagicDefenceBonus(Unit attacker, Unit defender, int tile_index) {
         int defence_bonus = getTileDefenceBonus(defender, tile_index);
         return defence_bonus;
     }
 
-    public static int getAttackBonus(Unit attacker, Unit defender, int tile_index) {
+    public int getAttackBonus(Unit attacker, Unit defender, int tile_index) {
         int attack_bonus = 0;
         Tile tile = TileFactory.getTile(tile_index);
         if (attacker.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile.getType() == Tile.TYPE_MOUNTAIN) {
@@ -187,7 +187,7 @@ public class UnitToolkit {
         return attack_bonus;
     }
 
-    public static int getDamage(Unit attacker, Unit defender, Map map) {
+    public int getDamage(Unit attacker, Unit defender, Map map) {
         int attacker_tile_index = map.getTileIndex(attacker.getX(), attacker.getY());
         int defender_tile_index = map.getTileIndex(defender.getX(), defender.getY());
 

@@ -25,6 +25,10 @@ public class AttackInformationRenderer {
         return screen.getManager();
     }
 
+    private UnitToolkit getUnitToolkit() {
+        return getManager().getUnitToolkit();
+    }
+
     public void render(Batch batch) {
         if (getManager().getState() == GameManager.STATE_ATTACK && !getManager().isAnimating()) {
             int cursor_x = screen.getCursorMapX();
@@ -95,7 +99,7 @@ public class AttackInformationRenderer {
                 break;
         }
         int attacker_atk = attacker.getAttack();
-        int attacker_atk_bonus = UnitToolkit.getAttackBonus(attacker, defender, attacker_tile);
+        int attacker_atk_bonus = getUnitToolkit().getAttackBonus(attacker, defender, attacker_tile);
         String attacker_attack_str = Integer.toString(attacker_atk + attacker_atk_bonus);
         FontRenderer.drawText(batch, attacker_attack_str,
                 lmargin + hw + ts * 3 / 24 + ts / 4,
@@ -125,8 +129,8 @@ public class AttackInformationRenderer {
                 break;
         }
         int defender_atk = defender.getAttack();
-        int defender_atk_bonus = UnitToolkit.getAttackBonus(defender, attacker, defender_tile);
-        int modified_defender_atk = UnitToolkit.canCounter(defender, attacker) ? defender_atk + defender_atk_bonus : 0;
+        int defender_atk_bonus = getUnitToolkit().getAttackBonus(defender, attacker, defender_tile);
+        int modified_defender_atk = getUnitToolkit().canCounter(defender, attacker) ? defender_atk + defender_atk_bonus : 0;
         String defender_attack_str = Integer.toString(modified_defender_atk);
         FontRenderer.drawText(batch, defender_attack_str,
                 lmargin + hw + ts * 3 / 24 + ts / 4,
@@ -149,13 +153,13 @@ public class AttackInformationRenderer {
 
         //paint defence
         FontRenderer.setTextColor(Color.WHITE);
-        int attacker_p_defence_bonus = UnitToolkit.getPhysicalDefenceBonus(defender, attacker, attacker_tile);
+        int attacker_p_defence_bonus = getUnitToolkit().getPhysicalDefenceBonus(defender, attacker, attacker_tile);
         int attacker_p_defence = attacker.getPhysicalDefence();
         String attacker_p_defence_str = Integer.toString(attacker_p_defence + attacker_p_defence_bonus);
         FontRenderer.drawText(batch, attacker_p_defence_str,
                 lmargin + hw * 2 + tfw + ts * 5 / 24 + ts / 4,
                 infoy + ts / 24 + (tfh - lbh) / 2 + lbh);
-        int attacker_m_defence_bonus = UnitToolkit.getMagicDefenceBonus(defender, attacker, attacker_tile);
+        int attacker_m_defence_bonus = getUnitToolkit().getMagicDefenceBonus(defender, attacker, attacker_tile);
         int attacker_m_defence = attacker.getMagicDefence();
         String attacker_m_defence_str = Integer.toString(attacker_m_defence + attacker_m_defence_bonus);
         FontRenderer.drawText(batch, attacker_m_defence_str,
@@ -193,13 +197,13 @@ public class AttackInformationRenderer {
                     aw, ah);
         }
 
-        int defender_p_defence_bonus = UnitToolkit.getPhysicalDefenceBonus(attacker, defender, defender_tile);
+        int defender_p_defence_bonus = getUnitToolkit().getPhysicalDefenceBonus(attacker, defender, defender_tile);
         int defender_p_defence = defender.getPhysicalDefence();
         String defender_p_defence_str = Integer.toString(defender_p_defence + defender_p_defence_bonus);
         FontRenderer.drawText(batch, defender_p_defence_str,
                 lmargin + hw * 2 + tfw + 5 * ts / 24 + ts / 4,
                 infoy + tfh + 2 * ts / 24 + (tfh - lbh) / 2 + lbh);
-        int defender_m_defence_bonus = UnitToolkit.getMagicDefenceBonus(attacker, defender, defender_tile);
+        int defender_m_defence_bonus = getUnitToolkit().getMagicDefenceBonus(attacker, defender, defender_tile);
         int defender_m_defence = defender.getMagicDefence();
         String defender_m_defence_str = Integer.toString(defender_m_defence + defender_m_defence_bonus);
         FontRenderer.drawText(batch, defender_m_defence_str,
