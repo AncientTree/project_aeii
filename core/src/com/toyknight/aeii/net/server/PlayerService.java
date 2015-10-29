@@ -1,6 +1,7 @@
 package com.toyknight.aeii.net.server;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.toyknight.aeii.serializable.PlayerSnapshot;
 
 /**
  * @author toyknight 10/27/2015.
@@ -14,10 +15,17 @@ public class PlayerService {
     private String address;
     private String username;
 
+    private long room_number;
+
     public PlayerService(Connection connection) {
         this.connection = connection;
         authenticated = false;
+        room_number = -1;
         address = connection.getRemoteAddressTCP().getAddress().toString();
+    }
+
+    public int getID() {
+        return getConnection().getID();
     }
 
     public Connection getConnection() {
@@ -42,6 +50,14 @@ public class PlayerService {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setRoomNumber(long number) {
+        room_number = number;
+    }
+
+    public long getRoomNumber() {
+        return room_number;
     }
 
 }

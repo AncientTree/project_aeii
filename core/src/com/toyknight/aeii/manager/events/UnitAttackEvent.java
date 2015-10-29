@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 public class UnitAttackEvent implements GameEvent, Serializable {
 
-    private static final long serialVersionUID = 05062015L;
+    private static final long serialVersionUID = 5062015L;
 
     private final int attacker_x;
     private final int attacker_y;
@@ -26,6 +26,9 @@ public class UnitAttackEvent implements GameEvent, Serializable {
     private final int experience;
     private final int damage;
 
+    public UnitAttackEvent() {
+        this(-1, -1, -1, -1, -1, -1);
+    }
 
     public UnitAttackEvent(int attacker_x, int attacker_y, int target_x, int target_y, int damage, int experience) {
         this.attacker_x = attacker_x;
@@ -48,6 +51,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
         Unit target = game.getMap().getUnit(target_x, target_y);
         return attacker != null
                 && (target != null || attacker.hasAbility(Ability.DESTROYER)
+                && game.getMap().getTile(target_x, target_y) != null
                 && game.getMap().getTile(target_x, target_y).isDestroyable());
     }
 
@@ -70,7 +74,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
                 //submit animation
                 manager.submitAnimation(new UnitDestroyAnimator(defender));
                 manager.submitAnimation(new DustAriseAnimator(defender.getX(), defender.getY()));
-                GameHost.updateGameStatus();
+                game.updateGameStatus();
             }
         }
         boolean level_up = attacker.gainExperience(experience);

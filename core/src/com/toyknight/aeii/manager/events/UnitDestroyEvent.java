@@ -20,6 +20,10 @@ public class UnitDestroyEvent implements GameEvent, Serializable {
     private final int target_x;
     private final int target_y;
 
+    public UnitDestroyEvent() {
+        this(-1, -1);
+    }
+
     public UnitDestroyEvent(int target_x, int target_y) {
         this.target_x = target_x;
         this.target_y = target_y;
@@ -44,7 +48,7 @@ public class UnitDestroyEvent implements GameEvent, Serializable {
         manager.submitAnimation(new UnitDestroyAnimator(unit));
         manager.submitAnimation(new DustAriseAnimator(unit.getX(), unit.getY()));
 
-        GameHost.updateGameStatus();
+        game.updateGameStatus();
     }
 
 }

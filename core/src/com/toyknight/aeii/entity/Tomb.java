@@ -11,6 +11,9 @@ public class Tomb extends Point implements Serializable {
 
     private int remains = 1;
 
+    public Tomb() {
+    }
+
     public Tomb(int x, int y) {
         super(x, y);
     }

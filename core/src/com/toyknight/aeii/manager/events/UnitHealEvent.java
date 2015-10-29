@@ -23,6 +23,10 @@ public class UnitHealEvent implements GameEvent, Serializable {
     private final int heal;
     private final int experience;
 
+    public UnitHealEvent() {
+        this(-1, -1, -1, -1, -1, -1);
+    }
+
     public UnitHealEvent(int healer_x, int healer_y, int target_x, int target_y, int heal, int experience) {
         this.healer_x = healer_x;
         this.healer_y = healer_y;

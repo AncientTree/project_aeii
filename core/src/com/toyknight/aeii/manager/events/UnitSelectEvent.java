@@ -18,6 +18,10 @@ public class UnitSelectEvent implements GameEvent, Serializable {
     private final int target_x;
     private final int target_y;
 
+    public UnitSelectEvent() {
+        this(-1, -1);
+    }
+
     public UnitSelectEvent(int target_x, int target_y) {
         this.target_x = target_x;
         this.target_y = target_y;

@@ -1,11 +1,16 @@
 package com.toyknight.aeii.manager;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.Animator;
+import com.toyknight.aeii.animator.HpChangeAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.events.HpChangeEvent;
 import com.toyknight.aeii.manager.events.TurnEndEvent;
 import com.toyknight.aeii.utils.Recorder;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -33,16 +38,16 @@ public class GameManager implements AnimationDispatcher {
 
     private GameCore game;
     private GameManagerListener manager_listener;
-    private final ArrayList<AnimationListener> animation_listeners;
+    private final Array<AnimationListener> animation_listeners;
 
     private int state;
     protected Unit selected_unit;
     protected Point last_position;
 
     private int[][] move_mark_map;
-    private ArrayList<Point> move_path;
-    private final HashSet<Point> movable_positions;
-    private HashSet<Point> attackable_positions;
+    private Array<Point> move_path;
+    private final ObjectSet<Point> movable_positions;
+    private ObjectSet<Point> attackable_positions;
 
     private final int[] x_dir = {1, -1, 0, 0};
     private final int[] y_dir = {0, 0, 1, -1};
@@ -50,8 +55,8 @@ public class GameManager implements AnimationDispatcher {
     public GameManager() {
         this.event_queue = new LinkedList<GameEvent>();
         this.animation_queue = new LinkedList<Animator>();
-        this.animation_listeners = new ArrayList<AnimationListener>();
-        this.movable_positions = new HashSet<Point>();
+        this.animation_listeners = new Array<AnimationListener>();
+        this.movable_positions = new ObjectSet<Point>();
     }
 
     public void setGame(GameCore game) {
@@ -173,6 +178,55 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
+    public void onUnitStandby(Unit unit) {
+        //all the status auras
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                Unit target = game.getMap().getUnit(unit.getX() + i, unit.getY() + j);
+                if (target != null) {
+                    if (unit.hasAbility(Ability.ATTACK_AURA) && !game.isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.INSPIRED, 0));
+                    }
+                    if (unit.hasAbility(Ability.SLOWING_AURA)
+                            && !target.hasAbility(Ability.SLOWING_AURA) && game.isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.SLOWED, 1));
+                    }
+                }
+            }
+        }
+        //the refresh aura
+        ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
+        if (unit.hasAbility(Ability.REFRESH_AURA)) {
+            int heal = 10 + unit.getLevel() * 5;
+            ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
+            attackable_positions.add(game.getMap().getPosition(unit.getX(), unit.getY()));
+            for (Point target_position : attackable_positions) {
+                Unit target = game.getMap().getUnit(target_position.x, target_position.y);
+                if (target != null && !game.isEnemy(unit, target) && target.hasStatus(Status.POISONED)) {
+                    target.clearStatus();
+                }
+                if (game.canHeal(unit, target)) {
+                    hp_change_map.put(target_position, heal);
+                }
+
+            }
+        }
+        //deal with tombs
+        if (game.getMap().isTomb(unit.getX(), unit.getY())) {
+            game.getMap().removeTomb(unit.getX(), unit.getY());
+            if (!unit.hasAbility(Ability.HEAVY_MACHINE) && !unit.hasAbility(Ability.NECROMANCER)) {
+                unit.attachStatus(new Status(Status.POISONED, 3));
+            }
+        }
+        //validate hp change
+        if (unit.getCurrentHp() > unit.getMaxHp()) {
+            Point position = game.getMap().getPosition(unit.getX(), unit.getY());
+            hp_change_map.put(position, unit.getMaxHp() - unit.getCurrentHp());
+        }
+        executeGameEvent(new HpChangeEvent(hp_change_map), false);
+        setState(GameManager.STATE_SELECT);
+    }
+
     public void submitGameEvent(GameEvent event) {
         event_queue.add(event);
     }
@@ -188,15 +242,15 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public void executeGameEvent(GameEvent event, boolean record) {
-        if (event.canExecute(getGame()) && !GameHost.isGameOver()) {
+        if (event.canExecute(getGame())) {
             event.execute(this);
             Point focus = event.getFocus(getGame());
             if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                if (focus != null && event instanceof TurnEndEvent) {
+                if (focus != null && manager_listener != null && event instanceof TurnEndEvent) {
                     manager_listener.onMapFocusRequired(focus.x, focus.y);
                 }
             } else {
-                if (focus != null) {
+                if (focus != null && manager_listener != null) {
                     manager_listener.onMapFocusRequired(focus.x, focus.y);
                 }
             }
@@ -249,6 +303,11 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
+    public void clearAnimations() {
+        current_animation = null;
+        animation_queue.clear();
+    }
+
     @Override
     public Animator getCurrentAnimation() {
         return current_animation;
@@ -274,7 +333,7 @@ public class GameManager implements AnimationDispatcher {
         createMovablePositions(getSelectedUnit());
     }
 
-    public HashSet<Point> createMovablePositions(Unit unit) {
+    public ObjectSet<Point> createMovablePositions(Unit unit) {
         createMoveMarkMap();
         move_path = null;
         movable_positions.clear();
@@ -336,19 +395,19 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
-    public HashSet<Point> getMovablePositions() {
+    public ObjectSet<Point> getMovablePositions() {
         return movable_positions;
     }
 
-    public HashSet<Point> getAttackablePositions() {
+    public ObjectSet<Point> getAttackablePositions() {
         return attackable_positions;
     }
 
-    public ArrayList<Point> getMovePath(int dest_x, int dest_y) {
-        if (move_path == null || move_path.size() == 0) {
+    public Array<Point> getMovePath(int dest_x, int dest_y) {
+        if (move_path == null || move_path.size == 0) {
             createMovePath(dest_x, dest_y);
         } else {
-            Point current_dest = move_path.get(move_path.size() - 1);
+            Point current_dest = move_path.get(move_path.size - 1);
             if (dest_x != current_dest.x || dest_y != current_dest.y) {
                 createMovePath(dest_x, dest_y);
             }
@@ -357,7 +416,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     private void createMovePath(int dest_x, int dest_y) {
-        move_path = new ArrayList<Point>();
+        move_path = new Array<Point>();
         int start_x = getSelectedUnit().getX();
         int start_y = getSelectedUnit().getY();
         if (start_x != dest_x || start_y != dest_y) {
@@ -369,7 +428,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     private void createMovePath(int current_x, int current_y, int start_x, int start_y) {
-        move_path.add(0, new Point(current_x, current_y));
+        move_path.insert(0, new Point(current_x, current_y));
         if (current_x != start_x || current_y != start_y) {
             int next_x = 0;
             int next_y = 0;
@@ -396,12 +455,12 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
-    public HashSet<Point> createAttackablePositions(Unit unit) {
+    public ObjectSet<Point> createAttackablePositions(Unit unit) {
         int unit_x = unit.getX();
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
         int max_ar = unit.getMaxAttackRange();
-        HashSet<Point> attackable_positions = new HashSet<Point>();
+        ObjectSet<Point> attackable_positions = new ObjectSet<Point>();
         for (int ar = min_ar; ar <= max_ar; ar++) {
             for (int dx = -ar; dx <= ar; dx++) {
                 int dy = dx >= 0 ? ar - dx : -ar - dx;
@@ -422,7 +481,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public boolean hasEnemyWithinRange(Unit unit) {
-        HashSet<Point> attackable_positions = createAttackablePositions(unit);
+        ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
             if (getSelectedUnit().hasAbility(Ability.DESTROYER) && getGame().getMap().getUnit(point.x, point.y) == null
                     && getGame().getMap().getTile(point.x, point.y).isDestroyable()) {
@@ -437,7 +496,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public boolean hasAllyCanHealWithinRange(Unit unit) {
-        HashSet<Point> attackable_positions = createAttackablePositions(unit);
+        ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (getGame().canHeal(unit, target)) {
@@ -448,7 +507,7 @@ public class GameManager implements AnimationDispatcher {
     }
 
     public boolean hasTombWithinRange(Unit unit) {
-        HashSet<Point> attackable_positions = createAttackablePositions(unit);
+        ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
         for (Point point : attackable_positions) {
             if (getGame().getMap().isTomb(point.x, point.y) && getGame().getMap().getUnit(point.x, point.y) == null) {
                 return true;

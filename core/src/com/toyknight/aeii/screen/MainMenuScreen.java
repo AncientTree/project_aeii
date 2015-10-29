@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.AELogoAnimator;
 import com.toyknight.aeii.animator.AELogoGlowAnimator;
@@ -107,8 +106,14 @@ public class MainMenuScreen extends StageScreen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(this);
-        AudioManager.loopMainTheme();
+        getContext().getNetworkManager().setNetworkListener(this);
+        //AudioManager.loopMainTheme();
         closeAllDialogs();
+    }
+
+    @Override
+    public void onDisconnect() {
+        //do nothing
     }
 
 }

@@ -3,11 +3,10 @@ package com.toyknight.aeii.renderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.screen.MapCanvas;
-
-import java.util.HashSet;
 
 /**
  * @author toyknight 4/20/2015.
@@ -35,7 +34,7 @@ public class AlphaRenderer {
         return getCanvas().ts();
     }
 
-    public void drawMoveAlpha(SpriteBatch batch, HashSet<Point> movable_positions) {
+    public void drawMoveAlpha(SpriteBatch batch, ObjectSet<Point> movable_positions) {
         for (Point point : movable_positions) {
             int screen_x = getCanvas().getXOnScreen(point.x);
             int screen_y = getCanvas().getYOnScreen(point.y);
@@ -44,7 +43,7 @@ public class AlphaRenderer {
         batch.flush();
     }
 
-    public void drawAttackAlpha(SpriteBatch batch, HashSet<Point> attackable_positions) {
+    public void drawAttackAlpha(SpriteBatch batch, ObjectSet<Point> attackable_positions) {
         for (Point point : attackable_positions) {
             int screen_x = getCanvas().getXOnScreen(point.x);
             int screen_y = getCanvas().getYOnScreen(point.y);

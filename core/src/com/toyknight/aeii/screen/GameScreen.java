@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
@@ -30,8 +31,6 @@ import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * @author toyknight 4/4/2015.
@@ -234,7 +233,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawTombs() {
-        ArrayList<Tomb> tomb_list = getGame().getMap().getTombList();
+        Array<Tomb> tomb_list = getGame().getMap().getTombList();
         for (Tomb tomb : tomb_list) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
@@ -244,7 +243,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawUnits() {
-        Set<Point> unit_positions = getGame().getMap().getUnitPositionSet();
+        ObjectMap.Keys<Point> unit_positions = getGame().getMap().getUnitPositionSet();
         for (Point position : unit_positions) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             //if this unit isn't animating, then paint it. otherwise, let animation paint it
@@ -301,25 +300,25 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onPlayerJoin(String service_name, String username) {
-        message_box.addPlayer(service_name, username);
+    public void onPlayerJoin(int id, String username) {
+        message_box.addPlayer(id, username);
         appendMessage(null, username + " " + Language.getText("LB_JOINS"));
     }
 
     @Override
-    public void onPlayerLeave(String service_name, String username) {
-        message_box.removePlayer(service_name);
+    public void onPlayerLeave(int id, String username) {
+        message_box.removePlayer(id);
         if (getContext().isGameHost()) {
-            String[] team_allocation = getContext().getRoomConfig().team_allocation;
+            Integer[] team_allocation = getContext().getRoomConfig().team_allocation;
             for (int team = 0; team < 4; team++) {
-                if (team_allocation[team].equals(service_name) && getGame().getPlayer(team) != null) {
+                if (team_allocation[team].equals(id) && getGame().getPlayer(team) != null) {
                     getGame().getPlayer(team).setType(Player.LOCAL);
                 }
             }
             onButtonUpdateRequested();
             appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
         } else {
-            if (getContext().getHostService().equals(service_name)) {
+            if (getContext().getHostID() == id) {
                 getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
                     @Override
                     public void doCallback() {
@@ -398,8 +397,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
         if (getContext().getNetworkManager().isConnected()) {
             RoomConfiguration config = getContext().getRoomConfig();
-            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>();
-            players.addAll(config.players, 0, config.players.length);
+            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(config.players);
             message_box.setPlayers(players, config.team_allocation);
         }
 

@@ -1,6 +1,8 @@
 package com.toyknight.aeii.animator;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -15,11 +17,11 @@ public class HpChangeAnimator extends UnitAnimator {
 
     private final int[] y_offset = {2, 0, -1, -1, -2, -2, -2, -2, -1, -1, 0, 1, 2, 4, 6, 4, 3, 4, 6, 6, 6, 6};
 
-    private final HashMap<Point, Integer> change_map;
+    private final ObjectMap<Point, Integer> change_map;
 
     private int current_frame = 0;
 
-    public HpChangeAnimator(HashMap<Point, Integer> change_map, Set<Unit> units) {
+    public HpChangeAnimator(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units) {
         int index = 0;
         for (Unit unit : units) {
             addUnit(unit, Integer.toString(index));
@@ -30,7 +32,7 @@ public class HpChangeAnimator extends UnitAnimator {
 
     public HpChangeAnimator(Unit unit, int change) {
         addUnit(unit, Integer.toString(0));
-        this.change_map = new HashMap<Point, Integer>();
+        this.change_map = new ObjectMap<Point, Integer>();
         this.change_map.put(new Point(unit.getX(), unit.getY()), change);
     }
 

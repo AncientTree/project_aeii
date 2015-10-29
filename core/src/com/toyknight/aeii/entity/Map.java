@@ -1,10 +1,11 @@
 package com.toyknight.aeii.entity;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author toyknight 4/3/2015.
@@ -18,20 +19,20 @@ public class Map implements Serializable {
 
     private final short[][] map_data;
     private final Unit[][] upper_unit_layer;
-    private final HashMap<Point, Unit> unit_map;
-    private final ArrayList<Tomb> tomb_list;
+    private final ObjectMap<Point, Unit> unit_map;
+    private final Array<Tomb> tomb_list;
     private final Point[][] position_map;
 
     public Map() {
-        this(null, null, null);
+        this(new short[1][1], new boolean[1], null);
     }
 
     public Map(short[][] map_data, boolean[] team_access, String author) {
         this.author = author;
         this.team_access = team_access;
         this.map_data = map_data;
-        this.unit_map = new HashMap<Point, Unit>();
-        this.tomb_list = new ArrayList<Tomb>();
+        this.unit_map = new ObjectMap<Point, Unit>();
+        this.tomb_list = new Array<Tomb>();
 
         upper_unit_layer = new Unit[getWidth()][getHeight()];
         position_map = new Point[getWidth()][getHeight()];
@@ -84,8 +85,8 @@ public class Map implements Serializable {
 
     public void addTomb(int x, int y) {
         Tomb tomb = new Tomb(x, y);
-        if (tomb_list.contains(tomb)) {
-            int index = tomb_list.indexOf(tomb);
+        if (isTomb(x, y)) {
+            int index = tomb_list.indexOf(tomb, false);
             tomb_list.set(index, tomb);
         } else {
             tomb_list.add(tomb);
@@ -93,10 +94,10 @@ public class Map implements Serializable {
     }
 
     public void removeTomb(int x, int y) {
-        for (int i = 0; i < tomb_list.size(); i++) {
+        for (int i = 0; i < tomb_list.size; i++) {
             Tomb tomb = tomb_list.get(i);
             if (tomb.x == x && tomb.y == y) {
-                tomb_list.remove(i);
+                tomb_list.removeIndex(i);
                 break;
             }
         }
@@ -112,16 +113,17 @@ public class Map implements Serializable {
     }
 
     public void updateTombs() {
-        ArrayList<Tomb> list = new ArrayList<Tomb>(tomb_list);
-        for (Tomb tomb : list) {
+        Array<Tomb> list = new Array<Tomb>(tomb_list);
+        for (int i = 0; i < list.size; i++) {
+            Tomb tomb = list.get(i);
             tomb.update();
             if (tomb.getRemains() < 0) {
-                tomb_list.remove(tomb);
+                tomb_list.removeIndex(i);
             }
         }
     }
 
-    public ArrayList<Tomb> getTombList() {
+    public Array<Tomb> getTombList() {
         return tomb_list;
     }
 
@@ -175,7 +177,7 @@ public class Map implements Serializable {
     }
 
     public Unit getUnit(String unit_code) {
-        Collection<Unit> units = unit_map.values();
+        ObjectMap.Values<Unit> units = unit_map.values();
         for (Unit unit : units) {
             if (unit.getUnitCode().equals(unit_code)) {
                 return unit;
@@ -188,16 +190,16 @@ public class Map implements Serializable {
         unit_map.remove(getPosition(x, y));
     }
 
-    public Collection<Unit> getUnitSet() {
+    public ObjectMap.Values<Unit> getUnitSet() {
         return unit_map.values();
     }
 
-    public Set<Point> getUnitPositionSet() {
-        return unit_map.keySet();
+    public ObjectMap.Keys<Point> getUnitPositionSet() {
+        return unit_map.keys();
     }
 
     public void removeTeam(int team) {
-        Set<Point> positions = new HashSet<Point>(getUnitPositionSet());
+        Array<Point> positions = new Array<Point>(getUnitPositionSet().toArray());
         for (Point position : positions) {
             Unit unit = getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
@@ -223,7 +225,7 @@ public class Map implements Serializable {
     }
 
     public int getUnitCount(int team, boolean count_skeleton) {
-        Collection<Unit> units = getUnitSet();
+        ObjectMap.Values<Unit> units = getUnitSet();
         int count = 0;
         for (Unit unit : units) {
             if (unit != null && unit.getTeam() == team) {

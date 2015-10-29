@@ -1,5 +1,6 @@
 package com.toyknight.aeii.manager.events;
 
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 
@@ -14,6 +15,10 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
     private static final long serialVersionUID = 5262015L;
 
     private final int team;
+
+    public UnitStatusUpdateEvent() {
+        this(-1);
+    }
 
     public UnitStatusUpdateEvent(int team) {
         this.team = team;
@@ -32,7 +37,7 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
     @Override
     public void execute(GameManager manager) {
         GameCore game = manager.getGame();
-        HashSet<Point> unit_position_set = new HashSet<Point>(game.getMap().getUnitPositionSet());
+        Array<Point> unit_position_set = game.getMap().getUnitPositionSet().toArray();
         for (Point position : unit_position_set) {
             Unit unit = game.getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {

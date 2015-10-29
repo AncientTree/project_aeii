@@ -23,6 +23,10 @@ public class SummonEvent implements GameEvent, Serializable {
     private final int target_y;
     private final int experience;
 
+    public SummonEvent() {
+        this(-1, -1, -1, -1, -1);
+    }
+
     public SummonEvent(int summoner_x, int summoner_y, int target_x, int target_y, int experience) {
         this.summoner_x = summoner_x;
         this.summoner_y = summoner_y;

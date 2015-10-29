@@ -42,7 +42,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public void onFocus() {
-        if(isDialogShown()) {
+        if (isDialogShown()) {
             Gdx.input.setInputProcessor(dialog_stage);
         } else {
             Gdx.input.setInputProcessor(this);
@@ -126,15 +126,15 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     @Override
-    public void onPlayerJoin(String service_name, String username) {
+    public void onPlayerJoin(int id, String username) {
     }
 
     @Override
-    public void onPlayerLeave(String service_name, String username) {
+    public void onPlayerLeave(int id, String username) {
     }
 
     @Override
-    public void onAllocationUpdate(String[] allocation, Integer[] types) {
+    public void onAllocationUpdate(Integer[] allocation, Integer[] types) {
     }
 
     @Override

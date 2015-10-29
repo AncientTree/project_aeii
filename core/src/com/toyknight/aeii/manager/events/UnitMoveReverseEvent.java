@@ -19,6 +19,10 @@ public class UnitMoveReverseEvent implements GameEvent, Serializable {
     private final int origin_x;
     private final int origin_y;
 
+    public UnitMoveReverseEvent() {
+        this(-1, -1, -1, -1);
+    }
+
     public UnitMoveReverseEvent(int unit_x, int unit_y, int origin_x, int origin_y) {
         this.unit_x = unit_x;
         this.unit_y = unit_y;

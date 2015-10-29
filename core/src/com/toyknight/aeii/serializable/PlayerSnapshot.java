@@ -9,7 +9,7 @@ public class PlayerSnapshot implements Serializable {
 
     private static final long serialVersionUID = 9012015L;
 
-    public String service_name;
+    public Integer id;
 
     public String username;
 

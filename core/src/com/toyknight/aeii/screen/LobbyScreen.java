@@ -78,8 +78,8 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().getNetworkManager().disconnect();
                 getContext().gotoMainMenuScreen();
+                getContext().getNetworkManager().disconnect();
             }
         });
         addActor(btn_back);
@@ -173,15 +173,16 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             @Override
             public void onFinish(Array<RoomSnapshot> result) {
                 if (result == null) {
-
+                    getContext().showMessage(Language.getText("MSG_ERR_AEA"), null);
                 } else {
                     room_list.setItems(result);
                     if (result.size > 0) {
                         room_list.setSelectedIndex(0);
                     }
+                    Gdx.input.setInputProcessor(LobbyScreen.this);
                 }
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
-                Gdx.input.setInputProcessor(LobbyScreen.this);
+
             }
 
             @Override

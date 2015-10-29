@@ -1,5 +1,7 @@
 package com.toyknight.aeii.manager.events;
 
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animator.HpChangeAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
@@ -7,8 +9,6 @@ import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * @author toyknight 5/26/2015.
@@ -17,31 +17,30 @@ public class HpChangeEvent implements GameEvent, Serializable {
 
     private static final long serialVersionUID = 5262015L;
 
-    private final HashMap<Point, Integer> change_map;
+    private final ObjectMap<Point, Integer> change_map;
 
-    public HpChangeEvent(HashMap<Point, Integer> change_map) {
-        this.change_map = change_map;
+    public HpChangeEvent() {
+        this(new ObjectMap<Point, Integer>());
+    }
+
+    public HpChangeEvent(ObjectMap<Point, Integer> change_map) {
+        this.change_map = new ObjectMap<Point, Integer>(change_map);
     }
 
     public Point getFocus(GameCore game) {
-        for (Point location : change_map.keySet()) {
-            if (location != null) {
-                return location;
-            }
-        }
         return null;
     }
 
     @Override
     public boolean canExecute(GameCore game) {
-        return change_map.keySet().size() > 0;
+        return change_map.size > 0;
     }
 
     @Override
     public void execute(GameManager manager) {
         int change_count = 0;
-        HashSet<Unit> units = new HashSet<Unit>();
-        for (Point position : change_map.keySet()) {
+        ObjectSet<Unit> units = new ObjectSet<Unit>();
+        for (Point position : change_map.keys()) {
             Unit unit = manager.getGame().getMap().getUnit(position.x, position.y);
             if (unit != null) {
                 int change = validateChange(unit, change_map.get(position));

@@ -101,7 +101,6 @@ public class MainMenu extends BasicDialog {
         this.btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().getNetworkManager().stop();
                 Gdx.app.exit();
             }
         });

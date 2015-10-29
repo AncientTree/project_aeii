@@ -1,6 +1,7 @@
 package com.toyknight.aeii.serializable;
 
-import com.toyknight.aeii.entity.Map;
+import com.badlogic.gdx.utils.Array;
+import com.toyknight.aeii.entity.GameCore;
 
 import java.io.Serializable;
 
@@ -13,17 +14,13 @@ public class RoomConfiguration implements Serializable {
 
     public long room_number;
 
-    public String host;
+    public int host;
 
-    public PlayerSnapshot[] players;
+    public Array<PlayerSnapshot> players;
 
-    public Map map;
+    public GameCore game;
 
-    public Integer[] player_type;
-
-    public String[] team_allocation;
-
-    public Integer[] alliance_state;
+    public Integer[] team_allocation;
 
     public int initial_gold;
 

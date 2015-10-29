@@ -107,7 +107,7 @@ public class StatisticsScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
-                getContext().getNetworkManager().requestLeaveRoom();
+                getContext().getNetworkManager().notifyLeaveRoom();
                 return null;
             }
 

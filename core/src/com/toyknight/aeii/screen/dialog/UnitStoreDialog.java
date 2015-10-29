@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
@@ -18,8 +19,6 @@ import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.screen.widgets.AvailableUnitList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
-
-import java.util.ArrayList;
 
 /**
  * @author toyknight 4/20/2015.
@@ -104,7 +103,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         this.castle_y = getOwner().getCursorMapY();
         this.unit_list.setGame(getGame());
         GameManager manager = getManager();
-        ArrayList<Integer> available_units = manager.getGame().getRule().getAvailableUnitList();
+        Array<Integer> available_units = manager.getGame().getRule().getAvailableUnitList();
         unit_list.setAvailableUnits(available_units);
     }
 
@@ -135,7 +134,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         sample_unit.setY(castle_y);
         return unit_price >= 0
                 && getGame().getCurrentPlayer().getGold() >= unit_price
-                && getManager().createMovablePositions(sample_unit).size() > 0
+                && getManager().createMovablePositions(sample_unit).size > 0
                 && (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation() || sample_unit.isCommander());
     }
 

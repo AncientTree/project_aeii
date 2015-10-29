@@ -186,25 +186,25 @@ public class GameContext extends Game {
     }
 
     public void gotoMapEditorScreen() {
-        AudioManager.stopCurrentBGM();
+        //AudioManager.stopCurrentBGM();
         gotoScreen(map_editor_screen);
     }
 
     public void gotoGameScreen(GameCore game) {
-        AudioManager.stopCurrentBGM();
+        //AudioManager.stopCurrentBGM();
         game.initialize();
         game_screen.prepare(game);
         gotoScreen(game_screen);
     }
 
     public void gotoGameScreen(GameSave save) {
-        AudioManager.stopCurrentBGM();
+        //AudioManager.stopCurrentBGM();
         game_screen.prepare(save.game);
         gotoScreen(game_screen);
     }
 
     public void gotoGameScreen(GameRecord record) {
-        AudioManager.stopCurrentBGM();
+        //AudioManager.stopCurrentBGM();
         game_screen.prepare(record);
         gotoScreen(game_screen);
     }
@@ -291,17 +291,17 @@ public class GameContext extends Game {
     }
 
     public boolean isGameHost() {
-        String service_name = getNetworkManager().getServiceName();
-        String host_service = getHostService();
-        return service_name.equals(host_service);
+        int id = getNetworkManager().getServiceID();
+        int host_id = getHostID();
+        return id == host_id;
     }
 
-    public String getHostService() {
+    public int getHostID() {
         return getRoomConfig().host;
     }
 
     public RoomConfiguration getRoomConfig() {
-        return net_game_create_screen.getRoomConfig();
+        return net_game_create_screen.getRoomConfiguration();
     }
 
     public String getVersion() {

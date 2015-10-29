@@ -97,16 +97,16 @@ public class MessageBox extends BasicDialog {
         tf_message.setText("");
     }
 
-    public void setPlayers(Array<PlayerSnapshot> players, String[] allocation) {
+    public void setPlayers(Array<PlayerSnapshot> players, Integer[] allocation) {
         player_list.setItems(players, allocation);
     }
 
-    public void removePlayer(String service_name) {
-        player_list.removePlayer(service_name);
+    public void removePlayer(Integer id) {
+        player_list.removePlayer(id);
     }
 
-    public void addPlayer(String service_name, String username) {
-        player_list.addPlayer(service_name, username);
+    public void addPlayer(Integer id, String username) {
+        player_list.addPlayer(id, username);
     }
 
     public void sendMessage() {
@@ -119,7 +119,7 @@ public class MessageBox extends BasicDialog {
         getContext().submitAsyncTask(new MessageSendingTask(message) {
             @Override
             public Void doTask() throws Exception {
-                getContext().getNetworkManager().requestSubmitMessage(message);
+                getContext().getNetworkManager().sendMessage(message);
                 return null;
             }
 

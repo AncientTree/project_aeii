@@ -3,14 +3,13 @@ package com.toyknight.aeii.screen.dialog;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.StageScreen;
-
-import java.util.Set;
 
 /**
  * @author toyknight 8/31/2015.
@@ -76,7 +75,7 @@ public class MiniMapDialog extends BasicDialog {
             }
         }
 
-        Set<Point> unit_positions = getMap().getUnitPositionSet();
+        ObjectMap.Keys<Point> unit_positions = getMap().getUnitPositionSet();
         for (Point position : unit_positions) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (((int) (state_time / 0.3f)) % 2 != 0) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -28,7 +29,7 @@ public class AvailableUnitList extends Widget implements Cullable {
 
 
     private GameCore game;
-    private ArrayList<Integer> available_units;
+    private Array<Integer> available_units;
 
     private float prefWidth;
     private float prefHeight;
@@ -88,12 +89,12 @@ public class AvailableUnitList extends Widget implements Cullable {
         this.listener = listener;
     }
 
-    public void setAvailableUnits(ArrayList<Integer> list) {
+    public void setAvailableUnits(Array<Integer> list) {
         this.available_units = list;
         this.selected_index = 0;
         this.updateSelection();
         this.prefWidth = getWidth();
-        this.prefHeight = available_units.size() * item_height;
+        this.prefHeight = available_units.size * item_height;
     }
 
     @Override

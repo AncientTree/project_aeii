@@ -1,13 +1,11 @@
 package com.toyknight.aeii.entity;
 
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author toyknight 4/3/2015.
@@ -30,9 +28,16 @@ public class GameCore implements Serializable {
 
     private int turn;
 
+    private boolean is_game_over;
+
     private final Unit[] commanders;
 
+    public GameCore() {
+        this(null, null, SKIRMISH, new Player[2]);
+    }
+
     public GameCore(Map map, Rule rule, int type, Player[] players) {
+
         this.statistics = new Statistics();
         this.map = map;
         this.rule = rule;
@@ -41,19 +46,17 @@ public class GameCore implements Serializable {
         for (int team = 0; team < 4; team++) {
             if (team < players.length) {
                 player_list[team] = players[team];
-                if (players[team] != null) {
-                    statistics.addIncome(team, players[team].getGold());
-                }
             } else {
                 break;
             }
         }
         this.turn = 1;
+        this.is_game_over = false;
         this.commanders = new Unit[4];
     }
 
     public void initialize() {
-        Set<Point> position_set = new HashSet<Point>(getMap().getUnitPositionSet());
+        ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.isCommander()) {
@@ -62,18 +65,19 @@ public class GameCore implements Serializable {
         }
         current_team = -1;
         for (int team = 0; team < player_list.length; team++) {
-            if (player_list[team] != null) {
+            if (player_list[team] == null || player_list[team].getType() == Player.NONE) {
+                if (getMap().hasTeamAccess(team)) {
+                    getMap().removeTeam(team);
+                }
+            } else {
                 if (current_team == -1) {
                     current_team = team;
                 }
                 if (commanders[team] == null) {
                     commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
                 }
+                statistics.addIncome(team, getPlayer(team).getGold());
                 updatePopulation(team);
-            } else {
-                if (getMap().hasTeamAccess(team)) {
-                    getMap().removeTeam(team);
-                }
             }
         }
     }
@@ -193,7 +197,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCommanderAlive(int team) {
-        Set<Point> position_set = new HashSet<Point>(getMap().getUnitPositionSet());
+        ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team && unit.isCommander()) {
@@ -361,13 +365,59 @@ public class GameCore implements Serializable {
     }
 
     public boolean isGameOver() {
-        return false;
+        return is_game_over;
+    }
+
+    public void updateGameStatus() {
+        //default rule temporarily
+        //get population
+        int[] population = new int[4];
+        for (int team = 0; team < 4; team++) {
+            Player player = getPlayer(team);
+            if (player != null) {
+                population[team] = getMap().getUnitCount(team, true);
+            }
+        }
+
+        //get castle count
+        int[] castle_count = new int[4];
+        for (int team = 0; team < 4; team++) {
+            castle_count[team] = getMap().getCastleCount(team);
+        }
+
+        //remove failed player
+        for (int team = 0; team < 4; team++) {
+            if (population[team] == 0 && castle_count[team] == 0
+                    && getPlayer(team) != null && getPlayer(team).getType() != Player.NONE) {
+                removePlayer(team);
+            }
+        }
+
+        //check winning status
+        int alliance = -1;
+        boolean winning_flag = true;
+        for (int team = 0; team < 4; team++) {
+            Player player = getPlayer(team);
+            if (player != null && player.getType() != Player.NONE) {
+                if (alliance == -1) {
+                    alliance = player.getAlliance();
+                } else {
+                    winning_flag = player.getAlliance() == alliance;
+                    if (!winning_flag) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (winning_flag) {
+            is_game_over = true;
+        }
     }
 
     public Point getTeamFocus(int team) {
         Point commander_position = null;
         Point first_unit_position = null;
-        Set<Point> position_set = getMap().getUnitPositionSet();
+        ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
@@ -407,7 +457,7 @@ public class GameCore implements Serializable {
     }
 
     public void nextTurn() {
-        Collection<Unit> units = getMap().getUnitSet();
+        ObjectMap.Values<Unit> units = getMap().getUnitSet();
         for (Unit unit : units) {
             if (unit.getTeam() == getCurrentTeam()) {
                 resetUnit(unit);

@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.CursorAnimator;
@@ -18,7 +19,6 @@ import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * @author toyknight 6/1/2015.
@@ -246,7 +246,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     }
 
     private void drawUnits() {
-        Set<Point> unit_positions = getMap().getUnitPositionSet();
+        ObjectMap.Keys<Point> unit_positions = getMap().getUnitPositionSet();
         for (Point position : unit_positions) {
             Unit unit = getMap().getUnit(position.x, position.y);
             int unit_x = unit.getX();

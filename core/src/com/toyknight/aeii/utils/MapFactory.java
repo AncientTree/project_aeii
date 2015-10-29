@@ -2,6 +2,7 @@ package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Point;
@@ -9,10 +10,7 @@ import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
 
 import java.io.*;
-import java.util.Collection;
 import java.util.Scanner;
-import java.util.Set;
-
 /**
  * @author toyknight 4/3/2015.
  */
@@ -73,8 +71,8 @@ public class MapFactory {
                 fos.writeShort(map.getTileIndex(x, y));
             }
         }
-        Collection<Unit> unit_list = map.getUnitSet();
-        fos.writeInt(unit_list.size());
+        Array<Unit> unit_list = map.getUnitSet().toArray();
+        fos.writeInt(unit_list.size);
         for (Unit unit : unit_list) {
             fos.writeInt(unit.getTeam());
             fos.writeInt(unit.getIndex());
@@ -112,7 +110,7 @@ public class MapFactory {
                 }
             }
         }
-        Set<Point> unit_positions = map.getUnitPositionSet();
+        ObjectMap.Keys<Point> unit_positions = map.getUnitPositionSet();
         for (Point position : unit_positions) {
             Unit unit = map.getUnit(position.x, position.y);
             if (!map.hasTeamAccess(unit.getTeam())) {

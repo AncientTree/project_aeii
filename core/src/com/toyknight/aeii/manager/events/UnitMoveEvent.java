@@ -1,5 +1,6 @@
 package com.toyknight.aeii.manager.events;
 
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.animator.UnitMoveAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
@@ -7,7 +8,6 @@ import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * @author toyknight 4/21/2015.
@@ -21,9 +21,13 @@ public class UnitMoveEvent implements GameEvent, Serializable {
     private final int dest_x;
     private final int dest_y;
     private final int mp_left;
-    private final ArrayList<Point> move_path;
+    private final Array<Point> move_path;
 
-    public UnitMoveEvent(int unit_x, int unit_y, int dest_x, int dest_y, int mp_left, ArrayList<Point> move_path) {
+    public UnitMoveEvent() {
+        this(-1, -1, -1, -1, -1, null);
+    }
+
+    public UnitMoveEvent(int unit_x, int unit_y, int dest_x, int dest_y, int mp_left, Array<Point> move_path) {
         this.unit_x = unit_x;
         this.unit_y = unit_y;
         this.dest_x = dest_x;
@@ -34,10 +38,10 @@ public class UnitMoveEvent implements GameEvent, Serializable {
 
     @Override
     public Point getFocus(GameCore game) {
-        if (move_path == null || move_path.size() == 0) {
+        if (move_path == null || move_path.size == 0) {
             return new Point(unit_x, unit_y);
         } else {
-            Point dest = move_path.get(move_path.size() - 1);
+            Point dest = move_path.get(move_path.size - 1);
             return new Point(dest.x, dest.y);
         }
     }

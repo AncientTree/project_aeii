@@ -1,15 +1,13 @@
 package com.toyknight.aeii.manager;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.net.task.GameEventSendingTask;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author toyknight 7/27/2015.
@@ -20,8 +18,6 @@ public class GameHost {
 
     private static GameManager manager;
 
-    private static boolean is_game_over;
-
     private GameHost() {
     }
 
@@ -31,7 +27,6 @@ public class GameHost {
 
     public static void setGameManager(GameManager manager) {
         GameHost.manager = manager;
-        GameHost.is_game_over = false;
     }
 
     public static GameContext getContext() {
@@ -47,7 +42,7 @@ public class GameHost {
     }
 
     public static boolean isGameOver() {
-        return is_game_over;
+        return getGame().isGameOver();
     }
 
     public static void doSelect(int x, int y) {
@@ -62,7 +57,7 @@ public class GameHost {
             int start_x = getManager().getSelectedUnit().getX();
             int start_y = getManager().getSelectedUnit().getY();
             int mp_remains = getManager().getMovementPointRemains(dest_x, dest_y);
-            ArrayList<Point> move_path = getManager().getMovePath(dest_x, dest_y);
+            Array<Point> move_path = getManager().getMovePath(dest_x, dest_y);
             dispatchEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
         }
     }
@@ -165,7 +160,7 @@ public class GameHost {
         dispatchEvent(new UnitStatusUpdateEvent(next_team));
 
         //calculate hp change at turn start
-        HashMap<Point, Integer> hp_change_map = new HashMap<Point, Integer>();
+        ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
 
         //terrain and poison hp change
         for (Point position : getGame().getMap().getUnitPositionSet()) {
@@ -197,57 +192,11 @@ public class GameHost {
         dispatchEvent(new HpChangeEvent(hp_change_map));
 
         // pre-calculate unit that will be destroyed
-        for (Point position : hp_change_map.keySet()) {
+        for (Point position : hp_change_map.keys()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit != null && unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
                 dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
-        }
-    }
-
-    public static void updateGameStatus() {
-        //default rule temporarily
-        //get population
-        int[] population = new int[4];
-        for (int team = 0; team < 4; team++) {
-            Player player = getGame().getPlayer(team);
-            if (player != null) {
-                population[team] = getGame().getMap().getUnitCount(team, true);
-            }
-        }
-
-        //get castle count
-        int[] castle_count = new int[4];
-        for (int team = 0; team < 4; team++) {
-            castle_count[team] = getGame().getMap().getCastleCount(team);
-        }
-
-        //remove failed player
-        for (int team = 0; team < 4; team++) {
-            if (population[team] == 0 && castle_count[team] == 0
-                    && getGame().getPlayer(team) != null && getGame().getPlayer(team).getType() != Player.NONE) {
-                getGame().removePlayer(team);
-            }
-        }
-
-        //check winning status
-        int alliance = -1;
-        boolean winning_flag = true;
-        for (int team = 0; team < 4; team++) {
-            Player player = getGame().getPlayer(team);
-            if (player != null && player.getType() != Player.NONE) {
-                if (alliance == -1) {
-                    alliance = player.getAlliance();
-                } else {
-                    winning_flag = player.getAlliance() == alliance;
-                    if (!winning_flag) {
-                        break;
-                    }
-                }
-            }
-        }
-        if (winning_flag) {
-            is_game_over = true;
         }
     }
 

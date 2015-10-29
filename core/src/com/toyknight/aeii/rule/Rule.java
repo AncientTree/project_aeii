@@ -1,10 +1,9 @@
 package com.toyknight.aeii.rule;
 
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * @author toyknight 4/15/2015.
@@ -26,7 +25,7 @@ public class Rule implements Serializable {
     private boolean need_enemy_clear;
     private boolean need_castle_clear;
 
-    private ArrayList<Integer> available_unit_list = new ArrayList<Integer>();
+    private Array<Integer> available_unit_list = new Array<Integer>();
 
     public void setPoisonDamage(int damage) {
         this.poison_damage = damage;
@@ -92,11 +91,11 @@ public class Rule implements Serializable {
         return need_castle_clear;
     }
 
-    public void setAvailableUnits(ArrayList<Integer> list) {
+    public void setAvailableUnits(Array<Integer> list) {
         available_unit_list = list;
     }
 
-    public ArrayList<Integer> getAvailableUnitList() {
+    public Array<Integer> getAvailableUnitList() {
         return available_unit_list;
     }
 
@@ -114,7 +113,7 @@ public class Rule implements Serializable {
         int commander = UnitFactory.getCommanderIndex();
         int skeleton = UnitFactory.getSkeletonIndex();
         int crystal = UnitFactory.getCrystalIndex();
-        ArrayList<Integer> unit_list = new ArrayList<Integer>();
+        Array<Integer> unit_list = new Array<Integer>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
             if (index != commander && index != skeleton && index != crystal) {
                 unit_list.add(index);
@@ -125,11 +124,11 @@ public class Rule implements Serializable {
         return rule;
     }
 
-    private static ArrayList<Integer> sortUnitList(ArrayList<Integer> list) {
-        for (int i = list.size() - 1; i > 0; i--) {
+    private static Array<Integer> sortUnitList(Array<Integer> list) {
+        for (int i = list.size - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if (UnitFactory.getSample(list.get(j)).getPrice() > UnitFactory.getSample(list.get(j + 1)).getPrice()) {
-                    Collections.swap(list, j, j + 1);
+                    list.swap(j, j + 1);
                 }
             }
         }

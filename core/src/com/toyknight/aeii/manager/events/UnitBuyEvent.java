@@ -21,6 +21,10 @@ public class UnitBuyEvent implements GameEvent, Serializable {
     private final int y;
     private final int price;
 
+    public UnitBuyEvent() {
+        this(-1, -1, -1, -1, -1);
+    }
+
     public UnitBuyEvent(int index, int team, int x, int y, int price) {
         this.index = index;
         this.team = team;

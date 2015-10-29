@@ -1,9 +1,9 @@
 package com.toyknight.aeii.entity;
 
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * @author toyknight 4/3/2015.
@@ -35,7 +35,7 @@ public class Unit implements Serializable {
     private int movement_point;
     private int current_movement_point;
 
-    private ArrayList<Integer> abilities;
+    private Array<Integer> abilities;
     private Status status;
 
     private int hp_growth;
@@ -59,7 +59,7 @@ public class Unit implements Serializable {
     public Unit(int index, String unit_code) {
         this.level = 0;
         this.index = index;
-        this.abilities = new ArrayList<Integer>();
+        this.abilities = new Array<Integer>();
         this.unit_code = unit_code;
         this.is_standby = false;
     }
@@ -91,7 +91,7 @@ public class Unit implements Serializable {
         this.y_position = unit.getY();
         this.max_attack_range = unit.getMaxAttackRange();
         this.min_attack_range = unit.getMinAttackRange();
-        this.abilities = new ArrayList<Integer>(unit.getAbilities());
+        this.abilities = new Array<Integer>(unit.getAbilities());
         this.status = unit.getStatus();
     }
 
@@ -207,14 +207,14 @@ public class Unit implements Serializable {
     }
 
     public boolean hasAbility(int ability) {
-        return abilities.contains(ability);
+        return abilities.indexOf(ability, false) >= 0;
     }
 
-    private ArrayList<Integer> getAbilities() {
+    private Array<Integer> getAbilities() {
         return abilities;
     }
 
-    public void setAbilities(ArrayList<Integer> abilities) {
+    public void setAbilities(Array<Integer> abilities) {
         this.abilities = abilities;
     }
 
@@ -409,7 +409,7 @@ public class Unit implements Serializable {
 
         public int movement_point;
 
-        public ArrayList<Integer> abilities;
+        public Array<Integer> abilities;
 
         public int hp_growth;
 
