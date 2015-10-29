@@ -43,7 +43,7 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitStandbyEvent(unit_x, unit_y);
     }
 

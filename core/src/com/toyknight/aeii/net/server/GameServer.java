@@ -348,86 +348,84 @@ public class GameServer {
     }
 
     public void notifyPlayerJoin(Room room, int joiner_id, String username) {
-        Notification notification = new Notification(Notification.PLAYER_JOINING);
-        notification.setParameters(joiner_id, username);
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && joiner_id != player_id) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.PLAYER_JOINING);
+                notification.setParameters(joiner_id, username);
+                sendNotification(player, notification);
             }
         }
     }
 
     public void notifyPlayerLeave(Room room, int leaver_id, String username) {
-        Notification notification = new Notification(Notification.PLAYER_LEAVING);
-        notification.setParameters(leaver_id, username);
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && leaver_id != player_id) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.PLAYER_LEAVING);
+                notification.setParameters(leaver_id, username);
+                sendNotification(player, notification);
             }
         }
     }
 
     public void notifyAllocationUpdate(Room room, int updater_id, Integer[] allocation, Integer[] types) {
-        Notification notification = new Notification(Notification.UPDATE_ALLOCATION);
-        notification.setParameters(allocation, types);
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != updater_id) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.UPDATE_ALLOCATION);
+                notification.setParameters(allocation, types);
+                sendNotification(player, notification);
             }
         }
     }
 
     public void notifyAllianceUpdate(Room room, int updater_id, Integer[] alliance) {
-        Notification notification = new Notification(Notification.UPDATE_ALLIANCE);
-        notification.setParameters((Object) alliance);
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != updater_id) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.UPDATE_ALLIANCE);
+                notification.setParameters((Object) alliance);
+                sendNotification(player, notification);
             }
         }
     }
 
     public void notifyGameStart(Room room, int starter_id) {
-        Notification notification = new Notification(Notification.GAME_START);
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != starter_id) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.GAME_START);
+                sendNotification(player, notification);
             }
         }
     }
 
     public void notifyGameEvent(Room room, int submitter_id, GameEvent event) {
-        Notification notification = new Notification(Notification.GAME_EVENT);
-        notification.setParameters(event.getCopy());
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != submitter_id) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.GAME_EVENT);
+                notification.setParameters(event.copy());
+                sendNotification(player, notification);
             }
         }
     }
 
     public void notifyMessage(Room room, String username, String message) {
-        Notification notification = new Notification(Notification.MESSAGE);
-        notification.setParameters(username, message);
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null) {
-                NotificationTask task = new NotificationTask(player.getConnection(), notification);
-                executor.submit(task);
+                Notification notification = new Notification(Notification.MESSAGE);
+                notification.setParameters(username, message);
+                sendNotification(player, notification);
             }
         }
+    }
+
+    public void sendNotification(PlayerService player, Notification notification) {
+        NotificationTask task = new NotificationTask(player.getConnection(), notification);
+        executor.submit(task);
     }
 
     public String getVerificationString() {

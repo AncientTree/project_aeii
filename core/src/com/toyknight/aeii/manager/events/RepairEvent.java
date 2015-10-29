@@ -49,7 +49,7 @@ public class RepairEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new RepairEvent(target_x, target_y);
     }
 

@@ -58,7 +58,7 @@ public class UnitBuyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitBuyEvent(index, team, x, y, price);
     }
 

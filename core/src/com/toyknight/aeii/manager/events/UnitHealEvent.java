@@ -63,7 +63,7 @@ public class UnitHealEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitHealEvent(healer_x, healer_y, target_x, target_y, heal, experience);
     }
 

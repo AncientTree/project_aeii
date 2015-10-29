@@ -15,6 +15,6 @@ public interface GameEvent {
 
     void execute(GameManager manager);
 
-    GameEvent getCopy();
+    GameEvent copy();
 
 }

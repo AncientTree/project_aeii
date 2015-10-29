@@ -47,7 +47,7 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitStatusUpdateEvent(team);
     }
 

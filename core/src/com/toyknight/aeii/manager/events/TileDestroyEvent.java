@@ -45,7 +45,7 @@ public class TileDestroyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new TileDestroyEvent(target_x, target_y);
     }
 

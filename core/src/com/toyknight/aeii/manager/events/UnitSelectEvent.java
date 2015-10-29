@@ -55,7 +55,7 @@ public class UnitSelectEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitSelectEvent(target_x, target_y);
     }
 

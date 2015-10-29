@@ -57,7 +57,7 @@ public class HpChangeEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new HpChangeEvent(change_map);
     }
 

@@ -55,7 +55,7 @@ public class UnitMoveReverseEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitMoveReverseEvent(unit_x, unit_y, origin_x, origin_y);
     }
 

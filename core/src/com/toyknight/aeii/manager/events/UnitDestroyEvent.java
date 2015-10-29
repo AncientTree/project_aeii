@@ -49,7 +49,7 @@ public class UnitDestroyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitDestroyEvent(target_x, target_y);
     }
 

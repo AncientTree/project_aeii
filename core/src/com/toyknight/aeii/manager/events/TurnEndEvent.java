@@ -46,7 +46,7 @@ public class TurnEndEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new TurnEndEvent();
     }
 

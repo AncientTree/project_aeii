@@ -61,7 +61,7 @@ public class SummonEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new SummonEvent(summoner_x, summoner_y, target_x, target_y, experience);
     }
 

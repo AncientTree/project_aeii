@@ -52,7 +52,7 @@ public class OccupyEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new OccupyEvent(target_x, target_y, team);
     }
 

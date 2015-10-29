@@ -66,7 +66,7 @@ public class UnitMoveEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitMoveEvent(unit_x, unit_y, dest_x, dest_y, mp_left, new Array<Point>(move_path));
     }
 

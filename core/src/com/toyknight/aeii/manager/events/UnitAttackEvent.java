@@ -93,7 +93,7 @@ public class UnitAttackEvent implements GameEvent, Serializable {
     }
 
     @Override
-    public GameEvent getCopy() {
+    public GameEvent copy() {
         return new UnitAttackEvent(attacker_x, attacker_y, target_x, target_y, damage, experience);
     }
 
