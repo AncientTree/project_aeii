@@ -2,7 +2,6 @@ package com.toyknight.aeii.renderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.screen.GameScreen;
@@ -36,7 +35,7 @@ public class StatusBarRenderer {
     }
 
     private GameManager getManager() {
-        return screen.getGameManager();
+        return screen.getManager();
     }
 
     public void drawStatusBar(SpriteBatch batch) {

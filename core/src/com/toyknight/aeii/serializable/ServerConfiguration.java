@@ -3,13 +3,13 @@ package com.toyknight.aeii.serializable;
 /**
  * @author toyknight 8/24/2015.
  */
-public class ServerConfig {
+public class ServerConfiguration {
 
     private final String address;
     private final int port;
     private final String name;
 
-    public ServerConfig(String address, int port, String name) {
+    public ServerConfiguration(String address, int port, String name) {
         this.address = address;
         this.port = port;
         this.name = name;

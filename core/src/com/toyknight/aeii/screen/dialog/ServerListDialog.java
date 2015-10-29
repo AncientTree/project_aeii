@@ -13,7 +13,7 @@ import com.toyknight.aeii.DialogCallback;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.screen.MainMenuScreen;
-import com.toyknight.aeii.serializable.ServerConfig;
+import com.toyknight.aeii.serializable.ServerConfiguration;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class ServerListDialog extends BasicDialog {
 
-    private StringList<ServerConfig> server_list;
+    private StringList<ServerConfiguration> server_list;
     private TextButton btn_connect;
     private TextButton btn_back;
 
@@ -37,7 +37,7 @@ public class ServerListDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        server_list = new StringList<ServerConfig>(ts);
+        server_list = new StringList<ServerConfiguration>(ts);
         ScrollPane sp_server_list = new ScrollPane(server_list, getContext().getSkin());
         sp_server_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
         sp_server_list.getStyle().background =
@@ -46,10 +46,10 @@ public class ServerListDialog extends BasicDialog {
 
         this.addActor(sp_server_list);
 
-        Array<ServerConfig> servers = new Array<ServerConfig>();
-        servers.add(new ServerConfig("127.0.0.1", 5438, "aeii server - Local"));
-        servers.add(new ServerConfig("112.74.215.26", 5438, "aeii server - China"));
-        servers.add(new ServerConfig("45.56.93.69", 5438, "aeii server - NA"));
+        Array<ServerConfiguration> servers = new Array<ServerConfiguration>();
+        servers.add(new ServerConfiguration("127.0.0.1", 5438, "aeii server - Local"));
+        servers.add(new ServerConfiguration("112.74.215.26", 5438, "aeii server - China"));
+        servers.add(new ServerConfiguration("45.56.93.69", 5438, "aeii server - NA"));
         server_list.setItems(servers);
 
         int width_btn = ts * 3;
@@ -75,7 +75,7 @@ public class ServerListDialog extends BasicDialog {
         addActor(btn_back);
     }
 
-    private ServerConfig getSelectedServer() {
+    private ServerConfiguration getSelectedServer() {
         return server_list.getSelected();
     }
 

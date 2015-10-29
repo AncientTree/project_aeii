@@ -147,7 +147,7 @@ public class GameMenu extends BasicDialog {
 
     private boolean canSave() {
         return getOwner().getGame().getCurrentPlayer().isLocalPlayer()
-                && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
+                && getOwner().getManager().getState() == GameManager.STATE_SELECT;
     }
 
 }

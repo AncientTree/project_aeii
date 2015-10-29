@@ -3,7 +3,7 @@ package com.toyknight.aeii.net.task;
 import com.toyknight.aeii.AsyncTask;
 
 /**
- * Created by toyknight on 9/7/2015.
+ * @author toyknight 9/7/2015.
  */
 public abstract class MessageSendingTask extends AsyncTask<Void> {
 

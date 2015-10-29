@@ -5,14 +5,12 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.Animator;
-import com.toyknight.aeii.animator.HpChangeAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.GameManagerListener;
-import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.manager.events.HpChangeEvent;
-import com.toyknight.aeii.manager.events.TurnEndEvent;
+import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.utils.Recorder;
+import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.*;
@@ -154,13 +152,168 @@ public class GameManager implements AnimationDispatcher {
         setState(STATE_ACTION);
     }
 
+    public void doSelect(int x, int y) {
+        Unit unit = getGame().getMap().getUnit(x, y);
+        if (getGame().isUnitAccessible(unit)) {
+            dispatchEvent(new UnitSelectEvent(x, y));
+        }
+    }
+
+    public void doMoveUnit(int dest_x, int dest_y) {
+        if (canSelectedUnitMove(dest_x, dest_y)) {
+            int start_x = getSelectedUnit().getX();
+            int start_y = getSelectedUnit().getY();
+            int mp_remains = getMovementPointRemains(dest_x, dest_y);
+            Array<Point> move_path = getMovePath(dest_x, dest_y);
+            dispatchEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
+        }
+    }
+
+    public void doReverseMove() {
+        Point last_position = getLastPosition();
+        Unit selected_unit = getSelectedUnit();
+        dispatchEvent(
+                new UnitMoveReverseEvent(selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y));
+
+    }
+
+    public void doAttack(int target_x, int target_y) {
+        Unit attacker = getSelectedUnit();
+        if (UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
+            Unit defender = getGame().getMap().getUnit(target_x, target_y);
+            int kill_experience = getGame().getRule().getKillExperience();
+            int attack_experience = getGame().getRule().getAttackExperience();
+            int counter_experience = getGame().getRule().getCounterExperience();
+            if (defender == null) {
+                if (attacker.hasAbility(Ability.DESTROYER) && getGame().getMap().getTile(target_x, target_y).isDestroyable()) {
+                    dispatchEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), target_x, target_y, -1, attack_experience));
+                    dispatchEvent(new UnitStandbyEvent(attacker.getX(), attacker.getY()));
+                    dispatchEvent(new TileDestroyEvent(target_x, target_y));
+                }
+            } else {
+                if (getGame().canAttack(attacker, target_x, target_y)) {
+                    //attack pre-calculation
+                    Unit real_attacker = UnitFactory.cloneUnit(UnitToolkit.getAttacker(attacker, defender));
+                    Unit real_defender = UnitFactory.cloneUnit(UnitToolkit.getDefender(attacker, defender));
+                    int attack_damage = UnitToolkit.getDamage(real_attacker, real_defender, getGame().getMap());
+                    UnitToolkit.attachAttackStatus(real_attacker, real_defender);
+                    real_defender.changeCurrentHp(-attack_damage);
+                    if (real_defender.getCurrentHp() > 0) {
+                        real_attacker.gainExperience(attack_experience);
+                        dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, attack_experience));
+                        if (UnitToolkit.canCounter(real_defender, real_attacker) || UnitToolkit.isAttackAmbushed(attacker, defender)) {
+                            int counter_damage = UnitToolkit.getDamage(real_defender, real_attacker, getGame().getMap());
+                            real_attacker.changeCurrentHp(-counter_damage);
+                            if (real_attacker.getCurrentHp() > 0) {
+                                dispatchEvent(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, counter_experience));
+                            } else {
+                                dispatchEvent(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, kill_experience));
+                            }
+                        }
+                    } else {
+                        dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, kill_experience));
+                    }
+                }
+            }
+        }
+    }
+
+    public void doSummon(int target_x, int target_y) {
+        Unit summoner = getSelectedUnit();
+        if (getGame().canSummon(summoner, target_x, target_y)) {
+            int experience = getGame().getRule().getAttackExperience();
+            dispatchEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
+        }
+    }
+
+    public void doHeal(int target_x, int target_y) {
+        Unit healer = getSelectedUnit();
+        Unit target = getGame().getMap().getUnit(target_x, target_y);
+        if (getGame().canHeal(healer, target_x, target_y)) {
+            int heal = UnitToolkit.getHeal(healer, target);
+            int experience = target.getCurrentHp() + heal > 0 ?
+                    getGame().getRule().getAttackExperience() : getGame().getRule().getKillExperience();
+            dispatchEvent(new UnitHealEvent(healer.getX(), healer.getY(), target_x, target_y, heal, experience));
+        }
+    }
+
+    public void doRepair() {
+        Unit unit = getSelectedUnit();
+        dispatchEvent(new RepairEvent(unit.getX(), unit.getY()));
+    }
+
+    public void doOccupy() {
+        Unit unit = getSelectedUnit();
+        dispatchEvent(new OccupyEvent(unit.getX(), unit.getY(), unit.getTeam()));
+    }
+
+    public void doBuyUnit(int index, int x, int y) {
+        int team = getGame().getCurrentTeam();
+        dispatchEvent(new UnitBuyEvent(index, team, x, y, getGame().getUnitPrice(index, team)));
+    }
+
+    public void doStandbyUnit() {
+        Unit unit = getSelectedUnit();
+        if (getGame().isUnitAccessible(unit)) {
+            dispatchEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
+        }
+    }
+
+    public void doEndTurn() {
+        int next_team = getGame().getNextTeam();
+
+        dispatchEvent(new TurnEndEvent());
+
+        dispatchEvent(new UnitStatusUpdateEvent(next_team));
+
+        //calculate hp change at turn start
+        ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
+
+        //terrain and poison hp change
+        for (Point position : getGame().getMap().getUnitPositionSet()) {
+            Unit unit = getGame().getMap().getUnit(position.x, position.y);
+            if (unit.getTeam() == next_team) {
+                //the terrain heal
+                Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
+                int change = UnitToolkit.getTerrainHeal(unit, tile);
+                //the poison damage
+                if (unit.hasStatus(Status.POISONED) && unit.getStatus().getRemainingTurn() > 0) {
+                    if (unit.hasAbility(Ability.UNDEAD)) {
+                        change += getGame().getRule().getPoisonDamage();
+                    } else {
+                        change = -getGame().getRule().getPoisonDamage();
+                    }
+                }
+                if (unit.hasAbility(Ability.REHABILITATION)) {
+                    change += unit.getMaxHp() / 4;
+                }
+                hp_change_map.put(position, change);
+            } else {
+                Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
+                if (getGame().isEnemy(unit.getTeam(), next_team) && tile.isCastle() && tile.getTeam() == next_team) {
+                    hp_change_map.put(position, -50);
+                }
+            }
+        }
+
+        dispatchEvent(new HpChangeEvent(hp_change_map));
+
+        // pre-calculate unit that will be destroyed
+        for (Point position : hp_change_map.keys()) {
+            Unit unit = getGame().getMap().getUnit(position.x, position.y);
+            if (unit != null && unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
+                dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
+            }
+        }
+    }
+
     public void onUnitMoveFinished() {
         switch (getState()) {
             case GameManager.STATE_MOVE:
                 setState(GameManager.STATE_ACTION);
                 break;
             case GameManager.STATE_REMOVE:
-                GameHost.doStandbyUnit();
+                doStandbyUnit();
                 break;
         }
     }
@@ -173,7 +326,7 @@ public class GameManager implements AnimationDispatcher {
                 setLastPosition(new Point(unit.getX(), unit.getY()));
                 beginRemovePhase();
             } else {
-                GameHost.doStandbyUnit();
+                doStandbyUnit();
             }
         }
     }
@@ -225,6 +378,13 @@ public class GameManager implements AnimationDispatcher {
         }
         executeGameEvent(new HpChangeEvent(hp_change_map), false);
         setState(GameManager.STATE_SELECT);
+    }
+
+    public void dispatchEvent(GameEvent event) {
+        if (manager_listener != null) {
+            manager_listener.onGameEventDispatched(event);
+        }
+        submitGameEvent(event);
     }
 
     public void submitGameEvent(GameEvent event) {
@@ -282,7 +442,7 @@ public class GameManager implements AnimationDispatcher {
                 for (AnimationListener listener : animation_listeners) {
                     listener.animationCompleted(current_animation);
                 }
-                if (GameHost.isGameOver() && animation_queue.isEmpty()) {
+                if (getGame().isGameOver() && animation_queue.isEmpty()) {
                     manager_listener.onGameOver();
                 }
                 finish_flag = true;

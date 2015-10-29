@@ -22,7 +22,7 @@ public class AttackInformationRenderer {
     }
 
     private GameManager getManager() {
-        return screen.getGameManager();
+        return screen.getManager();
     }
 
     public void render(Batch batch) {

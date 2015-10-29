@@ -15,7 +15,6 @@ import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.animator.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.GameRecord;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -108,7 +107,6 @@ public class GameContext extends Game {
 
             network_manager = new NetworkManager();
             script_engine = new JavaScriptEngine();
-            GameHost.setContext(this);
 
             setScreen(logo_screen);
         } catch (AEIIException ex) {

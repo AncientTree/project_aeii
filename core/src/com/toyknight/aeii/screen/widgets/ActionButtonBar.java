@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Ability;
@@ -45,7 +44,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().setState(GameManager.STATE_SELECT);
+                getManager().setState(GameManager.STATE_SELECT);
                 screen.showDialog("store");
             }
         });
@@ -54,7 +53,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_occupy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doOccupy();
+                getManager().doOccupy();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -63,7 +62,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_repair.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doRepair();
+                getManager().doRepair();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -72,7 +71,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_attack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().beginAttackPhase();
+                getManager().beginAttackPhase();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -81,7 +80,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_summon.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().beginSummonPhase();
+                getManager().beginSummonPhase();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -90,7 +89,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_move.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().beginMovePhase();
+                getManager().beginMovePhase();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -99,7 +98,7 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doStandbyUnit();
+                getManager().doStandbyUnit();
                 screen.onButtonUpdateRequested();
             }
         });
@@ -108,15 +107,15 @@ public class ActionButtonBar extends HorizontalGroup {
         btn_heal.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().beginHealPhase();
+                getManager().beginHealPhase();
                 screen.onButtonUpdateRequested();
             }
         });
         buttons.put("heal", btn_heal);
     }
 
-    private GameManager getGameManager() {
-        return screen.getGameManager();
+    private GameManager getManager() {
+        return screen.getManager();
     }
 
     private Platform getPlatform() {
@@ -124,7 +123,7 @@ public class ActionButtonBar extends HorizontalGroup {
     }
 
     private GameCore getGame() {
-        return getGameManager().getGame();
+        return getManager().getGame();
     }
 
     public int getButtonHeight() {
@@ -152,38 +151,38 @@ public class ActionButtonBar extends HorizontalGroup {
     public void updateButtons() {
         this.clear();
         if (screen.canOperate()) {
-            Unit selected_unit = getGameManager().getSelectedUnit();
-            switch (getGameManager().getState()) {
+            Unit selected_unit = getManager().getSelectedUnit();
+            switch (getManager().getState()) {
                 case GameManager.STATE_ACTION:
-                    getGameManager().createAttackablePositions(selected_unit);
-                    if (getGameManager().canSelectedUnitAct()) {
-                        if (getGameManager().hasEnemyWithinRange(selected_unit)) {
+                    getManager().createAttackablePositions(selected_unit);
+                    if (getManager().canSelectedUnitAct()) {
+                        if (getManager().hasEnemyWithinRange(selected_unit)) {
                             addActor(buttons.get("attack"));
                         }
                         if (selected_unit.hasAbility(Ability.NECROMANCER)
-                                && getGameManager().hasTombWithinRange(selected_unit)) {
+                                && getManager().hasTombWithinRange(selected_unit)) {
                             addActor(buttons.get("summon"));
                         }
                         if (selected_unit.hasAbility(Ability.HEALER)
-                                && getGameManager().hasAllyCanHealWithinRange(selected_unit)) {
+                                && getManager().hasAllyCanHealWithinRange(selected_unit)) {
                             addActor(buttons.get("heal"));
                         }
-                        if (getGameManager().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        if (getManager().getGame().canOccupy(selected_unit, selected_unit.getX(), selected_unit.getY())) {
                             addActor(buttons.get("occupy"));
                         }
-                        if (getGameManager().getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
+                        if (getManager().getGame().canRepair(selected_unit, selected_unit.getX(), selected_unit.getY())) {
                             addActor(buttons.get("repair"));
                         }
                     }
                     addActor(buttons.get("standby"));
                     break;
                 case GameManager.STATE_BUY:
-                    getGameManager().createAttackablePositions(selected_unit);
+                    getManager().createAttackablePositions(selected_unit);
                     if (selected_unit.isCommander() && selected_unit.getTeam() == getGame().getCurrentTeam()
                             && getGame().isCastleAccessible(getGame().getMap().getTile(selected_unit.getX(), selected_unit.getY()))) {
                         addActor(buttons.get("buy"));
                         addActor(buttons.get("move"));
-                        if (getGameManager().hasEnemyWithinRange(selected_unit)) {
+                        if (getManager().hasEnemyWithinRange(selected_unit)) {
                             addActor(buttons.get("attack"));
                         }
                     }

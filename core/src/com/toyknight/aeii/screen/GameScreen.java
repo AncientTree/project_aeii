@@ -10,13 +10,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.*;
+import com.toyknight.aeii.net.task.GameEventSendingTask;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
@@ -118,7 +118,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.btn_end_turn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doEndTurn();
+                getManager().doEndTurn();
                 onButtonUpdateRequested();
             }
         });
@@ -260,7 +260,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawCursor() {
-        if (!getGameManager().isAnimating()) {
+        if (!getManager().isAnimating()) {
             int cursor_x = getCursorMapX();
             int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
@@ -333,7 +333,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onReceiveGameEvent(GameEvent event) {
-        getGameManager().submitGameEvent(event);
+        getManager().submitGameEvent(event);
     }
 
     @Override
@@ -370,14 +370,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 GameEvent preview = getRecord().getEvents().peek();
                 if ((preview instanceof TileDestroyEvent) || (preview instanceof UnitAttackEvent)) {
                     GameEvent event = getRecord().getEvents().poll();
-                    getGameManager().submitGameEvent(event);
+                    getManager().submitGameEvent(event);
                 } else {
                     if (playback_delay < 1.0f) {
                         playback_delay += delta;
                     } else {
                         playback_delay = 0f;
                         GameEvent event = getRecord().getEvents().poll();
-                        getGameManager().submitGameEvent(event);
+                        getManager().submitGameEvent(event);
                     }
                 }
             }
@@ -431,7 +431,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         scale = 1.0f;
         manager.setGame(game);
         manager.setGameManagerListener(this);
-        GameHost.setGameManager(getGameManager());
         UnitToolkit.setGame(game);
         Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
         locateViewport(team_focus.x, team_focus.y);
@@ -452,47 +451,47 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             if (keyCode == Input.Keys.ENTER && !isDialogShown()) {
                 showDialog("message");
             }
-            switch (getGameManager().getState()) {
+            switch (getManager().getState()) {
                 case GameManager.STATE_BUY:
                     if (keyCode == Input.Keys.B) {
-                        getGameManager().setState(GameManager.STATE_SELECT);
+                        getManager().setState(GameManager.STATE_SELECT);
                         showDialog("store");
                         return true;
                     }
                     if (keyCode == Input.Keys.M) {
-                        getGameManager().beginMovePhase();
+                        getManager().beginMovePhase();
                         onButtonUpdateRequested();
                         return true;
                     }
                     return false;
                 case GameManager.STATE_ACTION:
                     if (keyCode == Input.Keys.A && action_button_bar.isButtonAvailable("attack")) {
-                        getGameManager().beginAttackPhase();
+                        getManager().beginAttackPhase();
                         onButtonUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.O && action_button_bar.isButtonAvailable("occupy")) {
-                        GameHost.doOccupy();
+                        getManager().doOccupy();
                         onButtonUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.R && action_button_bar.isButtonAvailable("repair")) {
-                        GameHost.doRepair();
+                        getManager().doRepair();
                         onButtonUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.S && action_button_bar.isButtonAvailable("summon")) {
-                        getGameManager().beginSummonPhase();
+                        getManager().beginSummonPhase();
                         onButtonUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.H && action_button_bar.isButtonAvailable("heal")) {
-                        getGameManager().beginHealPhase();
+                        getManager().beginHealPhase();
                         onButtonUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.SPACE) {
-                        GameHost.doStandbyUnit();
+                        getManager().doStandbyUnit();
                         onButtonUpdateRequested();
                         return true;
                     }
@@ -545,8 +544,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         boolean event_handled = super.mouseMoved(screenX, screenY);
-        if (!event_handled && getGameManager().getState() != GameManager.STATE_BUY) {
-            if (canOperate() && getGameManager().getState() != GameManager.STATE_ACTION &&
+        if (!event_handled && getManager().getState() != GameManager.STATE_BUY) {
+            if (canOperate() && getManager().getState() != GameManager.STATE_ACTION &&
                     0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
                 this.pointer_x = screenX;
                 this.pointer_y = screenY;
@@ -572,10 +571,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             int release_map_x = createCursorMapX(screen_x);
             int release_map_y = createCursorMapY(screen_y);
             if (press_map_x == release_map_x && press_map_y == release_map_y && drag_distance_x < ts && drag_distance_y < ts) {
-                switch (getGameManager().getState()) {
+                switch (getManager().getState()) {
                     case GameManager.STATE_MOVE:
                     case GameManager.STATE_REMOVE:
-                        if (getGameManager().isMovablePosition(release_map_x, release_map_y)) {
+                        if (getManager().isMovablePosition(release_map_x, release_map_y)) {
                             if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
                                 doClick(release_map_x, release_map_y);
                             } else {
@@ -583,16 +582,16 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                                 cursor_map_y = release_map_y;
                             }
                         } else {
-                            if (getGameManager().getState() == GameManager.STATE_MOVE
-                                    && getGame().getMap().canStandby(getGameManager().getSelectedUnit())) {
-                                getGameManager().cancelMovePhase();
+                            if (getManager().getState() == GameManager.STATE_MOVE
+                                    && getGame().getMap().canStandby(getManager().getSelectedUnit())) {
+                                getManager().cancelMovePhase();
                             }
                         }
                         break;
                     case GameManager.STATE_ATTACK:
                     case GameManager.STATE_SUMMON:
                     case GameManager.STATE_HEAL:
-                        if (getGameManager().getAttackablePositions().contains(new Point(release_map_x, release_map_y))) {
+                        if (getManager().getAttackablePositions().contains(new Point(release_map_x, release_map_y))) {
                             if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
                                 doClick(release_map_x, release_map_y);
                             } else {
@@ -600,7 +599,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                                 cursor_map_y = release_map_y;
                             }
                         } else {
-                            getGameManager().cancelActionPhase();
+                            getManager().cancelActionPhase();
                         }
                         break;
                     case GameManager.STATE_BUY:
@@ -619,32 +618,32 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private void doClick(int cursor_x, int cursor_y) {
         if (canOperate()) {
             Unit selected_unit = manager.getSelectedUnit();
-            switch (getGameManager().getState()) {
+            switch (getManager().getState()) {
                 case GameManager.STATE_BUY:
-                    getGameManager().setState(GameManager.STATE_SELECT);
+                    getManager().setState(GameManager.STATE_SELECT);
                     break;
                 case GameManager.STATE_PREVIEW:
                     if (selected_unit != null && !selected_unit.isAt(cursor_x, cursor_y)) {
-                        getGameManager().cancelPreviewPhase();
+                        getManager().cancelPreviewPhase();
                     }
                 case GameManager.STATE_SELECT:
                     onSelect(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_MOVE:
                 case GameManager.STATE_REMOVE:
-                    GameHost.doMoveUnit(cursor_x, cursor_y);
+                    getManager().doMoveUnit(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_ACTION:
-                    GameHost.doReverseMove();
+                    getManager().doReverseMove();
                     break;
                 case GameManager.STATE_ATTACK:
-                    GameHost.doAttack(cursor_x, cursor_y);
+                    getManager().doAttack(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_SUMMON:
-                    GameHost.doSummon(cursor_x, cursor_y);
+                    getManager().doSummon(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_HEAL:
-                    GameHost.doHeal(cursor_x, cursor_y);
+                    getManager().doHeal(cursor_x, cursor_y);
                     break;
                 default:
                     //do nothing
@@ -657,17 +656,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         if (canOperate()) {
             switch (manager.getState()) {
                 case GameManager.STATE_BUY:
-                    getGameManager().setState(GameManager.STATE_SELECT);
+                    getManager().setState(GameManager.STATE_SELECT);
                 case GameManager.STATE_PREVIEW:
                     manager.cancelPreviewPhase();
                     break;
                 case GameManager.STATE_MOVE:
-                    if (getGame().getMap().canStandby(getGameManager().getSelectedUnit())) {
+                    if (getGame().getMap().canStandby(getManager().getSelectedUnit())) {
                         manager.cancelMovePhase();
                     }
                     break;
                 case GameManager.STATE_ACTION:
-                    GameHost.doReverseMove();
+                    getManager().doReverseMove();
                     break;
                 case GameManager.STATE_ATTACK:
                 case GameManager.STATE_SUMMON:
@@ -692,9 +691,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             if (getGame().isUnitAccessible(target_unit)) {
                 if (getGame().isCastleAccessible(getGame().getMap().getTile(map_x, map_y))
                         && target_unit.isCommander() && target_unit.getTeam() == getGame().getCurrentTeam()) {
-                    GameHost.doSelect(map_x, map_y);
+                    getManager().doSelect(map_x, map_y);
                 } else {
-                    GameHost.doSelect(map_x, map_y);
+                    getManager().doSelect(map_x, map_y);
                 }
             } else {
                 if (target_unit.isCommander() && target_unit.getTeam() == getGame().getCurrentTeam() &&
@@ -702,9 +701,30 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     showDialog("store");
                 }
                 if (target_unit.getTeam() != getGame().getCurrentTeam()) {
-                    getGameManager().beginPreviewPhase(target_unit);
+                    getManager().beginPreviewPhase(target_unit);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onGameEventDispatched(GameEvent event) {
+        if (getContext().getNetworkManager().isConnected()) {
+            getContext().submitAsyncTask(new GameEventSendingTask(event) {
+                @Override
+                public Void doTask() throws Exception {
+                    getContext().getNetworkManager().sendGameEvent(getEvent());
+                    return null;
+                }
+
+                @Override
+                public void onFinish(Void result) {
+                }
+
+                @Override
+                public void onFail(String message) {
+                }
+            });
         }
     }
 
@@ -722,7 +742,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onButtonUpdateRequested() {
-        int state = getGameManager().getState();
+        int state = getManager().getState();
         this.action_button_bar.updateButtons();
         GameContext.setButtonEnabled(btn_end_turn,
                 canOperate() && (state == GameManager.STATE_SELECT || state == GameManager.STATE_PREVIEW));
@@ -763,7 +783,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public boolean canOperate() {
-        return !getGameManager().isProcessing() && getGame().getCurrentPlayer().isLocalPlayer();
+        return !getManager().isProcessing() && getGame().getCurrentPlayer().isLocalPlayer();
     }
 
     public GameCore getGame() {
@@ -775,7 +795,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return getGame().getMap();
     }
 
-    public GameManager getGameManager() {
+    public GameManager getManager() {
         return manager;
     }
 

@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.widgets.UnitListListener;
 import com.toyknight.aeii.manager.GameManager;
@@ -69,7 +68,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         this.btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameHost.doBuyUnit(selected_unit.getIndex(), castle_x, castle_y);
+                getManager().doBuyUnit(selected_unit.getIndex(), castle_x, castle_y);
                 getOwner().closeDialog("store");
             }
         });
@@ -94,7 +93,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     }
 
     private GameManager getManager() {
-        return getOwner().getGameManager();
+        return getOwner().getManager();
     }
 
     @Override

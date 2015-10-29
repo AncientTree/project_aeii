@@ -2,7 +2,6 @@ package com.toyknight.aeii.manager.events;
 
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.manager.GameHost;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitFactory;
 

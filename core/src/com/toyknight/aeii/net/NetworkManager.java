@@ -42,7 +42,7 @@ public class NetworkManager {
         return listener;
     }
 
-    public boolean connect(ServerConfig server, String username, String v_string) throws IOException {
+    public boolean connect(ServerConfiguration server, String username, String v_string) throws IOException {
         responses.clear();
         client = new Client();
         client.addListener(new Listener() {

@@ -55,7 +55,7 @@ public class RightPanelRenderer {
     }
 
     private GameManager getManager() {
-        return screen.getGameManager();
+        return screen.getManager();
     }
 
     private void drawInformation(Batch batch) {
