@@ -1,9 +1,5 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.animator.DustAriseAnimator;
-import com.toyknight.aeii.animator.UnitAttackAnimator;
-import com.toyknight.aeii.animator.UnitDestroyAnimator;
-import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -60,25 +56,25 @@ public class UnitAttackEvent implements GameEvent, Serializable {
         Unit attacker = game.getMap().getUnit(attacker_x, attacker_y);
         Unit defender = game.getMap().getUnit(target_x, target_y);
         if (defender == null) {
-            manager.submitAnimation(new UnitAttackAnimator(attacker, target_x, target_y));
+            manager.submitUnitAttackAnimation(attacker, target_x, target_y);
         } else {
             defender.changeCurrentHp(-damage);
             UnitToolkit.attachAttackStatus(attacker, defender);
-            manager.submitAnimation(new UnitAttackAnimator(attacker, defender, damage));
+            manager.submitUnitAttackAnimation(attacker, defender, damage);
             if (defender.getCurrentHp() <= 0) {
                 //update statistics
                 game.getStatistics().addDestroy(attacker.getTeam(), defender.getPrice());
                 //destroy defender
                 game.destroyUnit(defender.getX(), defender.getY());
                 //submit animation
-                manager.submitAnimation(new UnitDestroyAnimator(defender));
-                manager.submitAnimation(new DustAriseAnimator(defender.getX(), defender.getY()));
+                manager.submitUnitDestroyAnimation(defender);
+                manager.submitDustAriseAnimation(defender.getX(), defender.getY());
                 game.updateGameStatus();
             }
         }
         boolean level_up = attacker.gainExperience(experience);
         if (level_up) {
-            manager.submitAnimation(new UnitLevelUpAnimator(attacker));
+            manager.submitUnitLevelUpAnimation(attacker);
         }
 
         if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
@@ -94,6 +90,11 @@ public class UnitAttackEvent implements GameEvent, Serializable {
                 }
             }
         }
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new UnitAttackEvent(attacker_x, attacker_y, target_x, target_y, damage, experience);
     }
 
 }

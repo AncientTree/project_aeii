@@ -15,6 +15,8 @@ import java.util.Arrays;
  */
 public class Room {
 
+    public final Object GAME_LOCK = new Object();
+
     private final Object PLAYER_LOCK = new Object();
 
     private final long room_number;
@@ -49,17 +51,20 @@ public class Room {
     }
 
     public void setMap(Map map, String map_name) {
-        this.map_name = map_name;
-        Player[] players = new Player[4];
-        for (int team = 0; team < 4; team++) {
-            players[team] = new Player();
-            players[team].setType(Player.NONE);
-            players[team].setAlliance(team + 1);
+        synchronized (PLAYER_LOCK) {
+            this.map_name = map_name;
+            Player[] players = new Player[4];
+            for (int team = 0; team < 4; team++) {
+                players[team] = new Player();
+                players[team].setType(Player.NONE);
+                players[team].setAlliance(team + 1);
+            }
+            Rule rule = Rule.getDefaultRule();
+            GameCore game = new GameCore(map, rule, GameCore.SKIRMISH, players);
+            manager = new GameManager();
+            manager.setServerManager(true);
+            manager.setGame(game);
         }
-        Rule rule = Rule.getDefaultRule();
-        GameCore game = new GameCore(map, rule, GameCore.SKIRMISH, players);
-        manager = new GameManager();
-        manager.setGame(game);
     }
 
     public GameManager getManager() {
@@ -120,16 +125,20 @@ public class Room {
     }
 
     public void setPlayerType(int team, int type) {
-        Player player = getGame().getPlayer(team);
-        if (player != null) {
-            player.setType(type);
+        synchronized (GAME_LOCK) {
+            Player player = getGame().getPlayer(team);
+            if (player != null) {
+                player.setType(type);
+            }
         }
     }
 
     public void setAlliance(int team, int alliance) {
-        Player player = getGame().getPlayer(team);
-        if (player != null) {
-            player.setAlliance(alliance);
+        synchronized (GAME_LOCK) {
+            Player player = getGame().getPlayer(team);
+            if (player != null) {
+                player.setAlliance(alliance);
+            }
         }
     }
 
@@ -167,13 +176,15 @@ public class Room {
     }
 
     public void setInitialGold(int gold) {
-        for (int team = 0; team < 4; team++) {
-            Player player = getGame().getPlayer(team);
-            if (player != null) {
-                player.setGold(gold);
+        synchronized (GAME_LOCK) {
+            for (int team = 0; team < 4; team++) {
+                Player player = getGame().getPlayer(team);
+                if (player != null) {
+                    player.setGold(gold);
+                }
             }
+            this.initial_gold = gold;
         }
-        this.initial_gold = gold;
     }
 
     public int getInitialGold() {
@@ -181,7 +192,9 @@ public class Room {
     }
 
     public void setMaxPopulation(int population) {
-        getGame().getRule().setMaxPopulation(population);
+        synchronized (GAME_LOCK) {
+            getGame().getRule().setMaxPopulation(population);
+        }
     }
 
     public int getMaxPopulation() {
@@ -205,6 +218,10 @@ public class Room {
             }
         }
         return player_count >= 2 && alliance_ready;
+    }
+
+    public boolean isGameOver() {
+        return getGame().isGameOver();
     }
 
     public void startGame() {

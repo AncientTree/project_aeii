@@ -1,7 +1,5 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.animator.HpChangeAnimator;
-import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
@@ -51,17 +49,22 @@ public class UnitHealEvent implements GameEvent, Serializable {
         Unit healer = manager.getGame().getMap().getUnit(healer_x, healer_y);
         Unit target = manager.getGame().getMap().getUnit(target_x, target_y);
         target.changeCurrentHp(heal);
-        manager.submitAnimation(new HpChangeAnimator(target, heal));
+        manager.submitHpChangeAnimation(target, heal);
         if (target.getCurrentHp() <= 0) {
             manager.executeGameEvent(new UnitDestroyEvent(target_x, target_y), false);
         }
         boolean level_up = healer.gainExperience(experience);
         if (level_up) {
-            manager.submitAnimation(new UnitLevelUpAnimator(healer));
+            manager.submitUnitLevelUpAnimation(healer);
         }
         if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.onUnitActionFinished(healer);
         }
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new UnitHealEvent(healer_x, healer_y, target_x, target_y, heal, experience);
     }
 
 }

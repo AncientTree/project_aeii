@@ -8,6 +8,8 @@ import com.toyknight.aeii.listener.AnimationListener;
  */
 public interface AnimationDispatcher {
 
+    boolean canSubmitAnimation();
+
     void addAnimationListener(AnimationListener listener);
 
     void submitAnimation(Animator animation);

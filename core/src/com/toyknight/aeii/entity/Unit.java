@@ -68,6 +68,11 @@ public class Unit implements Serializable {
         this(index, "#");
     }
 
+    public Unit(Unit unit) {
+        this(unit, unit.getUnitCode());
+        setStandby(unit.isStandby());
+    }
+
     public Unit(Unit unit, String unit_code) {
         this(unit.getIndex(), unit_code);
         this.level = unit.getLevel();
@@ -92,7 +97,11 @@ public class Unit implements Serializable {
         this.max_attack_range = unit.getMaxAttackRange();
         this.min_attack_range = unit.getMinAttackRange();
         this.abilities = new Array<Integer>(unit.getAbilities());
-        this.status = unit.getStatus();
+        if (unit.getStatus() == null) {
+            this.status = null;
+        } else {
+            this.status = new Status(unit.getStatus());
+        }
     }
 
     public Unit(UnitDefinition definition, int index) {

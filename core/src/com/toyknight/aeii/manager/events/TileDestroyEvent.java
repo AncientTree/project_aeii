@@ -1,6 +1,5 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.animator.DustAriseAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
@@ -42,7 +41,12 @@ public class TileDestroyEvent implements GameEvent, Serializable {
         GameCore game = manager.getGame();
         Tile tile = game.getMap().getTile(target_x, target_y);
         game.setTile(tile.getDestroyedTileIndex(), target_x, target_y);
-        manager.submitAnimation(new DustAriseAnimator(target_x, target_y));
+        manager.submitDustAriseAnimation(target_x, target_y);
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new TileDestroyEvent(target_x, target_y);
     }
 
 }

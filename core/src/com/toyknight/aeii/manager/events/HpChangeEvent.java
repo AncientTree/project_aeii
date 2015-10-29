@@ -2,7 +2,6 @@ package com.toyknight.aeii.manager.events;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.animator.HpChangeAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
@@ -53,8 +52,13 @@ public class HpChangeEvent implements GameEvent, Serializable {
             }
         }
         if (change_count > 0) {
-            manager.submitAnimation(new HpChangeAnimator(change_map, units));
+            manager.submitHpChangeAnimation(change_map, units);
         }
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new HpChangeEvent(change_map);
     }
 
     private int validateChange(Unit unit, int change) {

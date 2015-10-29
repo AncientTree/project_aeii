@@ -20,6 +20,16 @@ public class Player implements Serializable {
     private int gold = 0;
     private int population = 0;
 
+    public Player() {
+    }
+
+    public Player(Player player) {
+        type = player.getType();
+        alliance = player.getAlliance();
+        gold = player.getGold();
+        population = player.getPopulation();
+    }
+
     public void setType(int type) {
         this.type = type;
     }

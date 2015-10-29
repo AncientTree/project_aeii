@@ -32,6 +32,8 @@ public class ClassRegister {
         kryo.register(Notification.class);
 
         kryo.register(Array.class);
+        kryo.register(Array.ArrayIterable.class);
+        kryo.register(Array.ArrayIterator.class);
         kryo.register(ObjectSet.class);
         kryo.register(ObjectMap.class);
         kryo.register(ObjectMap.Keys.class);
@@ -54,6 +56,8 @@ public class ClassRegister {
         kryo.register(Unit[][].class);
         kryo.register(Rule.class);
         kryo.register(Map.class);
+        kryo.register(Tomb.class);
+        kryo.register(Status.class);
 
         kryo.register(HpChangeEvent.class);
         kryo.register(OccupyEvent.class);

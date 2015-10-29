@@ -197,29 +197,29 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         if (getSelectedRoom() != null) {
             Gdx.input.setInputProcessor(null);
             btn_join.setText(Language.getText("LB_JOINING"));
-            getContext().submitAsyncTask(new AsyncTask<Object>() {
+            getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
                 @Override
-                public Object doTask() throws IOException, ClassNotFoundException {
+                public RoomConfiguration doTask() throws IOException, ClassNotFoundException {
                     return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().room_number);
                 }
 
                 @Override
-                public void onFinish(Object result) {
+                public void onFinish(RoomConfiguration configuration) {
                     btn_join.setText(Language.getText("LB_JOIN"));
-                    if (result == null) {
+                    if (configuration == null) {
                         getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
                     } else {
-                        if (result instanceof RoomConfiguration) {
-                            getContext().gotoNetGameCreateScreen((RoomConfiguration) result, null);
-                        }
-                        if (result instanceof GameCore) {
-                            GameCore game = (GameCore) result;
+                        if (configuration.started) {
+                            GameCore game = configuration.game;
                             for (int team = 0; team < 4; team++) {
-                                if (game.getPlayer(team) != null) {
+                                if (game.getPlayer(team) != null && game.getPlayer(team).getType() != Player.NONE) {
                                     game.getPlayer(team).setType(Player.REMOTE);
                                 }
                             }
-                            getContext().gotoGameScreen((GameCore) result);
+                            getContext().setRoomConfiguration(configuration);
+                            getContext().gotoGameScreen(game, false);
+                        } else {
+                            getContext().gotoNetGameCreateScreen(configuration, null);
                         }
                     }
                 }
@@ -287,8 +287,8 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             this.btn_load_game.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    room_create_dialog.setMode(LOAD_GAME);
-                    showDialog("create");
+//                    room_create_dialog.setMode(LOAD_GAME);
+//                    showDialog("create");
                 }
             });
             this.addActor(btn_load_game);

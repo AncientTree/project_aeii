@@ -17,28 +17,48 @@ public class GameCore implements Serializable {
     public static final int SKIRMISH = 0x1;
     public static final int CAMPAIGN = 0x2;
 
-    private final int type;
+    protected final int type;
 
-    private final Statistics statistics;
+    protected final Map map;
+    protected final Rule rule;
+    protected final Player[] player_list;
+    protected final Unit[] commanders;
 
-    private final Map map;
-    private final Rule rule;
-    private int current_team;
-    private final Player[] player_list;
+    protected int turn;
 
-    private int turn;
+    protected int current_team;
 
-    private boolean is_game_over;
+    protected boolean is_game_over;
 
-    private final Unit[] commanders;
+    protected Statistics statistics;
 
     public GameCore() {
         this(null, null, SKIRMISH, new Player[2]);
     }
 
-    public GameCore(Map map, Rule rule, int type, Player[] players) {
+    public GameCore(GameCore game) {
+        type = game.type;
+        map = new Map(game.map);
+        rule = new Rule(game.rule);
+        player_list = new Player[4];
+        commanders = new Unit[4];
+        for (int team = 0; team < 4; team++) {
+            if (game.player_list[team] != null) {
+                player_list[team] = new Player(game.player_list[team]);
+            }
+            if (game.commanders[team] != null) {
+                commanders[team] = new Unit(game.commanders[team]);
+            }
+        }
+        turn = game.turn;
+        current_team = game.current_team;
+        is_game_over = game.is_game_over;
+        if (game.statistics != null) {
+            statistics = new Statistics(game.statistics);
+        }
+    }
 
-        this.statistics = new Statistics();
+    public GameCore(Map map, Rule rule, int type, Player[] players) {
         this.map = map;
         this.rule = rule;
         this.type = type;
@@ -56,6 +76,7 @@ public class GameCore implements Serializable {
     }
 
     public void initialize() {
+        this.statistics = new Statistics();
         ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);

@@ -308,7 +308,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void onPlayerLeave(int id, String username) {
         message_box.removePlayer(id);
         if (getContext().isGameHost()) {
-            Integer[] team_allocation = getContext().getRoomConfig().team_allocation;
+            Integer[] team_allocation = getContext().getRoomConfiguration().team_allocation;
             for (int team = 0; team < 4; team++) {
                 if (team_allocation[team].equals(id) && getGame().getPlayer(team) != null) {
                     getGame().getPlayer(team).setType(Player.LOCAL);
@@ -395,7 +395,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         }
 
         if (getContext().getNetworkManager().isConnected()) {
-            RoomConfiguration config = getContext().getRoomConfig();
+            RoomConfiguration config = getContext().getRoomConfiguration();
             Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(config.players);
             message_box.setPlayers(players, config.team_allocation);
         }

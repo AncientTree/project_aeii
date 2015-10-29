@@ -415,7 +415,7 @@ public class NetGameCreateScreen extends StageScreen {
                     }
                 }
             }
-            getContext().gotoGameScreen(configuration.game);
+            getContext().gotoGameScreen(configuration.game, true);
 //            Player[] players = new Player[4];
 //            for (int team = 0; team < 4; team++) {
 //                if (configuration.game.getMap().hasTeamAccess(team) && configuration.team_allocation[team] != -1) {

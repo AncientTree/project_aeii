@@ -44,7 +44,7 @@ public class NetworkManager {
 
     public boolean connect(ServerConfiguration server, String username, String v_string) throws IOException {
         responses.clear();
-        client = new Client();
+        client = new Client(65536, 65536);
         client.addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
@@ -224,14 +224,14 @@ public class NetworkManager {
         }
     }
 
-    public Object requestJoinRoom(long room_number) {
+    public RoomConfiguration requestJoinRoom(long room_number) {
         Request request = Request.getInstance(Request.JOIN_ROOM);
         request.setParameters(room_number);
         Response response = sendRequest(request);
         if (response == null) {
             return null;
         } else {
-            return response.getParameter(0);
+            return (RoomConfiguration) response.getParameter(0);
         }
     }
 

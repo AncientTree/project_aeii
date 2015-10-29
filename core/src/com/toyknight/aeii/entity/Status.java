@@ -17,6 +17,15 @@ public class Status implements Serializable {
     private final int type;
     private int remaining_turn;
 
+    public Status() {
+        this(-1, -1);
+    }
+
+    public Status(Status status) {
+        this.type = status.getType();
+        this.remaining_turn = status.getRemainingTurn();
+    }
+
     public Status(int type, int turn) {
         this.type = type;
         this.remaining_turn = turn;

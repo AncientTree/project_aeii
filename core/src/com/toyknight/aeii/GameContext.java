@@ -188,9 +188,11 @@ public class GameContext extends Game {
         gotoScreen(map_editor_screen);
     }
 
-    public void gotoGameScreen(GameCore game) {
+    public void gotoGameScreen(GameCore game, boolean initialize) {
         //AudioManager.stopCurrentBGM();
-        game.initialize();
+        if (initialize) {
+            game.initialize();
+        }
         game_screen.prepare(game);
         gotoScreen(game_screen);
     }
@@ -295,10 +297,14 @@ public class GameContext extends Game {
     }
 
     public int getHostID() {
-        return getRoomConfig().host;
+        return getRoomConfiguration().host;
     }
 
-    public RoomConfiguration getRoomConfig() {
+    public void setRoomConfiguration(RoomConfiguration configuration) {
+        net_game_create_screen.setRoomConfiguration(configuration);
+    }
+
+    public RoomConfiguration getRoomConfiguration() {
         return net_game_create_screen.getRoomConfiguration();
     }
 

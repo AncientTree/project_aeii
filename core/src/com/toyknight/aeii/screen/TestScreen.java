@@ -105,7 +105,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
                 }
             }
             GameCore game = new GameCore(map, Rule.getDefaultRule(), GameCore.SKIRMISH, players);
-            getContext().gotoGameScreen(game);
+            getContext().gotoGameScreen(game, true);
         }
     }
 

@@ -14,17 +14,45 @@ public class Map implements Serializable {
 
     private static final long serialVersionUID = 4032015L;
 
-    private String author;
-    private final boolean[] team_access;
+    protected String author;
+    protected final boolean[] team_access;
 
-    private final short[][] map_data;
-    private final Unit[][] upper_unit_layer;
-    private final ObjectMap<Point, Unit> unit_map;
-    private final Array<Tomb> tomb_list;
-    private final Point[][] position_map;
+    protected final short[][] map_data;
+    protected final Unit[][] upper_unit_layer;
+    protected final ObjectMap<Point, Unit> unit_map;
+    protected final Array<Tomb> tomb_list;
+    protected final Point[][] position_map;
 
     public Map() {
         this(new short[1][1], new boolean[1], null);
+    }
+
+    public Map(Map map) {
+        author = map.author;
+        team_access = new boolean[4];
+        System.arraycopy(map.team_access, 0, team_access, 0, 4);
+        map_data = new short[map.getWidth()][map.getHeight()];
+        upper_unit_layer = new Unit[map.getWidth()][map.getHeight()];
+        position_map = new Point[map.getWidth()][map.getHeight()];
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                map_data[x][y] = map.map_data[x][y];
+                position_map[x][y] = new Point(x, y);
+                Unit unit = map.upper_unit_layer[x][y];
+                if (unit != null) {
+                    upper_unit_layer[x][y] = new Unit(unit);
+                }
+            }
+        }
+        unit_map = new ObjectMap<Point, Unit>();
+        for (Point position : map.unit_map.keys()) {
+            Unit unit = map.unit_map.get(position);
+            unit_map.put(position, new Unit(unit));
+        }
+        tomb_list = new Array<Tomb>();
+        for (Tomb tomb : map.tomb_list) {
+            tomb_list.add(new Tomb(tomb));
+        }
     }
 
     public Map(short[][] map_data, boolean[] team_access, String author) {

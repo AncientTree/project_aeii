@@ -27,6 +27,21 @@ public class Rule implements Serializable {
 
     private Array<Integer> available_unit_list = new Array<Integer>();
 
+    public Rule() {
+    }
+
+    public Rule(Rule rule) {
+        setPoisonDamage(rule.getPoisonDamage());
+        setKillExperience(rule.getKillExperience());
+        setAttackExperience(rule.getAttackExperience());
+        setCounterExperience(rule.getCounterExperience());
+        setCommanderPriceGrowth(rule.getCommanderPriceGrowth());
+        setMaxPopulation(rule.getMaxPopulation());
+        setEnemyClearNeeded(rule.isEnemyClearNeeded());
+        setCastleClearNeeded(rule.isCastleClearNeeded());
+        setAvailableUnits(new Array<Integer>(rule.getAvailableUnitList()));
+    }
+
     public void setPoisonDamage(int damage) {
         this.poison_damage = damage;
     }

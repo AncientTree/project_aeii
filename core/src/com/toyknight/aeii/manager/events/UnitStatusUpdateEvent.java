@@ -5,7 +5,6 @@ import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 
 import java.io.Serializable;
-import java.util.HashSet;
 
 /**
  * @author toyknight 5/26/2015.
@@ -45,6 +44,11 @@ public class UnitStatusUpdateEvent implements GameEvent, Serializable {
                 game.resetUnit(unit);
             }
         }
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new UnitStatusUpdateEvent(team);
     }
 
 }

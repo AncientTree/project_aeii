@@ -8,6 +8,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.GameContext;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.net.Notification;
@@ -68,7 +69,7 @@ public class GameServer {
     }
 
     public boolean isRoomAvailable(Room room) {
-        return room != null && room.getRemaining() > 0 && room.getHostPlayer() != -1;
+        return room != null && !room.isGameOver() && room.getRemaining() > 0 && room.getHostPlayer() != -1;
     }
 
     public Room getRoom(long room_number) {
@@ -116,13 +117,16 @@ public class GameServer {
     public RoomConfiguration getRoomConfiguration(Room room) {
         RoomConfiguration configuration = new RoomConfiguration();
         configuration.room_number = room.getRoomNumber();
+        configuration.started = !room.isOpen();
         configuration.host = room.getHostPlayer();
-        configuration.game = room.getGame();
         configuration.team_allocation = room.getTeamAllocation();
         configuration.initial_gold = room.getInitialGold();
         configuration.max_population = room.getMaxPopulation();
         ObjectSet<Integer> players = room.getPlayers();
         configuration.players = new Array<PlayerSnapshot>();
+        synchronized (room.GAME_LOCK) {
+            configuration.game = new GameCore(room.getGame());
+        }
         for (int id : players) {
             PlayerSnapshot snapshot = getPlayerSnapshot(id);
             if (snapshot != null) {
@@ -249,15 +253,13 @@ public class GameServer {
             long room_number = (Long) request.getParameter(0);
             Room room = getRoom(room_number);
             if (isRoomAvailable(room) && player.getRoomNumber() == -1) {
-                getRoom(room_number).addPlayer(player.getID());
+                room.addPlayer(player.getID());
                 player.setRoomNumber(room_number);
-
-                notifyPlayerJoin(room, player.getID(), player.getUsername());
-
                 RoomConfiguration configuration = getRoomConfiguration(room);
                 response.setParameters(configuration);
+                player.getConnection().sendTCP(response);
+                notifyPlayerJoin(room, player.getID(), player.getUsername());
             }
-            player.getConnection().sendTCP(response);
         }
     }
 
@@ -326,16 +328,13 @@ public class GameServer {
 
     public void onSubmitGameEvent(PlayerService submitter, Notification notification) {
         if (submitter.isAuthenticated()) {
-            try {
-                GameEvent event = (GameEvent) notification.getParameter(0);
-                Room room = getRoom(submitter.getRoomNumber());
-                if (!room.isOpen()) {
-//                    room.getManager().executeGameEvent(event, false);
-//                    room.getManager().clearAnimations();
-                    notifyGameEvent(room, submitter.getID(), event);
+            GameEvent event = (GameEvent) notification.getParameter(0);
+            Room room = getRoom(submitter.getRoomNumber());
+            if (!room.isOpen()) {
+                synchronized (room.GAME_LOCK) {
+                    room.getManager().executeGameEvent(event, false);
                 }
-            } catch (Exception ex) {
-                System.err.println(ex.toString());
+                notifyGameEvent(room, submitter.getID(), event);
             }
         }
     }
@@ -409,7 +408,7 @@ public class GameServer {
 
     public void notifyGameEvent(Room room, int submitter_id, GameEvent event) {
         Notification notification = new Notification(Notification.GAME_EVENT);
-        notification.setParameters(event);
+        notification.setParameters(event.getCopy());
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != submitter_id) {
@@ -439,7 +438,7 @@ public class GameServer {
 
     private void create() throws AEIIException {
         executor = Executors.newFixedThreadPool(64);
-        server = new Server();
+        server = new Server(65536, 65536);
         server.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {

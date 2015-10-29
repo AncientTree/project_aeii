@@ -1,7 +1,6 @@
 package com.toyknight.aeii.manager.events;
 
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.animator.UnitMoveAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
@@ -58,12 +57,17 @@ public class UnitMoveEvent implements GameEvent, Serializable {
             Unit unit = manager.getGame().getMap().getUnit(unit_x, unit_y);
             manager.getGame().moveUnit(unit_x, unit_y, dest_x, dest_y);
             unit.setCurrentMovementPoint(mp_left);
-            manager.submitAnimation(new UnitMoveAnimator(unit, move_path));
+            manager.submitUnitMoveAnimation(unit, move_path);
 
             if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
                 manager.onUnitMoveFinished();
             }
         }
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new UnitMoveEvent(unit_x, unit_y, dest_x, dest_y, mp_left, new Array<Point>(move_path));
     }
 
 }

@@ -1,7 +1,5 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.animator.SummonAnimator;
-import com.toyknight.aeii.animator.UnitLevelUpAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
@@ -51,14 +49,20 @@ public class SummonEvent implements GameEvent, Serializable {
         Unit summoner = game.getMap().getUnit(summoner_x, summoner_y);
         game.getMap().removeTomb(target_x, target_y);
         game.createUnit(UnitFactory.getSkeletonIndex(), summoner.getTeam(), target_x, target_y);
-        manager.submitAnimation(new SummonAnimator(summoner, target_x, target_y));
+        manager.submitSummonAnimation(summoner, target_x, target_y);
         boolean level_up = summoner.gainExperience(experience);
         if (level_up) {
-            manager.submitAnimation(new UnitLevelUpAnimator(summoner));
+            manager.submitUnitLevelUpAnimation(summoner);
         }
 
         if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.onUnitActionFinished(summoner);
         }
     }
+
+    @Override
+    public GameEvent getCopy() {
+        return new SummonEvent(summoner_x, summoner_y, target_x, target_y, experience);
+    }
+
 }

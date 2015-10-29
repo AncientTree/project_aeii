@@ -1,6 +1,5 @@
 package com.toyknight.aeii.manager.events;
 
-import com.toyknight.aeii.animator.MessageAnimator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Tile;
@@ -44,12 +43,17 @@ public class OccupyEvent implements GameEvent, Serializable {
     public void execute(GameManager manager) {
         Tile target_tile = manager.getGame().getMap().getTile(target_x, target_y);
         manager.getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
-        manager.submitAnimation(new MessageAnimator(Language.getText("LB_OCCUPIED"), 0.5f));
+        manager.submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
         manager.getGame().updateGameStatus();
 
         if (manager.getGame().getCurrentPlayer().isLocalPlayer()) {
             manager.onUnitActionFinished(manager.getGame().getMap().getUnit(target_x, target_y));
         }
+    }
+
+    @Override
+    public GameEvent getCopy() {
+        return new OccupyEvent(target_x, target_y, team);
     }
 
 }

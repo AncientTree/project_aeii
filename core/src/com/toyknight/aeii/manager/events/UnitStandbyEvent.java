@@ -42,4 +42,9 @@ public class UnitStandbyEvent implements GameEvent, Serializable {
         manager.onUnitStandby(unit);
     }
 
+    @Override
+    public GameEvent getCopy() {
+        return new UnitStandbyEvent(unit_x, unit_y);
+    }
+
 }

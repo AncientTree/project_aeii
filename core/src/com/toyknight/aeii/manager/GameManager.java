@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.AnimationDispatcher;
-import com.toyknight.aeii.animator.Animator;
+import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.GameManagerListener;
@@ -30,6 +30,8 @@ public class GameManager implements AnimationDispatcher {
     public static final int STATE_PREVIEW = 0x8;
     public static final int STATE_BUY = 0x9;
 
+    private boolean is_server_manager;
+
     private final Queue<GameEvent> event_queue;
     private final Queue<Animator> animation_queue;
     private Animator current_animation = null;
@@ -52,6 +54,7 @@ public class GameManager implements AnimationDispatcher {
     private final int[] y_dir = {0, 0, 1, -1};
 
     public GameManager() {
+        this.is_server_manager = false;
         this.event_queue = new LinkedList<GameEvent>();
         this.animation_queue = new LinkedList<Animator>();
         this.animation_listeners = new Array<AnimationListener>();
@@ -82,6 +85,10 @@ public class GameManager implements AnimationDispatcher {
 
     public GameManagerListener getListener() {
         return manager_listener;
+    }
+
+    public void setServerManager(boolean b) {
+        is_server_manager = b;
     }
 
     public boolean isProcessing() {
@@ -426,6 +433,77 @@ public class GameManager implements AnimationDispatcher {
         }
     }
 
+    public void submitHpChangeAnimation(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new HpChangeAnimator(change_map, units));
+        }
+    }
+
+    public void submitHpChangeAnimation(Unit unit, int change) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new HpChangeAnimator(unit, change));
+        }
+    }
+
+    public void submitMessageAnimation(String message, float delay) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new MessageAnimator(message, delay));
+        }
+    }
+
+    public void submitMessageAnimation(String message_upper, String message_lower, float delay) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new MessageAnimator(message_upper, message_lower, delay));
+        }
+    }
+
+    public void submitSummonAnimation(Unit summoner, int target_x, int target_y) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new SummonAnimator(summoner, target_x, target_y));
+        }
+    }
+
+    public void submitUnitLevelUpAnimation(Unit unit) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new UnitLevelUpAnimator(unit));
+        }
+    }
+
+    public void submitDustAriseAnimation(int map_x, int map_y) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new DustAriseAnimator(map_x, map_y));
+        }
+    }
+
+    public void submitUnitAttackAnimation(Unit attacker, Unit target, int damage) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new UnitAttackAnimator(attacker, target, damage));
+        }
+    }
+
+    public void submitUnitAttackAnimation(Unit attacker, int target_x, int target_y) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new UnitAttackAnimator(attacker, target_x, target_y));
+        }
+    }
+
+    public void submitUnitDestroyAnimation(Unit unit) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new UnitDestroyAnimator(unit));
+        }
+    }
+
+    public void submitUnitMoveAnimation(Unit unit, Array<Point> path) {
+        if (canSubmitAnimation()) {
+            submitAnimation(new UnitMoveAnimator(unit, path));
+        }
+    }
+
+    @Override
+    public boolean canSubmitAnimation() {
+        return !is_server_manager;
+    }
+
     @Override
     public void addAnimationListener(AnimationListener listener) {
         this.animation_listeners.add(listener);
@@ -467,11 +545,6 @@ public class GameManager implements AnimationDispatcher {
         } else {
             current_animation.update(delta);
         }
-    }
-
-    public void clearAnimations() {
-        current_animation = null;
-        animation_queue.clear();
     }
 
     @Override
