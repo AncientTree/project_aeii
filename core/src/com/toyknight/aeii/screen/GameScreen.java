@@ -337,7 +337,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onReceiveMessage(String username, String message) {
-        message_board.appendMessage(username, message);
+        appendMessage(username, message);
     }
 
     @Override
@@ -706,7 +706,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onGameEventDispatched(GameEvent event) {
+    public void onGameEventSubmitted(GameEvent event) {
         if (getContext().getNetworkManager().isConnected()) {
             getContext().submitAsyncTask(new GameEventSendingTask(event) {
                 @Override

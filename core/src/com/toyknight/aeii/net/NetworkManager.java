@@ -279,7 +279,7 @@ public class NetworkManager {
 
     public void sendGameEvent(GameEvent event) {
         Notification notification = new Notification(Notification.GAME_EVENT);
-        notification.setParameters(event);
+        notification.setParameters(event.copy());
         sendNotification(notification);
         Gdx.app.log(TAG, "Send " + event.toString());
     }

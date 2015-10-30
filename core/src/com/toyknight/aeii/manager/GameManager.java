@@ -168,7 +168,7 @@ public class GameManager implements AnimationDispatcher {
     public void doSelect(int x, int y) {
         Unit unit = getGame().getMap().getUnit(x, y);
         if (getGame().isUnitAccessible(unit)) {
-            dispatchEvent(new UnitSelectEvent(x, y));
+            submitGameEventAndNotify(new UnitSelectEvent(x, y));
         }
     }
 
@@ -178,14 +178,14 @@ public class GameManager implements AnimationDispatcher {
             int start_y = getSelectedUnit().getY();
             int mp_remains = getMovementPointRemains(dest_x, dest_y);
             Array<Point> move_path = getMovePath(dest_x, dest_y);
-            dispatchEvent(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
+            submitGameEventAndNotify(new UnitMoveEvent(start_x, start_y, dest_x, dest_y, mp_remains, move_path));
         }
     }
 
     public void doReverseMove() {
         Point last_position = getLastPosition();
         Unit selected_unit = getSelectedUnit();
-        dispatchEvent(
+        submitGameEventAndNotify(
                 new UnitMoveReverseEvent(selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y));
 
     }
@@ -199,9 +199,9 @@ public class GameManager implements AnimationDispatcher {
             int counter_experience = getGame().getRule().getCounterExperience();
             if (defender == null) {
                 if (attacker.hasAbility(Ability.DESTROYER) && getGame().getMap().getTile(target_x, target_y).isDestroyable()) {
-                    dispatchEvent(new UnitAttackEvent(attacker.getX(), attacker.getY(), target_x, target_y, -1, attack_experience));
-                    dispatchEvent(new UnitStandbyEvent(attacker.getX(), attacker.getY()));
-                    dispatchEvent(new TileDestroyEvent(target_x, target_y));
+                    submitGameEventAndNotify(new UnitAttackEvent(attacker.getX(), attacker.getY(), target_x, target_y, -1, attack_experience));
+                    submitGameEventAndNotify(new UnitStandbyEvent(attacker.getX(), attacker.getY()));
+                    submitGameEventAndNotify(new TileDestroyEvent(target_x, target_y));
                 }
             } else {
                 if (getGame().canAttack(attacker, target_x, target_y)) {
@@ -213,18 +213,18 @@ public class GameManager implements AnimationDispatcher {
                     real_defender.changeCurrentHp(-attack_damage);
                     if (real_defender.getCurrentHp() > 0) {
                         real_attacker.gainExperience(attack_experience);
-                        dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, attack_experience));
+                        submitGameEventAndNotify(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, attack_experience));
                         if (getUnitToolkit().canCounter(real_defender, real_attacker) || UnitToolkit.isAttackAmbushed(attacker, defender)) {
                             int counter_damage = getUnitToolkit().getDamage(real_defender, real_attacker, getGame().getMap());
                             real_attacker.changeCurrentHp(-counter_damage);
                             if (real_attacker.getCurrentHp() > 0) {
-                                dispatchEvent(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, counter_experience));
+                                submitGameEventAndNotify(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, counter_experience));
                             } else {
-                                dispatchEvent(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, kill_experience));
+                                submitGameEventAndNotify(new UnitAttackEvent(real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, kill_experience));
                             }
                         }
                     } else {
-                        dispatchEvent(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, kill_experience));
+                        submitGameEventAndNotify(new UnitAttackEvent(real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, kill_experience));
                     }
                 }
             }
@@ -235,7 +235,7 @@ public class GameManager implements AnimationDispatcher {
         Unit summoner = getSelectedUnit();
         if (getGame().canSummon(summoner, target_x, target_y)) {
             int experience = getGame().getRule().getAttackExperience();
-            dispatchEvent(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
+            submitGameEventAndNotify(new SummonEvent(summoner.getX(), summoner.getY(), target_x, target_y, experience));
         }
     }
 
@@ -246,38 +246,38 @@ public class GameManager implements AnimationDispatcher {
             int heal = UnitToolkit.getHeal(healer, target);
             int experience = target.getCurrentHp() + heal > 0 ?
                     getGame().getRule().getAttackExperience() : getGame().getRule().getKillExperience();
-            dispatchEvent(new UnitHealEvent(healer.getX(), healer.getY(), target_x, target_y, heal, experience));
+            submitGameEventAndNotify(new UnitHealEvent(healer.getX(), healer.getY(), target_x, target_y, heal, experience));
         }
     }
 
     public void doRepair() {
         Unit unit = getSelectedUnit();
-        dispatchEvent(new RepairEvent(unit.getX(), unit.getY()));
+        submitGameEventAndNotify(new RepairEvent(unit.getX(), unit.getY()));
     }
 
     public void doOccupy() {
         Unit unit = getSelectedUnit();
-        dispatchEvent(new OccupyEvent(unit.getX(), unit.getY(), unit.getTeam()));
+        submitGameEventAndNotify(new OccupyEvent(unit.getX(), unit.getY(), unit.getTeam()));
     }
 
     public void doBuyUnit(int index, int x, int y) {
         int team = getGame().getCurrentTeam();
-        dispatchEvent(new UnitBuyEvent(index, team, x, y, getGame().getUnitPrice(index, team)));
+        submitGameEventAndNotify(new UnitBuyEvent(index, team, x, y, getGame().getUnitPrice(index, team)));
     }
 
     public void doStandbyUnit() {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit)) {
-            dispatchEvent(new UnitStandbyEvent(unit.getX(), unit.getY()));
+            submitGameEventAndNotify(new UnitStandbyEvent(unit.getX(), unit.getY()));
         }
     }
 
     public void doEndTurn() {
         int next_team = getGame().getNextTeam();
 
-        dispatchEvent(new TurnEndEvent());
+        submitGameEventAndNotify(new TurnEndEvent());
 
-        dispatchEvent(new UnitStatusUpdateEvent(next_team));
+        submitGameEventAndNotify(new UnitStatusUpdateEvent(next_team));
 
         //calculate hp change at turn start
         ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
@@ -309,13 +309,13 @@ public class GameManager implements AnimationDispatcher {
             }
         }
 
-        dispatchEvent(new HpChangeEvent(hp_change_map));
+        submitGameEventAndNotify(new HpChangeEvent(hp_change_map));
 
         // pre-calculate unit that will be destroyed
         for (Point position : hp_change_map.keys()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit != null && unit.getCurrentHp() + hp_change_map.get(position) <= 0) {
-                dispatchEvent(new UnitDestroyEvent(unit.getX(), unit.getY()));
+                submitGameEventAndNotify(new UnitDestroyEvent(unit.getX(), unit.getY()));
             }
         }
     }
@@ -393,9 +393,9 @@ public class GameManager implements AnimationDispatcher {
         setState(GameManager.STATE_SELECT);
     }
 
-    public void dispatchEvent(GameEvent event) {
+    public void submitGameEventAndNotify(GameEvent event) {
         if (manager_listener != null) {
-            manager_listener.onGameEventDispatched(event);
+            manager_listener.onGameEventSubmitted(event);
         }
         submitGameEvent(event);
     }

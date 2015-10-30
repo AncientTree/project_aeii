@@ -7,7 +7,7 @@ import com.toyknight.aeii.manager.events.GameEvent;
  */
 public interface GameManagerListener {
 
-    void onGameEventDispatched(GameEvent event);
+    void onGameEventSubmitted(GameEvent event);
 
     void onMapFocusRequired(int map_x, int map_y);
 
