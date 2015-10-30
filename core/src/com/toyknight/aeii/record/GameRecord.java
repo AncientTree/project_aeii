@@ -1,5 +1,6 @@
-package com.toyknight.aeii.entity;
+package com.toyknight.aeii.record;
 
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.events.GameEvent;
 
 import java.util.Queue;

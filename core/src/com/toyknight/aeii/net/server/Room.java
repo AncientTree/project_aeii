@@ -62,7 +62,6 @@ public class Room {
             Rule rule = Rule.getDefaultRule();
             GameCore game = new GameCore(map, rule, GameCore.SKIRMISH, players);
             manager = new GameManager();
-            manager.setServerManager(true);
             manager.setGame(game);
         }
     }

@@ -10,13 +10,15 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
+import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.net.task.GameEventSendingTask;
+import com.toyknight.aeii.record.GameRecord;
+import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
@@ -26,10 +28,8 @@ import com.toyknight.aeii.screen.dialog.MessageBox;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.utils.Recorder;
+import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
-
-import java.io.IOException;
 
 /**
  * @author toyknight 4/4/2015.
@@ -46,11 +46,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private final RightPanelRenderer right_panel_renderer;
     private final AttackInformationRenderer attack_info_renderer;
 
-    private GameRecord record;
-    private float playback_delay;
-    private boolean playback_finished;
-
     private final GameManager manager;
+    private final GameRecordPlayer record_player;
 
     private final CursorAnimator cursor;
     private final AttackCursorAnimator attack_cursor;
@@ -99,6 +96,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.attack_cursor = new AttackCursorAnimator();
 
         this.manager = new GameManager();
+        this.record_player = new GameRecordPlayer(this);
         initComponents();
     }
 
@@ -183,20 +181,20 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void draw() {
         batch.begin();
         drawMap();
-        if (!manager.isAnimating() && getGame().getCurrentPlayer().isLocalPlayer()) {
-            switch (manager.getState()) {
+        if (!getManager().isAnimating() && getGame().getCurrentPlayer().isLocalPlayer()) {
+            switch (getManager().getState()) {
                 case GameManager.STATE_REMOVE:
                 case GameManager.STATE_MOVE:
-                    alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
-                    move_path_renderer.drawMovePath(batch, manager.getMovePath(getCursorMapX(), getCursorMapY()));
+                    alpha_renderer.drawMoveAlpha(batch, getManager().getMovablePositions());
+                    move_path_renderer.drawMovePath(batch, getManager().getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case GameManager.STATE_PREVIEW:
-                    alpha_renderer.drawMoveAlpha(batch, manager.getMovablePositions());
+                    alpha_renderer.drawMoveAlpha(batch, getManager().getMovablePositions());
                     break;
                 case GameManager.STATE_ATTACK:
                 case GameManager.STATE_SUMMON:
                 case GameManager.STATE_HEAL:
-                    alpha_renderer.drawAttackAlpha(batch, manager.getAttackablePositions());
+                    alpha_renderer.drawAttackAlpha(batch, getManager().getAttackablePositions());
                     break;
                 default:
                     //do nothing
@@ -292,8 +290,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawAnimation() {
-        if (manager.isAnimating()) {
-            Animator animator = manager.getCurrentAnimation();
+        Animator animator = getManager().getCurrentAnimation();
+        if (animator != null) {
             animator.render(batch);
         }
     }
@@ -352,35 +350,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         attack_cursor.addStateTime(delta);
         updateViewport();
 
-        updateRecord(delta);
+        record_player.update(delta);
 
         super.act(delta);
-        manager.updateAnimation(delta);
-    }
-
-    private void updateRecord(float delta) {
-        if (getRecord() != null) {
-            if (getRecord().getEvents().isEmpty()) {
-                if (!playback_finished) {
-                    playback_finished = true;
-                    appendMessage(null, Language.getText("MSG_INFO_RPF"));
-                }
-            } else {
-                GameEvent preview = getRecord().getEvents().peek();
-                if ((preview instanceof TileDestroyEvent) || (preview instanceof UnitAttackEvent)) {
-                    GameEvent event = getRecord().getEvents().poll();
-                    getManager().submitGameEvent(event);
-                } else {
-                    if (playback_delay < 1.0f) {
-                        playback_delay += delta;
-                    } else {
-                        playback_delay = 0f;
-                        GameEvent event = getRecord().getEvents().poll();
-                        getManager().submitGameEvent(event);
-                    }
-                }
-            }
-        }
+        getManager().updateAnimation(delta);
     }
 
     @Override
@@ -410,20 +383,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void prepare(GameCore game) {
-        try {
-            Recorder.prepare(game);
-        } catch (IOException ex) {
-            Recorder.setRecord(false);
-            Gdx.app.log("Record", ex.toString());
-        }
+        record_player.setRecord(null);
+        Recorder.prepare(game);
         initialize(game);
-        record = null;
     }
 
     public void prepare(GameRecord record) {
         initialize(record.getGame());
-        this.record = record;
-        playback_delay = 0f;
+        record_player.setRecord(record);
     }
 
     private void initialize(GameCore game) {
@@ -772,8 +739,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private boolean isOnUnitAnimation(int x, int y) {
-        if (manager.isAnimating()) {
-            Animator current_animation = manager.getCurrentAnimation();
+        if (getManager().isAnimating()) {
+            Animator current_animation = getManager().getCurrentAnimation();
             return current_animation instanceof UnitAnimator && ((UnitAnimator) current_animation).hasLocation(x, y);
         } else {
             return false;
@@ -781,11 +748,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public boolean canOperate() {
-        return !getManager().isProcessing() && getGame().getCurrentPlayer().isLocalPlayer();
+        return getGame().getCurrentPlayer().isLocalPlayer()
+                && !getManager().isProcessing()
+                && !getManager().isAnimating();
     }
 
     public GameCore getGame() {
-        return manager.getGame();
+        return getManager().getGame();
     }
 
     @Override
@@ -795,10 +764,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     public GameManager getManager() {
         return manager;
-    }
-
-    public GameRecord getRecord() {
-        return record;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.toyknight.aeii.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.GameRecord;
+import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.manager.events.GameEvent;
 import com.toyknight.aeii.serializable.GameSave;
 

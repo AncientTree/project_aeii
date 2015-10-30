@@ -23,7 +23,7 @@ import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.utils.Recorder;
+import com.toyknight.aeii.record.Recorder;
 
 /**
  * @author toyknight 8/28/2015.

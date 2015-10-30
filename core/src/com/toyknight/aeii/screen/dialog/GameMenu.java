@@ -10,7 +10,7 @@ import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.utils.Recorder;
+import com.toyknight.aeii.record.Recorder;
 
 import java.io.IOException;
 

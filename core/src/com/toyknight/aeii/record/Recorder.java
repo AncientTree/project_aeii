@@ -1,9 +1,11 @@
-package com.toyknight.aeii.utils;
+package com.toyknight.aeii.record;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.utils.FileProvider;
+import com.toyknight.aeii.utils.GameFactory;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -21,24 +23,25 @@ public class Recorder {
 
     private static boolean record_on;
 
-    private static FileHandle record_file;
-
     private static ObjectOutputStream oos;
 
     public static void setRecord(boolean on) {
         Recorder.record_on = on;
         event_queue.clear();
-        if (record_on) {
-            String filename = GameFactory.createFilename(GameFactory.RECORD);
-            record_file = FileProvider.getUserFile("save/" + filename);
-        }
     }
 
-    public static void prepare(GameCore game) throws IOException {
+    public static void prepare(GameCore game) {
         if (record_on) {
-            oos = new ObjectOutputStream(record_file.write(false));
-            oos.writeInt(GameFactory.RECORD);
-            oos.writeObject(game);
+            try {
+                String filename = GameFactory.createFilename(GameFactory.RECORD);
+                FileHandle record_file = FileProvider.getUserFile("save/" + filename);
+                oos = new ObjectOutputStream(record_file.write(false));
+                oos.writeInt(GameFactory.RECORD);
+                oos.writeObject(game);
+            } catch (IOException ex) {
+                Recorder.setRecord(false);
+                Gdx.app.log("Record", ex.toString());
+            }
         }
     }
 

@@ -20,7 +20,7 @@ import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
-import com.toyknight.aeii.utils.Recorder;
+import com.toyknight.aeii.record.Recorder;
 
 /**
  * @author toyknight 6/21/2015.

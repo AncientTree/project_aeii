@@ -1,7 +1,6 @@
-package com.toyknight.aeii;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.animator.Animator;
-import com.toyknight.aeii.listener.AnimationListener;
 
 /**
  * @author toyknight 4/14/2015.
@@ -9,8 +8,6 @@ import com.toyknight.aeii.listener.AnimationListener;
 public interface AnimationDispatcher {
 
     boolean canSubmitAnimation();
-
-    void addAnimationListener(AnimationListener listener);
 
     void submitAnimation(Animator animation);
 

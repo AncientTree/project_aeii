@@ -3,13 +3,11 @@ package com.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.AnimationDispatcher;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.listener.AnimationListener;
 import com.toyknight.aeii.listener.GameManagerListener;
 import com.toyknight.aeii.manager.events.*;
-import com.toyknight.aeii.utils.Recorder;
+import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -39,7 +37,6 @@ public class GameManager implements AnimationDispatcher {
     private GameCore game;
     private UnitToolkit unit_toolkit;
     private GameManagerListener manager_listener;
-    private final Array<AnimationListener> animation_listeners;
 
     private int state;
     protected Unit selected_unit;
@@ -57,7 +54,6 @@ public class GameManager implements AnimationDispatcher {
         this.is_server_manager = false;
         this.event_queue = new LinkedList<GameEvent>();
         this.animation_queue = new LinkedList<Animator>();
-        this.animation_listeners = new Array<AnimationListener>();
         this.movable_positions = new ObjectSet<Point>();
     }
 
@@ -68,7 +64,6 @@ public class GameManager implements AnimationDispatcher {
         this.event_queue.clear();
         this.animation_queue.clear();
         this.current_animation = null;
-        this.animation_listeners.clear();
     }
 
     public GameCore getGame() {
@@ -505,11 +500,6 @@ public class GameManager implements AnimationDispatcher {
     }
 
     @Override
-    public void addAnimationListener(AnimationListener listener) {
-        this.animation_listeners.add(listener);
-    }
-
-    @Override
     public void submitAnimation(Animator animation) {
         if (current_animation == null) {
             current_animation = animation;
@@ -523,9 +513,6 @@ public class GameManager implements AnimationDispatcher {
         if (current_animation == null || current_animation.isAnimationFinished()) {
             boolean finish_flag = false;
             if (current_animation != null) {
-                for (AnimationListener listener : animation_listeners) {
-                    listener.animationCompleted(current_animation);
-                }
                 if (getGame().isGameOver() && animation_queue.isEmpty()) {
                     manager_listener.onGameOver();
                 }
@@ -536,10 +523,6 @@ public class GameManager implements AnimationDispatcher {
                 dispatchGameEvents();
                 if (finish_flag) {
                     manager_listener.onButtonUpdateRequested();
-                }
-            } else {
-                for (AnimationListener listener : animation_listeners) {
-                    listener.animationStarted(current_animation);
                 }
             }
         } else {
