@@ -20,12 +20,15 @@ public class GameEventExecutor {
 
     private final Queue<GameEvent> event_queue;
 
+    private final Queue<GameEvent> buffer_event_queue;
+
     private final AnimationDispatcher animation_dispatcher;
 
     public GameEventExecutor(GameManager game_manager, AnimationDispatcher dispatcher) {
         this.game_manager = game_manager;
         this.animation_dispatcher = dispatcher;
         this.event_queue = new LinkedList<GameEvent>();
+        this.buffer_event_queue = new LinkedList<GameEvent>();
     }
 
     public GameManager getGameManager() {
@@ -46,19 +49,28 @@ public class GameEventExecutor {
 
     public void clearGameEvents() {
         event_queue.clear();
+        buffer_event_queue.clear();
     }
 
     public boolean isProcessing() {
-        return event_queue.size() > 0;
+        return event_queue.size() > 0 || buffer_event_queue.size() > 0;
     }
 
     public void submitGameEvent(GameEvent event) {
         event_queue.add(event);
     }
 
+    private void submitBufferGameEvent(GameEvent event) {
+        buffer_event_queue.add(event);
+    }
+
     public void dispatchGameEvents() {
-        if (event_queue.size() > 0) {
-            executeGameEvent(event_queue.poll());
+        if (buffer_event_queue.size() > 0) {
+            executeGameEvent(buffer_event_queue.poll(), false);
+        } else {
+            if (event_queue.size() > 0) {
+                executeGameEvent(event_queue.poll());
+            }
         }
     }
 
