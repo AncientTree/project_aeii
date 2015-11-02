@@ -119,6 +119,10 @@ public class GameCore implements Serializable {
         return type;
     }
 
+    public boolean isPlayerAvailable(int team) {
+        return getPlayer(team) != null && getPlayer(team).getType() != Player.NONE;
+    }
+
     public void removePlayer(int team) {
         player_list[team].setType(Player.NONE);
     }

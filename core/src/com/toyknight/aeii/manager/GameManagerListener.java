@@ -1,4 +1,4 @@
-package com.toyknight.aeii.listener;
+package com.toyknight.aeii.manager;
 
 import com.toyknight.aeii.manager.events.GameEvent;
 

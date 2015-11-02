@@ -24,8 +24,7 @@ public class HpChangeAnimator extends UnitAnimator {
     public HpChangeAnimator(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units) {
         int index = 0;
         for (Unit unit : units) {
-            addUnit(unit, Integer.toString(index));
-            index++;
+            addUnit(unit, Integer.toString(index++));
         }
         this.change_map = change_map;
     }

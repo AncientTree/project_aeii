@@ -10,7 +10,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.DialogCallback;
-import com.toyknight.aeii.listener.GameManagerListener;
+import com.toyknight.aeii.manager.AnimationManager;
+import com.toyknight.aeii.manager.GameManagerListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
@@ -95,7 +96,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.cursor = new CursorAnimator();
         this.attack_cursor = new AttackCursorAnimator();
 
-        this.manager = new GameManager();
+        this.manager = new GameManager(new AnimationManager());
         this.record_player = new GameRecordPlayer(this);
         initComponents();
     }
@@ -353,7 +354,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         record_player.update(delta);
 
         super.act(delta);
-        getManager().updateAnimation(delta);
+        getManager().update(delta);
     }
 
     @Override
