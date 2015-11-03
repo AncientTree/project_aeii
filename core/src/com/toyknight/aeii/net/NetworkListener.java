@@ -1,6 +1,6 @@
 package com.toyknight.aeii.net;
 
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.serializable.GameSave;
 
 /**
@@ -13,6 +13,8 @@ public interface NetworkListener {
     void onPlayerJoin(int id, String username);
 
     void onPlayerLeave(int id, String username);
+
+    void onPlayerReconnect(int id, String username, Integer[] teams);
 
     void onAllocationUpdate(Integer[] allocation, Integer[] types);
 

@@ -1,7 +1,5 @@
 package com.toyknight.aeii.manager;
 
-import com.toyknight.aeii.manager.events.GameEvent;
-
 /**
  * @author toyknight on 4/18/2015.
  */

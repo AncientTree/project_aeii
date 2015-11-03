@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AEIIException;
-import com.toyknight.aeii.DialogCallback;
+import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
@@ -132,9 +132,9 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
     @Override
     public void onDisconnect() {
-        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new DialogCallback() {
+        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
-            public void doCallback() {
+            public void call() {
                 getContext().gotoMainMenuScreen();
             }
         });
@@ -145,9 +145,9 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             Map map = MapFactory.createMap(snapshot.file);
             showMapPreview(map);
         } catch (AEIIException ex) {
-            getContext().showMessage(Language.getText("MSG_ERR_BMF"), new DialogCallback() {
+            getContext().showMessage(Language.getText("MSG_ERR_BMF"), new Callable() {
                 @Override
-                public void doCallback() {
+                public void call() {
                     showDialog("create");
                 }
             });

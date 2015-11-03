@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.DialogCallback;
+import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.AsyncTask;
@@ -541,9 +541,9 @@ public class NetGameCreateScreen extends StageScreen {
     @Override
     public void onPlayerLeave(int id, String username) {
         if (configuration.host == id) {
-            getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
+            getContext().showMessage(Language.getText("MSG_ERR_HPD"), new Callable() {
                 @Override
-                public void doCallback() {
+                public void call() {
                     tryLeaveRoom();
                 }
             });

@@ -67,6 +67,13 @@ public class PlayerList extends StringList<PlayerSnapshot> {
         updateList();
     }
 
+    public void addPlayer(Integer id, String username, Integer[] teams) {
+        for (Integer team : teams) {
+            allocation[team] = id;
+        }
+        addPlayer(id, username);
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth();

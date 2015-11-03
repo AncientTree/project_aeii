@@ -5,6 +5,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.serializable.RoomSnapshot;
 
@@ -61,7 +62,7 @@ public class Room {
             }
             Rule rule = Rule.getDefaultRule();
             GameCore game = new GameCore(map, rule, GameCore.SKIRMISH, players);
-            manager = new GameManager();
+            manager = new GameManager(new EmptyAnimationManager());
             manager.setGame(game);
         }
     }
@@ -74,8 +75,23 @@ public class Room {
         return getManager().getGame();
     }
 
+    public GameCore getGameCopy() {
+        synchronized (GAME_LOCK) {
+            return new GameCore(getGame());
+        }
+    }
+
     public Map getMap() {
         return getGame().getMap();
+    }
+
+    public boolean areTeamsAvailable(Integer[] teams) {
+        for (Integer team : teams) {
+            if (team_allocation[team] != -1 || !getGame().getMap().hasTeamAccess(team)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public ObjectSet<Integer> getPlayers() {
@@ -87,6 +103,15 @@ public class Room {
     public void addPlayer(int id) {
         synchronized (PLAYER_LOCK) {
             players.add(id);
+        }
+    }
+
+    public void addPlayer(int id, Integer[] teams) {
+        synchronized (PLAYER_LOCK) {
+            players.add(id);
+            for (Integer team : teams) {
+                team_allocation[team] = id;
+            }
         }
     }
 
@@ -232,6 +257,15 @@ public class Room {
             }
         }
         game_started = true;
+    }
+
+    public void submitGameEvent(GameEvent event) {
+        synchronized (GAME_LOCK) {
+            getManager().submitGameEvent(event);
+            while (getManager().getGameEventExecutor().isProcessing()) {
+                getManager().getGameEventExecutor().dispatchGameEvents();
+            }
+        }
     }
 
     public boolean isOpen() {

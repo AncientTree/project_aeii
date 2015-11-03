@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.record.GameRecord;
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.serializable.GameSave;
 
 import java.io.IOException;

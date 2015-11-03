@@ -1,7 +1,7 @@
 package com.toyknight.aeii.net.task;
 
 import com.toyknight.aeii.AsyncTask;
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.GameEvent;
 
 /**
  * @author toyknight 8/29/2015.

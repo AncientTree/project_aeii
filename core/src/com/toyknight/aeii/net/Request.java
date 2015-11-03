@@ -22,6 +22,8 @@ public class Request implements Serializable {
 
     public static final int RESUME_GAME = 0x5;
 
+    public static final int RECONNECT = 0x6;
+
     private final int type;
 
     private final long id;

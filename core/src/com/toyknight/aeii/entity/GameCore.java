@@ -53,9 +53,7 @@ public class GameCore implements Serializable {
         turn = game.turn;
         current_team = game.current_team;
         is_game_over = game.is_game_over;
-        if (game.statistics != null) {
-            statistics = new Statistics(game.statistics);
-        }
+        statistics = game.statistics == null ? null : new Statistics(game.statistics);
     }
 
     public GameCore(Map map, Rule rule, int type, Player[] players) {

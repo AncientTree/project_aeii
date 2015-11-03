@@ -61,7 +61,7 @@ public class GameContext extends Game {
 
     private Stage dialog_layer;
     private Dialog dialog;
-    private DialogCallback dialog_callback;
+    private Callable dialog_callback;
     private TextButton btn_ok;
 
     private NetworkManager network_manager;
@@ -243,7 +243,7 @@ public class GameContext extends Game {
         }
     }
 
-    public void showMessage(String content, DialogCallback callback) {
+    public void showMessage(String content, Callable callback) {
         if (!dialog.isVisible()) {
             dialog_callback = callback;
 
@@ -273,7 +273,7 @@ public class GameContext extends Game {
             ((StageScreen) getScreen()).onFocus();
         }
         if (dialog_callback != null) {
-            dialog_callback.doCallback();
+            dialog_callback.call();
             dialog_callback = null;
         }
     }
@@ -288,16 +288,6 @@ public class GameContext extends Game {
 
     public String getUsername() {
         return getConfiguration().get("username", "nobody");
-    }
-
-    public boolean isGameHost() {
-        int id = getNetworkManager().getServiceID();
-        int host_id = getHostID();
-        return id == host_id;
-    }
-
-    public int getHostID() {
-        return getRoomConfiguration().host;
     }
 
     public void setRoomConfiguration(RoomConfiguration configuration) {

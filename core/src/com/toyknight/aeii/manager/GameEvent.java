@@ -1,4 +1,4 @@
-package com.toyknight.aeii.manager.events;
+package com.toyknight.aeii.manager;
 
 import java.io.Serializable;
 
@@ -21,8 +21,9 @@ public class GameEvent implements Serializable {
     public static final int STANDBY = 0x9;
     public static final int REVERSE = 0x10;
     public static final int END_TURN = 0x11;
-    public static final int UNIT_DESTROY = 0x12;
-    public static final int TILE_DESTROY = 0x13;
+    public static final int HP_CHANGE = 0x12;
+    public static final int UNIT_DESTROY = 0x13;
+    public static final int TILE_DESTROY = 0x14;
 
     private final int type;
     private final Object[] params;

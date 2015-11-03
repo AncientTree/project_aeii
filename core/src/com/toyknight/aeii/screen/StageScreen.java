@@ -5,8 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.DialogCallback;
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.Callable;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.NetworkListener;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.serializable.GameSave;
@@ -118,9 +118,9 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onDisconnect() {
-        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new DialogCallback() {
+        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
-            public void doCallback() {
+            public void call() {
                 getContext().gotoMainMenuScreen();
             }
         });
@@ -132,6 +132,10 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onPlayerLeave(int id, String username) {
+    }
+
+    @Override
+    public void onPlayerReconnect(int id, String username, Integer[] teams) {
     }
 
     @Override

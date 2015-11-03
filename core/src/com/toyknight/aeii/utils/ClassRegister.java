@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.esotericsoftware.kryo.Kryo;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.manager.events.*;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.Notification;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.net.Response;
@@ -58,22 +58,7 @@ public class ClassRegister {
         kryo.register(Map.class);
         kryo.register(Tomb.class);
         kryo.register(Status.class);
-
-        kryo.register(HpChangeEvent.class);
-        kryo.register(OccupyEvent.class);
-        kryo.register(RepairEvent.class);
-        kryo.register(SummonEvent.class);
-        kryo.register(TileDestroyEvent.class);
-        kryo.register(TurnEndEvent.class);
-        kryo.register(UnitAttackEvent.class);
-        kryo.register(UnitBuyEvent.class);
-        kryo.register(UnitDestroyEvent.class);
-        kryo.register(UnitHealEvent.class);
-        kryo.register(UnitMoveEvent.class);
-        kryo.register(UnitMoveReverseEvent.class);
-        kryo.register(UnitSelectEvent.class);
-        kryo.register(UnitStandbyEvent.class);
-        kryo.register(UnitStatusUpdateEvent.class);
+        kryo.register(GameEvent.class);
     }
 
 }

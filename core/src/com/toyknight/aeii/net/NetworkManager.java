@@ -8,7 +8,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.serializable.*;
 import com.toyknight.aeii.utils.ClassRegister;
 
@@ -30,6 +30,8 @@ public class NetworkManager {
 
     private int service_id;
 
+    private ConnectionConfiguration last_connection;
+
     public NetworkManager() {
         responses = new ObjectMap<Long, Response>();
     }
@@ -43,6 +45,7 @@ public class NetworkManager {
     }
 
     public boolean connect(ServerConfiguration server, String username, String v_string) throws IOException {
+        last_connection = new ConnectionConfiguration(server, username, v_string);
         responses.clear();
         client = new Client(65536, 65536);
         client.addListener(new Listener() {
@@ -155,6 +158,15 @@ public class NetworkManager {
                     }
                 }
                 break;
+            case Notification.PLAYER_RECONNECTING:
+                id = (Integer) notification.getParameter(0);
+                username = (String) notification.getParameter(1);
+                Integer[] teams = (Integer[]) notification.getParameter(2);
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onPlayerReconnect(id, username, teams);
+                    }
+                }
             default:
                 //do nothing
         }
@@ -258,6 +270,29 @@ public class NetworkManager {
         }
     }
 
+    public RoomConfiguration requestReconnect(long room_number, Integer[] teams) throws IOException {
+        if (last_connection == null) {
+            return null;
+        } else {
+            ServerConfiguration server = last_connection.server_configuration;
+            String username = last_connection.username;
+            String v_string = last_connection.v_string;
+            boolean connection_success = connect(server, username, v_string);
+            if (connection_success) {
+                Request request = Request.getInstance(Request.RECONNECT);
+                request.setParameters(room_number, teams);
+                Response response = sendRequest(request);
+                if (response == null) {
+                    return null;
+                } else {
+                    return (RoomConfiguration) response.getParameter(0);
+                }
+            } else {
+                return null;
+            }
+        }
+    }
+
     public boolean requestStartGame(GameSave game_save) {
 //        synchronized (OUTPUT_LOCK) {
 //            sendInteger(REQUEST);
@@ -279,7 +314,7 @@ public class NetworkManager {
 
     public void sendGameEvent(GameEvent event) {
         Notification notification = new Notification(Notification.GAME_EVENT);
-        notification.setParameters(event.copy());
+        notification.setParameters(event);
         sendNotification(notification);
         Gdx.app.log(TAG, "Send " + event.toString());
     }
@@ -288,6 +323,22 @@ public class NetworkManager {
         Notification notification = new Notification(Notification.MESSAGE);
         notification.setParameters(message);
         sendNotification(notification);
+    }
+
+    private class ConnectionConfiguration {
+
+        public ConnectionConfiguration(ServerConfiguration server_configuration, String username, String v_string) {
+            this.server_configuration = server_configuration;
+            this.username = username;
+            this.v_string = v_string;
+        }
+
+        public final ServerConfiguration server_configuration;
+
+        public final String username;
+
+        public final String v_string;
+
     }
 
 }

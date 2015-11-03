@@ -273,4 +273,16 @@ public class UnitToolkit {
                 && defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH);
     }
 
+    public static int validateHpChange(Unit unit, int change) {
+        int origin_hp = unit.getCurrentHp();
+        int changed_hp = origin_hp + change;
+        if (changed_hp > unit.getMaxHp()) {
+            changed_hp = unit.getMaxHp();
+        }
+        if (changed_hp < 0) {
+            changed_hp = 0;
+        }
+        return changed_hp - origin_hp;
+    }
+
 }

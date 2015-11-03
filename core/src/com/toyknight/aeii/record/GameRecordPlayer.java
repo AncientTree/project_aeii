@@ -1,9 +1,7 @@
 package com.toyknight.aeii.record;
 
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.manager.events.GameEvent;
-import com.toyknight.aeii.manager.events.TileDestroyEvent;
-import com.toyknight.aeii.manager.events.UnitAttackEvent;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.Language;
 
@@ -48,7 +46,7 @@ public class GameRecordPlayer {
                 }
             } else {
                 GameEvent preview = getRecord().getEvents().peek();
-                if ((preview instanceof TileDestroyEvent) || (preview instanceof UnitAttackEvent)) {
+                if (preview.getType() == GameEvent.TILE_DESTROY || preview.getType() == GameEvent.ATTACK) {
                     GameEvent event = getRecord().getEvents().poll();
                     getManager().submitGameEvent(event);
                 } else {

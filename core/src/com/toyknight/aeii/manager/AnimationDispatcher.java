@@ -12,6 +12,8 @@ import com.toyknight.aeii.entity.Unit;
  */
 public interface AnimationDispatcher {
 
+    void setListener(AnimationManagerListener listener);
+
     void submitHpChangeAnimation(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units);
 
     void submitHpChangeAnimation(Unit unit, int change);

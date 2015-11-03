@@ -24,6 +24,7 @@ public class AnimationManager implements AnimationDispatcher {
         this.animation_queue = new LinkedList<Animator>();
     }
 
+    @Override
     public void setListener(AnimationManagerListener listener) {
         this.listener = listener;
     }
@@ -105,6 +106,7 @@ public class AnimationManager implements AnimationDispatcher {
         } else {
             if (current_animation.isAnimationFinished()) {
                 if (animation_queue.isEmpty()) {
+                    current_animation = null;
                     listener.onAnimationFinished();
                 } else {
                     current_animation = animation_queue.poll();
@@ -122,7 +124,7 @@ public class AnimationManager implements AnimationDispatcher {
 
     @Override
     public boolean isAnimating() {
-        return getCurrentAnimation() != null || !animation_queue.isEmpty();
+        return current_animation != null || animation_queue.size() > 0;
     }
 
 }

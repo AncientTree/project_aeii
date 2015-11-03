@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.DialogCallback;
+import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.task.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
@@ -23,7 +23,7 @@ import com.toyknight.aeii.utils.Language;
  */
 public class MessageBox extends BasicDialog {
 
-    private DialogCallback callback;
+    private Callable callback;
 
     private PlayerList player_list;
     private TextField tf_message;
@@ -109,6 +109,10 @@ public class MessageBox extends BasicDialog {
         player_list.addPlayer(id, username);
     }
 
+    public void addPlayer(Integer id, String username, Integer[] teams) {
+        player_list.addPlayer(id, username, teams);
+    }
+
     public void sendMessage() {
         sendMessage(tf_message.getText());
         getOwner().closeDialog("message");
@@ -132,10 +136,10 @@ public class MessageBox extends BasicDialog {
                 getContext().showMessage(message, null);
             }
         });
-        callback.doCallback();
+        callback.call();
     }
 
-    public void setCallback(DialogCallback callback) {
+    public void setCallback(Callable callback) {
         this.callback = callback;
     }
 

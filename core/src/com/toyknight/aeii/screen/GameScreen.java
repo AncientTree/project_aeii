@@ -9,14 +9,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AsyncTask;
-import com.toyknight.aeii.DialogCallback;
+import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.manager.AnimationManager;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.manager.GameManagerListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.manager.events.*;
 import com.toyknight.aeii.net.task.GameEventSendingTask;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
@@ -31,6 +31,8 @@ import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
+
+import java.io.IOException;
 
 /**
  * @author toyknight 4/4/2015.
@@ -159,9 +161,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.message_box.setPosition(
                 (viewport.width - message_box.getWidth()) / 2,
                 (viewport.height - message_box.getHeight()) / 2 + ts);
-        this.message_box.setCallback(new DialogCallback() {
+        this.message_box.setCallback(new Callable() {
             @Override
-            public void doCallback() {
+            public void call() {
                 closeDialog("message");
             }
         });
@@ -182,7 +184,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void draw() {
         batch.begin();
         drawMap();
-        if (!getManager().isAnimating() && getGame().getCurrentPlayer().isLocalPlayer()) {
+        if (canOperate()) {
             switch (getManager().getState()) {
                 case GameManager.STATE_REMOVE:
                 case GameManager.STATE_MOVE:
@@ -298,6 +300,49 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
+    public void onDisconnect() {
+        Gdx.input.setInputProcessor(null);
+        appendMessage(null, Language.getText("MSG_ERR_DFS"));
+        appendMessage(null, Language.getText("LB_RECONNECTING"));
+        getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
+            @Override
+            public RoomConfiguration doTask() throws IOException {
+                RoomConfiguration configuration = getContext().getRoomConfiguration();
+                Array<Integer> team_access = new Array<Integer>();
+                for (int team = 0; team < 4; team++) {
+                    Player player = getGame().getPlayer(team);
+                    if (player != null && player.getType() == Player.LOCAL) {
+                        team_access.add(team);
+                    }
+                }
+                return getContext().getNetworkManager().requestReconnect(configuration.room_number, team_access.toArray());
+            }
+
+            @Override
+            public void onFinish(RoomConfiguration configuration) {
+                if (configuration == null) {
+                    getContext().gotoMainMenuScreen();
+                    getContext().getNetworkManager().disconnect();
+                    getContext().showMessage(Language.getText("MSG_ERR_CNRTS"), null);
+                } else {
+                    Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(configuration.players);
+                    message_box.setPlayers(players, configuration.team_allocation);
+                    getManager().setGame(configuration.game);
+                    appendMessage(null, Language.getText("LB_RECONNECTED"));
+                    Gdx.input.setInputProcessor(GameScreen.this);
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                getContext().gotoMainMenuScreen();
+                getContext().getNetworkManager().disconnect();
+                getContext().showMessage(Language.getText("MSG_ERR_CNRTS"), null);
+            }
+        });
+    }
+
+    @Override
     public void onPlayerJoin(int id, String username) {
         message_box.addPlayer(id, username);
         appendMessage(null, username + " " + Language.getText("LB_JOINS"));
@@ -306,32 +351,18 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public void onPlayerLeave(int id, String username) {
         message_box.removePlayer(id);
-        if (getContext().isGameHost()) {
-            Integer[] team_allocation = getContext().getRoomConfiguration().team_allocation;
-            for (int team = 0; team < 4; team++) {
-                if (team_allocation[team].equals(id) && getGame().getPlayer(team) != null) {
-                    getGame().getPlayer(team).setType(Player.LOCAL);
-                }
-            }
-            onButtonUpdateRequested();
-            appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
-        } else {
-            if (getContext().getHostID() == id) {
-                getContext().showMessage(Language.getText("MSG_ERR_HPD"), new DialogCallback() {
-                    @Override
-                    public void doCallback() {
-                        getContext().gotoStatisticsScreen(getGame());
-                    }
-                });
-            } else {
-                appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
-            }
-        }
+        appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
+    }
+
+    @Override
+    public void onPlayerReconnect(int id, String username, Integer[] teams) {
+        message_box.addPlayer(id, username, teams);
+        appendMessage(null, username + " " + Language.getText("LB_RECONNECTED"));
     }
 
     @Override
     public void onReceiveGameEvent(GameEvent event) {
-        getManager().submitGameEvent(event);
+        getManager().getGameEventExecutor().submitGameEvent(event);
     }
 
     @Override

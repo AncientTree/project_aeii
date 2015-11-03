@@ -8,9 +8,8 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.manager.events.GameEvent;
+import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.Notification;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.net.Response;
@@ -45,7 +44,6 @@ public class GameServer {
     private ObjectMap<Integer, PlayerService> players;
 
     private final Object ROOM_LOCK = new Object();
-    private long current_room_number;
     private ObjectMap<Long, Room> rooms;
 
     public Logger getLogger() {
@@ -124,9 +122,7 @@ public class GameServer {
         configuration.max_population = room.getMaxPopulation();
         ObjectSet<Integer> players = room.getPlayers();
         configuration.players = new Array<PlayerSnapshot>();
-        synchronized (room.GAME_LOCK) {
-            configuration.game = new GameCore(room.getGame());
-        }
+        configuration.game = room.getGameCopy();
         for (int id : players) {
             PlayerSnapshot snapshot = getPlayerSnapshot(id);
             if (snapshot != null) {
@@ -176,6 +172,10 @@ public class GameServer {
                 break;
             case Request.START_GAME:
                 doRespondStartGame(player, request);
+                break;
+            case Request.RECONNECT:
+                doRespondReconnect(player, request);
+                break;
             default:
                 //do nothing
         }
@@ -231,7 +231,7 @@ public class GameServer {
     public void doRespondCreateRoom(PlayerService player, Request request) {
         Response response = new Response(request.getID());
         if (player.isAuthenticated()) {
-            Room room = new Room(current_room_number++, player.getUsername() + "'s game");
+            Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game");
             room.setMap((Map) request.getParameter(1), (String) request.getParameter(0));
             room.setCapacity((Integer) request.getParameter(2));
             room.setInitialGold((Integer) request.getParameter(3));
@@ -275,6 +275,23 @@ public class GameServer {
             }
             notifyGameStart(room, player.getID());
             player.getConnection().sendTCP(response);
+        }
+    }
+
+    public void doRespondReconnect(PlayerService player, Request request) {
+        if (player.isAuthenticated()) {
+            Response response = new Response(request.getID());
+            long room_number = (Long) request.getParameter(0);
+            Integer[] teams = (Integer[]) request.getParameter(1);
+            Room room = getRoom(room_number);
+            if (isRoomAvailable(room) && room.areTeamsAvailable(teams)) {
+                room.addPlayer(player.getID(), teams);
+                player.setRoomNumber(room_number);
+                RoomConfiguration configuration = getRoomConfiguration(room);
+                response.setParameters(configuration);
+                player.getConnection().sendTCP(response);
+                notifyPlayerReconnect(room, player.getID(), player.getUsername(), teams);
+            }
         }
     }
 
@@ -331,9 +348,7 @@ public class GameServer {
             GameEvent event = (GameEvent) notification.getParameter(0);
             Room room = getRoom(submitter.getRoomNumber());
             if (!room.isOpen()) {
-                synchronized (room.GAME_LOCK) {
-                    room.getManager().executeGameEvent(event, false);
-                }
+                room.submitGameEvent(event);
                 notifyGameEvent(room, submitter.getID(), event);
             }
         }
@@ -364,6 +379,17 @@ public class GameServer {
             if (player != null && leaver_id != player_id) {
                 Notification notification = new Notification(Notification.PLAYER_LEAVING);
                 notification.setParameters(leaver_id, username);
+                sendNotification(player, notification);
+            }
+        }
+    }
+
+    public void notifyPlayerReconnect(Room room, int reconnect_id, String username, Integer[] teams) {
+        for (int player_id : room.getPlayers()) {
+            PlayerService player = getPlayer(player_id);
+            if (player != null && reconnect_id != player_id) {
+                Notification notification = new Notification(Notification.PLAYER_RECONNECTING);
+                notification.setParameters(reconnect_id, username, teams);
                 sendNotification(player, notification);
             }
         }
@@ -406,7 +432,7 @@ public class GameServer {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != submitter_id) {
                 Notification notification = new Notification(Notification.GAME_EVENT);
-                notification.setParameters(event.copy());
+                notification.setParameters(event);
                 sendNotification(player, notification);
             }
         }
@@ -459,7 +485,6 @@ public class GameServer {
         V_STRING = getVerificationString();
         players = new ObjectMap<Integer, PlayerService>();
         rooms = new ObjectMap<Long, Room>();
-        current_room_number = 0;
     }
 
     public void start() {

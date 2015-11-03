@@ -21,6 +21,10 @@ public class AttackInformationRenderer {
         this.ts = screen.getContext().getTileSize();
     }
 
+    private GameScreen getGameScreen() {
+        return screen;
+    }
+
     private GameManager getManager() {
         return screen.getManager();
     }
@@ -30,7 +34,7 @@ public class AttackInformationRenderer {
     }
 
     public void render(Batch batch) {
-        if (getManager().getState() == GameManager.STATE_ATTACK && !getManager().isAnimating()) {
+        if (getManager().getState() == GameManager.STATE_ATTACK && getGameScreen().canOperate()) {
             int cursor_x = screen.getCursorMapX();
             int cursor_y = screen.getCursorMapY();
             Unit attacker = getManager().getSelectedUnit();
