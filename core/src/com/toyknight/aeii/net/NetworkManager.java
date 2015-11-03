@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.toyknight.aeii.GameContext;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.serializable.*;
@@ -136,7 +137,7 @@ public class NetworkManager {
             case Notification.GAME_START:
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
-                        listener.onGameStart(null);
+                        listener.onGameStart();
                     }
                 }
                 break;
@@ -232,6 +233,17 @@ public class NetworkManager {
         }
     }
 
+    public RoomConfiguration requestCreateRoom(String save_name, GameCore game, int capacity) {
+        Request request = Request.getInstance(Request.CREATE_ROOM_SAVED);
+        request.setParameters(save_name, game, capacity);
+        Response response = sendRequest(request);
+        if (response == null) {
+            return null;
+        } else {
+            return (RoomConfiguration) response.getParameter(0);
+        }
+    }
+
     public RoomConfiguration requestJoinRoom(long room_number) {
         Request request = Request.getInstance(Request.JOIN_ROOM);
         request.setParameters(room_number);
@@ -291,25 +303,6 @@ public class NetworkManager {
                 return null;
             }
         }
-    }
-
-    public boolean requestStartGame(GameSave game_save) {
-//        synchronized (OUTPUT_LOCK) {
-//            sendInteger(REQUEST);
-//            sendInteger(Request.RESUME_GAME);
-//            sendObject(game_save);
-//        }
-//        synchronized (INPUT_LOCK) {
-//            try {
-//                boolean approved = ois.readBoolean();
-//                INPUT_LOCK.notifyAll();
-//                return approved;
-//            } catch (IOException ex) {
-//                INPUT_LOCK.notifyAll();
-//                throw ex;
-//            }
-//        }
-        return false;
     }
 
     public void sendGameEvent(GameEvent event) {

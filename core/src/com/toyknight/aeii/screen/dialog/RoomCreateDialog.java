@@ -36,7 +36,6 @@ public class RoomCreateDialog extends BasicDialog {
     private final Integer[] gold_preset = new Integer[]{200, 250, 300, 450, 500, 550, 700, 850, 1000, 1500, 2000};
 
     private int mode;
-    private GameSave game_save;
 
     private TextButton btn_back;
     private TextButton btn_create;
@@ -176,41 +175,14 @@ public class RoomCreateDialog extends BasicDialog {
             getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
                 @Override
                 public RoomConfiguration doTask() throws AEIIException {
-                    String map_name;
-                    Map map;
-                    int capacity;
-                    int gold;
-                    int population;
-                    if (mode == LobbyScreen.NEW_GAME) {
-                        map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
-                        map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
-                        capacity = spinner_capacity.getSelectedItem();
-                        gold = spinner_gold.getSelectedItem();
-                        population = spinner_population.getSelectedItem();
-                        return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
-                    }
-                    if (mode == LobbyScreen.LOAD_GAME) {
-                        String filename = (String) object_list.getSelected();
-                        FileHandle save_file = FileProvider.getSaveFile(filename);
-                        game_save = GameFactory.loadGame(save_file);
-                        if (game_save == null) {
-                            return null;
-                        } else {
-                            map_name = "unknown map";
-                            map = game_save.game.getMap();
-                            capacity = spinner_capacity.getSelectedItem();
-                            population = game_save.game.getRule().getMaxPopulation();
-                            return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, -1, population);
-                        }
-                    }
-                    return null;
+                    return tryCreateRoom();
                 }
 
                 @Override
-                public void onFinish(RoomConfiguration config) {
+                public void onFinish(RoomConfiguration configuration) {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
-                    getContext().gotoNetGameCreateScreen(config, game_save);
+                    getContext().gotoNetGameCreateScreen(configuration);
                 }
 
                 @Override
@@ -224,9 +196,31 @@ public class RoomCreateDialog extends BasicDialog {
         }
     }
 
+    private RoomConfiguration tryCreateRoom() throws AEIIException {
+        if (mode == LobbyScreen.NEW_GAME) {
+            String map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
+            Map map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
+            int capacity = spinner_capacity.getSelectedItem();
+            int gold = spinner_gold.getSelectedItem();
+            int population = spinner_population.getSelectedItem();
+            return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
+        }
+        if (mode == LobbyScreen.LOAD_GAME) {
+            String filename = (String) object_list.getSelected();
+            FileHandle save_file = FileProvider.getSaveFile(filename);
+            GameSave game_save = GameFactory.loadGame(save_file);
+            if (game_save == null) {
+                return null;
+            } else {
+                int capacity = spinner_capacity.getSelectedItem();
+                return getContext().getNetworkManager().requestCreateRoom(filename, game_save.game, capacity);
+            }
+        }
+        return null;
+    }
+
     @Override
     public void display() {
-        game_save = null;
         object_list.clearItems();
         if (mode == LobbyScreen.NEW_GAME) {
             lb_initial_gold.setVisible(true);

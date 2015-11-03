@@ -213,9 +213,8 @@ public class GameContext extends Game {
         gotoScreen(lobby_screen);
     }
 
-    public void gotoNetGameCreateScreen(RoomConfiguration config, GameSave game_save) {
+    public void gotoNetGameCreateScreen(RoomConfiguration config) {
         net_game_create_screen.setRoomConfiguration(config);
-        net_game_create_screen.setGameSave(game_save);
         gotoScreen(net_game_create_screen);
     }
 

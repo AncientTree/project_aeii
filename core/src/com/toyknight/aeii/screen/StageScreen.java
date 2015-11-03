@@ -9,7 +9,6 @@ import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.NetworkListener;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
-import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.utils.Language;
 
 import java.util.HashMap;
@@ -147,7 +146,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     @Override
-    public void onGameStart(GameSave game_save) {
+    public void onGameStart() {
     }
 
     @Override

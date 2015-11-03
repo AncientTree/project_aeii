@@ -9,10 +9,14 @@ import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.Notification;
 import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.net.Response;
+import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.serializable.RoomSnapshot;
+
+import java.util.LinkedList;
 
 /**
  * @author toyknight 10/27/2015.
@@ -26,6 +30,7 @@ public class ClassRegister {
         kryo.register(short[].class);
         kryo.register(short[][].class);
         kryo.register(boolean[].class);
+        kryo.register(LinkedList.class);
 
         kryo.register(Request.class);
         kryo.register(Response.class);
@@ -58,7 +63,9 @@ public class ClassRegister {
         kryo.register(Map.class);
         kryo.register(Tomb.class);
         kryo.register(Status.class);
+        kryo.register(GameSave.class);
         kryo.register(GameEvent.class);
+        kryo.register(GameRecord.class);
     }
 
 }

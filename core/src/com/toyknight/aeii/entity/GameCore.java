@@ -53,7 +53,7 @@ public class GameCore implements Serializable {
         turn = game.turn;
         current_team = game.current_team;
         is_game_over = game.is_game_over;
-        statistics = game.statistics == null ? null : new Statistics(game.statistics);
+        statistics = game.statistics;
     }
 
     public GameCore(Map map, Rule rule, int type, Player[] players) {
@@ -71,10 +71,10 @@ public class GameCore implements Serializable {
         this.turn = 1;
         this.is_game_over = false;
         this.commanders = new Unit[4];
+        this.statistics = new Statistics();
     }
 
     public void initialize() {
-        this.statistics = new Statistics();
         ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
         for (Point position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
@@ -119,6 +119,10 @@ public class GameCore implements Serializable {
 
     public boolean isPlayerAvailable(int team) {
         return getPlayer(team) != null && getPlayer(team).getType() != Player.NONE;
+    }
+
+    public void setPlayer(int team, Player player) {
+        player_list[team] = player;
     }
 
     public void removePlayer(int team) {
@@ -465,18 +469,6 @@ public class GameCore implements Serializable {
             }
         }
         return new Point(-1, -1);
-    }
-
-    public int getNextTeam() {
-        int team = current_team;
-        do {
-            if (team < 3) {
-                team++;
-            } else {
-                team = 0;
-            }
-        } while (getPlayer(team) == null || getPlayer(team).getType() == Player.NONE);
-        return team;
     }
 
     public void nextTurn() {

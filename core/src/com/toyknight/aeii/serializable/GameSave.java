@@ -15,6 +15,10 @@ public class GameSave implements Serializable {
 
     public final GameCore game;
 
+    public GameSave() {
+        this(null, -1);
+    }
+
     public GameSave(GameCore game, int type) {
         this.type = type;
         this.game = game;

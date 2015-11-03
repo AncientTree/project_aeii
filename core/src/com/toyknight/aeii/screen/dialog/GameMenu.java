@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
@@ -11,8 +12,6 @@ import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
-
-import java.io.IOException;
 
 /**
  * @author toyknight 6/1/2015.
@@ -78,7 +77,7 @@ public class GameMenu extends BasicDialog {
             public void clicked(InputEvent event, float x, float y) {
                 getContext().submitAsyncTask(new AsyncTask<Void>() {
                     @Override
-                    public Void doTask() throws Exception {
+                    public Void doTask() {
                         Recorder.saveRecord();
                         return null;
                     }
@@ -116,7 +115,7 @@ public class GameMenu extends BasicDialog {
         btn_save.setText(Language.getText("LB_SAVING"));
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
-            public Void doTask() throws IOException {
+            public Void doTask() throws AEIIException {
                 GameCore game = getOwner().getGame();
                 GameFactory.save(game);
                 return null;
@@ -131,7 +130,6 @@ public class GameMenu extends BasicDialog {
 
             @Override
             public void onFail(String message) {
-                System.out.println(message);
                 btn_save.setText(Language.getText("LB_SAVE"));
                 getOwner().closeDialog("menu");
                 getOwner().appendMessage(null, Language.getText("MSG_INFO_GSVF"));

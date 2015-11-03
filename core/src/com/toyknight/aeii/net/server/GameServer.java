@@ -8,6 +8,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.GameContext;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.Notification;
@@ -116,6 +117,7 @@ public class GameServer {
         RoomConfiguration configuration = new RoomConfiguration();
         configuration.room_number = room.getRoomNumber();
         configuration.started = !room.isOpen();
+        configuration.is_game_save = room.isSavedGame();
         configuration.host = room.getHostPlayer();
         configuration.team_allocation = room.getTeamAllocation();
         configuration.initial_gold = room.getInitialGold();
@@ -176,6 +178,9 @@ public class GameServer {
             case Request.RECONNECT:
                 doRespondReconnect(player, request);
                 break;
+            case Request.CREATE_ROOM_SAVED:
+                doRespondCreateRoomSaved(player, request);
+                break;
             default:
                 //do nothing
         }
@@ -229,13 +234,31 @@ public class GameServer {
     }
 
     public void doRespondCreateRoom(PlayerService player, Request request) {
-        Response response = new Response(request.getID());
         if (player.isAuthenticated()) {
+            Response response = new Response(request.getID());
             Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game");
             room.setMap((Map) request.getParameter(1), (String) request.getParameter(0));
             room.setCapacity((Integer) request.getParameter(2));
             room.setInitialGold((Integer) request.getParameter(3));
             room.setMaxPopulation((Integer) request.getParameter(4));
+            room.setHostPlayer(player.getID());
+            room.addPlayer(player.getID());
+            addRoom(room);
+            player.setRoomNumber(room.getRoomNumber());
+
+            RoomConfiguration configuration = getRoomConfiguration(room);
+            response.setParameters(configuration);
+            player.getConnection().sendTCP(response);
+        }
+    }
+
+    public void doRespondCreateRoomSaved(PlayerService player, Request request) {
+        if (player.isAuthenticated()) {
+            Response response = new Response(request.getID());
+            GameCore game = (GameCore) request.getParameter(1);
+            Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game", game);
+            room.setMapName((String) request.getParameter(0));
+            room.setCapacity((Integer) request.getParameter(2));
             room.setHostPlayer(player.getID());
             room.addPlayer(player.getID());
             addRoom(room);

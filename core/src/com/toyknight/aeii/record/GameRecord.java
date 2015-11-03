@@ -18,6 +18,10 @@ public class GameRecord implements Serializable {
     private GameCore game;
     private Queue<GameEvent> event_queue;
 
+    public GameRecord() {
+        this("");
+    }
+
     public GameRecord(String V_STRING) {
         this.V_STRING = V_STRING;
     }

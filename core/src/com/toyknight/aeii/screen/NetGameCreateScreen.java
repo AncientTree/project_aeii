@@ -19,7 +19,6 @@ import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
-import com.toyknight.aeii.serializable.GameSave;
 import com.toyknight.aeii.serializable.PlayerSnapshot;
 import com.toyknight.aeii.serializable.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
@@ -31,7 +30,6 @@ import com.toyknight.aeii.record.Recorder;
 public class NetGameCreateScreen extends StageScreen {
 
     private boolean record_on;
-    private GameSave game_save;
     private RoomConfiguration configuration;
 
     private TextButton btn_start;
@@ -205,10 +203,6 @@ public class NetGameCreateScreen extends StageScreen {
         addActor(info_group);
     }
 
-    public void setGameSave(GameSave game_save) {
-        this.game_save = game_save;
-    }
-
     public void setRoomConfiguration(RoomConfiguration configuration) {
         this.configuration = configuration;
         player_list.setItems(getPlayers());
@@ -235,7 +229,12 @@ public class NetGameCreateScreen extends StageScreen {
     public Integer[] getPlayerTypes() {
         Integer[] player_type = new Integer[4];
         for (int team = 0; team < 4; team++) {
-            player_type[team] = configuration.game.getPlayer(team).getType();
+            Player player = configuration.game.getPlayer(team);
+            if (player == null || player.getType() == Player.NONE) {
+                player_type[team] = Player.NONE;
+            } else {
+                player_type[team] = player.getType();
+            }
         }
         return player_type;
     }
@@ -311,7 +310,7 @@ public class NetGameCreateScreen extends StageScreen {
     private void tryUpdateAllocation() {
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
-            public Void doTask() throws Exception {
+            public Void doTask() {
                 getContext().getNetworkManager().notifyAllocationUpdate(configuration.team_allocation, getPlayerTypes());
                 return null;
             }
@@ -377,18 +376,14 @@ public class NetGameCreateScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
-                if (game_save == null) {
-                    return getContext().getNetworkManager().requestStartGame();
-                } else {
-                    return getContext().getNetworkManager().requestStartGame(game_save);
-                }
+                return getContext().getNetworkManager().requestStartGame();
             }
 
             @Override
             public void onFinish(Boolean success) {
                 if (success) {
                     btn_start.setText(Language.getText("LB_START"));
-                    createGame(game_save);
+                    createGame();
                 } else {
                     btn_start.setText(Language.getText("LB_START"));
                     getContext().showMessage(Language.getText("MSG_ERR_CNSG"), null);
@@ -403,52 +398,21 @@ public class NetGameCreateScreen extends StageScreen {
         });
     }
 
-    private void createGame(GameSave game_save) {
-        if (game_save == null) {
-            Recorder.setRecord(record_on);
-            for (int team = 0; team < 4; team++) {
-                if (hasTeamAccess(team)) {
-                    configuration.game.getPlayer(team).setType(Player.LOCAL);
-                } else {
-                    if (configuration.game.getPlayer(team).getType() != Player.NONE) {
-                        configuration.game.getPlayer(team).setType(Player.REMOTE);
-                    }
+    private void createGame() {
+        Recorder.setRecord(record_on);
+        for (int team = 0; team < 4; team++) {
+            if (hasTeamAccess(team)) {
+                configuration.game.getPlayer(team).setType(Player.LOCAL);
+            } else {
+                if (configuration.game.getPlayer(team).getType() != Player.NONE) {
+                    configuration.game.getPlayer(team).setType(Player.REMOTE);
                 }
             }
-            getContext().gotoGameScreen(configuration.game, true);
-//            Player[] players = new Player[4];
-//            for (int team = 0; team < 4; team++) {
-//                if (configuration.game.getMap().hasTeamAccess(team) && configuration.team_allocation[team] != -1) {
-//                    players[team] = new Player();
-//                    players[team].setAlliance(configuration.alliance_state[team]);
-//                    players[team].setGold(configuration.initial_gold);
-//                    if (getContext().getNetworkManager().getServiceID().equals(configuration.team_allocation[team])) {
-//                        players[team].setType(configuration.player_type[team]);
-//                    } else {
-//                        players[team].setType(Player.REMOTE);
-//                    }
-//                }
-//            }
-//            Rule rule = Rule.getDefaultRule();
-//            rule.setMaxPopulation(configuration.max_population);
-//            GameCore game = new GameCore(configuration.game.getMap(), rule, GameCore.SKIRMISH, players);
-//            getContext().gotoGameScreen(game);
+        }
+        if (configuration.is_game_save) {
+            getContext().gotoGameScreen(configuration.game, false);
         } else {
-//            GameCore game = game_save.game;
-//            for (int team = 0; team < 4; team++) {
-//                if (game.getPlayer(team) != null) {
-//                    if (configuration.team_allocation[team].equals("NONE")) {
-//                        game.removePlayer(team);
-//                    } else {
-//                        if (getContext().getNetworkManager().getServiceID().equals(configuration.team_allocation[team])) {
-//                            game.getPlayer(team).setType(Player.LOCAL);
-//                        } else {
-//                            game.getPlayer(team).setType(Player.REMOTE);
-//                        }
-//                    }
-//                }
-//            }
-//            getContext().gotoGameScreen(game_save);
+            getContext().gotoGameScreen(configuration.game, true);
         }
     }
 
@@ -501,7 +465,7 @@ public class NetGameCreateScreen extends StageScreen {
         for (int team = 0; team < 4; team++) {
             if (configuration.game.getMap().hasTeamAccess(team)) {
                 GameContext.setButtonEnabled(btn_allocate[team], isHost());
-                spinner_alliance[team].setEnabled(isHost() && game_save == null);
+                spinner_alliance[team].setEnabled(isHost() && !configuration.is_game_save);
                 spinner_type[team].setSelectedIndex(0);
                 spinner_type[team].setEnabled(isHost());
 
@@ -511,15 +475,6 @@ public class NetGameCreateScreen extends StageScreen {
                 team_setting_table.add(spinner_type[team]).size(ts * 4, ts).padTop(ts / 2).padLeft(ts / 2);
                 team_setting_table.add(sp_username[team]).size(team_setting_table.getWidth() - ts * 11 - ts / 2, ts).padTop(ts / 2).padLeft(ts / 2).row();
             }
-        }
-        if (game_save != null && isHost()) {
-            for (int team = 0; team < 4; team++) {
-                if (game_save.game.getPlayer(team) != null) {
-                    int alliance = game_save.game.getPlayer(team).getAlliance();
-                    configuration.game.getPlayer(team).setAlliance(alliance);
-                }
-            }
-            tryUpdateAlliance();
         }
         updateStatus();
 
@@ -577,8 +532,8 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     @Override
-    public void onGameStart(GameSave game_save) {
-        createGame(game_save);
+    public void onGameStart() {
+        createGame();
     }
 
     private final SpinnerListener allocation_listener = new SpinnerListener() {

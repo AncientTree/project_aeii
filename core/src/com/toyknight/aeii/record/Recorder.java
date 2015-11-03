@@ -2,13 +2,14 @@ package com.toyknight.aeii.record;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Output;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameFactory;
+import com.toyknight.aeii.utils.Serializer;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -23,7 +24,7 @@ public class Recorder {
 
     private static boolean record_on;
 
-    private static ObjectOutputStream oos;
+    private static Output output;
 
     private static GameRecord record;
 
@@ -38,14 +39,14 @@ public class Recorder {
             try {
                 String filename = GameFactory.createFilename(GameFactory.RECORD);
                 FileHandle record_file = FileProvider.getUserFile("save/" + filename);
-                oos = new ObjectOutputStream(record_file.write(false));
-                oos.writeInt(GameFactory.RECORD);
+                output = new Output(record_file.write(false));
+                output.writeInt(GameFactory.RECORD);
 
-                GameRecord record = new GameRecord(V_STRING);
+                record = new GameRecord(V_STRING);
                 record.setGame(new GameCore(game));
-            } catch (IOException ex) {
+            } catch (KryoException ex) {
                 Recorder.setRecord(false);
-                Gdx.app.log("Record", ex.toString());
+                Gdx.app.log(TAG, ex.toString());
             }
         }
     }
@@ -57,11 +58,17 @@ public class Recorder {
         }
     }
 
-    public static void saveRecord() throws IOException {
+    public static void saveRecord() {
         if (record_on) {
-            record.setEvents(event_queue);
-            oos.writeObject(record);
-            oos.close();
+            try {
+                Serializer serializer = new Serializer();
+                record.setEvents(event_queue);
+                serializer.writeObject(output, record);
+                output.flush();
+                output.close();
+            } catch (KryoException ex) {
+                Gdx.app.log(TAG, ex.toString());
+            }
         }
     }
 

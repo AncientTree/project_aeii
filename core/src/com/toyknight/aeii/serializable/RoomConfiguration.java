@@ -18,6 +18,8 @@ public class RoomConfiguration implements Serializable {
 
     public boolean started;
 
+    public boolean is_game_save;
+
     public Array<PlayerSnapshot> players;
 
     public GameCore game;

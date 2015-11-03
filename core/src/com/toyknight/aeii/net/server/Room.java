@@ -24,6 +24,7 @@ public class Room {
     private final String room_name;
 
     private boolean game_started;
+    private boolean is_game_save = false;
 
     private int capacity = 4;
 
@@ -35,6 +36,21 @@ public class Room {
 
     private String map_name;
     private int initial_gold = 1000;
+
+    public Room(long room_number, String room_name, GameCore game) {
+        this(room_number, room_name);
+        manager = new GameManager(new EmptyAnimationManager());
+        manager.setGame(game);
+        for (int team = 0; team < 4; team++) {
+            if (getGame().getPlayer(team) == null) {
+                Player player = new Player();
+                player.setType(Player.NONE);
+                getGame().setPlayer(team, player);
+            }
+        }
+        initial_gold = -1;
+        is_game_save = true;
+    }
 
     public Room(long room_number, String room_name) {
         this.room_number = room_number;
@@ -53,7 +69,7 @@ public class Room {
 
     public void setMap(Map map, String map_name) {
         synchronized (PLAYER_LOCK) {
-            this.map_name = map_name;
+            setMapName(map_name);
             Player[] players = new Player[4];
             for (int team = 0; team < 4; team++) {
                 players[team] = new Player();
@@ -195,6 +211,10 @@ public class Room {
         return getCapacity() - players.size;
     }
 
+    public void setMapName(String name) {
+        this.map_name = name;
+    }
+
     public String getMapName() {
         return map_name;
     }
@@ -249,7 +269,9 @@ public class Room {
     }
 
     public void startGame() {
-        getGame().initialize();
+        if (!is_game_save) {
+            getGame().initialize();
+        }
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (player != null && player.getType() != Player.NONE) {
@@ -266,6 +288,10 @@ public class Room {
                 getManager().getGameEventExecutor().dispatchGameEvents();
             }
         }
+    }
+
+    public boolean isSavedGame() {
+        return is_game_save;
     }
 
     public boolean isOpen() {

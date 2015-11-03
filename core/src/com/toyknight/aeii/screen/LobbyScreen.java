@@ -219,7 +219,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                             getContext().setRoomConfiguration(configuration);
                             getContext().gotoGameScreen(game, false);
                         } else {
-                            getContext().gotoNetGameCreateScreen(configuration, null);
+                            getContext().gotoNetGameCreateScreen(configuration);
                         }
                     }
                 }
@@ -287,8 +287,8 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             this.btn_load_game.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-//                    room_create_dialog.setMode(LOAD_GAME);
-//                    showDialog("create");
+                    room_create_dialog.setMode(LOAD_GAME);
+                    showDialog("create");
                 }
             });
             this.addActor(btn_load_game);

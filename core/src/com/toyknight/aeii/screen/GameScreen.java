@@ -299,10 +299,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         }
     }
 
-    @Override
-    public void onDisconnect() {
+    private void tryReconnect() {
         Gdx.input.setInputProcessor(null);
-        appendMessage(null, Language.getText("MSG_ERR_DFS"));
         appendMessage(null, Language.getText("LB_RECONNECTING"));
         getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
             @Override
@@ -338,6 +336,16 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 getContext().gotoMainMenuScreen();
                 getContext().getNetworkManager().disconnect();
                 getContext().showMessage(Language.getText("MSG_ERR_CNRTS"), null);
+            }
+        });
+    }
+
+    @Override
+    public void onDisconnect() {
+        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
+            @Override
+            public void call() {
+                tryReconnect();
             }
         });
     }
@@ -750,7 +758,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void onGameOver() {
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
-            public Void doTask() throws Exception {
+            public Void doTask() {
                 Recorder.saveRecord();
                 return null;
             }
