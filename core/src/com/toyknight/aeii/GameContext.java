@@ -34,8 +34,7 @@ public class GameContext extends Game {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String VERSION_MODIFIER = "";
-    public static final String VERSION = "1.0.8";
+    public static final String VERSION = "1.0.8a";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -298,7 +297,7 @@ public class GameContext extends Game {
     }
 
     public String getVersion() {
-        return VERSION + VERSION_MODIFIER;
+        return VERSION;
     }
 
     public String getVerificationString() {
