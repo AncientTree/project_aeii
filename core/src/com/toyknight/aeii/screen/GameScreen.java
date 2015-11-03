@@ -415,8 +415,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void prepare(GameCore game) {
+        Recorder.prepare(getContext().getVerificationString(), game);
         record_player.setRecord(null);
-        Recorder.prepare(game);
         initialize(game);
     }
 

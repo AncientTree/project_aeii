@@ -132,14 +132,18 @@ public class GameLoadDialog extends BasicDialog {
         if (record == null) {
             getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {
-            Recorder.setRecord(false);
-            for (int team = 0; team < 4; team++) {
-                Player player = record.getGame().getPlayer(team);
-                if (player != null) {
-                    player.setType(Player.RECORD);
+            if (getContext().getVerificationString().equals(record.getVerificationString())) {
+                Recorder.setRecord(false);
+                for (int team = 0; team < 4; team++) {
+                    Player player = record.getGame().getPlayer(team);
+                    if (player != null) {
+                        player.setType(Player.RECORD);
+                    }
                 }
+                getContext().gotoGameScreen(record);
+            } else {
+                getContext().showMessage(Language.getText("MSG_ERR_RVM"), null);
             }
-            getContext().gotoGameScreen(record);
         }
     }
 

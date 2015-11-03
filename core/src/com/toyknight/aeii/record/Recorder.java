@@ -25,19 +25,24 @@ public class Recorder {
 
     private static ObjectOutputStream oos;
 
+    private static GameRecord record;
+
     public static void setRecord(boolean on) {
         Recorder.record_on = on;
         event_queue.clear();
+        record = null;
     }
 
-    public static void prepare(GameCore game) {
+    public static void prepare(String V_STRING, GameCore game) {
         if (record_on) {
             try {
                 String filename = GameFactory.createFilename(GameFactory.RECORD);
                 FileHandle record_file = FileProvider.getUserFile("save/" + filename);
                 oos = new ObjectOutputStream(record_file.write(false));
                 oos.writeInt(GameFactory.RECORD);
-                oos.writeObject(game);
+
+                GameRecord record = new GameRecord(V_STRING);
+                record.setGame(new GameCore(game));
             } catch (IOException ex) {
                 Recorder.setRecord(false);
                 Gdx.app.log("Record", ex.toString());
@@ -54,7 +59,8 @@ public class Recorder {
 
     public static void saveRecord() throws IOException {
         if (record_on) {
-            oos.writeObject(event_queue);
+            record.setEvents(event_queue);
+            oos.writeObject(record);
             oos.close();
         }
     }

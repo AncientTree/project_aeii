@@ -102,6 +102,7 @@ MSG_ERR_DFS=服务器断开连接
 MSG_ERR_HPD=房主断开了连接
 MSG_ERR_RBS=服务器拒绝连接了连接请求 :(
 MSG_ERR_RI=请求失败
+MSG_ERR_RVM=录像版本不一致
 MSG_INFO_NSY=暂未开放 :(
 MSG_INFO_GS=对局开始
 MSG_INFO_GSV=游戏已保存

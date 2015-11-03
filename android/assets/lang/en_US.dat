@@ -102,6 +102,7 @@ MSG_ERR_DFS=Disconnected from server
 MSG_ERR_HPD=Host player disconnected
 MSG_ERR_RBS=Refused by server :(
 MSG_ERR_RI=Request interrupted
+MSG_ERR_RVM=Record version mismatch
 MSG_INFO_NSY=Not supported yet :(
 MSG_INFO_GS=Game started.
 MSG_INFO_GSV=Game saved.

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.record.GameRecord;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.serializable.GameSave;
 
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Queue;
 
 /**
  * @author toyknight 9/17/2015.
@@ -76,9 +74,7 @@ public class GameFactory {
             ObjectInputStream ois = new ObjectInputStream(record_file.read());
             int type = ois.readInt();
             if (type == RECORD) {
-                GameCore game = (GameCore) ois.readObject();
-                Queue<GameEvent> events = (Queue) ois.readObject();
-                return new GameRecord(game, events);
+                return (GameRecord) ois.readObject();
             } else {
                 return null;
             }
