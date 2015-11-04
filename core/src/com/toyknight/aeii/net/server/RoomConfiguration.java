@@ -1,4 +1,4 @@
-package com.toyknight.aeii.serializable;
+package com.toyknight.aeii.net.server;
 
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.entity.GameCore;

@@ -19,8 +19,8 @@ import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
-import com.toyknight.aeii.serializable.PlayerSnapshot;
-import com.toyknight.aeii.serializable.RoomConfiguration;
+import com.toyknight.aeii.net.server.PlayerSnapshot;
+import com.toyknight.aeii.net.server.RoomConfiguration;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 

@@ -7,7 +7,6 @@ import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.rule.Rule;
-import com.toyknight.aeii.serializable.RoomSnapshot;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package com.toyknight.aeii.serializable;
+package com.toyknight.aeii.net.server;
 
 /**
  * @author toyknight 8/24/2015.

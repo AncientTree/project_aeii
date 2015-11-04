@@ -15,7 +15,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.task.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.PlayerList;
-import com.toyknight.aeii.serializable.PlayerSnapshot;
+import com.toyknight.aeii.net.server.PlayerSnapshot;
 import com.toyknight.aeii.utils.Language;
 
 /**

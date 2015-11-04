@@ -1,4 +1,4 @@
-package com.toyknight.aeii.serializable;
+package com.toyknight.aeii.entity;
 
 import com.toyknight.aeii.entity.GameCore;
 

@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.record.GameRecord;
-import com.toyknight.aeii.serializable.GameSave;
+import com.toyknight.aeii.entity.GameSave;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

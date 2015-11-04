@@ -20,8 +20,8 @@ import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
 import com.toyknight.aeii.script.JavaScriptEngine;
-import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.RoomConfiguration;
+import com.toyknight.aeii.entity.GameSave;
+import com.toyknight.aeii.net.server.RoomConfiguration;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;

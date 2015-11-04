@@ -11,10 +11,10 @@ import com.toyknight.aeii.net.Request;
 import com.toyknight.aeii.net.Response;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.rule.Rule;
-import com.toyknight.aeii.serializable.GameSave;
-import com.toyknight.aeii.serializable.PlayerSnapshot;
-import com.toyknight.aeii.serializable.RoomConfiguration;
-import com.toyknight.aeii.serializable.RoomSnapshot;
+import com.toyknight.aeii.entity.GameSave;
+import com.toyknight.aeii.net.server.PlayerSnapshot;
+import com.toyknight.aeii.net.server.RoomConfiguration;
+import com.toyknight.aeii.net.server.RoomSnapshot;
 
 import java.util.LinkedList;
 

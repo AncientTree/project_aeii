@@ -10,7 +10,9 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.serializable.*;
+import com.toyknight.aeii.net.server.RoomConfiguration;
+import com.toyknight.aeii.net.server.RoomSnapshot;
+import com.toyknight.aeii.net.server.ServerConfiguration;
 import com.toyknight.aeii.utils.ClassRegister;
 
 import java.io.*;

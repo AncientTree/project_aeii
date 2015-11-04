@@ -16,7 +16,7 @@ import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.StringList;
-import com.toyknight.aeii.serializable.GameSave;
+import com.toyknight.aeii.entity.GameSave;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameFactory;
 import com.toyknight.aeii.utils.Language;

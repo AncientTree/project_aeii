@@ -13,7 +13,7 @@ import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.screen.MainMenuScreen;
-import com.toyknight.aeii.serializable.ServerConfiguration;
+import com.toyknight.aeii.net.server.ServerConfiguration;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 

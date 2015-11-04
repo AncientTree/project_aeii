@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.serializable.PlayerSnapshot;
+import com.toyknight.aeii.net.server.PlayerSnapshot;
 import com.toyknight.aeii.utils.UnitFactory;
 
 /**

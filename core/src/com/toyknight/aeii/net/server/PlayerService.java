@@ -1,7 +1,6 @@
 package com.toyknight.aeii.net.server;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.toyknight.aeii.serializable.PlayerSnapshot;
 
 /**
  * @author toyknight 10/27/2015.
