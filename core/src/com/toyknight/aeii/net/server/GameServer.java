@@ -314,6 +314,9 @@ public class GameServer {
                 response.setParameters(configuration);
                 player.getConnection().sendTCP(response);
                 notifyPlayerReconnect(room, player.getID(), player.getUsername(), teams);
+            } else {
+                response.setParameters((RoomConfiguration) null);
+                player.getConnection().sendTCP(response);
             }
         }
     }
