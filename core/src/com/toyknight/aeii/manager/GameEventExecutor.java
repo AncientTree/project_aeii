@@ -234,13 +234,12 @@ public class GameEventExecutor {
     private void onBuy(int index, int team, int target_x, int target_y) {
         if (canBuy(index, team)) {
             getGameManager().requestMapFocus(target_x, target_y);
-
+            int price = getGame().getUnitPrice(index, team);
             if (index == UnitFactory.getCommanderIndex()) {
                 getGame().restoreCommander(team, target_x, target_y);
             } else {
                 getGame().createUnit(index, team, target_x, target_y);
             }
-            int price = getGame().getUnitPrice(index, team);
             getGame().getCurrentPlayer().changeGold(-price);
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGameManager().setSelectedUnit(unit);
