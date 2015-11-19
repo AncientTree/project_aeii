@@ -14,7 +14,7 @@ public class Unit implements Serializable {
 
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGICAL = 1;
-    private static final int[] level_up_experience = {100, 150, 300};
+    private static final int[] level_up_experience = {100, 200, 300};
 
     private final int index;
 
