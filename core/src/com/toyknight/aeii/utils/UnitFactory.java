@@ -22,12 +22,12 @@ public class UnitFactory {
     public static void loadUnitData() throws AEIIException {
         Json json = new Json();
         InputStreamReader configure_reader = new InputStreamReader(
-                UnitFactory.class.getResourceAsStream("/com/toyknight/aeii/data/units/unit_config.json"));
+                UnitFactory.class.getResourceAsStream("/data/units/unit_config.json"));
         unit_config = json.fromJson(UnitConfiguration.class, configure_reader);
         default_units = new Unit[unit_config.unit_count];
         for (int index = 0; index < default_units.length; index++) {
             InputStreamReader unit_reader = new InputStreamReader(
-                    UnitFactory.class.getResourceAsStream("/com/toyknight/aeii/data/units/unit_" + index + ".json"));
+                    UnitFactory.class.getResourceAsStream("/data/units/unit_" + index + ".json"));
             Unit.UnitDefinition definition = json.fromJson(Unit.UnitDefinition.class, unit_reader);
             default_units[index] = new Unit(definition, index);
         }

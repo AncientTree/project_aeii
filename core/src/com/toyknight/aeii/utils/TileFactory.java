@@ -17,14 +17,13 @@ public class TileFactory {
     }
 
     public static void loadTileData() throws AEIIException {
-        Scanner din = new Scanner(
-                TileFactory.class.getResourceAsStream("/com/toyknight/aeii/data/tiles/tile_config.dat"));
+        Scanner din = new Scanner(TileFactory.class.getResourceAsStream("/data/tiles/tile_config.dat"));
         int tile_count = din.nextInt();
         din.close();
         tile_list = new Tile[tile_count];
         for (int index = 0; index < tile_count; index++) {
             InputStream tile_input =
-                    TileFactory.class.getResourceAsStream("/com/toyknight/aeii/data/tiles/tile_" + index + ".dat");
+                    TileFactory.class.getResourceAsStream("/data/tiles/tile_" + index + ".dat");
             loadTileData(tile_input, index);
         }
     }
