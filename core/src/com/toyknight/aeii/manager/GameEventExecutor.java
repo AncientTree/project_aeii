@@ -191,7 +191,7 @@ public class GameEventExecutor {
                     UnitToolkit.attachAttackStatus(attacker, defender);
                     getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, damage);
                     if (defender.getCurrentHp() <= 0) {
-                        submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, defender.getX(), defender.getY()));
+                        executeGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, defender.getX(), defender.getY()), false);
                     }
                 }
                 boolean level_up = attacker.gainExperience(experience);
@@ -322,7 +322,7 @@ public class GameEventExecutor {
             target.changeCurrentHp(heal);
             getAnimationDispatcher().submitHpChangeAnimation(target, heal);
             if (target.getCurrentHp() <= 0) {
-                submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y));
+                executeGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y), false);
             }
             boolean level_up = healer.gainExperience(experience);
             if (level_up) {
