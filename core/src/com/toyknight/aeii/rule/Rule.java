@@ -12,7 +12,13 @@ public class Rule implements Serializable {
 
     private static final long serialVersionUID = 4152015L;
 
-    private int poison_damage;
+    public static int POISON_DAMAGE = 10;
+    public static int HEALER_BASE_HEAL = 40;
+    public static int REFRESH_BASE_HEAL = 10;
+
+    private int castle_income;
+    private int village_income;
+    private int commander_income;
 
     private int kill_exp;
     private int attack_exp;
@@ -31,7 +37,9 @@ public class Rule implements Serializable {
     }
 
     public Rule(Rule rule) {
-        setPoisonDamage(rule.getPoisonDamage());
+        setCastleIncome(rule.getCastleIncome());
+        setVillageIncome(rule.getVillageIncome());
+        setCommanderIncome(rule.getCommanderIncome());
         setKillExperience(rule.getKillExperience());
         setAttackExperience(rule.getAttackExperience());
         setCounterExperience(rule.getCounterExperience());
@@ -42,12 +50,28 @@ public class Rule implements Serializable {
         setAvailableUnits(new Array<Integer>(rule.getAvailableUnitList()));
     }
 
-    public void setPoisonDamage(int damage) {
-        this.poison_damage = damage;
+    public void setCastleIncome(int income) {
+        this.castle_income = income;
     }
 
-    public int getPoisonDamage() {
-        return poison_damage;
+    public int getCastleIncome() {
+        return castle_income;
+    }
+
+    public void setVillageIncome(int income) {
+        this.village_income = income;
+    }
+
+    public int getVillageIncome() {
+        return village_income;
+    }
+
+    public void setCommanderIncome(int income) {
+        this.commander_income = income;
+    }
+
+    public int getCommanderIncome() {
+        return commander_income;
     }
 
     public void setKillExperience(int exp) {
@@ -116,7 +140,9 @@ public class Rule implements Serializable {
 
     public static Rule getDefaultRule() {
         Rule rule = new Rule();
-        rule.setPoisonDamage(10);
+        rule.setCastleIncome(100);
+        rule.setVillageIncome(50);
+        rule.setCommanderIncome(50);
         rule.setKillExperience(60);
         rule.setAttackExperience(30);
         rule.setCounterExperience(10);

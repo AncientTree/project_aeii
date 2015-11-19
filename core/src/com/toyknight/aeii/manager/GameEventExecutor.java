@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.record.Recorder;
+import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -290,9 +291,9 @@ public class GameEventExecutor {
                 //the poison damage
                 if (unit.hasStatus(Status.POISONED)) {
                     if (unit.hasAbility(Ability.UNDEAD)) {
-                        change += getGame().getRule().getPoisonDamage();
+                        change += Rule.POISON_DAMAGE;
                     } else {
-                        change = -getGame().getRule().getPoisonDamage();
+                        change = -Rule.POISON_DAMAGE;
                     }
                 }
                 if (unit.hasAbility(Ability.REHABILITATION)) {
@@ -474,7 +475,7 @@ public class GameEventExecutor {
             //the refresh aura
             ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
             if (unit.hasAbility(Ability.REFRESH_AURA)) {
-                int heal = 10 + unit.getLevel() * 5;
+                int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
                 ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit);
                 //add itself
                 attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));

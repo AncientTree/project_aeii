@@ -2,6 +2,7 @@ package com.toyknight.aeii.utils;
 
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.rule.Rule;
 
 import java.util.*;
 
@@ -225,12 +226,13 @@ public class UnitToolkit {
         return damage;
     }
 
-    public static int getHeal(Unit unit, Unit target) {
-        if (unit.hasAbility(Ability.HEALER)) {
+    public static int getHeal(Unit healer, Unit target) {
+        if (healer.hasAbility(Ability.HEALER)) {
+            int heal = Rule.HEALER_BASE_HEAL + 10 * healer.getLevel();
             if (target.hasAbility(Ability.UNDEAD)) {
-                return -(60 + 10 * unit.getLevel());
+                return -(int) (heal * 1.5);
             } else {
-                return 40 + 10 * unit.getLevel();
+                return heal;
             }
         } else {
             return 0;
