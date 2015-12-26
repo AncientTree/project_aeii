@@ -279,6 +279,9 @@ public class GameServer {
                 response.setParameters(configuration);
                 player.getConnection().sendTCP(response);
                 notifyPlayerJoin(room, player.getID(), player.getUsername());
+            } else {
+                response.setParameters((RoomConfiguration) null);
+                player.getConnection().sendTCP(response);
             }
         }
     }
