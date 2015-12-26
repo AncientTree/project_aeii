@@ -481,7 +481,7 @@ public class GameEventExecutor {
                 attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
                 for (Point target_position : attackable_positions) {
                     Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
-                    if (target != null && !getGame().isEnemy(unit, target) && ((target.hasStatus(Status.POISONED)) || target.hasStatus(Status.BLINDED) || target.hasStatus(Status.SLOWED))) {
+                    if (target != null && !getGame().isEnemy(unit, target) && Status.isDebuff(target.getStatus())) {
                         target.clearStatus();
                     }
                     if (getGame().canHeal(unit, target)) {

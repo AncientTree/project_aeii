@@ -27,15 +27,10 @@ public class UnitToolkit {
         if (attacker.hasAbility(Ability.POISONER) && !defender.hasAbility(Ability.POISONER)) {
             defender.attachStatus(new Status(Status.POISONED, 2));
         }
-        /*
-        if (defender.hasAbility(Ability.SLOWING_AURA) && !attacker.hasAbility(Ability.SLOWING_AURA)) {
-            attacker.attachStatus(new Status(Status.SLOWED, 1));
-        }
-        */
         if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
             defender.attachStatus(new Status(Status.BLINDED, 2));
         }
-        if (attacker.hasAbility(Ability.MARKSMAN) && !defender.hasAbility(Ability.AIRFORCE) && !defender.hasStatus(Status.DISABLED)) {
+        if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
             defender.attachStatus(new Status(Status.DISABLED, 1));
         }
     }

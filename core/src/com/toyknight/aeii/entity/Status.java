@@ -61,12 +61,16 @@ public class Status implements Serializable {
     }
 
     public static boolean isBuff(Status status) {
-        return status.getType() == INSPIRED;
+        return status != null && status.getType() == INSPIRED;
     }
 
     public static boolean isDebuff(Status status) {
-        int type = status.getType();
-        return type == POISONED || type == SLOWED || type == BLINDED;
+        if (status == null) {
+            return false;
+        } else {
+            int type = status.getType();
+            return type == POISONED || type == SLOWED || type == BLINDED || type == DISABLED;
+        }
     }
 
 }
