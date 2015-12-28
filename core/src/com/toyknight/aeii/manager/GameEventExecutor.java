@@ -483,7 +483,9 @@ public class GameEventExecutor {
                     }
                     if (getGame().canHeal(unit, target)) {
                         int change = UnitToolkit.validateHpChange(target, heal);
-                        hp_change_map.put(target_position, change);
+                        if (change != 0) {
+                            hp_change_map.put(target_position, change);
+                        }
                     }
                 }
             }

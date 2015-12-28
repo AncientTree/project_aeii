@@ -175,9 +175,6 @@ public class UnitToolkit {
         if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
             attack_bonus += 15;
         }
-        if (attacker.hasAbility(Ability.DESTROYER) && defender.hasAbility(Ability.CONQUEROR)) {
-            attack_bonus += 20;
-        }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
             attack_bonus += enemy_count * 10;
