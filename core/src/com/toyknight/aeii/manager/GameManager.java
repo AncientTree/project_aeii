@@ -113,7 +113,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
             if (getGame().isGameOver()) {
                 getListener().onGameOver();
             } else {
-                getListener().onButtonUpdateRequested();
+                getListener().onScreenUpdateRequested();
             }
         }
     }
@@ -121,7 +121,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
     @Override
     public void onGameEventFinished() {
         if (getListener() != null) {
-            getListener().onButtonUpdateRequested();
+            getListener().onScreenUpdateRequested();
         }
     }
 

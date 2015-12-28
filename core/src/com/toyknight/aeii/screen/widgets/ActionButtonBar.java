@@ -54,7 +54,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().doOccupy();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("occupy", btn_occupy);
@@ -63,7 +63,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().doRepair();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("repair", btn_repair);
@@ -72,7 +72,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().beginAttackPhase();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("attack", btn_attack);
@@ -81,7 +81,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().beginSummonPhase();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("summon", btn_summon);
@@ -90,7 +90,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().beginMovePhase();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("move", btn_move);
@@ -99,7 +99,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().doStandbyUnit();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("standby", btn_standby);
@@ -108,7 +108,7 @@ public class ActionButtonBar extends HorizontalGroup {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().beginHealPhase();
-                screen.onButtonUpdateRequested();
+                screen.onScreenUpdateRequested();
             }
         });
         buttons.put("heal", btn_heal);

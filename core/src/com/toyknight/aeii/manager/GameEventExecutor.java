@@ -102,7 +102,7 @@ public class GameEventExecutor {
                 onBuy(index, team, target_x, target_y);
                 break;
             case GameEvent.END_TURN:
-                onTurnEnd();
+                onEndTurn();
                 break;
             case GameEvent.HEAL:
                 int healer_x = (Integer) event.getParameter(0);
@@ -257,7 +257,7 @@ public class GameEventExecutor {
                 && getGame().getPlayer(team).getPopulation() < getGame().getRule().getMaxPopulation();
     }
 
-    private void onTurnEnd() {
+    private void onEndTurn() {
         getGameManager().setState(GameManager.STATE_SELECT);
         getGame().nextTurn();
         int team = getGame().getCurrentTeam();
@@ -456,6 +456,7 @@ public class GameEventExecutor {
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGame().standbyUnit(target_x, target_y);
+            getGameManager().setState(GameManager.STATE_SELECT);
 
             ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit, true);
 
@@ -492,7 +493,7 @@ public class GameEventExecutor {
             //deal with tombs
             if (getGame().getMap().isTomb(unit.getX(), unit.getY())) {
                 getGame().getMap().removeTomb(unit.getX(), unit.getY());
-                if (!unit.hasAbility(Ability.HEAVY_MACHINE) && !unit.hasAbility(Ability.NECROMANCER)) {
+                if (!unit.hasAbility(Ability.NECROMANCER)) {
                     unit.attachStatus(new Status(Status.POISONED, 3));
                 }
             }
@@ -502,7 +503,6 @@ public class GameEventExecutor {
                 hp_change_map.put(position, unit.getMaxHp() - unit.getCurrentHp());
             }
             submitBufferGameEvent(new GameEvent(GameEvent.HP_CHANGE, hp_change_map));
-            getGameManager().setState(GameManager.STATE_SELECT);
         }
     }
 

@@ -11,7 +11,7 @@ public interface GameManagerListener {
 
     void onManagerStateChanged();
 
-    void onButtonUpdateRequested();
+    void onScreenUpdateRequested();
 
     void onGameOver();
 

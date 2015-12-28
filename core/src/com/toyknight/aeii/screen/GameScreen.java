@@ -119,7 +119,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getManager().doEndTurn();
-                onButtonUpdateRequested();
+                onScreenUpdateRequested();
             }
         });
         this.addActor(btn_end_turn);
@@ -384,10 +384,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
             message_board.update(delta);
         }
         mini_map.update(delta);
-        cursor.addStateTime(delta);
+        cursor.update(delta);
+        attack_cursor.update(delta);
         tile_renderer.update(delta);
         unit_renderer.update(delta);
-        attack_cursor.addStateTime(delta);
         updateViewport();
 
         record_player.update(delta);
@@ -419,7 +419,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         closeAllDialogs();
 
         appendMessage(null, Language.getText("MSG_INFO_GS"));
-        onButtonUpdateRequested();
+        onScreenUpdateRequested();
     }
 
     public void prepare(GameCore game) {
@@ -465,39 +465,39 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     }
                     if (keyCode == Input.Keys.M) {
                         getManager().beginMovePhase();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     return false;
                 case GameManager.STATE_ACTION:
                     if (keyCode == Input.Keys.A && action_button_bar.isButtonAvailable("attack")) {
                         getManager().beginAttackPhase();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.O && action_button_bar.isButtonAvailable("occupy")) {
                         getManager().doOccupy();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.R && action_button_bar.isButtonAvailable("repair")) {
                         getManager().doRepair();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.S && action_button_bar.isButtonAvailable("summon")) {
                         getManager().beginSummonPhase();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.H && action_button_bar.isButtonAvailable("heal")) {
                         getManager().beginHealPhase();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     if (keyCode == Input.Keys.SPACE) {
                         getManager().doStandbyUnit();
-                        onButtonUpdateRequested();
+                        onScreenUpdateRequested();
                         return true;
                     }
                     return false;
@@ -653,7 +653,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 default:
                     //do nothing
             }
-            onButtonUpdateRequested();
+            onScreenUpdateRequested();
         }
     }
 
@@ -681,7 +681,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 default:
                     //do nothing
             }
-            //onButtonUpdateRequested();
+            //onScreenUpdateRequested();
         }
     }
 
@@ -742,11 +742,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onManagerStateChanged() {
-        onButtonUpdateRequested();
+        onScreenUpdateRequested();
     }
 
     @Override
-    public void onButtonUpdateRequested() {
+    public void onScreenUpdateRequested() {
         int state = getManager().getState();
         this.action_button_bar.updateButtons();
         GameContext.setButtonEnabled(btn_end_turn,
