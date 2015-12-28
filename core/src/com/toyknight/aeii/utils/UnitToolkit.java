@@ -30,8 +30,8 @@ public class UnitToolkit {
         if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
             defender.attachStatus(new Status(Status.BLINDED, 2));
         }
-        if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
-            defender.attachStatus(new Status(Status.DISABLED, 1));
+        if (attacker.hasAbility(Ability.DESTROYER) && defender.hasAbility(Ability.AIR_FORCE)) {
+            defender.attachStatus(new Status(Status.SLOWED, 1));
         }
     }
 

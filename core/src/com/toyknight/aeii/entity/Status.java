@@ -13,7 +13,6 @@ public class Status implements Serializable {
     public static final int SLOWED = 0x2;
     public static final int INSPIRED = 0x3;
     public static final int BLINDED = 0x4;
-    public static final int DISABLED = 0x5;                              //DISABLED is not considered as a debuff
 
     private final int type;
     private int remaining_turn;
@@ -69,7 +68,7 @@ public class Status implements Serializable {
             return false;
         } else {
             int type = status.getType();
-            return type == POISONED || type == SLOWED || type == BLINDED || type == DISABLED;
+            return type == POISONED || type == SLOWED || type == BLINDED;
         }
     }
 

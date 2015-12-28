@@ -457,18 +457,18 @@ public class GameEventExecutor {
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGame().standbyUnit(target_x, target_y);
 
+            ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit, true);
+
             //all the status auras
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    Unit target = getGame().getMap().getUnit(unit.getX() + i, unit.getY() + j);
-                    if (target != null) {
-                        if (unit.hasAbility(Ability.ATTACK_AURA) && !getGame().isEnemy(unit, target)) {
-                            target.attachStatus(new Status(Status.INSPIRED, 0));
-                        }
-                        if (unit.hasAbility(Ability.SLOWING_AURA)
-                                && !target.hasAbility(Ability.SLOWING_AURA) && getGame().isEnemy(unit, target)) {
-                            target.attachStatus(new Status(Status.SLOWED, 1));
-                        }
+            for (Point target_position : attackable_positions) {
+                Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
+                if (target != null) {
+                    if (unit.hasAbility(Ability.ATTACK_AURA) && !getGame().isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.INSPIRED, 0));
+                    }
+                    if (unit.hasAbility(Ability.SLOWING_AURA)
+                            && !target.hasAbility(Ability.SLOWING_AURA) && getGame().isEnemy(unit, target)) {
+                        target.attachStatus(new Status(Status.SLOWED, 1));
                     }
                 }
             }
@@ -476,7 +476,6 @@ public class GameEventExecutor {
             ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
             if (unit.hasAbility(Ability.REFRESH_AURA)) {
                 int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit, true);
                 for (Point target_position : attackable_positions) {
                     Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
                     if (getGame().canClean(unit, target)) {

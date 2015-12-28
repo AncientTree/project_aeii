@@ -203,11 +203,7 @@ public class Unit implements Serializable {
         if (hasStatus(Status.SLOWED)) {
             return 1;
         } else {
-            if (hasStatus(Status.DISABLED)) {
-                return (movement_point + 1) / 2;
-            } else {
-                return movement_point;
-            }
+            return movement_point;
         }
     }
 
@@ -351,7 +347,13 @@ public class Unit implements Serializable {
 
     public void attachStatus(Status status) {
         if ((getStatus() == null || getStatus().equals(status)) && !hasAbility(Ability.HEAVY_MACHINE)) {
-            this.status = status;
+            if (Status.isDebuff(status)) {
+                if (!hasAbility(Ability.REFRESH_AURA)) {
+                    this.status = status;
+                }
+            } else {
+                this.status = status;
+            }
 //            if (status.getType() == Status.SLOWED) {
 //                if (getCurrentMovementPoint() > 0) {
 //                    setCurrentMovementPoint(1);
