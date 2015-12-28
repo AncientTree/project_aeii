@@ -101,7 +101,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
                     players[i] = new Player();
                     players[i].setType(Player.LOCAL);
                     players[i].setAlliance(i + 1);
-                    players[i].setGold(1000);
+                    players[i].setGold(2000);
                 }
             }
             GameCore game = new GameCore(map, Rule.getDefaultRule(), GameCore.SKIRMISH, players);
