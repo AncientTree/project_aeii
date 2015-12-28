@@ -154,7 +154,6 @@ public class ActionButtonBar extends HorizontalGroup {
             Unit selected_unit = getManager().getSelectedUnit();
             switch (getManager().getState()) {
                 case GameManager.STATE_ACTION:
-                    getManager().createAttackablePositions(selected_unit);
                     if (getManager().canSelectedUnitAct()) {
                         if (getManager().hasEnemyWithinRange(selected_unit)) {
                             addActor(buttons.get("attack"));
@@ -177,7 +176,6 @@ public class ActionButtonBar extends HorizontalGroup {
                     addActor(buttons.get("standby"));
                     break;
                 case GameManager.STATE_BUY:
-                    getManager().createAttackablePositions(selected_unit);
                     if (selected_unit.isCommander() && selected_unit.getTeam() == getGame().getCurrentTeam()
                             && getGame().isCastleAccessible(getGame().getMap().getTile(selected_unit.getX(), selected_unit.getY()))) {
                         addActor(buttons.get("buy"));

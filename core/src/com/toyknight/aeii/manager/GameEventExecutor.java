@@ -296,17 +296,17 @@ public class GameEventExecutor {
                         change = -Rule.POISON_DAMAGE;
                     }
                 }
+                //rehabilitation
                 if (unit.hasAbility(Ability.REHABILITATION)) {
                     change += unit.getMaxHp() / 4;
                 }
-                change = UnitToolkit.validateHpChange(unit, change);
             } else {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 if (getGame().isEnemy(unit.getTeam(), team) && tile.isCastle() && tile.getTeam() == team) {
                     change = -50;
-                    change = UnitToolkit.validateHpChange(unit, change);
                 }
             }
+            change = UnitToolkit.validateHpChange(unit, change);
             if (change != 0) {
                 hp_change_map.put(position, change);
             }
@@ -476,9 +476,7 @@ public class GameEventExecutor {
             ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
             if (unit.hasAbility(Ability.REFRESH_AURA)) {
                 int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit);
-                //add itself
-                attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
+                ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit, true);
                 for (Point target_position : attackable_positions) {
                     Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
                     if (getGame().canClean(unit, target)) {

@@ -181,17 +181,17 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
 
     public void beginAttackPhase() {
         setState(STATE_ATTACK);
-        attackable_positions = createAttackablePositions(getSelectedUnit());
+        attackable_positions = createAttackablePositions(getSelectedUnit(), false);
     }
 
     public void beginSummonPhase() {
         setState(STATE_SUMMON);
-        attackable_positions = createAttackablePositions(getSelectedUnit());
+        attackable_positions = createAttackablePositions(getSelectedUnit(), false);
     }
 
     public void beginHealPhase() {
         setState(STATE_HEAL);
-        attackable_positions = createAttackablePositions(getSelectedUnit());
+        attackable_positions = createAttackablePositions(getSelectedUnit(), true);
     }
 
     public void beginRemovePhase() {
@@ -473,7 +473,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
         }
     }
 
-    public ObjectSet<Point> createAttackablePositions(Unit unit) {
+    public ObjectSet<Point> createAttackablePositions(Unit unit, boolean itself) {
         int unit_x = unit.getX();
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
@@ -492,14 +492,14 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
                 }
             }
         }
-        if (getState() == STATE_HEAL) {
+        if (itself) {
             attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
         }
         return attackable_positions;
     }
 
     public boolean hasEnemyWithinRange(Unit unit) {
-        ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
+        ObjectSet<Point> attackable_positions = createAttackablePositions(unit, false);
         for (Point point : attackable_positions) {
             if (getSelectedUnit().hasAbility(Ability.DESTROYER) && getGame().getMap().getUnit(point.x, point.y) == null
                     && getGame().getMap().getTile(point.x, point.y).isDestroyable()) {
@@ -514,7 +514,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
     }
 
     public boolean hasAllyCanHealWithinRange(Unit unit) {
-        ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
+        ObjectSet<Point> attackable_positions = createAttackablePositions(unit, true);
         for (Point point : attackable_positions) {
             Unit target = getGame().getMap().getUnit(point.x, point.y);
             if (getGame().canHeal(unit, target)) {
@@ -525,7 +525,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
     }
 
     public boolean hasTombWithinRange(Unit unit) {
-        ObjectSet<Point> attackable_positions = createAttackablePositions(unit);
+        ObjectSet<Point> attackable_positions = createAttackablePositions(unit, false);
         for (Point point : attackable_positions) {
             if (getGame().getMap().isTomb(point.x, point.y) && getGame().getMap().getUnit(point.x, point.y) == null) {
                 return true;
