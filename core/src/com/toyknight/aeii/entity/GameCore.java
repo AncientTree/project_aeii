@@ -303,7 +303,7 @@ public class GameCore implements Serializable {
         if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
             Unit defender = getMap().getUnit(x, y);
             if (defender != null) {
-                return !(attacker.hasAbility(Ability.HEAVY_MACHINE) && defender.hasAbility(Ability.AIR_FORCE)) && isEnemy(attacker, defender);
+                return isEnemy(attacker, defender);
             } else {
                 return attacker.hasAbility(Ability.DESTROYER) && getMap().getTile(x, y).isDestroyable();
             }
@@ -361,6 +361,10 @@ public class GameCore implements Serializable {
                 return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
             }
         }
+    }
+
+    public boolean canClean(Unit cleaner, Unit target) {
+        return target != null && !isEnemy(cleaner, target) && Status.isDebuff(target.getStatus());
     }
 
     public boolean canReceiveHeal(Unit target) {
