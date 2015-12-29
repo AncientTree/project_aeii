@@ -6,7 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.screen.MapEditorScreen;
+import com.toyknight.aeii.manager.MapEditor;
+import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
@@ -15,13 +16,16 @@ import com.toyknight.aeii.utils.Language;
  */
 public class MapResizeDialog extends BasicDialog {
 
+    private final MapEditor editor;
+
     private Label lb_width;
     private Slider slider_width;
     private Label lb_height;
     private Slider slider_height;
 
-    public MapResizeDialog(MapEditorScreen editor) {
-        super(editor);
+    public MapResizeDialog(StageScreen owner, MapEditor editor) {
+        super(owner);
+        this.editor = editor;
         this.initComponents();
     }
 
@@ -53,8 +57,8 @@ public class MapResizeDialog extends BasicDialog {
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Map map = getOwner().createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
-                getOwner().setMap(map, "not defined");
+                Map map = getEditor().createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
+                getEditor().setMap(map, "not defined");
                 getOwner().closeDialog("resize");
             }
         });
@@ -70,19 +74,20 @@ public class MapResizeDialog extends BasicDialog {
         add(button_bar).size(ts * 7, ts);
     }
 
-    public MapEditorScreen getOwner() {
-        return (MapEditorScreen) super.getOwner();
-    }
-
     private void onSizeChanged() {
         lb_width.setText(Language.getText("LB_WIDTH") + ": " + (int) slider_width.getValue());
         lb_height.setText(Language.getText("LB_HEIGHT") + ": " + (int) slider_height.getValue());
         this.layout();
     }
 
+    public MapEditor getEditor() {
+        return editor;
+    }
+
+    @Override
     public void display() {
-        slider_width.setValue(getOwner().getMap().getWidth());
-        slider_height.setValue(getOwner().getMap().getHeight());
+        slider_width.setValue(getEditor().getMap().getWidth());
+        slider_height.setValue(getEditor().getMap().getHeight());
     }
 
 }

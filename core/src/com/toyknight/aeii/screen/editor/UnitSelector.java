@@ -10,10 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.manager.MapEditor;
 import com.toyknight.aeii.renderer.BorderRenderer;
-import com.toyknight.aeii.screen.MapEditorScreen;
 import com.toyknight.aeii.utils.UnitFactory;
 
 /**
@@ -22,11 +21,11 @@ import com.toyknight.aeii.utils.UnitFactory;
 public class UnitSelector extends Container<ScrollPane> {
 
     private final int ts;
-    private final MapEditorScreen editor;
+    private final MapEditor editor;
 
-    public UnitSelector(MapEditorScreen editor) {
+    public UnitSelector(MapEditor editor, int ts) {
         this.editor = editor;
-        this.ts = getContext().getTileSize();
+        this.ts = ts;
         this.initComponents();
     }
 
@@ -88,10 +87,6 @@ public class UnitSelector extends Container<ScrollPane> {
                 Gdx.graphics.getWidth() - ts * 2 - ts / 4 * 3, ts,
                 ts * 2 - ts / 4 * 3, Gdx.graphics.getHeight() - ts);
         this.setActor(sp_unit_table);
-    }
-
-    private GameContext getContext() {
-        return editor.getContext();
     }
 
     public void setSelectedTeam(int team) {

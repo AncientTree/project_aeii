@@ -11,21 +11,25 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.screen.MapEditorScreen;
+import com.toyknight.aeii.manager.MapEditor;
+import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
 public class MapOpenDialog extends BasicDialog {
 
+    private final MapEditor editor;
+
     private StringList<MapFactory.MapSnapshot> map_list;
 
-    public MapOpenDialog(MapEditorScreen editor) {
-        super(editor);
+    public MapOpenDialog(StageScreen owner, MapEditor editor) {
+        super(owner);
+        this.editor = editor;
         initComponents();
     }
 
@@ -67,21 +71,22 @@ public class MapOpenDialog extends BasicDialog {
         this.addActor(btn_cancel);
     }
 
-    public MapEditorScreen getOwner() {
-        return (MapEditorScreen) super.getOwner();
-    }
-
     private void tryLoadMap() {
         MapFactory.MapSnapshot snapshot = map_list.getSelected();
         try {
             Map map = MapFactory.createMap(snapshot.file);
-            getOwner().setMap(map, snapshot.file.nameWithoutExtension());
+            getEditor().setMap(map, snapshot.file.nameWithoutExtension());
             getOwner().closeDialog("open");
         } catch (AEIIException ex) {
             getContext().showMessage(Language.getText("MSG_ERR_BMF"), null);
         }
     }
 
+    public MapEditor getEditor() {
+        return editor;
+    }
+
+    @Override
     public void display() {
         //update maps
         Array<MapFactory.MapSnapshot> user_maps = MapFactory.getUserMapSnapshots();

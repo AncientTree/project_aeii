@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.manager.MapEditor;
 import com.toyknight.aeii.renderer.BorderRenderer;
-import com.toyknight.aeii.screen.MapEditorScreen;
 import com.toyknight.aeii.utils.TileFactory;
 
 /**
@@ -17,12 +17,12 @@ import com.toyknight.aeii.utils.TileFactory;
 public class TileSelector extends Container<ScrollPane> {
 
     private final int ts;
-    private final MapEditorScreen editor;
+    private final MapEditor editor;
     private final ObjectMap<Short, TileButton> buttons;
 
-    public TileSelector(MapEditorScreen editor) {
+    public TileSelector(MapEditor editor, int ts) {
         this.editor = editor;
-        this.ts = getEditor().getContext().getTileSize();
+        this.ts = ts;
         this.buttons = new ObjectMap<Short, TileButton>();
         this.initComponents();
     }
@@ -55,7 +55,7 @@ public class TileSelector extends Container<ScrollPane> {
         setActor(sp_tile_table);
     }
 
-    public MapEditorScreen getEditor() {
+    public MapEditor getEditor() {
         return editor;
     }
 

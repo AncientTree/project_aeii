@@ -7,7 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.toyknight.aeii.screen.MapEditorScreen;
+import com.toyknight.aeii.manager.MapEditor;
+import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 
@@ -16,11 +17,14 @@ import com.toyknight.aeii.utils.Language;
  */
 public class MapSaveDialog extends BasicDialog {
 
+    private final MapEditor editor;
+
     private TextField tf_filename;
     private TextField tf_author;
 
-    public MapSaveDialog(MapEditorScreen editor) {
-        super(editor);
+    public MapSaveDialog(StageScreen owner, MapEditor editor) {
+        super(owner);
+        this.editor = editor;
         initComponents();
     }
 
@@ -40,7 +44,7 @@ public class MapSaveDialog extends BasicDialog {
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().saveMap(tf_filename.getText(), tf_author.getText());
+                getEditor().saveMap(tf_filename.getText(), tf_author.getText());
             }
         });
         button_bar.add(btn_save).size(ts * 2, ts);
@@ -55,13 +59,14 @@ public class MapSaveDialog extends BasicDialog {
         add(button_bar).size(ts * 5, ts).padTop(ts / 4);
     }
 
-    public MapEditorScreen getOwner() {
-        return (MapEditorScreen) super.getOwner();
+    public MapEditor getEditor() {
+        return editor;
     }
 
+    @Override
     public void display() {
-        this.tf_filename.setText(getOwner().getFilename());
-        this.tf_author.setText(getOwner().getMap().getAuthor());
+        this.tf_filename.setText(getEditor().getFilename());
+        this.tf_author.setText(getEditor().getMap().getAuthor());
     }
 
 }

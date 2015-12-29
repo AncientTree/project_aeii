@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.screen.MapEditorScreen;
+import com.toyknight.aeii.manager.MapEditor;
 
 /**
  * @author toyknight 7/9/2015.
@@ -14,9 +14,9 @@ public class TileButton extends Button {
 
     private final int ts;
     private final short index;
-    private final MapEditorScreen editor;
+    private final MapEditor editor;
 
-    public TileButton(MapEditorScreen editor, short index, int ts) {
+    public TileButton(MapEditor editor, short index, int ts) {
         this.ts = ts;
         this.index = index;
         this.editor = editor;
@@ -33,7 +33,7 @@ public class TileButton extends Button {
         return index;
     }
 
-    public MapEditorScreen getEditor() {
+    public MapEditor getEditor() {
         return editor;
     }
 
@@ -49,7 +49,7 @@ public class TileButton extends Button {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (getEditor().getBrushType() == MapEditorScreen.TYPE_TILE && getEditor().getSelectedTileIndex() == index) {
+        if (getEditor().getBrushType() == MapEditor.TYPE_TILE && getEditor().getSelectedTileIndex() == index) {
             batch.draw(
                     ResourceManager.getMovePathColor(),
                     getX() - ts / 24, getY() - ts / 24,

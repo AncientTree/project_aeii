@@ -1,8 +1,9 @@
 package com.toyknight.aeii.screen;
 
+import static com.toyknight.aeii.manager.MapEditor.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -11,25 +12,20 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animator.MapAnimator;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.manager.MapEditor;
+import com.toyknight.aeii.manager.MapEditorListener;
 import com.toyknight.aeii.renderer.TileRenderer;
 import com.toyknight.aeii.renderer.UnitRenderer;
 import com.toyknight.aeii.screen.editor.*;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.utils.*;
 
-import java.io.IOException;
-
 /**
  * @author toyknight 6/1/2015.
  */
-public class MapEditorScreen extends StageScreen implements MapCanvas {
+public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditorListener {
 
-    private static final int MODE_ERASER = 0x1;
-    private static final int MODE_BRUSH = 0x2;
-    private static final int MODE_HAND = 0x3;
-
-    public static final int TYPE_TILE = 0x4;
-    public static final int TYPE_UNIT = 0x5;
+    private final MapEditor editor;
 
     private final TileRenderer tile_renderer;
     private final UnitRenderer unit_renderer;
@@ -40,16 +36,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     private CircleButton btn_brush;
     private CircleButton btn_eraser;
 
-    private Map map;
-    private String filename;
-
     private float scale;
-
-    private int mode;
-    private int brush_type;
-    private short selected_tile_index;
-    private Unit selected_unit;
-    private int selected_team;
 
     private int pointer_x;
     private int pointer_y;
@@ -58,6 +45,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
     public MapEditorScreen(GameContext context) {
         super(context);
+        this.editor = new MapEditor(this);
+
         this.tile_renderer = new TileRenderer(this);
         this.unit_renderer = new UnitRenderer(this);
 
@@ -69,12 +58,12 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     }
 
     private void initComponents() {
-        TileSelector tile_selector = new TileSelector(this);
+        TileSelector tile_selector = new TileSelector(getEditor(), ts);
         tile_selector.setBounds(0, 0, ts * 4, Gdx.graphics.getHeight());
         this.addActor(tile_selector);
 
         int usw = ts * 2 + ts / 4 * 3;
-        UnitSelector unit_selector = new UnitSelector(this);
+        UnitSelector unit_selector = new UnitSelector(getEditor(), ts);
         unit_selector.setBounds(Gdx.graphics.getWidth() - usw, 0, usw, Gdx.graphics.getHeight());
         this.addActor(unit_selector);
 
@@ -88,7 +77,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         btn_hand.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setMode(MODE_HAND);
+                getEditor().setMode(MODE_HAND);
             }
         });
         button_bar.add(btn_hand);
@@ -96,7 +85,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         btn_brush.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setMode(MODE_BRUSH);
+                getEditor().setMode(MODE_BRUSH);
             }
         });
         button_bar.add(btn_brush).padLeft(ts / 4);
@@ -104,7 +93,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         btn_eraser.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setMode(MODE_ERASER);
+                getEditor().setMode(MODE_ERASER);
             }
         });
         button_bar.add(btn_eraser).padLeft(ts / 4);
@@ -148,25 +137,29 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
 
         int mrw = ts * 8;
         int mrh = ts * 4 + ts / 2;
-        MapResizeDialog map_resize_dialog = new MapResizeDialog(this);
+        MapResizeDialog map_resize_dialog = new MapResizeDialog(this, getEditor());
         map_resize_dialog.setBounds((Gdx.graphics.getWidth() - mrw) / 2, (Gdx.graphics.getHeight() - mrh) / 2, mrw, mrh);
         this.addDialog("resize", map_resize_dialog);
 
         int msw = ts * 6;
         int msh = ts * 4;
-        MapSaveDialog map_save_dialog = new MapSaveDialog(this);
+        MapSaveDialog map_save_dialog = new MapSaveDialog(this, getEditor());
         map_save_dialog.setBounds((Gdx.graphics.getWidth() - msw) / 2, (Gdx.graphics.getHeight() - msh) / 2, msw, msh);
         this.addDialog("save", map_save_dialog);
 
         int mow = ts * 8;
         int moh = ts * 7;
-        MapOpenDialog map_open_dialog = new MapOpenDialog(this);
+        MapOpenDialog map_open_dialog = new MapOpenDialog(this, getEditor());
         map_open_dialog.setBounds((Gdx.graphics.getWidth() - mow) / 2, (Gdx.graphics.getHeight() - moh) / 2, mow, moh);
         this.addDialog("open", map_open_dialog);
     }
 
-    public void setMode(int mode) {
-        this.mode = mode;
+    public MapEditor getEditor() {
+        return editor;
+    }
+
+    @Override
+    public void onModeChange(int mode) {
         btn_hand.setHold(false);
         btn_brush.setHold(false);
         btn_eraser.setHold(false);
@@ -185,43 +178,21 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         }
     }
 
-    public void setBrushType(int type) {
-        this.brush_type = type;
+    @Override
+    public void onMapChange(Map map) {
+        this.scale = 1.0f;
+        int map_width = map.getWidth() * ts();
+        int map_height = map.getHeight() * ts();
+        viewport.x = (map_width - viewport.width) / 2;
+        viewport.y = (map_height - viewport.height) / 2;
     }
 
-    public int getBrushType() {
-        return brush_type;
+    public void onMapSaved() {
+        closeDialog("save");
     }
 
-    public void setSelectedTileIndex(short index) {
-        this.selected_tile_index = index;
-        this.setBrushType(TYPE_TILE);
-    }
-
-    public short getSelectedTileIndex() {
-        return selected_tile_index;
-    }
-
-    public void setSelectedUnit(Unit unit) {
-        this.selected_unit = unit;
-        this.setBrushType(TYPE_UNIT);
-    }
-
-    public Unit getSelectedUnit() {
-        return selected_unit;
-    }
-
-    public void setSelectedTeam(int team) {
-        this.selected_team = team;
-        this.setBrushType(TYPE_UNIT);
-    }
-
-    public int getSelectedTeam() {
-        return selected_team;
-    }
-
-    public String getFilename() {
-        return filename;
+    public void onMapSaveError(String message) {
+        getContext().showMessage(message, null);
     }
 
     @Override
@@ -276,23 +247,14 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     public void show() {
         MapAnimator.setCanvas(this);
         Gdx.input.setInputProcessor(this);
-        Map map = createEmptyMap(15, 15);
-        setMap(map, "not defined");
-        cursor_map_x = 0;
-        cursor_map_y = 0;
-        setMode(MODE_BRUSH);
+        getEditor().initialize();
         this.scale = 1.0f;
-        this.brush_type = TYPE_TILE;
-        this.selected_tile_index = 0;
-        this.selected_unit = UnitFactory.getSample(0);
-        this.setSelectedTeam(0);
-        setBrushType(TYPE_TILE);
         locateViewport(0, 0);
     }
 
     @Override
     public Map getMap() {
-        return map;
+        return getEditor().getMap();
     }
 
     @Override
@@ -319,11 +281,11 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         if (!event_handled) {
             if (button == Input.Buttons.LEFT) {
                 if (0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
-                    this.pointer_x = screenX;
-                    this.pointer_y = screenY;
-                    this.cursor_map_x = createCursorMapX(pointer_x);
-                    this.cursor_map_y = createCursorMapY(pointer_y);
-                    switch (mode) {
+                    pointer_x = screenX;
+                    pointer_y = screenY;
+                    cursor_map_x = createCursorMapX(pointer_x);
+                    cursor_map_y = createCursorMapY(pointer_y);
+                    switch (getEditor().getMode()) {
                         case MODE_ERASER:
                             doErase(cursor_map_x, cursor_map_y);
                             break;
@@ -343,7 +305,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         boolean event_handled = super.touchDragged(screenX, screenY, pointer);
         if (!event_handled) {
-            if (mode == MODE_HAND) {
+            if (getEditor().getMode() == MODE_HAND) {
                 int delta_x = pointer_x - screenX;
                 int delta_y = pointer_y - screenY;
                 dragViewport(delta_x, delta_y);
@@ -352,7 +314,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             pointer_y = screenY;
             cursor_map_x = createCursorMapX(pointer_x);
             cursor_map_y = createCursorMapY(pointer_y);
-            switch (mode) {
+            switch (getEditor().getMode()) {
                 case MODE_ERASER:
                     doErase(cursor_map_x, cursor_map_y);
                     break;
@@ -366,17 +328,17 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         return true;
     }
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        boolean event_handled = super.mouseMoved(screenX, screenY);
-        if (!event_handled) {
-            this.pointer_x = screenX;
-            this.pointer_y = screenY;
-            this.cursor_map_x = createCursorMapX(pointer_x);
-            this.cursor_map_y = createCursorMapY(pointer_y);
-        }
-        return true;
-    }
+//    @Override
+//    public boolean mouseMoved(int screenX, int screenY) {
+//        boolean event_handled = super.mouseMoved(screenX, screenY);
+//        if (!event_handled) {
+//            this.pointer_x = screenX;
+//            this.pointer_y = screenY;
+//            this.cursor_map_x = createCursorMapX(pointer_x);
+//            this.cursor_map_y = createCursorMapY(pointer_y);
+//        }
+//        return true;
+//    }
 
     private void doErase(int map_x, int map_y) {
         if (getMap().getUnit(map_x, map_y) == null) {
@@ -394,10 +356,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     }
 
     private void doBrush(int map_x, int map_y) {
-        if (mode == MODE_BRUSH) {
-            switch (brush_type) {
+        if (getEditor().getMode() == MODE_BRUSH) {
+            switch (getEditor().getBrushType()) {
                 case TYPE_TILE:
-                    getMap().setTile(selected_tile_index, map_x, map_y);
+                    getMap().setTile(getEditor().getSelectedTileIndex(), map_x, map_y);
                     for (int dy = -1; dy <= 1; dy++) {
                         for (int dx = -1; dx <= 1; dx++) {
                             if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
@@ -408,10 +370,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
                     break;
                 case TYPE_UNIT:
                     if (getMap().getUnit(map_x, map_y) == null) {
-                        Unit unit = UnitFactory.cloneUnit(selected_unit);
+                        Unit unit = UnitFactory.cloneUnit(getEditor().getSelectedUnit());
                         unit.setX(map_x);
                         unit.setY(map_y);
-                        unit.setTeam(selected_team);
+                        unit.setTeam(getEditor().getSelectedTeam());
                         getMap().addUnit(unit);
                     }
                     break;
@@ -458,28 +420,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     public void dragViewport(int delta_x, int delta_y) {
         viewport.x += delta_x;
         viewport.y += delta_y;
-//        int map_width = getMap().getWidth() * ts;
-//        int map_height = getMap().getHeight() * ts;
-//        if (viewport.width < map_width) {
-//            if (-ts <= viewport.x + delta_x
-//                    && viewport.x + delta_x <= map_width - viewport.width + ts) {
-//                viewport.x += delta_x;
-//            } else {
-//                viewport.x = viewport.x + delta_x < -ts ? -ts : map_width - viewport.width + ts;
-//            }
-//        } else {
-//            viewport.x = (map_width - viewport.width) / 2;
-//        }
-//        if (viewport.height < map_height) {
-//            if (-ts <= viewport.y + delta_y
-//                    && viewport.y + delta_y <= map_height - viewport.height + ts) {
-//                viewport.y += delta_y;
-//            } else {
-//                viewport.y = viewport.y + delta_y < -ts ? -ts : map_height - viewport.height + ts;
-//            }
-//        } else {
-//            viewport.y = (map_height - viewport.height) / 2;
-//        }
     }
 
     @Override
@@ -551,41 +491,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     @Override
     public int getViewportHeight() {
         return viewport.height;
-    }
-
-    public Map createEmptyMap(int width, int height) {
-        short[][] map_data = new short[width][height];
-        boolean[] team_access = new boolean[4];
-        return new Map(map_data, team_access, "default");
-    }
-
-    public void setMap(Map map, String filename) {
-        this.scale = 1.0f;
-        this.map = map;
-        this.filename = filename;
-        setMode(MODE_HAND);
-        setBrushType(TYPE_TILE);
-        int map_width = map.getWidth() * ts();
-        int map_height = map.getHeight() * ts();
-        viewport.x = (map_width - viewport.width) / 2;
-        viewport.y = (map_height - viewport.height) / 2;
-    }
-
-    public void saveMap(String filename, String author) {
-        this.filename = filename;
-        getMap().setAuthor(author);
-        FileHandle map_file = FileProvider.getUserFile("map/" + filename + ".aem");
-        try {
-            MapFactory.createTeamAccess(map);
-            if (map.getPlayerCount() >= 2) {
-                MapFactory.writeMap(map, map_file);
-                closeDialog("save");
-            } else {
-                getContext().showMessage(Language.getText("EDITOR_ERROR_1"), null);
-            }
-        } catch (IOException ex) {
-            getContext().showMessage(Language.getText("EDITOR_ERROR_2"), null);
-        }
     }
 
 }
