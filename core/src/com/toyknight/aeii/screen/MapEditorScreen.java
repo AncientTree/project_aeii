@@ -187,11 +187,13 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         viewport.y = (map_height - viewport.height) / 2;
     }
 
+    @Override
     public void onMapSaved() {
         closeDialog("save");
     }
 
-    public void onMapSaveError(String message) {
+    @Override
+    public void onError(String message) {
         getContext().showMessage(message, null);
     }
 

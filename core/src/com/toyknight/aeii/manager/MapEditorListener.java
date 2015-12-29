@@ -13,6 +13,6 @@ public interface MapEditorListener {
 
     void onMapSaved();
 
-    void onMapSaveError(String message);
+    void onError(String message);
 
 }

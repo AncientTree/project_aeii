@@ -127,10 +127,10 @@ public class MapEditor {
                 MapFactory.writeMap(map, map_file);
                 getListener().onMapSaved();
             } else {
-                getListener().onMapSaveError(Language.getText("EDITOR_ERROR_1"));
+                getListener().onError(Language.getText("EDITOR_ERROR_1"));
             }
         } catch (IOException ex) {
-            getListener().onMapSaveError(Language.getText("EDITOR_ERROR_2"));
+            getListener().onError(Language.getText("EDITOR_ERROR_2"));
         }
     }
 
