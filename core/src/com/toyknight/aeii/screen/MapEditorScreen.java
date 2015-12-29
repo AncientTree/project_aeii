@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.animator.CursorAnimator;
 import com.toyknight.aeii.animator.MapAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.renderer.TileRenderer;
@@ -35,7 +34,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
     private final TileRenderer tile_renderer;
     private final UnitRenderer unit_renderer;
 
-    private final CursorAnimator cursor;
     private final MapViewport viewport;
 
     private CircleButton btn_hand;
@@ -62,8 +60,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         super(context);
         this.tile_renderer = new TileRenderer(this);
         this.unit_renderer = new UnitRenderer(this);
-
-        this.cursor = new CursorAnimator();
 
         this.viewport = new MapViewport();
         this.viewport.width = Gdx.graphics.getWidth();
@@ -222,7 +218,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         drawMap();
         drawUnits();
         drawBrushTarget();
-        drawCursor();
         batch.end();
         super.draw();
     }
@@ -278,19 +273,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         }
     }
 
-    private void drawCursor() {
-        if (mode == MODE_ERASER) {
-            int cursor_x = getCursorMapX();
-            int cursor_y = getCursorMapY();
-            cursor.render(batch, cursor_x, cursor_y);
-        }
-    }
-
     @Override
     public void act(float delta) {
         tile_renderer.update(delta);
         unit_renderer.update(delta);
-        cursor.update(delta);
         super.act(delta);
     }
 
