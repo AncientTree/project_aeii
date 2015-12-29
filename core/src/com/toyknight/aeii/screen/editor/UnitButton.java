@@ -9,7 +9,7 @@ import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.screen.MapEditorScreen;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
 public class UnitButton extends Button {
 
@@ -25,13 +25,13 @@ public class UnitButton extends Button {
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                doClick();
+                getEditor().setSelectedUnit(UnitButton.this.unit);
             }
         });
     }
 
-    private void doClick() {
-        editor.setSelectedUnit(unit);
+    public MapEditorScreen getEditor() {
+        return editor;
     }
 
     @Override
@@ -46,6 +46,12 @@ public class UnitButton extends Button {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if (getEditor().getBrushType() == MapEditorScreen.TYPE_UNIT
+                && getEditor().getSelectedUnit().getIndex() == unit.getIndex()) {
+            batch.draw(
+                    ResourceManager.getBorderLightColor(),
+                    getX(), getY(), getWidth(), getHeight());
+        }
         batch.draw(
                 ResourceManager.getUnitTexture(editor.getSelectedTeam(), unit.getIndex(), 0, 0),
                 getX(), getY(), getWidth(), getHeight());

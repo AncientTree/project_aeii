@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.toyknight.aeii.GameContext;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.MapEditorScreen;
@@ -18,10 +18,12 @@ public class TileSelector extends Container<ScrollPane> {
 
     private final int ts;
     private final MapEditorScreen editor;
+    private final ObjectMap<Short, TileButton> buttons;
 
     public TileSelector(MapEditorScreen editor) {
         this.editor = editor;
-        this.ts = getContext().getTileSize();
+        this.ts = getEditor().getContext().getTileSize();
+        this.buttons = new ObjectMap<Short, TileButton>();
         this.initComponents();
     }
 
@@ -29,14 +31,19 @@ public class TileSelector extends Container<ScrollPane> {
         int index = 0;
         Table tile_table = new Table();
         tile_table.padBottom(ts / 4);
-        for (int i = 0; i < TileFactory.getTileCount(); i++) {
+        for (short i = 0; i < TileFactory.getTileCount(); i++) {
             if ((0 <= i && i <= 2) || (15 <= i && i <= 45) || (80 <= i && i < TileFactory.getTileCount())) {
-                TileButton t_btn = new TileButton(editor, (short) i, ts);
-                if (index % 3 == 2) {
-                    tile_table.add(t_btn).padTop(ts / 4).row();
-                } else {
-                    tile_table.add(t_btn).padRight(ts / 4).padTop(ts / 4);
+                TileButton t_btn = new TileButton(getEditor(), i, ts);
+                switch (index % 3) {
+                    case 0:
+                    case 1:
+                        tile_table.add(t_btn).padLeft(ts / 4).padTop(ts / 4);
+                        break;
+                    case 2:
+                        tile_table.add(t_btn).padLeft(ts / 4).padRight(ts / 4).padTop(ts / 4).row();
+                        break;
                 }
+                buttons.put(i, t_btn);
                 index++;
             }
         }
@@ -48,8 +55,8 @@ public class TileSelector extends Container<ScrollPane> {
         setActor(sp_tile_table);
     }
 
-    private GameContext getContext() {
-        return editor.getContext();
+    public MapEditorScreen getEditor() {
+        return editor;
     }
 
     @Override
@@ -57,7 +64,6 @@ public class TileSelector extends Container<ScrollPane> {
         batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
         BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
-        batch.flush();
     }
 
 }

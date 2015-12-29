@@ -8,7 +8,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.screen.MapEditorScreen;
 
 /**
- * Created by toyknight on 7/9/2015.
+ * @author toyknight 7/9/2015.
  */
 public class TileButton extends Button {
 
@@ -24,13 +24,17 @@ public class TileButton extends Button {
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                doClick();
+                getEditor().setSelectedTileIndex(TileButton.this.index);
             }
         });
     }
 
-    private void doClick() {
-        editor.setSelectedTileIndex(index);
+    public short getIndex() {
+        return index;
+    }
+
+    public MapEditorScreen getEditor() {
+        return editor;
     }
 
     @Override
@@ -45,7 +49,15 @@ public class TileButton extends Button {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getTileTexture(index), getX(), getY(), getWidth(), getHeight());
+        if (getEditor().getBrushType() == MapEditorScreen.TYPE_TILE && getEditor().getSelectedTileIndex() == index) {
+            batch.draw(
+                    ResourceManager.getMovePathColor(),
+                    getX() - ts / 24, getY() - ts / 24,
+                    getWidth() + ts / 12, getHeight() + ts / 12);
+        }
+        batch.draw(
+                ResourceManager.getTileTexture(index),
+                getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
     }
 

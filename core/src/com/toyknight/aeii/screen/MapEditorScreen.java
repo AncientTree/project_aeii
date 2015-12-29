@@ -189,14 +189,26 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         this.brush_type = type;
     }
 
+    public int getBrushType() {
+        return brush_type;
+    }
+
     public void setSelectedTileIndex(short index) {
         this.selected_tile_index = index;
         this.setBrushType(TYPE_TILE);
     }
 
+    public short getSelectedTileIndex() {
+        return selected_tile_index;
+    }
+
     public void setSelectedUnit(Unit unit) {
         this.selected_unit = unit;
         this.setBrushType(TYPE_UNIT);
+    }
+
+    public Unit getSelectedUnit() {
+        return selected_unit;
     }
 
     public void setSelectedTeam(int team) {
@@ -217,7 +229,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
         batch.begin();
         drawMap();
         drawUnits();
-        drawBrushTarget();
         batch.end();
         super.draw();
     }
@@ -250,25 +261,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas {
             int sy = getYOnScreen(unit_y);
             if (isWithinPaintArea(sx, sy)) {
                 unit_renderer.drawUnit(batch, unit, unit_x, unit_y);
-            }
-        }
-    }
-
-    private void drawBrushTarget() {
-        if (mode == MODE_BRUSH) {
-            int sx = getXOnScreen(cursor_map_x);
-            int sy = getYOnScreen(cursor_map_y);
-            switch (brush_type) {
-                case TYPE_TILE:
-                    batch.draw(ResourceManager.getTileTexture(selected_tile_index), sx, sy, ts(), ts());
-                    break;
-                case TYPE_UNIT:
-                    batch.draw(
-                            ResourceManager.getUnitTexture(getSelectedTeam(), selected_unit.getIndex(), 0, 0),
-                            sx, sy, ts(), ts());
-                    break;
-                default:
-                    //do nothing
             }
         }
     }
