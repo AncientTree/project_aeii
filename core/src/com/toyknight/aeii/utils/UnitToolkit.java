@@ -208,13 +208,10 @@ public class UnitToolkit {
         damage = damage > 0 ? damage : 0;
         //final damage percentage calculation
         float percentage_modifier = 1.0f;
-        if (!attacker.hasAbility(Ability.LORD_OF_TERROR) || !defender.hasAbility(Ability.LORD_OF_TERROR)) {
-            if (defender.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) > 1) {
-                percentage_modifier -= 0.5f;
-            }
-            if (attacker.hasAbility(Ability.LORD_OF_TERROR) && getRange(attacker, defender) == 1) {
-                percentage_modifier += 0.5f;
-            }
+        if (getRange(attacker, defender) == 1
+                && attacker.hasAbility(Ability.LORD_OF_TERROR)
+                && !defender.hasAbility(Ability.LORD_OF_TERROR)) {
+            percentage_modifier += 0.5f;
         }
         percentage_modifier = percentage_modifier >= 0f ? percentage_modifier : 0f;
         damage = (int) (damage * percentage_modifier);
