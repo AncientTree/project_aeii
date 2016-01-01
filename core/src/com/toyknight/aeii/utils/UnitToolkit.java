@@ -121,7 +121,7 @@ public class UnitToolkit {
             defence_bonus += tile.getDefenceBonus();
         }
         if (unit.hasAbility(Ability.GUARDIAN)
-                && getGame().getAlliance(unit.getTeam()) == getGame().getAlliance(tile.getTeam())) {
+                && getGame().isAlly(unit.getTeam(), tile.getTeam())) {
             defence_bonus += 5;
         }
         switch (tile.getType()) {

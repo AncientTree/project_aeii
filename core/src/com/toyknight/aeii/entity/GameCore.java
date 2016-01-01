@@ -280,6 +280,10 @@ public class GameCore implements Serializable {
         return team_a >= 0 && team_b >= 0 && getAlliance(team_a) != getAlliance(team_b);
     }
 
+    public boolean isAlly(int team_a, int team_b) {
+        return team_a >= 0 && team_b >= 0 && getAlliance(team_a) == getAlliance(team_b);
+    }
+
     public int getEnemyAroundCount(Unit unit, int range) {
         if (range < 1) {
             return 0;
