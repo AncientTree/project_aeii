@@ -458,10 +458,10 @@ public class GameEventExecutor {
             getGame().standbyUnit(target_x, target_y);
             getGameManager().setState(GameManager.STATE_SELECT);
 
-            ObjectSet<Point> attackable_positions = getGameManager().createAttackablePositions(unit, true);
+            ObjectSet<Point> aura_positions = getGameManager().createPositionsWithinRange(target_x, target_y, 0, 2);
 
             //all the status auras
-            for (Point target_position : attackable_positions) {
+            for (Point target_position : aura_positions) {
                 Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
                 if (target != null) {
                     if (unit.hasAbility(Ability.ATTACK_AURA) && !getGame().isEnemy(unit, target)) {
@@ -477,7 +477,7 @@ public class GameEventExecutor {
             ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
             if (unit.hasAbility(Ability.REFRESH_AURA)) {
                 int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                for (Point target_position : attackable_positions) {
+                for (Point target_position : aura_positions) {
                     Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
                     if (getGame().canClean(unit, target)) {
                         target.clearStatus();

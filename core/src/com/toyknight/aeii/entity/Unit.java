@@ -347,13 +347,7 @@ public class Unit implements Serializable {
 
     public void attachStatus(Status status) {
         if ((getStatus() == null || getStatus().equals(status)) && !hasAbility(Ability.HEAVY_MACHINE)) {
-            if (Status.isDebuff(status)) {
-                if (!hasAbility(Ability.REFRESH_AURA)) {
-                    this.status = status;
-                }
-            } else {
-                this.status = status;
-            }
+            this.status = status;
         }
     }
 

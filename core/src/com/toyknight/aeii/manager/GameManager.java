@@ -478,24 +478,29 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
         int max_ar = unit.getMaxAttackRange();
-        ObjectSet<Point> attackable_positions = new ObjectSet<Point>();
-        for (int ar = min_ar; ar <= max_ar; ar++) {
-            for (int dx = -ar; dx <= ar; dx++) {
-                int dy = dx >= 0 ? ar - dx : -ar - dx;
-                if (game.getMap().isWithinMap(unit_x + dx, unit_y + dy)) {
-                    attackable_positions.add(new Point(unit_x + dx, unit_y + dy));
-                }
-                if (dy != 0) {
-                    if (game.getMap().isWithinMap(unit_x + dx, unit_y - dy)) {
-                        attackable_positions.add(new Point(unit_x + dx, unit_y - dy));
-                    }
-                }
-            }
-        }
+        ObjectSet<Point> attackable_positions = createPositionsWithinRange(unit_x, unit_y, min_ar, max_ar);
         if (itself) {
             attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
         }
         return attackable_positions;
+    }
+
+    public ObjectSet<Point> createPositionsWithinRange(int x, int y, int min_range, int max_range) {
+        ObjectSet<Point> positions = new ObjectSet<Point>();
+        for (int ar = min_range; ar <= max_range; ar++) {
+            for (int dx = -ar; dx <= ar; dx++) {
+                int dy = dx >= 0 ? ar - dx : -ar - dx;
+                if (game.getMap().isWithinMap(x + dx, y + dy)) {
+                    positions.add(new Point(x + dx, y + dy));
+                }
+                if (dy != 0) {
+                    if (game.getMap().isWithinMap(x + dx, y - dy)) {
+                        positions.add(new Point(x + dx, y - dy));
+                    }
+                }
+            }
+        }
+        return positions;
     }
 
     public boolean hasEnemyWithinRange(Unit unit) {
