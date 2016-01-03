@@ -59,8 +59,11 @@ public class UnitFactory {
     }
 
     public static Unit cloneUnit(Unit unit) {
-        String unit_code = unit.getUnitCode();
-        return new Unit(unit, unit_code);
+        if (unit == null) {
+            return null;
+        } else {
+            return new Unit(unit, unit.getUnitCode());
+        }
     }
 
     public static Unit createUnit(int index, int team, String unit_code) {

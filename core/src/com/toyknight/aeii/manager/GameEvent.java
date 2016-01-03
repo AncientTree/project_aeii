@@ -20,10 +20,12 @@ public class GameEvent implements Serializable {
     public static final int SELECT = 0x8;
     public static final int STANDBY = 0x9;
     public static final int REVERSE = 0x10;
-    public static final int END_TURN = 0x11;
+    public static final int NEXT_TURN = 0x11;
     public static final int HP_CHANGE = 0x12;
     public static final int UNIT_DESTROY = 0x13;
     public static final int TILE_DESTROY = 0x14;
+    public static final int GAIN_EXPERIENCE = 0x15;
+    public static final int ACTION_FINISH = 0x16;
 
     private final int type;
     private final Object[] params;

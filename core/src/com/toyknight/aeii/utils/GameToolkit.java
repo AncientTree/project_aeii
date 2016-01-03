@@ -13,18 +13,21 @@ import com.toyknight.aeii.entity.GameSave;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author toyknight 9/17/2015.
  */
-public class GameFactory {
+public class GameToolkit {
 
     private static final String TAG = "GAME FACTORY";
 
     public static final int SAVE = 0x1;
     public static final int RECORD = 0x2;
 
-    private GameFactory() {
+    private static final DateFormat date_format = new SimpleDateFormat("MMddyyyy HH-mm", Locale.getDefault());
+
+    private GameToolkit() {
     }
 
     public static void save(GameCore game) throws AEIIException {
@@ -103,7 +106,6 @@ public class GameFactory {
 
     public static String createFilename(int mode) {
         Date date = new Date(System.currentTimeMillis());
-        DateFormat date_format = new SimpleDateFormat("MMddyyyy HH-mm");
         switch (mode) {
             case SAVE:
                 return date_format.format(date) + ".sav";

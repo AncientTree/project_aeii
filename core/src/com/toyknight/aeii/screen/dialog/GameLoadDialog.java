@@ -18,7 +18,7 @@ import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.entity.GameSave;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.GameFactory;
+import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 
@@ -96,12 +96,12 @@ public class GameLoadDialog extends BasicDialog {
         String filename = save_list.getSelected();
         if (filename != null) {
             FileHandle save_file = FileProvider.getSaveFile(filename);
-            int type = GameFactory.getType(save_file);
+            int type = GameToolkit.getType(save_file);
             switch (type) {
-                case GameFactory.SAVE:
+                case GameToolkit.SAVE:
                     tryStartGame(save_file);
                     break;
-                case GameFactory.RECORD:
+                case GameToolkit.RECORD:
                     tryStartRecord(save_file);
                     break;
                 default:
@@ -111,7 +111,7 @@ public class GameLoadDialog extends BasicDialog {
     }
 
     public void tryStartGame(FileHandle save_file) {
-        GameSave game_save = GameFactory.loadGame(save_file);
+        GameSave game_save = GameToolkit.loadGame(save_file);
         if (game_save == null) {
             getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {
@@ -128,7 +128,7 @@ public class GameLoadDialog extends BasicDialog {
     }
 
     public void tryStartRecord(FileHandle record_file) {
-        GameRecord record = GameFactory.loadRecord(record_file);
+        GameRecord record = GameToolkit.loadRecord(record_file);
         if (record == null) {
             getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {

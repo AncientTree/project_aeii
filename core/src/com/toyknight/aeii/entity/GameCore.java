@@ -53,7 +53,7 @@ public class GameCore implements Serializable {
         turn = game.turn;
         current_team = game.current_team;
         is_game_over = game.is_game_over;
-        statistics = game.statistics;
+        statistics = new Statistics(game.statistics);
     }
 
     public GameCore(Map map, Rule rule, int type, Player[] players) {
@@ -306,10 +306,10 @@ public class GameCore implements Serializable {
     public boolean canAttack(Unit attacker, int x, int y) {
         if (attacker != null && UnitToolkit.isWithinRange(attacker, x, y)) {
             Unit defender = getMap().getUnit(x, y);
-            if (defender != null) {
-                return isEnemy(attacker, defender);
-            } else {
+            if (defender == null) {
                 return attacker.hasAbility(Ability.DESTROYER) && getMap().getTile(x, y).isDestroyable();
+            } else {
+                return isEnemy(attacker, defender);
             }
         } else {
             return false;

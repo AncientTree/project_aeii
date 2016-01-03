@@ -67,7 +67,7 @@ public class Player implements Serializable {
     }
 
     public boolean isLocalPlayer() {
-        return getType() == LOCAL;
+        return getType() == LOCAL || getType() == ROBOT;
     }
 
 }

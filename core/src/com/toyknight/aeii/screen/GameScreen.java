@@ -260,7 +260,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawCursor() {
-        if (!getManager().isAnimating()) {
+        if (!getManager().isProcessing() && !getManager().isAnimating()) {
             int cursor_x = getCursorMapX();
             int cursor_y = getCursorMapY();
             Unit selected_unit = manager.getSelectedUnit();
@@ -429,8 +429,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void prepare(GameRecord record) {
-        initialize(record.getGame());
         record_player.setRecord(record);
+        initialize(record.getGame());
     }
 
     private void initialize(GameCore game) {

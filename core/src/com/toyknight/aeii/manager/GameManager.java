@@ -133,6 +133,10 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
         }
     }
 
+    public void submitGameEvent(int type, Object... params) {
+        submitGameEvent(new GameEvent(type, params));
+    }
+
     public void submitGameEvent(GameEvent event) {
         if (getListener() != null) {
             getListener().onGameEventSubmitted(event);
@@ -206,7 +210,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
     public void doSelect(int x, int y) {
         Unit unit = getGame().getMap().getUnit(x, y);
         if (getGame().isUnitAccessible(unit)) {
-            submitGameEvent(new GameEvent(GameEvent.SELECT, x, y));
+            submitGameEvent(GameEvent.SELECT, x, y);
         }
     }
 
@@ -214,64 +218,107 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
         if (canSelectedUnitMove(dest_x, dest_y)) {
             int start_x = getSelectedUnit().getX();
             int start_y = getSelectedUnit().getY();
-            submitGameEvent(new GameEvent(GameEvent.MOVE, start_x, start_y, dest_x, dest_y));
+            submitGameEvent(GameEvent.MOVE, start_x, start_y, dest_x, dest_y);
         }
     }
 
     public void doReverseMove() {
         Point last_position = getLastPosition();
         Unit selected_unit = getSelectedUnit();
-        submitGameEvent(new GameEvent(
-                GameEvent.REVERSE, selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y));
-
+        submitGameEvent(GameEvent.REVERSE, selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y);
     }
 
     public void doAttack(int target_x, int target_y) {
         Unit attacker = getSelectedUnit();
         if (UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
             Unit defender = getGame().getMap().getUnit(target_x, target_y);
-            int kill_experience = getGame().getRule().getKillExperience();
-            int attack_experience = getGame().getRule().getAttackExperience();
-            int counter_experience = getGame().getRule().getCounterExperience();
             if (defender == null) {
-                if (attacker.hasAbility(Ability.DESTROYER) && getGame().getMap().getTile(target_x, target_y).isDestroyable()) {
-                    submitGameEvent(new GameEvent(GameEvent.ATTACK, attacker.getX(), attacker.getY(), target_x, target_y, -1, attack_experience));
-                    submitGameEvent(new GameEvent(GameEvent.STANDBY, attacker.getX(), attacker.getY()));
-                    submitGameEvent(new GameEvent(GameEvent.TILE_DESTROY, target_x, target_y));
+                if (attacker.hasAbility(Ability.DESTROYER)
+                        && getGame().getMap().getTile(target_x, target_y).isDestroyable()) {
+                    onUnitAttackTile(attacker, target_x, target_y);
                 }
             } else {
                 if (getGame().canAttack(attacker, target_x, target_y)) {
-                    //attack pre-calculation
-                    Unit real_attacker = UnitFactory.cloneUnit(UnitToolkit.getAttacker(attacker, defender));
-                    Unit real_defender = UnitFactory.cloneUnit(UnitToolkit.getDefender(attacker, defender));
-                    int attack_damage = getUnitToolkit().getDamage(real_attacker, real_defender, getGame().getMap());
-                    UnitToolkit.attachAttackStatus(real_attacker, real_defender);
-                    real_defender.changeCurrentHp(-attack_damage);
-                    if (real_defender.getCurrentHp() > 0) {
-                        real_attacker.gainExperience(attack_experience);
-                        submitGameEvent(new GameEvent(GameEvent.ATTACK, real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, attack_experience));
-                        if (getUnitToolkit().canCounter(real_defender, real_attacker) || UnitToolkit.isAttackAmbushed(attacker, defender)) {
-                            int counter_damage = getUnitToolkit().getDamage(real_defender, real_attacker, getGame().getMap());
-                            real_attacker.changeCurrentHp(-counter_damage);
-                            if (real_attacker.getCurrentHp() > 0) {
-                                submitGameEvent(new GameEvent(GameEvent.ATTACK, real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, counter_experience));
-                            } else {
-                                submitGameEvent(new GameEvent(GameEvent.ATTACK, real_defender.getX(), real_defender.getY(), real_attacker.getX(), real_attacker.getY(), counter_damage, kill_experience));
-                            }
-                        }
-                    } else {
-                        submitGameEvent(new GameEvent(GameEvent.ATTACK, real_attacker.getX(), real_attacker.getY(), real_defender.getX(), real_defender.getY(), attack_damage, kill_experience));
-                    }
+                    onUnitAttackUnit(UnitFactory.cloneUnit(attacker), UnitFactory.cloneUnit(defender));
                 }
             }
         }
     }
 
+    private void onUnitAttackTile(Unit attacker, int target_x, int target_y) {
+        submitGameEvent(GameEvent.ATTACK, attacker.getX(), attacker.getY(), target_x, target_y, -1, -1);
+        submitGameEvent(GameEvent.STANDBY, attacker.getX(), attacker.getY());
+        submitGameEvent(GameEvent.TILE_DESTROY, target_x, target_y);
+
+        submitGameEvent(
+                GameEvent.GAIN_EXPERIENCE,
+                attacker.getX(), attacker.getY(),
+                getGame().getRule().getAttackExperience());
+
+        submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
+    }
+
+    private void onUnitAttackUnit(Unit attacker, Unit defender) {
+        //attack pre-calculation
+        int attack_damage = getUnitToolkit().getDamage(attacker, defender);
+        UnitToolkit.attachAttackStatus(attacker, defender);
+        defender.changeCurrentHp(-attack_damage);
+        if (defender.getCurrentHp() > 0) {
+            int counter_damage = getUnitToolkit().canCounter(defender, attacker) ?
+                    getUnitToolkit().getDamage(defender, attacker) : -1;
+            submitGameEvent(
+                    GameEvent.ATTACK,
+                    attacker.getX(), attacker.getY(),
+                    defender.getX(), defender.getY(),
+                    attack_damage, counter_damage);
+            if (counter_damage >= 0) {
+                attacker.changeCurrentHp(-counter_damage);
+                if (attacker.getCurrentHp() > 0) {
+                    submitGameEvent(
+                            GameEvent.GAIN_EXPERIENCE,
+                            attacker.getX(), attacker.getY(),
+                            getGame().getRule().getAttackExperience());
+                    submitGameEvent(
+                            GameEvent.GAIN_EXPERIENCE,
+                            defender.getX(), defender.getY(),
+                            getGame().getRule().getCounterExperience());
+                } else {
+                    submitGameEvent(GameEvent.UNIT_DESTROY, attacker.getX(), attacker.getY());
+                    submitGameEvent(
+                            GameEvent.GAIN_EXPERIENCE,
+                            defender.getX(), defender.getY(),
+                            getGame().getRule().getKillExperience());
+                }
+            } else {
+                submitGameEvent(
+                        GameEvent.GAIN_EXPERIENCE,
+                        attacker.getX(), attacker.getY(),
+                        getGame().getRule().getAttackExperience());
+            }
+        } else {
+            submitGameEvent(
+                    GameEvent.ATTACK,
+                    attacker.getX(), attacker.getY(),
+                    defender.getX(), defender.getY(),
+                    attack_damage, -1);
+            submitGameEvent(GameEvent.UNIT_DESTROY, defender.getX(), defender.getY());
+            submitGameEvent(
+                    GameEvent.GAIN_EXPERIENCE,
+                    attacker.getX(), attacker.getY(),
+                    getGame().getRule().getKillExperience());
+        }
+        submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
+    }
+
     public void doSummon(int target_x, int target_y) {
         Unit summoner = getSelectedUnit();
         if (getGame().canSummon(summoner, target_x, target_y)) {
-            int experience = getGame().getRule().getAttackExperience();
-            submitGameEvent(new GameEvent(GameEvent.SUMMON, summoner.getX(), summoner.getY(), target_x, target_y, experience));
+            submitGameEvent(GameEvent.SUMMON, summoner.getX(), summoner.getY(), target_x, target_y);
+            submitGameEvent(
+                    GameEvent.GAIN_EXPERIENCE,
+                    summoner.getX(), summoner.getY(),
+                    getGame().getRule().getAttackExperience());
+            submitGameEvent(GameEvent.ACTION_FINISH, summoner.getX(), summoner.getY());
         }
     }
 
@@ -282,37 +329,45 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
             int heal = UnitToolkit.getHeal(healer, target);
             int experience = target.getCurrentHp() + heal > 0 ?
                     getGame().getRule().getAttackExperience() : getGame().getRule().getKillExperience();
-            submitGameEvent(new GameEvent(GameEvent.HEAL, healer.getX(), healer.getY(), target_x, target_y, heal, experience));
+
+            submitGameEvent(GameEvent.HEAL, healer.getX(), healer.getY(), target_x, target_y, heal);
+            if (target.getCurrentHp() + heal <= 0) {
+                submitGameEvent(GameEvent.UNIT_DESTROY, target.getX(), target.getY());
+            }
+            submitGameEvent(GameEvent.GAIN_EXPERIENCE, healer.getX(), healer.getY(), experience);
+            submitGameEvent(GameEvent.ACTION_FINISH, healer.getX(), healer.getY());
         }
     }
 
     public void doRepair() {
         Unit unit = getSelectedUnit();
-        submitGameEvent(new GameEvent(GameEvent.REPAIR, unit.getX(), unit.getY()));
+        submitGameEvent(GameEvent.REPAIR, unit.getX(), unit.getY());
+        submitGameEvent(GameEvent.ACTION_FINISH, unit.getX(), unit.getY());
     }
 
     public void doOccupy() {
         Unit unit = getSelectedUnit();
-        submitGameEvent(new GameEvent(GameEvent.OCCUPY, unit.getX(), unit.getY(), unit.getTeam()));
+        submitGameEvent(GameEvent.OCCUPY, unit.getX(), unit.getY(), unit.getTeam());
+        submitGameEvent(GameEvent.ACTION_FINISH, unit.getX(), unit.getY());
     }
 
     public void doBuyUnit(int index, int x, int y) {
         int team = getGame().getCurrentTeam();
-        submitGameEvent(new GameEvent(GameEvent.BUY, index, team, x, y));
+        submitGameEvent(GameEvent.BUY, index, team, x, y);
     }
 
     public void doStandbyUnit() {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit)) {
-            submitGameEvent(new GameEvent(GameEvent.STANDBY, unit.getX(), unit.getY()));
+            submitGameEvent(GameEvent.STANDBY, unit.getX(), unit.getY());
         }
     }
 
     public void doEndTurn() {
-        submitGameEvent(new GameEvent(GameEvent.END_TURN));
+        submitGameEvent(GameEvent.NEXT_TURN);
     }
 
-    public void onUnitMoveFinished() {
+    public void onUnitMoveFinish() {
         switch (getState()) {
             case GameManager.STATE_MOVE:
                 setState(GameManager.STATE_ACTION);
@@ -323,7 +378,7 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
         }
     }
 
-    public void onUnitActionFinished(Unit unit) {
+    public void onUnitActionFinish(Unit unit) {
         if (unit == null || unit.getCurrentHp() <= 0) {
             setState(GameManager.STATE_SELECT);
         } else {

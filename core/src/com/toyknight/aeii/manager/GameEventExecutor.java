@@ -90,9 +90,9 @@ public class GameEventExecutor {
                 int attacker_y = (Integer) event.getParameter(1);
                 int target_x = (Integer) event.getParameter(2);
                 int target_y = (Integer) event.getParameter(3);
-                int damage = (Integer) event.getParameter(4);
-                int experience = (Integer) event.getParameter(5);
-                onAttack(attacker_x, attacker_y, target_x, target_y, damage, experience);
+                int attack_damage = (Integer) event.getParameter(4);
+                int counter_damage = (Integer) event.getParameter(5);
+                onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage, counter_damage);
                 break;
             case GameEvent.BUY:
                 int index = (Integer) event.getParameter(0);
@@ -101,8 +101,8 @@ public class GameEventExecutor {
                 target_y = (Integer) event.getParameter(3);
                 onBuy(index, team, target_x, target_y);
                 break;
-            case GameEvent.END_TURN:
-                onEndTurn();
+            case GameEvent.NEXT_TURN:
+                onNextTurn();
                 break;
             case GameEvent.HEAL:
                 int healer_x = (Integer) event.getParameter(0);
@@ -110,8 +110,7 @@ public class GameEventExecutor {
                 target_x = (Integer) event.getParameter(2);
                 target_y = (Integer) event.getParameter(3);
                 int heal = (Integer) event.getParameter(4);
-                experience = (Integer) event.getParameter(5);
-                onHeal(healer_x, healer_y, target_x, target_y, heal, experience);
+                onHeal(healer_x, healer_y, target_x, target_y, heal);
                 break;
             case GameEvent.MOVE:
                 int unit_x = (Integer) event.getParameter(0);
@@ -153,11 +152,10 @@ public class GameEventExecutor {
                 int summoner_y = (Integer) event.getParameter(1);
                 target_x = (Integer) event.getParameter(2);
                 target_y = (Integer) event.getParameter(3);
-                experience = (Integer) event.getParameter(4);
-                onSummon(summoner_x, summoner_y, target_x, target_y, experience);
+                onSummon(summoner_x, summoner_y, target_x, target_y);
                 break;
             case GameEvent.HP_CHANGE:
-                ObjectMap<Point, Integer> change_map = (ObjectMap) event.getParameter(0);
+                ObjectMap change_map = (ObjectMap) event.getParameter(0);
                 onHpChange(change_map);
                 break;
             case GameEvent.TILE_DESTROY:
@@ -170,6 +168,17 @@ public class GameEventExecutor {
                 target_y = (Integer) event.getParameter(1);
                 onUnitDestroy(target_x, target_y);
                 break;
+            case GameEvent.GAIN_EXPERIENCE:
+                target_x = (Integer) event.getParameter(0);
+                target_y = (Integer) event.getParameter(1);
+                int experience = (Integer) event.getParameter(2);
+                onUnitGainExperience(target_x, target_y, experience);
+                break;
+            case GameEvent.ACTION_FINISH:
+                target_x = (Integer) event.getParameter(0);
+                target_y = (Integer) event.getParameter(1);
+                onUnitActionFinish(target_x, target_y);
+                break;
             default:
                 //do nothing
         }
@@ -178,7 +187,7 @@ public class GameEventExecutor {
         }
     }
 
-    private void onAttack(int attacker_x, int attacker_y, int target_x, int target_y, int damage, int experience) {
+    private void onAttack(int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, int counter_damage) {
         if (canAttack(attacker_x, attacker_y, target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -188,29 +197,15 @@ public class GameEventExecutor {
                 if (defender == null) {
                     getAnimationDispatcher().submitUnitAttackAnimation(attacker, target_x, target_y);
                 } else {
-                    defender.changeCurrentHp(-damage);
-                    UnitToolkit.attachAttackStatus(attacker, defender);
-                    getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, damage);
-                    if (defender.getCurrentHp() <= 0) {
-                        executeGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, defender.getX(), defender.getY()), false);
+                    if (attack_damage >= 0) {
+                        defender.changeCurrentHp(-attack_damage);
+                        UnitToolkit.attachAttackStatus(attacker, defender);
+                        getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, attack_damage);
                     }
-                }
-                boolean level_up = attacker.gainExperience(experience);
-                if (level_up) {
-                    getAnimationDispatcher().submitUnitLevelUpAnimation(attacker);
-                }
-
-                if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                    if (defender == null) {
-                        getGameManager().onUnitActionFinished(attacker);
-                    } else {
-                        if (attacker.getTeam() == getGame().getCurrentTeam() &&
-                                (!getUnitToolkit().canCounter(defender, attacker) || defender.getCurrentHp() <= 0)) {
-                            getGameManager().onUnitActionFinished(attacker);
-                        }
-                        if (attacker.getTeam() != getGame().getCurrentTeam()) {
-                            getGameManager().onUnitActionFinished(defender);
-                        }
+                    if (counter_damage >= 0) {
+                        attacker.changeCurrentHp(-counter_damage);
+                        UnitToolkit.attachAttackStatus(defender, attacker);
+                        getAnimationDispatcher().submitUnitAttackAnimation(defender, attacker, counter_damage);
                     }
                 }
             }
@@ -257,7 +252,7 @@ public class GameEventExecutor {
                 && getGame().getPlayer(team).getPopulation() < getGame().getRule().getMaxPopulation();
     }
 
-    private void onEndTurn() {
+    private void onNextTurn() {
         getGameManager().setState(GameManager.STATE_SELECT);
         getGame().nextTurn();
         int team = getGame().getCurrentTeam();
@@ -314,24 +309,13 @@ public class GameEventExecutor {
         submitBufferGameEvent(new GameEvent(GameEvent.HP_CHANGE, hp_change_map));
     }
 
-    private void onHeal(int healer_x, int healer_y, int target_x, int target_y, int heal, int experience) {
+    private void onHeal(int healer_x, int healer_y, int target_x, int target_y, int heal) {
         if (canHeal(healer_x, healer_y, target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
-            Unit healer = getGame().getMap().getUnit(healer_x, healer_y);
             Unit target = getGame().getMap().getUnit(target_x, target_y);
             target.changeCurrentHp(heal);
             getAnimationDispatcher().submitHpChangeAnimation(target, heal);
-            if (target.getCurrentHp() <= 0) {
-                executeGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y), false);
-            }
-            boolean level_up = healer.gainExperience(experience);
-            if (level_up) {
-                getAnimationDispatcher().submitUnitLevelUpAnimation(healer);
-            }
-            if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                getGameManager().onUnitActionFinished(healer);
-            }
         }
     }
 
@@ -354,7 +338,7 @@ public class GameEventExecutor {
             unit.setCurrentMovementPoint(movement_point);
             getAnimationDispatcher().submitUnitMoveAnimation(unit, move_path);
             if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                getGameManager().onUnitMoveFinished();
+                getGameManager().onUnitMoveFinish();
             }
         }
     }
@@ -372,11 +356,6 @@ public class GameEventExecutor {
             getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
             getGame().updateGameStatus();
-
-            if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                Unit unit = getGame().getMap().getUnit(target_x, target_y);
-                getGameManager().onUnitActionFinished(unit);
-            }
         }
     }
 
@@ -395,7 +374,7 @@ public class GameEventExecutor {
 
             if (getGame().getCurrentPlayer().isLocalPlayer()) {
                 Unit unit = getGame().getMap().getUnit(target_x, target_y);
-                getGameManager().onUnitActionFinished(unit);
+                getGameManager().onUnitActionFinish(unit);
             }
         }
     }
@@ -497,11 +476,6 @@ public class GameEventExecutor {
                     unit.attachStatus(new Status(Status.POISONED, 3));
                 }
             }
-            //validate hp change
-            if (unit.getCurrentHp() > unit.getMaxHp()) {
-                Point position = getGame().getMap().getPosition(unit.getX(), unit.getY());
-                hp_change_map.put(position, unit.getMaxHp() - unit.getCurrentHp());
-            }
             submitBufferGameEvent(new GameEvent(GameEvent.HP_CHANGE, hp_change_map));
         }
     }
@@ -511,7 +485,7 @@ public class GameEventExecutor {
         return target != null && !target.isStandby() && target.getCurrentHp() > 0;
     }
 
-    private void onSummon(int summoner_x, int summoner_y, int target_x, int target_y, int experience) {
+    private void onSummon(int summoner_x, int summoner_y, int target_x, int target_y) {
         if (canSummon(summoner_x, summoner_y, target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -519,14 +493,6 @@ public class GameEventExecutor {
             getGame().getMap().removeTomb(target_x, target_y);
             getGame().createUnit(UnitFactory.getSkeletonIndex(), summoner.getTeam(), target_x, target_y);
             getAnimationDispatcher().submitSummonAnimation(summoner, target_x, target_y);
-            boolean level_up = summoner.gainExperience(experience);
-            if (level_up) {
-                getAnimationDispatcher().submitUnitLevelUpAnimation(summoner);
-            }
-
-            if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                getGameManager().onUnitActionFinished(summoner);
-            }
         }
     }
 
@@ -566,6 +532,23 @@ public class GameEventExecutor {
 
     private boolean canDestroyUnit(int target_x, int target_y) {
         return getGame().getMap().getUnit(target_x, target_y) != null;
+    }
+
+    private void onUnitGainExperience(int target_x, int target_y, int experience) {
+        Unit unit = getGame().getMap().getUnit(target_x, target_y);
+        if (unit != null) {
+            boolean level_up = unit.gainExperience(experience);
+            if (level_up) {
+                getAnimationDispatcher().submitUnitLevelUpAnimation(unit);
+            }
+        }
+    }
+
+    private void onUnitActionFinish(int target_x, int target_y) {
+        if (getGame().getCurrentPlayer().isLocalPlayer()) {
+            Unit unit = getGame().getMap().getUnit(target_x, target_y);
+            getGameManager().onUnitActionFinish(unit);
+        }
     }
 
     private void onHpChange(ObjectMap<Point, Integer> change_map) {

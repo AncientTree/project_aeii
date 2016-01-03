@@ -19,7 +19,7 @@ import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.entity.GameSave;
 import com.toyknight.aeii.net.server.RoomConfiguration;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.GameFactory;
+import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
@@ -153,7 +153,7 @@ public class RoomCreateDialog extends BasicDialog {
             if (mode == LobbyScreen.LOAD_GAME) {
                 String filename = (String) object_list.getSelected();
                 FileHandle save_file = FileProvider.getSaveFile(filename);
-                GameSave save = GameFactory.loadGame(save_file);
+                GameSave save = GameToolkit.loadGame(save_file);
                 if (save == null) {
                     getContext().showMessage(Language.getText("MSG_ERR_BSF"), new Callable() {
                         @Override
@@ -208,7 +208,7 @@ public class RoomCreateDialog extends BasicDialog {
         if (mode == LobbyScreen.LOAD_GAME) {
             String filename = (String) object_list.getSelected();
             FileHandle save_file = FileProvider.getSaveFile(filename);
-            GameSave game_save = GameFactory.loadGame(save_file);
+            GameSave game_save = GameToolkit.loadGame(save_file);
             if (game_save == null) {
                 return null;
             } else {

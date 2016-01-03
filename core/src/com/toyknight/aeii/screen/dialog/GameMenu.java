@@ -9,7 +9,7 @@ import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.utils.GameFactory;
+import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 
@@ -117,7 +117,7 @@ public class GameMenu extends BasicDialog {
             @Override
             public Void doTask() throws AEIIException {
                 GameCore game = getOwner().getGame();
-                GameFactory.save(game);
+                GameToolkit.save(game);
                 return null;
             }
 

@@ -7,7 +7,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.GameFactory;
+import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Serializer;
 
 import java.util.LinkedList;
@@ -37,10 +37,10 @@ public class Recorder {
     public static void prepare(String V_STRING, GameCore game) {
         if (record_on) {
             try {
-                String filename = GameFactory.createFilename(GameFactory.RECORD);
+                String filename = GameToolkit.createFilename(GameToolkit.RECORD);
                 FileHandle record_file = FileProvider.getUserFile("save/" + filename);
                 output = new Output(record_file.write(false));
-                output.writeInt(GameFactory.RECORD);
+                output.writeInt(GameToolkit.RECORD);
 
                 record = new GameRecord(V_STRING);
                 record.setGame(new GameCore(game));

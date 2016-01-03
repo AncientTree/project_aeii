@@ -1,7 +1,6 @@
 package com.toyknight.aeii.utils;
 
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.rule.Rule;
 
 import java.util.*;
@@ -99,7 +98,8 @@ public class UnitToolkit {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
                 return getRange(counter, attacker) <= 2;
             } else {
-                return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH)) && getRange(counter, attacker) == 1;
+                return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH))
+                        && getRange(counter, attacker) == 1;
             }
         } else {
             return false;
@@ -182,9 +182,9 @@ public class UnitToolkit {
         return attack_bonus;
     }
 
-    public int getDamage(Unit attacker, Unit defender, Map map) {
-        int attacker_tile_index = map.getTileIndex(attacker.getX(), attacker.getY());
-        int defender_tile_index = map.getTileIndex(defender.getX(), defender.getY());
+    public int getDamage(Unit attacker, Unit defender) {
+        int attacker_tile_index = getGame().getMap().getTileIndex(attacker.getX(), attacker.getY());
+        int defender_tile_index = getGame().getMap().getTileIndex(defender.getX(), defender.getY());
 
         //calculate attack bonus
         int attack_bonus = getAttackBonus(attacker, defender, attacker_tile_index);
@@ -234,36 +234,6 @@ public class UnitToolkit {
         return unit.getCurrentHp() > 0
                 && unit.getCurrentMovementPoint() > 0
                 && unit.hasAbility(Ability.CHARGER);
-    }
-
-    public static Unit getAttacker(Unit attacker, Unit defender) {
-        if (getRange(attacker, defender) > 1) {
-            return attacker;
-        } else {
-            if (defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH) && isWithinRange(defender, attacker)) {
-                return defender;
-            } else {
-                return attacker;
-            }
-        }
-    }
-
-    public static Unit getDefender(Unit attacker, Unit defender) {
-        if (getRange(attacker, defender) > 1) {
-            return defender;
-        } else {
-            if (defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH) && isWithinRange(defender, attacker)) {
-                return attacker;
-            } else {
-                return defender;
-            }
-        }
-    }
-
-    public static boolean isAttackAmbushed(Unit attacker, Unit defender) {
-        return attacker != null && defender != null
-                && isWithinRange(defender, attacker) && getRange(attacker, defender) == 1
-                && defender.hasAbility(Ability.AMBUSH) && !attacker.hasAbility(Ability.AMBUSH);
     }
 
     public static int validateHpChange(Unit unit, int change) {
