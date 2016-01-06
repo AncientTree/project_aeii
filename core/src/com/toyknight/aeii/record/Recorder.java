@@ -31,6 +31,7 @@ public class Recorder {
     public static void setRecord(boolean on) {
         Recorder.record_on = on;
         event_queue.clear();
+        output = null;
         record = null;
     }
 

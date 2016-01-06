@@ -24,7 +24,7 @@ public class Map implements Serializable {
     protected final Point[][] position_map;
 
     public Map() {
-        this(new short[1][1], new boolean[1], null);
+        this(10, 10);
     }
 
     public Map(Map map) {
@@ -55,15 +55,14 @@ public class Map implements Serializable {
         }
     }
 
-    public Map(short[][] map_data, boolean[] team_access, String author) {
-        this.author = author;
-        this.team_access = team_access;
-        this.map_data = map_data;
-        this.unit_map = new ObjectMap<Point, Unit>();
-        this.tomb_list = new Array<Tomb>();
+    public Map(int width, int height) {
+        map_data = new short[width][height];
+        team_access = new boolean[4];
 
-        upper_unit_layer = new Unit[getWidth()][getHeight()];
-        position_map = new Point[getWidth()][getHeight()];
+        unit_map = new ObjectMap<Point, Unit>();
+        tomb_list = new Array<Tomb>();
+        upper_unit_layer = new Unit[width][height];
+        position_map = new Point[width][height];
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
                 position_map[x][y] = new Point(x, y);
@@ -79,8 +78,20 @@ public class Map implements Serializable {
         return author;
     }
 
-    public boolean isWithinMap(int x, int y) {
-        return 0 <= x && x < getWidth() && 0 <= y && y < getHeight();
+    public boolean hasTeamAccess(int team) {
+        return team_access[team];
+    }
+
+    public void setTeamAccess(int team, boolean access) {
+        team_access[team] = access;
+    }
+
+    public void setTeamAccess(boolean[] access_table) {
+        if (access_table.length == 4) {
+            for (int team = 0; team < 4; team++) {
+                setTeamAccess(team, access_table[team]);
+            }
+        }
     }
 
     public final int getWidth() {
@@ -89,6 +100,10 @@ public class Map implements Serializable {
 
     public final int getHeight() {
         return map_data[0].length;
+    }
+
+    public boolean isWithinMap(int x, int y) {
+        return 0 <= x && x < getWidth() && 0 <= y && y < getHeight();
     }
 
     public void setTile(short index, int x, int y) {
@@ -317,18 +332,6 @@ public class Map implements Serializable {
             }
         }
         return count;
-    }
-
-    public boolean[] getTeamAccessTable() {
-        return team_access;
-    }
-
-    public boolean hasTeamAccess(int team) {
-        return team_access[team];
-    }
-
-    public void setTeamAccess(int team, boolean access) {
-        team_access[team] = access;
     }
 
 }

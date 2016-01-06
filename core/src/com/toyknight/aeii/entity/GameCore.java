@@ -32,8 +32,10 @@ public class GameCore implements Serializable {
 
     protected Statistics statistics;
 
+    protected boolean initialized;
+
     public GameCore() {
-        this(null, null, SKIRMISH, new Player[2]);
+        this(new Map(), Rule.getDefaultRule(), 0, SKIRMISH);
     }
 
     public GameCore(GameCore game) {
@@ -54,55 +56,61 @@ public class GameCore implements Serializable {
         current_team = game.current_team;
         is_game_over = game.is_game_over;
         statistics = new Statistics(game.statistics);
+        initialized = game.initialized;
     }
 
-    public GameCore(Map map, Rule rule, int type, Player[] players) {
+    public GameCore(Map map, Rule rule, int gold, int type) {
         this.map = map;
         this.rule = rule;
         this.type = type;
         player_list = new Player[4];
         for (int team = 0; team < 4; team++) {
-            if (team < players.length) {
-                player_list[team] = players[team];
-            } else {
-                break;
-            }
+            player_list[team] = Player.createPlayer(Player.NONE, 0, 0, 0);
+            player_list[team].setGold(gold);
         }
         this.turn = 1;
         this.is_game_over = false;
         this.commanders = new Unit[4];
         this.statistics = new Statistics();
+        this.initialized = false;
     }
 
     public void initialize() {
-        ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
-        for (Point position : position_set) {
-            Unit unit = getMap().getUnit(position.x, position.y);
-            if (unit.isCommander()) {
-                commanders[unit.getTeam()] = unit;
+        if (!initialized) {
+            ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
+            for (Point position : position_set) {
+                Unit unit = getMap().getUnit(position.x, position.y);
+                if (unit.isCommander()) {
+                    commanders[unit.getTeam()] = unit;
+                }
             }
-        }
-        current_team = -1;
-        for (int team = 0; team < player_list.length; team++) {
-            if (player_list[team] == null || player_list[team].getType() == Player.NONE) {
-                if (getMap().hasTeamAccess(team)) {
-                    getMap().removeTeam(team);
+            current_team = -1;
+            for (int team = 0; team < 4; team++) {
+                if (player_list[team].getType() == Player.NONE) {
+                    if (getMap().hasTeamAccess(team)) {
+                        getMap().removeTeam(team);
+                    }
+                } else {
+                    if (current_team == -1) {
+                        current_team = team;
+                    }
+                    if (commanders[team] == null) {
+                        commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
+                    }
+                    statistics.addIncome(team, getPlayer(team).getGold());
+                    updatePopulation(team);
                 }
-            } else {
-                if (current_team == -1) {
-                    current_team = team;
-                }
-                if (commanders[team] == null) {
-                    commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
-                }
-                statistics.addIncome(team, getPlayer(team).getGold());
-                updatePopulation(team);
             }
+            initialized = true;
         }
     }
 
     public final Statistics getStatistics() {
         return statistics;
+    }
+
+    public final boolean isInitialized() {
+        return initialized;
     }
 
     public final Map getMap() {

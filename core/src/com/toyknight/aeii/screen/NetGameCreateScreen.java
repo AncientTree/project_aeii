@@ -410,9 +410,9 @@ public class NetGameCreateScreen extends StageScreen {
             }
         }
         if (configuration.is_game_save) {
-            getContext().gotoGameScreen(configuration.game, false);
+            getContext().gotoGameScreen(configuration.game);
         } else {
-            getContext().gotoGameScreen(configuration.game, true);
+            getContext().gotoGameScreen(configuration.game);
         }
     }
 

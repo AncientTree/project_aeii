@@ -70,4 +70,12 @@ public class Player implements Serializable {
         return getType() == LOCAL || getType() == ROBOT;
     }
 
+    public static Player createPlayer(int type, int alliance, int gold, int population) {
+        Player player = new Player();
+        player.setType(type);
+        player.setGold(gold);
+        player.setPopulation(population);
+        return player;
+    }
+
 }

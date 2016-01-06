@@ -23,8 +23,6 @@ public class Notification implements Serializable {
 
     public static final int MESSAGE = 0x7;
 
-    public static final int PLAYER_RECONNECTING = 0x8;
-
     private final int type;
 
     private Object[] params;

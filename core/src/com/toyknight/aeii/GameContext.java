@@ -187,9 +187,9 @@ public class GameContext extends Game {
         gotoScreen(map_editor_screen);
     }
 
-    public void gotoGameScreen(GameCore game, boolean initialize) {
+    public void gotoGameScreen(GameCore game) {
         //AudioManager.stopCurrentBGM();
-        if (initialize) {
+        if (!game.isInitialized()) {
             game.initialize();
         }
         game_screen.prepare(game);

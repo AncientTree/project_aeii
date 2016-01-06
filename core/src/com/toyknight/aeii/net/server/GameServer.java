@@ -172,9 +172,6 @@ public class GameServer {
             case Request.START_GAME:
                 doRespondStartGame(player, request);
                 break;
-            case Request.RECONNECT:
-                doRespondReconnect(player, request);
-                break;
             case Request.CREATE_ROOM_SAVED:
                 doRespondCreateRoomSaved(player, request);
                 break;
@@ -234,7 +231,8 @@ public class GameServer {
         if (player.isAuthenticated()) {
             Response response = new Response(request.getID());
             Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game");
-            room.setMap((Map) request.getParameter(1), (String) request.getParameter(0));
+            room.initialize((Map) request.getParameter(1));
+            room.setMapName((String) request.getParameter(0));
             room.setCapacity((Integer) request.getParameter(2));
             room.setInitialGold((Integer) request.getParameter(3));
             room.setMaxPopulation((Integer) request.getParameter(4));
@@ -298,26 +296,6 @@ public class GameServer {
             }
             notifyGameStart(room, player.getID());
             player.getConnection().sendTCP(response);
-        }
-    }
-
-    public void doRespondReconnect(PlayerService player, Request request) {
-        if (player.isAuthenticated()) {
-            Response response = new Response(request.getID());
-            long room_number = (Long) request.getParameter(0);
-            Integer[] teams = (Integer[]) request.getParameter(1);
-            Room room = getRoom(room_number);
-            if (isRoomAvailable(room) && room.areTeamsAvailable(teams)) {
-                room.addPlayer(player.getID(), teams);
-                player.setRoomNumber(room_number);
-                RoomConfiguration configuration = getRoomConfiguration(room);
-                response.setParameters(configuration);
-                player.getConnection().sendTCP(response);
-                notifyPlayerReconnect(room, player.getID(), player.getUsername(), teams);
-            } else {
-                response.setParameters((RoomConfiguration) null);
-                player.getConnection().sendTCP(response);
-            }
         }
     }
 
@@ -405,17 +383,6 @@ public class GameServer {
             if (player != null && leaver_id != player_id) {
                 Notification notification = new Notification(Notification.PLAYER_LEAVING);
                 notification.setParameters(leaver_id, username);
-                sendNotification(player, notification);
-            }
-        }
-    }
-
-    public void notifyPlayerReconnect(Room room, int reconnect_id, String username, Integer[] teams) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null && reconnect_id != player_id) {
-                Notification notification = new Notification(Notification.PLAYER_RECONNECTING);
-                notification.setParameters(reconnect_id, username, teams);
                 sendNotification(player, notification);
             }
         }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.net.server.EmptyAnimationManager;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -42,6 +43,10 @@ public class GameManager implements GameEventListener, AnimationManagerListener 
 
     private final int[] x_dir = {1, -1, 0, 0};
     private final int[] y_dir = {0, 0, 1, -1};
+
+    public GameManager() {
+        this(new EmptyAnimationManager());
+    }
 
     public GameManager(AnimationDispatcher dispatcher) {
         this.animation_dispatcher = dispatcher;

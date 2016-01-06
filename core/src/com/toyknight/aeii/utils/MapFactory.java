@@ -11,6 +11,7 @@ import com.toyknight.aeii.entity.Unit;
 
 import java.io.*;
 import java.util.Scanner;
+
 /**
  * @author toyknight 4/3/2015.
  */
@@ -33,13 +34,15 @@ public class MapFactory {
             }
             int width = dis.readInt();
             int height = dis.readInt();
-            short[][] map_data = new short[width][height];
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    map_data[i][j] = dis.readShort();
+            Map map = new Map(width, height);
+            map.setTeamAccess(team_access);
+            map.setAuthor(author_name);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    short tile_index = dis.readShort();
+                    map.setTile(tile_index, x, y);
                 }
             }
-            Map map = new Map(map_data, team_access, author_name);
             int unit_count = dis.readInt();
             for (int i = 0; i < unit_count; i++) {
                 int team = dis.readInt();
@@ -61,8 +64,8 @@ public class MapFactory {
     public static void writeMap(Map map, FileHandle map_file) throws IOException {
         DataOutputStream fos = new DataOutputStream(map_file.write(false));
         fos.writeUTF(map.getAuthor());
-        for (boolean b : map.getTeamAccessTable()) {
-            fos.writeBoolean(b);
+        for (int team = 0; team < 4; team++) {
+            fos.writeBoolean(map.hasTeamAccess(team));
         }
         fos.writeInt(map.getWidth());
         fos.writeInt(map.getHeight());

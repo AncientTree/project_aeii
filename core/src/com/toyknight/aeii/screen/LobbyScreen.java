@@ -217,7 +217,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                                 }
                             }
                             getContext().setRoomConfiguration(configuration);
-                            getContext().gotoGameScreen(game, false);
+                            getContext().gotoGameScreen(game);
                         } else {
                             getContext().gotoNetGameCreateScreen(configuration);
                         }

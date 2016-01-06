@@ -32,8 +32,6 @@ import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
 
-import java.io.IOException;
-
 /**
  * @author toyknight 4/4/2015.
  */
@@ -299,43 +297,20 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         }
     }
 
-    private void tryReconnect() {
-        Gdx.input.setInputProcessor(null);
-        appendMessage(null, Language.getText("LB_RECONNECTING"));
-        getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
+    private void trySaveGameRecord() {
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
-            public RoomConfiguration doTask() throws IOException {
-                RoomConfiguration configuration = getContext().getRoomConfiguration();
-                Array<Integer> team_access = new Array<Integer>();
-                for (int team = 0; team < 4; team++) {
-                    Player player = getGame().getPlayer(team);
-                    if (player != null && player.getType() == Player.LOCAL) {
-                        team_access.add(team);
-                    }
-                }
-                return getContext().getNetworkManager().requestReconnect(configuration.room_number, team_access.toArray());
+            public Void doTask() {
+                Recorder.saveRecord();
+                return null;
             }
 
             @Override
-            public void onFinish(RoomConfiguration configuration) {
-                if (configuration == null) {
-                    getContext().gotoMainMenuScreen();
-                    getContext().getNetworkManager().disconnect();
-                    getContext().showMessage(Language.getText("MSG_ERR_CNRTS"), null);
-                } else {
-                    Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(configuration.players);
-                    message_box.setPlayers(players, configuration.team_allocation);
-                    getManager().setGame(configuration.game);
-                    appendMessage(null, Language.getText("LB_RECONNECTED"));
-                    Gdx.input.setInputProcessor(GameScreen.this);
-                }
+            public void onFinish(Void result) {
             }
 
             @Override
             public void onFail(String message) {
-                getContext().gotoMainMenuScreen();
-                getContext().getNetworkManager().disconnect();
-                getContext().showMessage(Language.getText("MSG_ERR_CNRTS"), null);
             }
         });
     }
@@ -345,7 +320,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
-                tryReconnect();
+                trySaveGameRecord();
+                getContext().gotoStatisticsScreen(getGame());
             }
         });
     }
@@ -756,21 +732,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onGameOver() {
-        getContext().submitAsyncTask(new AsyncTask<Void>() {
-            @Override
-            public Void doTask() {
-                Recorder.saveRecord();
-                return null;
-            }
-
-            @Override
-            public void onFinish(Void result) {
-            }
-
-            @Override
-            public void onFail(String message) {
-            }
-        });
+        trySaveGameRecord();
         getContext().gotoStatisticsScreen(getGame());
     }
 

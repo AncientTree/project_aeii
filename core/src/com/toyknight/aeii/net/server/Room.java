@@ -38,15 +38,8 @@ public class Room {
 
     public Room(long room_number, String room_name, GameCore game) {
         this(room_number, room_name);
-        manager = new GameManager(new EmptyAnimationManager());
+        manager = new GameManager();
         manager.setGame(game);
-        for (int team = 0; team < 4; team++) {
-            if (getGame().getPlayer(team) == null) {
-                Player player = new Player();
-                player.setType(Player.NONE);
-                getGame().setPlayer(team, player);
-            }
-        }
         initial_gold = -1;
         is_game_save = true;
     }
@@ -57,27 +50,19 @@ public class Room {
         this.game_started = false;
         this.players = new ObjectSet<Integer>();
         this.team_allocation = new Integer[4];
-        initialize();
-    }
-
-    public void initialize() {
-        host_player_id = -1;
         Arrays.fill(team_allocation, -1);
+        host_player_id = -1;
         game_started = false;
     }
 
-    public void setMap(Map map, String map_name) {
+    public void initialize(Map map) {
         synchronized (PLAYER_LOCK) {
-            setMapName(map_name);
-            Player[] players = new Player[4];
-            for (int team = 0; team < 4; team++) {
-                players[team] = new Player();
-                players[team].setType(Player.NONE);
-                players[team].setAlliance(team + 1);
-            }
             Rule rule = Rule.getDefaultRule();
-            GameCore game = new GameCore(map, rule, GameCore.SKIRMISH, players);
-            manager = new GameManager(new EmptyAnimationManager());
+            GameCore game = new GameCore(map, rule, 0, GameCore.SKIRMISH);
+            for (int team = 0; team < 4; team++) {
+                game.getPlayer(team).setAlliance(team + 1);
+            }
+            manager = new GameManager();
             manager.setGame(game);
         }
     }
@@ -100,15 +85,6 @@ public class Room {
         return getGame().getMap();
     }
 
-    public boolean areTeamsAvailable(Integer[] teams) {
-        for (Integer team : teams) {
-            if (team_allocation[team] != -1 || !getGame().getMap().hasTeamAccess(team)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public ObjectSet<Integer> getPlayers() {
         synchronized (PLAYER_LOCK) {
             return new ObjectSet<Integer>(players);
@@ -121,21 +97,12 @@ public class Room {
         }
     }
 
-    public void addPlayer(int id, Integer[] teams) {
-        synchronized (PLAYER_LOCK) {
-            players.add(id);
-            for (Integer team : teams) {
-                team_allocation[team] = id;
-            }
-        }
-    }
-
     public void removePlayer(int id) {
         synchronized (PLAYER_LOCK) {
             players.remove(id);
             if (isOpen()) {
                 for (int team = 0; team < 4; team++) {
-                    if (team_allocation[team] == id && getGame().getPlayer(team) != null) {
+                    if (team_allocation[team] == id) {
                         getGame().getPlayer(team).setType(Player.NONE);
                     }
                     team_allocation[team] = -1;
@@ -220,13 +187,11 @@ public class Room {
 
     public void setInitialGold(int gold) {
         synchronized (GAME_LOCK) {
+            this.initial_gold = gold;
             for (int team = 0; team < 4; team++) {
                 Player player = getGame().getPlayer(team);
-                if (player != null) {
-                    player.setGold(gold);
-                }
+                player.setGold(gold);
             }
-            this.initial_gold = gold;
         }
     }
 
@@ -273,7 +238,7 @@ public class Room {
         }
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
-            if (player != null && player.getType() != Player.NONE) {
+            if (player.getType() != Player.NONE) {
                 player.setType(Player.REMOTE);
             }
         }

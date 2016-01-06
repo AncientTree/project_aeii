@@ -112,9 +112,9 @@ public class MapEditor {
     }
 
     public Map createEmptyMap(int width, int height) {
-        short[][] map_data = new short[width][height];
-        boolean[] team_access = new boolean[4];
-        return new Map(map_data, team_access, "default");
+        Map map = new Map(width, height);
+        map.setAuthor("default");
+        return map;
     }
 
     public void saveMap(String filename, String author) {

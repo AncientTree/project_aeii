@@ -46,11 +46,7 @@ public class StatisticsScreen extends StageScreen {
         btn_leave.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getContext().getNetworkManager().isConnected()) {
-                    tryLeaveGame();
-                } else {
-                    getContext().gotoMainMenuScreen();
-                }
+                tryLeaveGame();
             }
         });
         addActor(btn_leave);
@@ -102,26 +98,30 @@ public class StatisticsScreen extends StageScreen {
     }
 
     private void tryLeaveGame() {
-        Gdx.input.setInputProcessor(null);
-        btn_leave.setText(Language.getText("LB_LEAVING"));
-        getContext().submitAsyncTask(new AsyncTask<Void>() {
-            @Override
-            public Void doTask() throws Exception {
-                getContext().getNetworkManager().notifyLeaveRoom();
-                return null;
-            }
+        if (getContext().getNetworkManager().isConnected()) {
+            Gdx.input.setInputProcessor(null);
+            btn_leave.setText(Language.getText("LB_LEAVING"));
+            getContext().submitAsyncTask(new AsyncTask<Void>() {
+                @Override
+                public Void doTask() throws Exception {
+                    getContext().getNetworkManager().notifyLeaveRoom();
+                    return null;
+                }
 
-            @Override
-            public void onFinish(Void result) {
-                btn_leave.setText(Language.getText("LB_LEAVE"));
-                getContext().gotoLobbyScreen();
-            }
+                @Override
+                public void onFinish(Void result) {
+                    btn_leave.setText(Language.getText("LB_LEAVE"));
+                    getContext().gotoLobbyScreen();
+                }
 
-            @Override
-            public void onFail(String message) {
-                getContext().showMessage(message, null);
-            }
-        });
+                @Override
+                public void onFail(String message) {
+                    getContext().showMessage(message, null);
+                }
+            });
+        } else {
+            getContext().gotoMainMenuScreen();
+        }
     }
 
     public void setGame(GameCore game) {
