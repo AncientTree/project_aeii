@@ -291,10 +291,10 @@ public class GameServer {
             if (isRoomOpen(room) && room.isReady() && room.getHostPlayer() == player.getID()) {
                 room.startGame();
                 response.setParameters(true);
+                notifyGameStart(room, player.getID());
             } else {
                 response.setParameters(false);
             }
-            notifyGameStart(room, player.getID());
             player.getConnection().sendTCP(response);
         }
     }
