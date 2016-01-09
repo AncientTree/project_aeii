@@ -1,4 +1,4 @@
-package com.toyknight.aeii.animator;
+package com.toyknight.aeii.animation;
 
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.screen.MapCanvas;

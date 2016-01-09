@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
-import com.toyknight.aeii.animator.Animator;
+import com.toyknight.aeii.animation.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.net.NetworkManager;

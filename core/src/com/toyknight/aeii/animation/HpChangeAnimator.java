@@ -1,4 +1,4 @@
-package com.toyknight.aeii.animator;
+package com.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -6,9 +6,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
-
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * @author toyknight 5/26/2015.

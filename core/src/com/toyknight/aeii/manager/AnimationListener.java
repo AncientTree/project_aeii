@@ -3,7 +3,7 @@ package com.toyknight.aeii.manager;
 /**
  * @author toyknight 11/1/2015.
  */
-public interface AnimationManagerListener {
+public interface AnimationListener {
 
     void onAnimationFinished();
 

@@ -3,7 +3,7 @@ package com.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.animator.*;
+import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 
@@ -12,7 +12,7 @@ import com.toyknight.aeii.entity.Unit;
  */
 public interface AnimationDispatcher {
 
-    void setListener(AnimationManagerListener listener);
+    void setListener(AnimationListener listener);
 
     void submitHpChangeAnimation(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units);
 

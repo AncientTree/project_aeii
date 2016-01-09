@@ -1,11 +1,12 @@
-package com.toyknight.aeii.manager;
+package com.toyknight.aeii.animation;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.animator.*;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.manager.AnimationDispatcher;
+import com.toyknight.aeii.manager.AnimationListener;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,7 +16,7 @@ import java.util.Queue;
  */
 public class AnimationManager implements AnimationDispatcher {
 
-    private AnimationManagerListener listener;
+    private AnimationListener listener;
 
     private final Queue<Animator> animation_queue;
     private Animator current_animation = null;
@@ -25,7 +26,7 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
-    public void setListener(AnimationManagerListener listener) {
+    public void setListener(AnimationListener listener) {
         this.listener = listener;
     }
 

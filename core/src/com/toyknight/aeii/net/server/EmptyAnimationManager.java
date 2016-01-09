@@ -3,11 +3,11 @@ package com.toyknight.aeii.net.server;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.animator.Animator;
+import com.toyknight.aeii.animation.Animator;
 import com.toyknight.aeii.entity.Point;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.manager.AnimationDispatcher;
-import com.toyknight.aeii.manager.AnimationManagerListener;
+import com.toyknight.aeii.manager.AnimationListener;
 
 /**
  * @author toyknight 11/2/2015.
@@ -15,7 +15,7 @@ import com.toyknight.aeii.manager.AnimationManagerListener;
 public class EmptyAnimationManager implements AnimationDispatcher {
 
     @Override
-    public void setListener(AnimationManagerListener listener) {
+    public void setListener(AnimationListener listener) {
     }
 
     @Override

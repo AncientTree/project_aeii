@@ -1,4 +1,4 @@
-package com.toyknight.aeii.animator;
+package com.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;

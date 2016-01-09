@@ -3,7 +3,7 @@ package com.toyknight.aeii.screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.animator.*;
+import com.toyknight.aeii.animation.*;
 
 import java.util.LinkedList;
 import java.util.Queue;

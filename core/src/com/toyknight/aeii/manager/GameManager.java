@@ -2,7 +2,7 @@ package com.toyknight.aeii.manager;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.animator.*;
+import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.net.server.EmptyAnimationManager;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * @author toyknight  5/28/2015.
  */
-public class GameManager implements GameEventListener, AnimationManagerListener {
+public class GameManager implements GameEventListener, AnimationListener {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;

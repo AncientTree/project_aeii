@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.animator.MapAnimator;
+import com.toyknight.aeii.animation.MapAnimator;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.MapEditor;
 import com.toyknight.aeii.manager.MapEditorListener;

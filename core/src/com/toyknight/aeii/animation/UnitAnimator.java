@@ -1,4 +1,4 @@
-package com.toyknight.aeii.animator;
+package com.toyknight.aeii.animation;
 
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.utils.UnitFactory;
