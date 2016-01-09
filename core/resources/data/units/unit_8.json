@@ -1,7 +1,7 @@
 {
 "price": 1000,
 "max_hp": 100,
-"attack": 65,
+"attack": 70,
 "attack_type": 1,
 "physical_defence": 25,
 "magic_defence": 25,
