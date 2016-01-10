@@ -117,7 +117,7 @@ public class GameServer {
         configuration.is_game_save = room.isSavedGame();
         configuration.host = room.getHostPlayer();
         configuration.team_allocation = room.getTeamAllocation();
-        configuration.initial_gold = room.getInitialGold();
+        configuration.initial_gold = room.getStartGold();
         configuration.max_population = room.getMaxPopulation();
         ObjectSet<Integer> players = room.getPlayers();
         configuration.players = new Array<PlayerSnapshot>();
@@ -234,7 +234,7 @@ public class GameServer {
             room.initialize((Map) request.getParameter(1));
             room.setMapName((String) request.getParameter(0));
             room.setCapacity((Integer) request.getParameter(2));
-            room.setInitialGold((Integer) request.getParameter(3));
+            room.setStartGold((Integer) request.getParameter(3));
             room.setMaxPopulation((Integer) request.getParameter(4));
             room.setHostPlayer(player.getID());
             room.addPlayer(player.getID());

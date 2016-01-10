@@ -1,6 +1,7 @@
 package com.toyknight.aeii.rule;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.io.Serializable;
@@ -16,141 +17,96 @@ public class Rule implements Serializable {
     public static int HEALER_BASE_HEAL = 40;
     public static int REFRESH_BASE_HEAL = 10;
 
-    private int castle_income;
-    private int village_income;
-    private int commander_income;
+    private final ObjectMap<Integer, Object> values;
 
-    private int kill_exp;
-    private int attack_exp;
-    private int counter_exp;
-
-    private int commander_price_growth;
-
-    private int max_population;
-
-    private boolean need_enemy_clear;
-    private boolean need_castle_clear;
-
-    private Array<Integer> available_unit_list = new Array<Integer>();
+    private final Array<Integer> available_units;
 
     public Rule() {
+        values = new ObjectMap<Integer, Object>();
+        available_units = new Array<Integer>();
     }
 
     public Rule(Rule rule) {
-        setCastleIncome(rule.getCastleIncome());
-        setVillageIncome(rule.getVillageIncome());
-        setCommanderIncome(rule.getCommanderIncome());
-        setKillExperience(rule.getKillExperience());
-        setAttackExperience(rule.getAttackExperience());
-        setCounterExperience(rule.getCounterExperience());
-        setCommanderPriceGrowth(rule.getCommanderPriceGrowth());
-        setMaxPopulation(rule.getMaxPopulation());
-        setEnemyClearNeeded(rule.isEnemyClearNeeded());
-        setCastleClearNeeded(rule.isCastleClearNeeded());
-        setAvailableUnits(new Array<Integer>(rule.getAvailableUnitList()));
+        values = new ObjectMap<Integer, Object>(rule.getValues());
+        available_units = new Array<Integer>(rule.getAvailableUnits());
     }
 
-    public void setCastleIncome(int income) {
-        this.castle_income = income;
+    protected ObjectMap<Integer, Object> getValues() {
+        return values;
     }
 
-    public int getCastleIncome() {
-        return castle_income;
+    public Array<Integer> getAvailableUnits() {
+        return available_units;
     }
 
-    public void setVillageIncome(int income) {
-        this.village_income = income;
+    public void setValue(Integer entry, Object value) {
+        values.put(entry, value);
     }
 
-    public int getVillageIncome() {
-        return village_income;
+    public int getInteger(Integer entry) {
+        return getInteger(entry, 0);
     }
 
-    public void setCommanderIncome(int income) {
-        this.commander_income = income;
+    public int getInteger(Integer entry, int default_value) {
+        Object value = values.get(entry, null);
+        if (value instanceof Integer) {
+            return (Integer) value;
+        } else {
+            return default_value;
+        }
     }
 
-    public int getCommanderIncome() {
-        return commander_income;
+    public boolean getBoolean(Integer entry) {
+        return getBoolean(entry, false);
     }
 
-    public void setKillExperience(int exp) {
-        this.kill_exp = exp;
+    public boolean getBoolean(Integer entry, boolean default_value) {
+        Object value = values.get(entry, null);
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        } else {
+            return default_value;
+        }
     }
 
-    public int getKillExperience() {
-        return kill_exp;
+    public String getString(Integer entry) {
+        return getString(entry, null);
     }
 
-    public void setAttackExperience(int exp) {
-        this.attack_exp = exp;
-    }
-
-    public int getAttackExperience() {
-        return attack_exp;
-    }
-
-    public void setCounterExperience(int exp) {
-        this.counter_exp = exp;
-    }
-
-    public int getCounterExperience() {
-        return counter_exp;
-    }
-
-    public void setCommanderPriceGrowth(int growth) {
-        this.commander_price_growth = growth;
-    }
-
-    public int getCommanderPriceGrowth() {
-        return commander_price_growth;
-    }
-
-    public void setMaxPopulation(int population) {
-        this.max_population = population;
-    }
-
-    public int getMaxPopulation() {
-        return max_population;
-    }
-
-    public void setEnemyClearNeeded(boolean b) {
-        this.need_enemy_clear = b;
-    }
-
-    public boolean isEnemyClearNeeded() {
-        return need_enemy_clear;
-    }
-
-    public void setCastleClearNeeded(boolean b) {
-        this.need_castle_clear = b;
-    }
-
-    public boolean isCastleClearNeeded() {
-        return need_castle_clear;
+    public String getString(Integer entry, String default_value) {
+        Object value = values.get(entry, null);
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            return default_value;
+        }
     }
 
     public void setAvailableUnits(Array<Integer> list) {
-        available_unit_list = list;
+        available_units.clear();
+        available_units.addAll(list);
     }
 
-    public Array<Integer> getAvailableUnitList() {
-        return available_unit_list;
-    }
-
-    public static Rule getDefaultRule() {
+    public static Rule createDefault() {
         Rule rule = new Rule();
-        rule.setCastleIncome(100);
-        rule.setVillageIncome(50);
-        rule.setCommanderIncome(50);
-        rule.setKillExperience(60);
-        rule.setAttackExperience(30);
-        rule.setCounterExperience(10);
-        rule.setCommanderPriceGrowth(100);
-        rule.setMaxPopulation(20);
-        rule.setEnemyClearNeeded(true);
-        rule.setCastleClearNeeded(true);
 
+        rule.setValue(Entry.CASTLE_INCOME, 100);
+        rule.setValue(Entry.VILLAGE_INCOME, 50);
+        rule.setValue(Entry.COMMANDER_INCOME, 50);
+        rule.setValue(Entry.KILL_EXPERIENCE, 60);
+        rule.setValue(Entry.ATTACK_EXPERIENCE, 30);
+        rule.setValue(Entry.COUNTER_EXPERIENCE, 10);
+        rule.setValue(Entry.COMMANDER_PRICE_STEP, 100);
+        rule.setValue(Entry.MAX_POPULATION, 20);
+        rule.setValue(Entry.ENEMY_CLEAR, true);
+        rule.setValue(Entry.CASTLE_CLEAR, true);
+
+        rule.setAvailableUnits(getDefaultUnits());
+
+        return rule;
+    }
+
+    private static Array<Integer> getDefaultUnits() {
         int commander = UnitFactory.getCommanderIndex();
         int skeleton = UnitFactory.getSkeletonIndex();
         int crystal = UnitFactory.getCrystalIndex();
@@ -160,20 +116,32 @@ public class Rule implements Serializable {
                 unit_list.add(index);
             }
         }
-        sortUnitList(unit_list).add(commander);
-        rule.setAvailableUnits(unit_list);
-        return rule;
-    }
-
-    private static Array<Integer> sortUnitList(Array<Integer> list) {
-        for (int i = list.size - 1; i > 0; i--) {
+        //sort unit list
+        for (int i = unit_list.size - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
-                if (UnitFactory.getSample(list.get(j)).getPrice() > UnitFactory.getSample(list.get(j + 1)).getPrice()) {
-                    list.swap(j, j + 1);
+                if (UnitFactory.getSample(unit_list.get(j)).getPrice() >
+                        UnitFactory.getSample(unit_list.get(j + 1)).getPrice()) {
+                    unit_list.swap(j, j + 1);
                 }
             }
         }
-        return list;
+        unit_list.add(commander);
+        return unit_list;
+    }
+
+    public class Entry {
+
+        public static final int CASTLE_INCOME = 0x1;
+        public static final int VILLAGE_INCOME = 0x2;
+        public static final int COMMANDER_INCOME = 0x3;
+        public static final int KILL_EXPERIENCE = 0x4;
+        public static final int ATTACK_EXPERIENCE = 0x5;
+        public static final int COUNTER_EXPERIENCE = 0x6;
+        public static final int COMMANDER_PRICE_STEP = 0x7;
+        public static final int MAX_POPULATION = 0x8;
+        public static final int ENEMY_CLEAR = 0x9;
+        public static final int CASTLE_CLEAR = 0x10;
+
     }
 
 }

@@ -1,5 +1,7 @@
 package com.toyknight.aeii.entity;
 
+import static com.toyknight.aeii.rule.Rule.Entry.*;
+
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -28,14 +30,14 @@ public class GameCore implements Serializable {
 
     protected int current_team;
 
-    protected boolean is_game_over;
+    protected boolean game_over;
 
     protected Statistics statistics;
 
     protected boolean initialized;
 
     public GameCore() {
-        this(new Map(), Rule.getDefaultRule(), 0, SKIRMISH);
+        this(new Map(), Rule.createDefault(), 0, SKIRMISH);
     }
 
     public GameCore(GameCore game) {
@@ -54,22 +56,22 @@ public class GameCore implements Serializable {
         }
         turn = game.turn;
         current_team = game.current_team;
-        is_game_over = game.is_game_over;
+        game_over = game.game_over;
         statistics = new Statistics(game.statistics);
         initialized = game.initialized;
     }
 
-    public GameCore(Map map, Rule rule, int gold, int type) {
+    public GameCore(Map map, Rule rule, int start_gold, int type) {
         this.map = map;
         this.rule = rule;
         this.type = type;
         player_list = new Player[4];
         for (int team = 0; team < 4; team++) {
             player_list[team] = Player.createPlayer(Player.NONE, 0, 0, 0);
-            player_list[team].setGold(gold);
+            player_list[team].setGold(start_gold);
         }
         this.turn = 1;
-        this.is_game_over = false;
+        this.game_over = false;
         this.commanders = new Unit[4];
         this.statistics = new Statistics();
         this.initialized = false;
@@ -129,10 +131,6 @@ public class GameCore implements Serializable {
         return getPlayer(team) != null && getPlayer(team).getType() != Player.NONE;
     }
 
-    public void setPlayer(int team, Player player) {
-        player_list[team] = player;
-    }
-
     public void removePlayer(int team) {
         player_list[team].setType(Player.NONE);
     }
@@ -153,6 +151,11 @@ public class GameCore implements Serializable {
         return turn;
     }
 
+    public void removeTeam(int team) {
+        getMap().removeTeam(team);
+        getPlayer(team).setType(Player.NONE);
+    }
+
     public void destroyUnit(int target_x, int target_y) {
         Unit target = getMap().getUnit(target_x, target_y);
         if (target != null) {
@@ -166,8 +169,9 @@ public class GameCore implements Serializable {
                 getMap().addTomb(target.getX(), target.getY());
             }
             if (target.isCommander()) {
-                int price = getCommander(target.getTeam()).getPrice();
-                getCommander(target.getTeam()).setPrice(price + getRule().getCommanderPriceGrowth());
+                Unit commander = getCommander(target.getTeam());
+                int price = commander.getPrice();
+                commander.setPrice(price + getRule().getInteger(COMMANDER_PRICE_STEP));
             }
         }
     }
@@ -254,16 +258,16 @@ public class GameCore implements Serializable {
                 Tile tile = getMap().getTile(x, y);
                 if (tile.getTeam() == team) {
                     if (tile.isVillage()) {
-                        income += getRule().getVillageIncome();
+                        income += getRule().getInteger(VILLAGE_INCOME);
                     }
                     if (tile.isCastle()) {
-                        income += getRule().getCastleIncome();
+                        income += getRule().getInteger(CASTLE_INCOME);
                     }
                 }
             }
         }
         if (isCommanderAlive(team)) {
-            income += getRule().getCommanderIncome() * (getCommander(team).getLevel() + 1);
+            income += getRule().getInteger(COMMANDER_INCOME) * (getCommander(team).getLevel() + 1);
         }
         return income;
     }
@@ -411,53 +415,11 @@ public class GameCore implements Serializable {
     }
 
     public boolean isGameOver() {
-        return is_game_over;
+        return game_over;
     }
 
-    public void updateGameStatus() {
-        //default rule temporarily
-        //get population
-        int[] population = new int[4];
-        for (int team = 0; team < 4; team++) {
-            Player player = getPlayer(team);
-            if (player != null) {
-                population[team] = getMap().getUnitCount(team, true);
-            }
-        }
-
-        //get castle count
-        int[] castle_count = new int[4];
-        for (int team = 0; team < 4; team++) {
-            castle_count[team] = getMap().getCastleCount(team);
-        }
-
-        //remove failed player
-        for (int team = 0; team < 4; team++) {
-            if (population[team] == 0 && castle_count[team] == 0
-                    && getPlayer(team) != null && getPlayer(team).getType() != Player.NONE) {
-                removePlayer(team);
-            }
-        }
-
-        //check winning status
-        int alliance = -1;
-        boolean winning_flag = true;
-        for (int team = 0; team < 4; team++) {
-            Player player = getPlayer(team);
-            if (player != null && player.getType() != Player.NONE) {
-                if (alliance == -1) {
-                    alliance = player.getAlliance();
-                } else {
-                    winning_flag = player.getAlliance() == alliance;
-                    if (!winning_flag) {
-                        break;
-                    }
-                }
-            }
-        }
-        if (winning_flag) {
-            is_game_over = true;
-        }
+    public void setGameOver(boolean game_over) {
+        this.game_over = game_over;
     }
 
     public Point getTeamFocus(int team) {
@@ -504,7 +466,7 @@ public class GameCore implements Serializable {
                 current_team = 0;
                 getMap().updateTombs();
             }
-        } while (getCurrentPlayer() == null || getCurrentPlayer().getType() == Player.NONE);
+        } while (getCurrentPlayer().getType() == Player.NONE);
         turn++;
     }
 

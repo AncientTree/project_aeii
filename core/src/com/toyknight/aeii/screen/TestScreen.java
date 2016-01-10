@@ -95,10 +95,12 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
     private void tryStartGame() {
         if (map != null) {
             Recorder.setRecord(false);
-            GameCore game = new GameCore(map, Rule.getDefaultRule(), 2000, GameCore.SKIRMISH);
+            GameCore game = new GameCore(map, Rule.createDefault(), 2000, GameCore.SKIRMISH);
             for (int team = 0; team < 4; team++) {
-                game.getPlayer(team).setType(Player.LOCAL);
-                game.getPlayer(team).setAlliance(team);
+                if (game.getMap().hasTeamAccess(team)) {
+                    game.getPlayer(team).setType(Player.LOCAL);
+                    game.getPlayer(team).setAlliance(team);
+                }
             }
             getContext().gotoGameScreen(game);
         }

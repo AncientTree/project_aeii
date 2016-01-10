@@ -1,5 +1,7 @@
 package com.toyknight.aeii.net.server;
 
+import static com.toyknight.aeii.rule.Rule.Entry.*;
+
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
@@ -34,13 +36,13 @@ public class Room {
     private GameManager manager;
 
     private String map_name;
-    private int initial_gold = 1000;
+    private int start_gold = 1000;
 
     public Room(long room_number, String room_name, GameCore game) {
         this(room_number, room_name);
         manager = new GameManager();
         manager.setGame(game);
-        initial_gold = -1;
+        start_gold = -1;
         is_game_save = true;
     }
 
@@ -57,7 +59,7 @@ public class Room {
 
     public void initialize(Map map) {
         synchronized (PLAYER_LOCK) {
-            Rule rule = Rule.getDefaultRule();
+            Rule rule = Rule.createDefault();
             GameCore game = new GameCore(map, rule, 0, GameCore.SKIRMISH);
             for (int team = 0; team < 4; team++) {
                 game.getPlayer(team).setAlliance(team + 1);
@@ -133,7 +135,7 @@ public class Room {
     public void setPlayerType(int team, int type) {
         synchronized (GAME_LOCK) {
             Player player = getGame().getPlayer(team);
-            if (player != null) {
+            if (getGame().getMap().hasTeamAccess(team)) {
                 player.setType(type);
             }
         }
@@ -185,9 +187,9 @@ public class Room {
         return map_name;
     }
 
-    public void setInitialGold(int gold) {
+    public void setStartGold(int gold) {
         synchronized (GAME_LOCK) {
-            this.initial_gold = gold;
+            this.start_gold = gold;
             for (int team = 0; team < 4; team++) {
                 Player player = getGame().getPlayer(team);
                 player.setGold(gold);
@@ -195,18 +197,20 @@ public class Room {
         }
     }
 
-    public int getInitialGold() {
-        return initial_gold;
+    public int getStartGold() {
+        return start_gold;
     }
 
     public void setMaxPopulation(int population) {
         synchronized (GAME_LOCK) {
-            getGame().getRule().setMaxPopulation(population);
+            getGame().getRule().setValue(MAX_POPULATION, population);
         }
     }
 
     public int getMaxPopulation() {
-        return getGame().getRule().getMaxPopulation();
+        synchronized (GAME_LOCK) {
+            return getGame().getRule().getInteger(MAX_POPULATION);
+        }
     }
 
     public boolean isReady() {

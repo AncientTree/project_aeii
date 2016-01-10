@@ -1,5 +1,7 @@
 package com.toyknight.aeii.screen.dialog;
 
+import static com.toyknight.aeii.rule.Rule.Entry.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -102,7 +104,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         this.castle_y = getOwner().getCursorMapY();
         this.unit_list.setGame(getGame());
         GameManager manager = getManager();
-        Array<Integer> available_units = manager.getGame().getRule().getAvailableUnitList();
+        Array<Integer> available_units = manager.getGame().getRule().getAvailableUnits();
         unit_list.setAvailableUnits(available_units);
     }
 
@@ -134,7 +136,8 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         return unit_price >= 0
                 && getGame().getCurrentPlayer().getGold() >= unit_price
                 && getManager().createMovablePositions(sample_unit).size > 0
-                && (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getMaxPopulation() || sample_unit.isCommander());
+                && (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getInteger(MAX_POPULATION)
+                || sample_unit.isCommander());
     }
 
     @Override

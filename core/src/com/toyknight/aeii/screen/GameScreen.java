@@ -116,7 +116,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.btn_end_turn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getManager().doEndTurn();
+                getManager().doNextTurn();
                 onScreenUpdateRequested();
             }
         });
@@ -723,10 +723,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onScreenUpdateRequested() {
-        int state = getManager().getState();
         this.action_button_bar.updateButtons();
-        GameContext.setButtonEnabled(btn_end_turn,
-                canOperate() && (state == GameManager.STATE_SELECT || state == GameManager.STATE_PREVIEW));
+        GameContext.setButtonEnabled(btn_end_turn, canEndTurn());
         GameContext.setButtonEnabled(btn_menu, !menu.isVisible());
     }
 
@@ -753,6 +751,15 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         return getGame().getCurrentPlayer().isLocalPlayer()
                 && !getManager().isProcessing()
                 && !getManager().isAnimating();
+    }
+
+    public boolean canEndTurn() {
+        int state = getManager().getState();
+        int player_type = getGame().getCurrentPlayer().getType();
+        return !getManager().isProcessing()
+                && !getManager().isAnimating()
+                && (player_type == Player.LOCAL || player_type == Player.NONE)
+                && (state == GameManager.STATE_SELECT || state == GameManager.STATE_PREVIEW);
     }
 
     public GameCore getGame() {

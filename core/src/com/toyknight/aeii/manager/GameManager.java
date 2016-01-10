@@ -1,5 +1,7 @@
 package com.toyknight.aeii.manager;
 
+import static com.toyknight.aeii.rule.Rule.Entry.*;
+
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animation.*;
@@ -114,19 +116,21 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     @Override
     public void onAnimationFinished() {
+        checkGameState();
+    }
+
+    @Override
+    public void onGameEventFinished() {
+        checkGameState();
+    }
+
+    private void checkGameState() {
         if (getListener() != null) {
             if (getGame().isGameOver()) {
                 getListener().onGameOver();
             } else {
                 getListener().onScreenUpdateRequested();
             }
-        }
-    }
-
-    @Override
-    public void onGameEventFinished() {
-        if (getListener() != null) {
-            getListener().onScreenUpdateRequested();
         }
     }
 
@@ -258,7 +262,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         submitGameEvent(
                 GameEvent.GAIN_EXPERIENCE,
                 attacker.getX(), attacker.getY(),
-                getGame().getRule().getAttackExperience());
+                getGame().getRule().getInteger(ATTACK_EXPERIENCE));
 
         submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
     }
@@ -282,23 +286,22 @@ public class GameManager implements GameEventListener, AnimationListener {
                     submitGameEvent(
                             GameEvent.GAIN_EXPERIENCE,
                             attacker.getX(), attacker.getY(),
-                            getGame().getRule().getAttackExperience());
+                            getGame().getRule().getInteger(ATTACK_EXPERIENCE));
                     submitGameEvent(
                             GameEvent.GAIN_EXPERIENCE,
                             defender.getX(), defender.getY(),
-                            getGame().getRule().getCounterExperience());
+                            getGame().getRule().getInteger(COUNTER_EXPERIENCE));
                 } else {
-                    submitGameEvent(GameEvent.UNIT_DESTROY, attacker.getX(), attacker.getY());
                     submitGameEvent(
                             GameEvent.GAIN_EXPERIENCE,
                             defender.getX(), defender.getY(),
-                            getGame().getRule().getKillExperience());
+                            getGame().getRule().getInteger(KILL_EXPERIENCE));
                 }
             } else {
                 submitGameEvent(
                         GameEvent.GAIN_EXPERIENCE,
                         attacker.getX(), attacker.getY(),
-                        getGame().getRule().getAttackExperience());
+                        getGame().getRule().getInteger(ATTACK_EXPERIENCE));
             }
         } else {
             submitGameEvent(
@@ -306,11 +309,10 @@ public class GameManager implements GameEventListener, AnimationListener {
                     attacker.getX(), attacker.getY(),
                     defender.getX(), defender.getY(),
                     attack_damage, -1);
-            submitGameEvent(GameEvent.UNIT_DESTROY, defender.getX(), defender.getY());
             submitGameEvent(
                     GameEvent.GAIN_EXPERIENCE,
                     attacker.getX(), attacker.getY(),
-                    getGame().getRule().getKillExperience());
+                    getGame().getRule().getInteger(KILL_EXPERIENCE));
         }
         submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
     }
@@ -322,7 +324,7 @@ public class GameManager implements GameEventListener, AnimationListener {
             submitGameEvent(
                     GameEvent.GAIN_EXPERIENCE,
                     summoner.getX(), summoner.getY(),
-                    getGame().getRule().getAttackExperience());
+                    getGame().getRule().getInteger(ATTACK_EXPERIENCE));
             submitGameEvent(GameEvent.ACTION_FINISH, summoner.getX(), summoner.getY());
         }
     }
@@ -332,14 +334,19 @@ public class GameManager implements GameEventListener, AnimationListener {
         Unit target = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canHeal(healer, target_x, target_y)) {
             int heal = UnitToolkit.getHeal(healer, target);
-            int experience = target.getCurrentHp() + heal > 0 ?
-                    getGame().getRule().getAttackExperience() : getGame().getRule().getKillExperience();
-
             submitGameEvent(GameEvent.HEAL, healer.getX(), healer.getY(), target_x, target_y, heal);
-            if (target.getCurrentHp() + heal <= 0) {
+            if (target.getCurrentHp() + heal > 0) {
+                submitGameEvent(
+                        GameEvent.GAIN_EXPERIENCE,
+                        healer.getX(), healer.getY(),
+                        getGame().getRule().getInteger(ATTACK_EXPERIENCE));
+            } else {
                 submitGameEvent(GameEvent.UNIT_DESTROY, target.getX(), target.getY());
+                submitGameEvent(
+                        GameEvent.GAIN_EXPERIENCE,
+                        healer.getX(), healer.getY(),
+                        getGame().getRule().getInteger(KILL_EXPERIENCE));
             }
-            submitGameEvent(GameEvent.GAIN_EXPERIENCE, healer.getX(), healer.getY(), experience);
             submitGameEvent(GameEvent.ACTION_FINISH, healer.getX(), healer.getY());
         }
     }
@@ -368,7 +375,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    public void doEndTurn() {
+    public void doNextTurn() {
         submitGameEvent(GameEvent.NEXT_TURN);
     }
 

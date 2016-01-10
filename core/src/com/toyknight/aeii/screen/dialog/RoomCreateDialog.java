@@ -109,7 +109,7 @@ public class RoomCreateDialog extends BasicDialog {
         spinner_capacity.setItems(new Integer[]{2, 3, 4, 5, 6, 7, 8});
         addActor(spinner_capacity);
 
-        lb_initial_gold = new Label(Language.getText("LB_INITIAL_GOLD"), getContext().getSkin());
+        lb_initial_gold = new Label(Language.getText("LB_START_GOLD"), getContext().getSkin());
         lb_initial_gold.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 3 - ts / 2, ts * 3, ts);
         addActor(lb_initial_gold);
         spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());

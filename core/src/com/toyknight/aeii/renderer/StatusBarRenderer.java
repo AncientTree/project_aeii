@@ -1,5 +1,7 @@
 package com.toyknight.aeii.renderer;
 
+import static com.toyknight.aeii.rule.Rule.Entry.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.toyknight.aeii.manager.GameManager;
@@ -18,9 +20,6 @@ public class StatusBarRenderer {
     private final int max_pop_width;
     private final GameScreen screen;
 
-    private final int char_width;
-    private final int char_height;
-
     public StatusBarRenderer(GameScreen screen, int ts) {
         this.ts = ts;
         this.hud_size = ts / 24 * 11;
@@ -29,9 +28,6 @@ public class StatusBarRenderer {
         this.margin_left = (screen.getViewportWidth() - ts - max_pop_width - max_gold_width - hud_size * 2) / 3;
         this.margin_bottom = (ts - hud_size) / 2;
         this.screen = screen;
-
-        this.char_width = FontRenderer.getLNumberWidth(0, false);
-        this.char_height = FontRenderer.getLCharHeight();
     }
 
     private GameManager getManager() {
@@ -52,21 +48,14 @@ public class StatusBarRenderer {
     private void drawInformation(SpriteBatch batch) {
         int gold = getManager().getGame().getCurrentPlayer().getGold();
         int current_pop = getManager().getGame().getCurrentPlayer().getPopulation();
-        int max_pop = getManager().getGame().getRule().getMaxPopulation();
+        int max_pop = getManager().getGame().getRule().getInteger(MAX_POPULATION);
         //draw population
         batch.draw(ResourceManager.getStatusHudIcon(0), ts + margin_left, margin_bottom, hud_size, hud_size);
         FontRenderer.drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);
         //draw gold
-        batch.draw(ResourceManager.getStatusHudIcon(1), ts + margin_left * 2 + hud_size + max_pop_width, margin_bottom, hud_size, hud_size);
-//        Player player = getManager().getGame().getCurrentPlayer();
-//        if (player.isLocalPlayer() || player.getType() == Player.RECORD) {
+        batch.draw(ResourceManager.getStatusHudIcon(1),
+                ts + margin_left * 2 + hud_size + max_pop_width, margin_bottom, hud_size, hud_size);
         FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
-//        } else {
-//            batch.draw(
-//                    FontRenderer.getLMinus(),
-//                    ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom,
-//                    char_width, char_height);
-//        }
         batch.flush();
     }
 

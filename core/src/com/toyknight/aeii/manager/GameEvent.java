@@ -26,6 +26,7 @@ public class GameEvent implements Serializable {
     public static final int TILE_DESTROY = 0x14;
     public static final int GAIN_EXPERIENCE = 0x15;
     public static final int ACTION_FINISH = 0x16;
+    public static final int CHECK_TEAM_DESTROY = 0x17;
 
     private final int type;
     private final Object[] params;

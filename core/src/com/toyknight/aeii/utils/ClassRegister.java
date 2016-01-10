@@ -24,8 +24,11 @@ import java.util.LinkedList;
 public class ClassRegister {
 
     public void register(Kryo kryo) {
+        kryo.register(Object.class);
         kryo.register(Object[].class);
+        kryo.register(Integer.class);
         kryo.register(Integer[].class);
+        kryo.register(Boolean.class);
         kryo.register(int[].class);
         kryo.register(short[].class);
         kryo.register(short[][].class);
@@ -56,6 +59,7 @@ public class ClassRegister {
         kryo.register(Unit[].class);
         kryo.register(Unit[][].class);
         kryo.register(Rule.class);
+        kryo.register(Rule.Entry.class);
         kryo.register(Map.class);
         kryo.register(Tomb.class);
         kryo.register(Status.class);

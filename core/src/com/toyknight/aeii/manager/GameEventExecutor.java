@@ -1,10 +1,13 @@
 package com.toyknight.aeii.manager;
 
+import static com.toyknight.aeii.rule.Rule.Entry.*;
+
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.record.Recorder;
+import com.toyknight.aeii.rule.Analyzer;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -67,13 +70,22 @@ public class GameEventExecutor {
     }
 
     public void dispatchGameEvents() {
-        if (buffer_event_queue.size() > 0) {
-            executeGameEvent(buffer_event_queue.poll(), false);
+        if (getGame().isGameOver()) {
+            getGameManager().onGameEventFinished();
         } else {
-            if (event_queue.size() > 0) {
-                executeGameEvent(event_queue.poll());
+            if (buffer_event_queue.size() > 0) {
+                executeGameEvent(buffer_event_queue.poll(), false);
+                checkEventFinishing();
+            } else {
+                if (event_queue.size() > 0) {
+                    executeGameEvent(event_queue.poll());
+                    checkEventFinishing();
+                }
             }
         }
+    }
+
+    private void checkEventFinishing() {
         if (event_queue.isEmpty() && buffer_event_queue.isEmpty()) {
             getGameManager().onGameEventFinished();
         }
@@ -179,6 +191,10 @@ public class GameEventExecutor {
                 target_y = (Integer) event.getParameter(1);
                 onUnitActionFinish(target_x, target_y);
                 break;
+            case GameEvent.CHECK_TEAM_DESTROY:
+                team = (Integer) event.getParameter(0);
+                onCheckTeamDestroy(team);
+                break;
             default:
                 //do nothing
         }
@@ -187,7 +203,8 @@ public class GameEventExecutor {
         }
     }
 
-    private void onAttack(int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, int counter_damage) {
+    private void onAttack(
+            int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, int counter_damage) {
         if (canAttack(attacker_x, attacker_y, target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -201,11 +218,19 @@ public class GameEventExecutor {
                         defender.changeCurrentHp(-attack_damage);
                         UnitToolkit.attachAttackStatus(attacker, defender);
                         getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, attack_damage);
+                        if (defender.getCurrentHp() <= 0) {
+                            getGame().getStatistics().addDestroy(attacker.getTeam(), defender.getPrice());
+                            submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y));
+                        }
                     }
                     if (counter_damage >= 0) {
                         attacker.changeCurrentHp(-counter_damage);
                         UnitToolkit.attachAttackStatus(defender, attacker);
                         getAnimationDispatcher().submitUnitAttackAnimation(defender, attacker, counter_damage);
+                        if (attacker.getCurrentHp() <= 0) {
+                            getGame().getStatistics().addDestroy(defender.getTeam(), attacker.getPrice());
+                            submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, attacker_x, attacker_y));
+                        }
                     }
                 }
             }
@@ -249,7 +274,7 @@ public class GameEventExecutor {
     private boolean canBuy(int index, int team) {
         return getGame().isPlayerAvailable(team)
                 && getGame().getPlayer(team).getGold() >= getGame().getUnitPrice(index, team)
-                && getGame().getPlayer(team).getPopulation() < getGame().getRule().getMaxPopulation();
+                && getGame().getPlayer(team).getPopulation() < getGame().getRule().getInteger(MAX_POPULATION);
     }
 
     private void onNextTurn() {
@@ -316,6 +341,9 @@ public class GameEventExecutor {
             Unit target = getGame().getMap().getUnit(target_x, target_y);
             target.changeCurrentHp(heal);
             getAnimationDispatcher().submitHpChangeAnimation(target, heal);
+            if (target.getCurrentHp() <= 0) {
+                submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y));
+            }
         }
     }
 
@@ -355,7 +383,8 @@ public class GameEventExecutor {
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
-            getGame().updateGameStatus();
+
+            submitBufferGameEvent(new GameEvent(GameEvent.CHECK_TEAM_DESTROY, target_tile.getTeam()));
         }
     }
 
@@ -526,7 +555,7 @@ public class GameEventExecutor {
             getAnimationDispatcher().submitUnitDestroyAnimation(unit);
             getAnimationDispatcher().submitDustAriseAnimation(unit.getX(), unit.getY());
 
-            getGame().updateGameStatus();
+            submitBufferGameEvent(new GameEvent(GameEvent.CHECK_TEAM_DESTROY, unit.getTeam()));
         }
     }
 
@@ -563,6 +592,17 @@ public class GameEventExecutor {
                 }
             }
             getAnimationDispatcher().submitHpChangeAnimation(change_map, units);
+        }
+    }
+
+    private void onCheckTeamDestroy(int team) {
+        Analyzer analyzer = new Analyzer(getGame());
+        if (analyzer.isTeamDestroyed(team)) {
+            getGame().removeTeam(team);
+            int winner_alliance = analyzer.getWinnerAlliance();
+            if (winner_alliance >= 0) {
+                getGame().setGameOver(true);
+            }
         }
     }
 
