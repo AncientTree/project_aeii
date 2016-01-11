@@ -46,7 +46,6 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         } else {
             Gdx.input.setInputProcessor(this);
         }
-        getContext().getNetworkManager().setNetworkListener(this);
     }
 
     public void addDialog(String name, BasicDialog dialog) {
@@ -134,15 +133,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     @Override
-    public void onPlayerReconnect(int id, String username, Integer[] teams) {
-    }
-
-    @Override
-    public void onAllocationUpdate(Integer[] allocation, Integer[] types) {
-    }
-
-    @Override
-    public void onAllianceUpdate(Integer[] alliance) {
+    public void onAllocationUpdate() {
     }
 
     @Override

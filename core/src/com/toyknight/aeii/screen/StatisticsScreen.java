@@ -16,6 +16,7 @@ import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Statistics;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;
@@ -98,13 +99,13 @@ public class StatisticsScreen extends StageScreen {
     }
 
     private void tryLeaveGame() {
-        if (getContext().getNetworkManager().isConnected()) {
+        if (NetworkManager.isConnected()) {
             Gdx.input.setInputProcessor(null);
             btn_leave.setText(Language.getText("LB_LEAVING"));
             getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
                 public Void doTask() throws Exception {
-                    getContext().getNetworkManager().notifyLeaveRoom();
+                    NetworkManager.notifyLeaveRoom();
                     return null;
                 }
 

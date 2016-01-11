@@ -11,9 +11,12 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.Notification;
-import com.toyknight.aeii.net.Request;
-import com.toyknight.aeii.net.Response;
+import com.toyknight.aeii.net.serializable.Notification;
+import com.toyknight.aeii.net.serializable.Request;
+import com.toyknight.aeii.net.serializable.Response;
+import com.toyknight.aeii.net.serializable.PlayerSnapshot;
+import com.toyknight.aeii.net.serializable.RoomSetting;
+import com.toyknight.aeii.net.serializable.RoomSnapshot;
 import com.toyknight.aeii.utils.ClassRegister;
 import com.toyknight.aeii.utils.Encryptor;
 import com.toyknight.aeii.utils.TileFactory;
@@ -65,7 +68,7 @@ public class GameServer {
     }
 
     public boolean isRoomAvailable(Room room) {
-        return room != null && !room.isGameOver() && room.getRemaining() > 0 && room.getHostPlayer() != -1;
+        return room != null && !room.isGameOver() && room.getRemaining() > 0 && room.getHostID() != -1;
     }
 
     public Room getRoom(long room_number) {
@@ -110,12 +113,11 @@ public class GameServer {
         }
     }
 
-    public RoomConfiguration getRoomConfiguration(Room room) {
-        RoomConfiguration configuration = new RoomConfiguration();
+    public RoomSetting getRoomConfiguration(Room room) {
+        RoomSetting configuration = new RoomSetting();
         configuration.room_number = room.getRoomNumber();
         configuration.started = !room.isOpen();
-        configuration.is_game_save = room.isSavedGame();
-        configuration.host = room.getHostPlayer();
+        configuration.host = room.getHostID();
         configuration.team_allocation = room.getTeamAllocation();
         configuration.initial_gold = room.getStartGold();
         configuration.max_population = room.getMaxPopulation();
@@ -125,7 +127,7 @@ public class GameServer {
         for (int id : players) {
             PlayerSnapshot snapshot = getPlayerSnapshot(id);
             if (snapshot != null) {
-                snapshot.is_host = room.getHostPlayer() == id;
+                snapshot.is_host = room.getHostID() == id;
                 configuration.players.add(snapshot);
             }
         }
@@ -188,9 +190,6 @@ public class GameServer {
             case Notification.UPDATE_ALLOCATION:
                 onAllocationUpdate(player, notification);
                 break;
-            case Notification.UPDATE_ALLIANCE:
-                onAllianceUpdate(player, notification);
-                break;
             case Notification.GAME_EVENT:
                 onSubmitGameEvent(player, notification);
                 break;
@@ -241,7 +240,7 @@ public class GameServer {
             addRoom(room);
             player.setRoomNumber(room.getRoomNumber());
 
-            RoomConfiguration configuration = getRoomConfiguration(room);
+            RoomSetting configuration = getRoomConfiguration(room);
             response.setParameters(configuration);
             player.getConnection().sendTCP(response);
         }
@@ -259,7 +258,7 @@ public class GameServer {
             addRoom(room);
             player.setRoomNumber(room.getRoomNumber());
 
-            RoomConfiguration configuration = getRoomConfiguration(room);
+            RoomSetting configuration = getRoomConfiguration(room);
             response.setParameters(configuration);
             player.getConnection().sendTCP(response);
         }
@@ -273,12 +272,12 @@ public class GameServer {
             if (isRoomAvailable(room) && player.getRoomNumber() == -1) {
                 room.addPlayer(player.getID());
                 player.setRoomNumber(room_number);
-                RoomConfiguration configuration = getRoomConfiguration(room);
+                RoomSetting configuration = getRoomConfiguration(room);
                 response.setParameters(configuration);
                 player.getConnection().sendTCP(response);
                 notifyPlayerJoin(room, player.getID(), player.getUsername());
             } else {
-                response.setParameters((RoomConfiguration) null);
+                response.setParameters((RoomSetting) null);
                 player.getConnection().sendTCP(response);
             }
         }
@@ -288,7 +287,7 @@ public class GameServer {
         if (player.isAuthenticated()) {
             Response response = new Response(request.getID());
             Room room = getRoom(player.getRoomNumber());
-            if (isRoomOpen(room) && room.isReady() && room.getHostPlayer() == player.getID()) {
+            if (isRoomOpen(room) && room.isReady() && room.getHostID() == player.getID()) {
                 room.startGame();
                 response.setParameters(true);
                 notifyGameStart(room, player.getID());
@@ -313,7 +312,11 @@ public class GameServer {
                 if (room.getCapacity() == room.getRemaining()) {
                     removeRoom(room_number);
                 } else {
-                    notifyPlayerLeave(room, leaver.getID(), leaver.getUsername());
+                    notifyPlayerLeave(room, leaver.getID(), leaver.getUsername(), room.getHostID());
+                    Integer[] alliance = room.getAlliances();
+                    Integer[] allocation = room.getTeamAllocation();
+                    Integer[] types = room.getPlayerTypes();
+                    notifyAllocationUpdate(room, -1, alliance, allocation, types);
                 }
             }
         }
@@ -321,28 +324,17 @@ public class GameServer {
 
     public void onAllocationUpdate(PlayerService updater, Notification notification) {
         if (updater.isAuthenticated()) {
-            Integer[] allocation = (Integer[]) notification.getParameter(0);
-            Integer[] types = (Integer[]) notification.getParameter(1);
+            Integer[] alliance = (Integer[]) notification.getParameter(0);
+            Integer[] allocation = (Integer[]) notification.getParameter(1);
+            Integer[] types = (Integer[]) notification.getParameter(2);
             Room room = getRoom(updater.getRoomNumber());
-            if (isRoomOpen(room) && room.getHostPlayer() == updater.getID()) {
+            if (isRoomOpen(room) && room.getHostID() == updater.getID()) {
                 for (int team = 0; team < 4; team++) {
+                    room.setAlliance(team, alliance[team]);
                     room.setTeamAllocation(team, allocation[team]);
                     room.setPlayerType(team, types[team]);
                 }
-                notifyAllocationUpdate(room, updater.getID(), allocation, types);
-            }
-        }
-    }
-
-    public void onAllianceUpdate(PlayerService updater, Notification notification) {
-        if (updater.isAuthenticated()) {
-            Integer[] alliance = (Integer[]) notification.getParameter(0);
-            Room room = getRoom(updater.getRoomNumber());
-            if (isRoomOpen(room) && room.getHostPlayer() == updater.getID()) {
-                for (int team = 0; team < 4; team++) {
-                    room.setAlliance(team, alliance[team]);
-                }
-                notifyAllianceUpdate(room, updater.getID(), alliance);
+                notifyAllocationUpdate(room, updater.getID(), alliance, allocation, types);
             }
         }
     }
@@ -377,34 +369,24 @@ public class GameServer {
         }
     }
 
-    public void notifyPlayerLeave(Room room, int leaver_id, String username) {
+    public void notifyPlayerLeave(Room room, int leaver_id, String username, int host_id) {
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && leaver_id != player_id) {
                 Notification notification = new Notification(Notification.PLAYER_LEAVING);
-                notification.setParameters(leaver_id, username);
+                notification.setParameters(leaver_id, username, host_id);
                 sendNotification(player, notification);
             }
         }
     }
 
-    public void notifyAllocationUpdate(Room room, int updater_id, Integer[] allocation, Integer[] types) {
+    public void notifyAllocationUpdate(
+            Room room, int updater_id, Integer[] alliance, Integer[] allocation, Integer[] types) {
         for (int player_id : room.getPlayers()) {
             PlayerService player = getPlayer(player_id);
             if (player != null && player_id != updater_id) {
                 Notification notification = new Notification(Notification.UPDATE_ALLOCATION);
-                notification.setParameters(allocation, types);
-                sendNotification(player, notification);
-            }
-        }
-    }
-
-    public void notifyAllianceUpdate(Room room, int updater_id, Integer[] alliance) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null && player_id != updater_id) {
-                Notification notification = new Notification(Notification.UPDATE_ALLIANCE);
-                notification.setParameters((Object) alliance);
+                notification.setParameters(alliance, allocation, types);
                 sendNotification(player, notification);
             }
         }

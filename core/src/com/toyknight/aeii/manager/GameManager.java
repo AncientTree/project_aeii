@@ -116,12 +116,16 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     @Override
     public void onAnimationFinished() {
-        checkGameState();
+        if (!isProcessing()) {
+            checkGameState();
+        }
     }
 
     @Override
     public void onGameEventFinished() {
-        checkGameState();
+        if (!isAnimating()) {
+            checkGameState();
+        }
     }
 
     private void checkGameState() {
@@ -607,7 +611,8 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean canSelectedUnitAct() {
-        return !getSelectedUnit().hasAbility(Ability.HEAVY_MACHINE) || getSelectedUnit().isAt(last_position.x, last_position.y);
+        return !getSelectedUnit().hasAbility(Ability.HEAVY_MACHINE)
+                || getSelectedUnit().isAt(last_position.x, last_position.y);
     }
 
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {

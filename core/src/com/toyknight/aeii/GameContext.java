@@ -14,14 +14,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.animation.Animator;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
 import com.toyknight.aeii.script.JavaScriptEngine;
 import com.toyknight.aeii.entity.GameSave;
-import com.toyknight.aeii.net.server.RoomConfiguration;
 import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
@@ -63,8 +62,6 @@ public class GameContext extends Game {
     private Callable dialog_callback;
     private TextButton btn_ok;
 
-    private NetworkManager network_manager;
-
     public GameContext(Platform platform, int ts) {
         this.TILE_SIZE = ts;
         this.PLATFORM = platform;
@@ -104,7 +101,6 @@ public class GameContext extends Game {
             statistics_screen = new StatisticsScreen(this);
             createDialogLayer();
 
-            network_manager = new NetworkManager();
             script_engine = new JavaScriptEngine();
 
             setScreen(logo_screen);
@@ -212,8 +208,7 @@ public class GameContext extends Game {
         gotoScreen(lobby_screen);
     }
 
-    public void gotoNetGameCreateScreen(RoomConfiguration config) {
-        net_game_create_screen.setRoomConfiguration(config);
+    public void gotoNetGameCreateScreen() {
         gotoScreen(net_game_create_screen);
     }
 
@@ -234,6 +229,7 @@ public class GameContext extends Game {
         this.previous_screen = getScreen();
         this.setScreen(screen);
         if (screen instanceof StageScreen) {
+            NetworkManager.setNetworkListener((StageScreen) screen);
             ((StageScreen) screen).onFocus();
         }
         if (dialog.isVisible()) {
@@ -276,24 +272,12 @@ public class GameContext extends Game {
         }
     }
 
-    public NetworkManager getNetworkManager() {
-        return network_manager;
-    }
-
     public JavaScriptEngine getScriptEngine() {
         return script_engine;
     }
 
     public String getUsername() {
         return getConfiguration().get("username", "nobody");
-    }
-
-    public void setRoomConfiguration(RoomConfiguration configuration) {
-        net_game_create_screen.setRoomConfiguration(configuration);
-    }
-
-    public RoomConfiguration getRoomConfiguration() {
-        return net_game_create_screen.getRoomConfiguration();
     }
 
     public String getVersion() {

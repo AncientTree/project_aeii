@@ -13,11 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.*;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.entity.GameSave;
-import com.toyknight.aeii.net.server.RoomConfiguration;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
@@ -135,6 +135,10 @@ public class RoomCreateDialog extends BasicDialog {
         this.mode = mode;
     }
 
+    public int getMode() {
+        return mode;
+    }
+
     public void setEnabled(boolean enabled) {
         GameContext.setButtonEnabled(btn_back, enabled);
         GameContext.setButtonEnabled(btn_create, enabled);
@@ -172,51 +176,55 @@ public class RoomCreateDialog extends BasicDialog {
         if (object_list.getSelected() != null) {
             setEnabled(false);
             btn_create.setText(Language.getText("LB_CREATING"));
-            getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
+            getContext().submitAsyncTask(new AsyncTask<Boolean>() {
                 @Override
-                public RoomConfiguration doTask() throws AEIIException {
+                public Boolean doTask() throws AEIIException {
                     return tryCreateRoom();
                 }
 
                 @Override
-                public void onFinish(RoomConfiguration configuration) {
+                public void onFinish(Boolean success) {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
-                    getContext().gotoNetGameCreateScreen(configuration);
+                    if (success) {
+                        getContext().gotoNetGameCreateScreen();
+                    } else {
+                        getContext().showMessage(Language.getText("MSG_ERR_CNCR"), null);
+                    }
                 }
 
                 @Override
                 public void onFail(String message) {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
-                    getOwner().closeDialog("create");
-                    getContext().showMessage(message, null);
+                    getContext().showMessage(Language.getText("MSG_ERR_CNCR"), null);
                 }
             });
         }
     }
 
-    private RoomConfiguration tryCreateRoom() throws AEIIException {
-        if (mode == LobbyScreen.NEW_GAME) {
-            String map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
-            Map map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
-            int capacity = spinner_capacity.getSelectedItem();
-            int gold = spinner_gold.getSelectedItem();
-            int population = spinner_population.getSelectedItem();
-            return getContext().getNetworkManager().requestCreateRoom(map_name, map, capacity, gold, population);
-        }
-        if (mode == LobbyScreen.LOAD_GAME) {
-            String filename = (String) object_list.getSelected();
-            FileHandle save_file = FileProvider.getSaveFile(filename);
-            GameSave game_save = GameToolkit.loadGame(save_file);
-            if (game_save == null) {
-                return null;
-            } else {
+    private boolean tryCreateRoom() throws AEIIException {
+        switch (getMode()) {
+            case LobbyScreen.NEW_GAME:
+                String map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
+                Map map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
                 int capacity = spinner_capacity.getSelectedItem();
-                return getContext().getNetworkManager().requestCreateRoom(filename, game_save.game, capacity);
-            }
+                int gold = spinner_gold.getSelectedItem();
+                int population = spinner_population.getSelectedItem();
+                return NetworkManager.requestCreateRoom(map_name, map, capacity, gold, population);
+            case LobbyScreen.LOAD_GAME:
+                String filename = (String) object_list.getSelected();
+                FileHandle save_file = FileProvider.getSaveFile(filename);
+                GameSave game_save = GameToolkit.loadGame(save_file);
+                if (game_save == null) {
+                    return false;
+                } else {
+                    capacity = spinner_capacity.getSelectedItem();
+                    return NetworkManager.requestCreateRoom(filename, game_save.game, capacity);
+                }
+            default:
+                return false;
         }
-        return null;
     }
 
     @Override

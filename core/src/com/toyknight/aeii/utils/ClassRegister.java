@@ -6,15 +6,15 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.esotericsoftware.kryo.Kryo;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.Notification;
-import com.toyknight.aeii.net.Request;
-import com.toyknight.aeii.net.Response;
+import com.toyknight.aeii.net.serializable.Notification;
+import com.toyknight.aeii.net.serializable.Request;
+import com.toyknight.aeii.net.serializable.Response;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.entity.GameSave;
-import com.toyknight.aeii.net.server.PlayerSnapshot;
-import com.toyknight.aeii.net.server.RoomConfiguration;
-import com.toyknight.aeii.net.server.RoomSnapshot;
+import com.toyknight.aeii.net.serializable.PlayerSnapshot;
+import com.toyknight.aeii.net.serializable.RoomSetting;
+import com.toyknight.aeii.net.serializable.RoomSnapshot;
 
 import java.util.LinkedList;
 
@@ -49,7 +49,7 @@ public class ClassRegister {
 
         kryo.register(RoomSnapshot.class);
         kryo.register(PlayerSnapshot.class);
-        kryo.register(RoomConfiguration.class);
+        kryo.register(RoomSetting.class);
 
         kryo.register(Statistics.class);
         kryo.register(GameCore.class);

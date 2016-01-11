@@ -15,7 +15,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.net.task.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.PlayerList;
-import com.toyknight.aeii.net.server.PlayerSnapshot;
+import com.toyknight.aeii.net.serializable.PlayerSnapshot;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -97,20 +97,8 @@ public class MessageBox extends BasicDialog {
         tf_message.setText("");
     }
 
-    public void setPlayers(Array<PlayerSnapshot> players, Integer[] allocation) {
-        player_list.setItems(players, allocation);
-    }
-
-    public void removePlayer(Integer id) {
-        player_list.removePlayer(id);
-    }
-
-    public void addPlayer(Integer id, String username) {
-        player_list.addPlayer(id, username);
-    }
-
-    public void addPlayer(Integer id, String username, Integer[] teams) {
-        player_list.addPlayer(id, username, teams);
+    public void setPlayers(Array<PlayerSnapshot> players) {
+        player_list.setItems(players);
     }
 
     public void sendMessage() {
@@ -122,18 +110,11 @@ public class MessageBox extends BasicDialog {
     public void sendMessage(String message) {
         getContext().submitAsyncTask(new MessageSendingTask(message) {
             @Override
-            public Void doTask() throws Exception {
-                getContext().getNetworkManager().sendMessage(message);
-                return null;
-            }
-
-            @Override
             public void onFinish(Void result) {
             }
 
             @Override
             public void onFail(String message) {
-                getContext().showMessage(message, null);
             }
         });
         callback.call();

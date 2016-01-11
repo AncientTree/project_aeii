@@ -10,8 +10,7 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.server.RoomConfiguration;
-import com.toyknight.aeii.net.server.RoomSnapshot;
+import com.toyknight.aeii.net.serializable.*;
 import com.toyknight.aeii.net.server.ServerConfiguration;
 import com.toyknight.aeii.utils.ClassRegister;
 
@@ -24,28 +23,38 @@ public class NetworkManager {
 
     public static final String TAG = "Network";
 
-    private final Object RESPONSE_LOCK = new Object();
-    private final ObjectMap<Long, Response> responses;
+    private static final Object RESPONSE_LOCK = new Object();
 
-    private NetworkListener listener;
+    private static final ObjectMap<Long, Response> responses = new ObjectMap<Long, Response>();
 
-    private Client client;
+    private static NetworkListener listener;
 
-    private int service_id;
+    private static Client client;
 
-    public NetworkManager() {
-        responses = new ObjectMap<Long, Response>();
+    private static int service_id;
+
+    private static RoomSetting room_setting;
+
+    private NetworkManager() {
     }
 
-    public void setNetworkListener(NetworkListener listener) {
-        this.listener = listener;
+    public static void setNetworkListener(NetworkListener listener) {
+        NetworkManager.listener = listener;
     }
 
-    public NetworkListener getListener() {
+    public static NetworkListener getListener() {
         return listener;
     }
 
-    public boolean connect(ServerConfiguration server, String username, String v_string) throws IOException {
+    public static int getServiceID() {
+        return service_id;
+    }
+
+    public static RoomSetting getRoomSetting() {
+        return room_setting;
+    }
+
+    public static boolean connect(ServerConfiguration server, String username, String v_string) throws IOException {
         responses.clear();
         client = new Client(65536, 65536);
         client.addListener(new Listener() {
@@ -69,22 +78,70 @@ public class NetworkManager {
         return requestAuthentication(username, v_string);
     }
 
-    public void disconnect() {
+    public static void disconnect() {
         if (isConnected()) {
             client.close();
         }
         client = null;
+        service_id = -1;
         synchronized (RESPONSE_LOCK) {
             RESPONSE_LOCK.notifyAll();
         }
-
     }
 
-    public boolean isConnected() {
+    public static boolean isConnected() {
         return client != null && client.isConnected();
     }
 
-    public void onReceive(Object object) {
+    private static void onPlayerJoin(int id, String username) {
+        PlayerSnapshot snapshot = new PlayerSnapshot();
+        snapshot.id = id;
+        snapshot.username = username;
+        snapshot.is_host = false;
+        getRoomSetting().players.add(snapshot);
+        if (listener != null) {
+            synchronized (GameContext.RENDER_LOCK) {
+                listener.onPlayerJoin(id, username);
+            }
+        }
+    }
+
+    private static void onPlayerLeave(int id, String username, int host) {
+        int index = -1;
+        for (int i = 0; i < getRoomSetting().players.size; i++) {
+            PlayerSnapshot player = getRoomSetting().players.get(i);
+            player.is_host = (player.id == host);
+            if (id == player.id && index < 0) {
+                index = i;
+            }
+        }
+        if (index >= 0) {
+            getRoomSetting().players.removeIndex(index);
+        }
+        getRoomSetting().host = host;
+        if (listener != null) {
+            synchronized (GameContext.RENDER_LOCK) {
+                listener.onPlayerLeave(id, username);
+            }
+        }
+    }
+
+    private static void onAllocationUpdate(Integer[] alliance, Integer[] allocation, Integer[] types) {
+        getRoomSetting().team_allocation = allocation;
+        if (!getRoomSetting().started) {
+            for (int team = 0; team < 4; team++) {
+                getRoomSetting().game.getPlayer(team).setAlliance(alliance[team]);
+                getRoomSetting().game.getPlayer(team).setType(types[team]);
+            }
+        }
+        if (listener != null) {
+            synchronized (GameContext.RENDER_LOCK) {
+                listener.onAllocationUpdate();
+            }
+        }
+    }
+
+    public static void onReceive(Object object) {
         if (object instanceof Response) {
             synchronized (RESPONSE_LOCK) {
                 Response response = (Response) object;
@@ -97,41 +154,24 @@ public class NetworkManager {
         }
     }
 
-    public void onReceiveNotification(Notification notification) {
+    public static void onReceiveNotification(Notification notification) {
         switch (notification.getType()) {
             case Notification.PLAYER_JOINING:
                 int id = (Integer) notification.getParameter(0);
                 String username = (String) notification.getParameter(1);
-                if (listener != null) {
-                    synchronized (GameContext.RENDER_LOCK) {
-                        listener.onPlayerJoin(id, username);
-                    }
-                }
+                onPlayerJoin(id, username);
                 break;
             case Notification.PLAYER_LEAVING:
                 id = (Integer) notification.getParameter(0);
                 username = (String) notification.getParameter(1);
-                if (listener != null) {
-                    synchronized (GameContext.RENDER_LOCK) {
-                        listener.onPlayerLeave(id, username);
-                    }
-                }
+                int host = (Integer) notification.getParameter(2);
+                onPlayerLeave(id, username, host);
                 break;
             case Notification.UPDATE_ALLOCATION:
-                Integer[] allocation = (Integer[]) notification.getParameter(0);
-                Integer[] types = (Integer[]) notification.getParameter(1);
-                if (listener != null) {
-                    synchronized (GameContext.RENDER_LOCK) {
-                        listener.onAllocationUpdate(allocation, types);
-                    }
-                }
-            case Notification.UPDATE_ALLIANCE:
                 Integer[] alliance = (Integer[]) notification.getParameter(0);
-                if (listener != null) {
-                    synchronized (GameContext.RENDER_LOCK) {
-                        listener.onAllianceUpdate(alliance);
-                    }
-                }
+                Integer[] allocation = (Integer[]) notification.getParameter(1);
+                Integer[] types = (Integer[]) notification.getParameter(2);
+                onAllocationUpdate(alliance, allocation, types);
                 break;
             case Notification.GAME_START:
                 if (listener != null) {
@@ -163,11 +203,7 @@ public class NetworkManager {
         }
     }
 
-    public int getServiceID() {
-        return service_id;
-    }
-
-    private Response sendRequest(Request request) {
+    private static Response sendRequest(Request request) {
         long id = request.getID();
         client.sendTCP(request);
         synchronized (RESPONSE_LOCK) {
@@ -186,11 +222,11 @@ public class NetworkManager {
         }
     }
 
-    private void sendNotification(Notification notification) {
+    private static void sendNotification(Notification notification) {
         client.sendTCP(notification);
     }
 
-    public boolean requestAuthentication(String username, String v_string) {
+    public static boolean requestAuthentication(String username, String v_string) {
         Request request = Request.getInstance(Request.AUTHENTICATION);
         request.setParameters(username, v_string);
         Response response = sendRequest(request);
@@ -202,7 +238,7 @@ public class NetworkManager {
         }
     }
 
-    public Array<RoomSnapshot> requestRoomList() {
+    public static Array<RoomSnapshot> requestRoomList() {
         Request request = Request.getInstance(Request.LIST_ROOMS);
         Response response = sendRequest(request);
         if (response == null) {
@@ -212,57 +248,54 @@ public class NetworkManager {
         }
     }
 
-    public RoomConfiguration requestCreateRoom(String map_name, Map map, int capacity, int gold, int population) {
+    public static boolean requestCreateRoom(String map_name, Map map, int capacity, int gold, int population) {
         Request request = Request.getInstance(Request.CREATE_ROOM);
         request.setParameters(map_name, map, capacity, gold, population);
         Response response = sendRequest(request);
         if (response == null) {
-            return null;
+            return false;
         } else {
-            return (RoomConfiguration) response.getParameter(0);
+            room_setting = (RoomSetting) response.getParameter(0);
+            return true;
         }
     }
 
-    public RoomConfiguration requestCreateRoom(String save_name, GameCore game, int capacity) {
+    public static boolean requestCreateRoom(String save_name, GameCore game, int capacity) {
         Request request = Request.getInstance(Request.CREATE_ROOM_SAVED);
         request.setParameters(save_name, game, capacity);
         Response response = sendRequest(request);
         if (response == null) {
-            return null;
+            return false;
         } else {
-            return (RoomConfiguration) response.getParameter(0);
+            room_setting = (RoomSetting) response.getParameter(0);
+            return true;
         }
     }
 
-    public RoomConfiguration requestJoinRoom(long room_number) {
+    public static boolean requestJoinRoom(long room_number) {
         Request request = Request.getInstance(Request.JOIN_ROOM);
         request.setParameters(room_number);
         Response response = sendRequest(request);
         if (response == null) {
-            return null;
+            return false;
         } else {
-            return (RoomConfiguration) response.getParameter(0);
+            room_setting = (RoomSetting) response.getParameter(0);
+            return true;
         }
     }
 
-    public void notifyLeaveRoom() {
+    public static void notifyLeaveRoom() {
         Notification notification = new Notification(Notification.PLAYER_LEAVING);
         sendNotification(notification);
     }
 
-    public void notifyAllocationUpdate(Integer[] allocation, Integer[] types) {
+    public static void notifyAllocationUpdate(Integer[] alliance, Integer[] allocation, Integer[] types) {
         Notification notification = new Notification(Notification.UPDATE_ALLOCATION);
-        notification.setParameters(allocation, types);
+        notification.setParameters(alliance, allocation, types);
         sendNotification(notification);
     }
 
-    public void notifyAllianceUpdate(Integer[] alliance) {
-        Notification notification = new Notification(Notification.UPDATE_ALLIANCE);
-        notification.setParameters((Object) alliance);
-        sendNotification(notification);
-    }
-
-    public boolean requestStartGame() {
+    public static boolean requestStartGame() {
         Request request = Request.getInstance(Request.START_GAME);
         Response response = sendRequest(request);
         if (response == null) {
@@ -272,14 +305,14 @@ public class NetworkManager {
         }
     }
 
-    public void sendGameEvent(GameEvent event) {
+    public static void sendGameEvent(GameEvent event) {
         Notification notification = new Notification(Notification.GAME_EVENT);
         notification.setParameters(event);
         sendNotification(notification);
         Gdx.app.log(TAG, "Send " + event.toString());
     }
 
-    public void sendMessage(String message) {
+    public static void sendMessage(String message) {
         Notification notification = new Notification(Notification.MESSAGE);
         notification.setParameters(message);
         sendNotification(notification);

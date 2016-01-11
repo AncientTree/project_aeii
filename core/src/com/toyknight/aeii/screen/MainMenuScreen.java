@@ -8,6 +8,7 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animation.AELogoAnimator;
 import com.toyknight.aeii.animation.AELogoGlowAnimator;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.dialog.GameLoadDialog;
 import com.toyknight.aeii.screen.dialog.MainMenu;
 import com.toyknight.aeii.screen.dialog.ServerListDialog;
@@ -106,7 +107,7 @@ public class MainMenuScreen extends StageScreen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(this);
-        getContext().getNetworkManager().setNetworkListener(this);
+        NetworkManager.setNetworkListener(this);
         //AudioManager.loopMainTheme();
         closeAllDialogs();
     }

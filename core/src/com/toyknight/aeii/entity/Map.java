@@ -261,6 +261,7 @@ public class Map implements Serializable {
                 }
             }
         }
+        team_access[team] = false;
     }
 
     public int getPopulation(int team) {

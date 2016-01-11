@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net;
+package com.toyknight.aeii.net.serializable;
 
 import java.io.Serializable;
 
@@ -14,8 +14,6 @@ public class Notification implements Serializable {
     public static final int PLAYER_LEAVING = 0x2;
 
     public static final int UPDATE_ALLOCATION = 0x3;
-
-    public static final int UPDATE_ALLIANCE = 0x4;
 
     public static final int GAME_START = 0x5;
 

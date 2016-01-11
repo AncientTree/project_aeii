@@ -17,6 +17,7 @@ import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.net.task.GameEventSendingTask;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
@@ -26,8 +27,8 @@ import com.toyknight.aeii.screen.widgets.ActionButtonBar;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
 import com.toyknight.aeii.screen.dialog.MessageBox;
-import com.toyknight.aeii.net.server.PlayerSnapshot;
-import com.toyknight.aeii.net.server.RoomConfiguration;
+import com.toyknight.aeii.net.serializable.PlayerSnapshot;
+import com.toyknight.aeii.net.serializable.RoomSetting;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
@@ -328,20 +329,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onPlayerJoin(int id, String username) {
-        message_box.addPlayer(id, username);
-        appendMessage(null, username + " " + Language.getText("LB_JOINS"));
+        message_box.setPlayers(NetworkManager.getRoomSetting().players);
+        appendMessage(null, String.format(Language.getText("MSG_INFO_PJ"), username));
     }
 
     @Override
     public void onPlayerLeave(int id, String username) {
-        message_box.removePlayer(id);
-        appendMessage(null, username + " " + Language.getText("LB_DISCONNECTED"));
-    }
-
-    @Override
-    public void onPlayerReconnect(int id, String username, Integer[] teams) {
-        message_box.addPlayer(id, username, teams);
-        appendMessage(null, username + " " + Language.getText("LB_RECONNECTED"));
+        message_box.setPlayers(NetworkManager.getRoomSetting().players);
+        appendMessage(null, String.format(Language.getText("MSG_INFO_PD"), username));
     }
 
     @Override
@@ -376,17 +371,16 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void show() {
         MapAnimator.setCanvas(this);
         Gdx.input.setInputProcessor(this);
-        if (getContext().getNetworkManager().isConnected()) {
+        if (NetworkManager.isConnected()) {
             btn_message.setVisible(true);
-            getContext().getNetworkManager().setNetworkListener(this);
-        } else {
-            btn_message.setVisible(false);
         }
 
-        if (getContext().getNetworkManager().isConnected()) {
-            RoomConfiguration config = getContext().getRoomConfiguration();
-            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(config.players);
-            message_box.setPlayers(players, config.team_allocation);
+        if (NetworkManager.isConnected()) {
+            RoomSetting setting = NetworkManager.getRoomSetting();
+            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(setting.players);
+            message_box.setPlayers(players);
+        } else {
+            message_box.setPlayers(new Array<PlayerSnapshot>());
         }
 
         message_board.clearMessages();
@@ -690,14 +684,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onGameEventSubmitted(GameEvent event) {
-        if (getContext().getNetworkManager().isConnected()) {
+        if (NetworkManager.isConnected()) {
             getContext().submitAsyncTask(new GameEventSendingTask(event) {
-                @Override
-                public Void doTask() throws Exception {
-                    getContext().getNetworkManager().sendGameEvent(getEvent());
-                    return null;
-                }
-
                 @Override
                 public void onFinish(Void result) {
                 }

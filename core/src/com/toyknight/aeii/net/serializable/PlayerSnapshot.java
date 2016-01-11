@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net.server;
+package com.toyknight.aeii.net.serializable;
 
 import java.io.Serializable;
 

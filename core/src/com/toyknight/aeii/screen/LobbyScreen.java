@@ -18,18 +18,17 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.net.NetworkListener;
 import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.dialog.RoomCreateDialog;
-import com.toyknight.aeii.net.server.RoomConfiguration;
-import com.toyknight.aeii.net.server.RoomSnapshot;
+import com.toyknight.aeii.net.serializable.RoomSetting;
+import com.toyknight.aeii.net.serializable.RoomSnapshot;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
-
-import java.io.IOException;
 
 /**
  * @author toyknight 8/23/2015.
@@ -79,7 +78,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 getContext().gotoMainMenuScreen();
-                getContext().getNetworkManager().disconnect();
+                NetworkManager.disconnect();
             }
         });
         addActor(btn_back);
@@ -166,8 +165,8 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_refresh.setText(Language.getText("LB_REFRESHING"));
         getContext().submitAsyncTask(new AsyncTask<Array<RoomSnapshot>>() {
             @Override
-            public Array<RoomSnapshot> doTask() throws IOException, ClassNotFoundException {
-                return getContext().getNetworkManager().requestRoomList();
+            public Array<RoomSnapshot> doTask() {
+                return NetworkManager.requestRoomList();
             }
 
             @Override
@@ -197,30 +196,30 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         if (getSelectedRoom() != null) {
             Gdx.input.setInputProcessor(null);
             btn_join.setText(Language.getText("LB_JOINING"));
-            getContext().submitAsyncTask(new AsyncTask<RoomConfiguration>() {
+            getContext().submitAsyncTask(new AsyncTask<Boolean>() {
                 @Override
-                public RoomConfiguration doTask() throws IOException, ClassNotFoundException {
-                    return getContext().getNetworkManager().requestJoinRoom(getSelectedRoom().room_number);
+                public Boolean doTask() {
+                    return NetworkManager.requestJoinRoom(getSelectedRoom().room_number);
                 }
 
                 @Override
-                public void onFinish(RoomConfiguration configuration) {
+                public void onFinish(Boolean success) {
                     btn_join.setText(Language.getText("LB_JOIN"));
-                    if (configuration == null) {
-                        getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
-                    } else {
-                        if (configuration.started) {
-                            GameCore game = configuration.game;
+                    if (success) {
+                        RoomSetting setting = NetworkManager.getRoomSetting();
+                        if (setting.started) {
+                            GameCore game = setting.game;
                             for (int team = 0; team < 4; team++) {
-                                if (game.getPlayer(team) != null && game.getPlayer(team).getType() != Player.NONE) {
+                                if (game.getPlayer(team).getType() != Player.NONE) {
                                     game.getPlayer(team).setType(Player.REMOTE);
                                 }
                             }
-                            getContext().setRoomConfiguration(configuration);
                             getContext().gotoGameScreen(game);
                         } else {
-                            getContext().gotoNetGameCreateScreen(configuration);
+                            getContext().gotoNetGameCreateScreen();
                         }
+                    } else {
+                        getContext().showMessage(Language.getText("MSG_ERR_CNJR"), null);
                     }
                 }
 
@@ -255,7 +254,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
     @Override
     public void show() {
-        getContext().getNetworkManager().setNetworkListener(this);
+        NetworkManager.setNetworkListener(this);
         closeAllDialogs();
         refreshGameList();
     }

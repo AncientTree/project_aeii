@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net.server;
+package com.toyknight.aeii.net.serializable;
 
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.entity.GameCore;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @author toyknight 8/31/2015.
  */
-public class RoomConfiguration implements Serializable {
+public class RoomSetting implements Serializable {
 
     private static final long serialVersionUID = 8312015L;
 
@@ -17,8 +17,6 @@ public class RoomConfiguration implements Serializable {
     public int host;
 
     public boolean started;
-
-    public boolean is_game_save;
 
     public Array<PlayerSnapshot> players;
 

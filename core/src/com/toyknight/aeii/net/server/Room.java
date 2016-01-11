@@ -8,6 +8,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameEvent;
+import com.toyknight.aeii.net.serializable.RoomSnapshot;
 import com.toyknight.aeii.rule.Rule;
 
 import java.util.Arrays;
@@ -25,7 +26,6 @@ public class Room {
     private final String room_name;
 
     private boolean game_started;
-    private boolean is_game_save = false;
 
     private int capacity = 4;
 
@@ -43,7 +43,6 @@ public class Room {
         manager = new GameManager();
         manager.setGame(game);
         start_gold = -1;
-        is_game_save = true;
     }
 
     public Room(long room_number, String room_name) {
@@ -102,14 +101,16 @@ public class Room {
     public void removePlayer(int id) {
         synchronized (PLAYER_LOCK) {
             players.remove(id);
-            if (isOpen()) {
-                for (int team = 0; team < 4; team++) {
-                    if (team_allocation[team] == id) {
-                        getGame().getPlayer(team).setType(Player.NONE);
-                    }
+            for (int team = 0; team < 4; team++) {
+                if (team_allocation[team] == id) {
+                    setPlayerType(team, Player.NONE);
                     team_allocation[team] = -1;
                 }
-                if (host_player_id == id) {
+            }
+            if (host_player_id == id) {
+                if (players.size > 0) {
+                    host_player_id = players.first();
+                } else {
                     host_player_id = -1;
                 }
             }
@@ -120,7 +121,7 @@ public class Room {
         host_player_id = id;
     }
 
-    public Integer getHostPlayer() {
+    public Integer getHostID() {
         return host_player_id;
     }
 
@@ -134,29 +135,44 @@ public class Room {
 
     public void setPlayerType(int team, int type) {
         synchronized (GAME_LOCK) {
-            Player player = getGame().getPlayer(team);
-            if (getGame().getMap().hasTeamAccess(team)) {
-                player.setType(type);
+            if (isOpen()) {
+                Player player = getGame().getPlayer(team);
+                if (getGame().getMap().hasTeamAccess(team)) {
+                    player.setType(type);
+                }
             }
+        }
+    }
+
+    public Integer[] getPlayerTypes() {
+        synchronized (GAME_LOCK) {
+            Integer[] player_types = new Integer[4];
+            for (int team = 0; team < 4; team++) {
+                Player player = getGame().getPlayer(team);
+                player_types[team] = player.getType();
+            }
+            return player_types;
         }
     }
 
     public void setAlliance(int team, int alliance) {
         synchronized (GAME_LOCK) {
-            Player player = getGame().getPlayer(team);
-            if (player != null) {
-                player.setAlliance(alliance);
+            if (isOpen()) {
+                getGame().getPlayer(team).setAlliance(alliance);
             }
         }
     }
 
     public int getAlliance(int team) {
-        Player player = getGame().getPlayer(team);
-        if (player != null) {
-            return player.getAlliance();
-        } else {
-            return -1;
+        return getGame().getPlayer(team).getAlliance();
+    }
+
+    public Integer[] getAlliances() {
+        Integer[] alliances = new Integer[4];
+        for (int team = 0; team < 4; team++) {
+            alliances[team] = getGame().getPlayer(team).getAlliance();
         }
+        return alliances;
     }
 
     public long getRoomNumber() {
@@ -237,14 +253,14 @@ public class Room {
     }
 
     public void startGame() {
-        if (!is_game_save) {
-            getGame().initialize();
-        }
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (player.getType() != Player.NONE) {
                 player.setType(Player.REMOTE);
             }
+        }
+        if (!getGame().isInitialized()) {
+            getGame().initialize();
         }
         game_started = true;
     }
@@ -256,10 +272,6 @@ public class Room {
                 getManager().getGameEventExecutor().dispatchGameEvents();
             }
         }
-    }
-
-    public boolean isSavedGame() {
-        return is_game_save;
     }
 
     public boolean isOpen() {

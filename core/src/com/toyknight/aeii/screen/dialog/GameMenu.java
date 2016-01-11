@@ -8,6 +8,7 @@ import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
@@ -139,13 +140,16 @@ public class GameMenu extends BasicDialog {
 
     public void display() {
         btn_save.setVisible(canSave());
-        btn_load.setVisible(!getContext().getNetworkManager().isConnected()
-                && getOwner().getGame().getCurrentPlayer().isLocalPlayer());
+        btn_load.setVisible(canLoad());
     }
 
     private boolean canSave() {
         return getOwner().getGame().getCurrentPlayer().isLocalPlayer()
                 && getOwner().getManager().getState() == GameManager.STATE_SELECT;
+    }
+
+    private boolean canLoad() {
+        return !NetworkManager.isConnected() && getOwner().getGame().getCurrentPlayer().isLocalPlayer();
     }
 
 }

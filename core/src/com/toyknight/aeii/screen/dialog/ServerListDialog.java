@@ -12,6 +12,7 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.MainMenuScreen;
 import com.toyknight.aeii.net.server.ServerConfiguration;
 import com.toyknight.aeii.screen.widgets.StringList;
@@ -93,7 +94,7 @@ public class ServerListDialog extends BasicDialog {
             getContext().submitAsyncTask(new AsyncTask<Boolean>() {
                 @Override
                 public Boolean doTask() throws IOException {
-                    return getContext().getNetworkManager().connect(
+                    return NetworkManager.connect(
                             getSelectedServer(), getContext().getUsername(), getContext().getVerificationString());
                 }
 
@@ -107,7 +108,7 @@ public class ServerListDialog extends BasicDialog {
                         setEnabled(true);
                         btn_connect.setText(Language.getText("LB_CONNECT"));
                         getOwner().closeDialog("server");
-                        getContext().getNetworkManager().disconnect();
+                        NetworkManager.disconnect();
                         getContext().showMessage(Language.getText("MSG_ERR_RBS"), null);
                     }
                 }
