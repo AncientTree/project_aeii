@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.net.CommandExecutor;
 import com.toyknight.aeii.net.task.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.PlayerList;
@@ -23,7 +23,7 @@ import com.toyknight.aeii.utils.Language;
  */
 public class MessageBox extends BasicDialog {
 
-    private Callable callback;
+    private final CommandExecutor command_executor;
 
     private PlayerList player_list;
     private TextField tf_message;
@@ -31,6 +31,7 @@ public class MessageBox extends BasicDialog {
     public MessageBox(StageScreen owner) {
         super(owner);
         this.initComponents();
+        this.command_executor = new CommandExecutor(getContext());
     }
 
     private void initComponents() {
@@ -92,6 +93,10 @@ public class MessageBox extends BasicDialog {
         pack();
     }
 
+    public CommandExecutor getCommandExecutor() {
+        return command_executor;
+    }
+
     @Override
     public void display() {
         tf_message.setText("");
@@ -108,20 +113,21 @@ public class MessageBox extends BasicDialog {
     }
 
     public void sendMessage(String message) {
-        getContext().submitAsyncTask(new MessageSendingTask(message) {
-            @Override
-            public void onFinish(Void result) {
-            }
+        if (message.startsWith("/")) {
+            PlayerSnapshot selected_player = player_list.getSelected();
+            getCommandExecutor().execute(message, selected_player.id);
+        } else {
+            getContext().submitAsyncTask(new MessageSendingTask(message) {
+                @Override
+                public void onFinish(Void result) {
+                }
 
-            @Override
-            public void onFail(String message) {
-            }
-        });
-        callback.call();
-    }
-
-    public void setCallback(Callable callback) {
-        this.callback = callback;
+                @Override
+                public void onFail(String message) {
+                }
+            });
+            getOwner().closeDialog("message");
+        }
     }
 
 }

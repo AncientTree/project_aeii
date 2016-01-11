@@ -160,12 +160,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.message_box.setPosition(
                 (viewport.width - message_box.getWidth()) / 2,
                 (viewport.height - message_box.getHeight()) / 2 + ts);
-        this.message_box.setCallback(new Callable() {
-            @Override
-            public void call() {
-                closeDialog("message");
-            }
-        });
         this.addDialog("message", message_box);
 
         //mini map
@@ -328,6 +322,25 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
+    public void onAllocationUpdate() {
+        Integer[] allocation = NetworkManager.getRoomSetting().team_allocation;
+        for (int team = 0; team < 4; team++) {
+            Player player = getGame().getPlayer(team);
+            if (player.getType() == Player.LOCAL && allocation[team] != NetworkManager.getServiceID()) {
+                player.setType(Player.REMOTE);
+                message_board.appendMessage(null,
+                        String.format(Language.getText("MSG_INFO_LTC"), Language.getText("LB_TEAM_" + team)));
+            }
+            if (player.getType() == Player.REMOTE && allocation[team] == NetworkManager.getServiceID()) {
+                player.setType(Player.LOCAL);
+                message_board.appendMessage(null,
+                        String.format(Language.getText("MSG_INFO_GTC"), Language.getText("LB_TEAM_" + team)));
+            }
+        }
+        onScreenUpdateRequested();
+    }
+
+    @Override
     public void onPlayerJoin(int id, String username) {
         message_box.setPlayers(NetworkManager.getRoomSetting().players);
         appendMessage(null, String.format(Language.getText("MSG_INFO_PJ"), username));
@@ -371,9 +384,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     public void show() {
         MapAnimator.setCanvas(this);
         Gdx.input.setInputProcessor(this);
-        if (NetworkManager.isConnected()) {
-            btn_message.setVisible(true);
-        }
+        btn_message.setVisible(NetworkManager.isConnected());
 
         if (NetworkManager.isConnected()) {
             RoomSetting setting = NetworkManager.getRoomSetting();

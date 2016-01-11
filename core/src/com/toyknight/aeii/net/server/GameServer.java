@@ -324,11 +324,11 @@ public class GameServer {
 
     public void onAllocationUpdate(PlayerService updater, Notification notification) {
         if (updater.isAuthenticated()) {
-            Integer[] alliance = (Integer[]) notification.getParameter(0);
-            Integer[] allocation = (Integer[]) notification.getParameter(1);
-            Integer[] types = (Integer[]) notification.getParameter(2);
             Room room = getRoom(updater.getRoomNumber());
-            if (isRoomOpen(room) && room.getHostID() == updater.getID()) {
+            if (room != null && room.getHostID() == updater.getID()) {
+                Integer[] alliance = (Integer[]) notification.getParameter(0);
+                Integer[] allocation = (Integer[]) notification.getParameter(1);
+                Integer[] types = (Integer[]) notification.getParameter(2);
                 for (int team = 0; team < 4; team++) {
                     room.setAlliance(team, alliance[team]);
                     room.setTeamAllocation(team, allocation[team]);
