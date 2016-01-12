@@ -136,7 +136,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
         //message board
         this.message_board = new MessageBoard(ts);
-        this.message_board.setBounds(0, ts, viewport.width, ts * 3);
+        this.message_board.setBounds(0, ts, viewport.width, viewport.height);
         addActor(message_board);
 
         //action button bar
@@ -158,7 +158,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
         this.message_box = new MessageBox(this);
         this.message_box.setPosition(
-                (viewport.width - message_box.getWidth()) / 2,
+                viewport.width - message_box.getWidth() - (viewport.height - message_box.getHeight()) / 2,
                 (viewport.height - message_box.getHeight()) / 2 + ts);
         this.addDialog("message", message_box);
 
@@ -311,6 +311,18 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
+    public void showDialog(String name) {
+        super.showDialog(name);
+        onScreenUpdateRequested();
+    }
+
+    @Override
+    public void closeDialog(String name) {
+        super.closeDialog(name);
+        onScreenUpdateRequested();
+    }
+
+    @Override
     public void onDisconnect() {
         getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
@@ -364,9 +376,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void act(float delta) {
-        if (!message_box.isVisible()) {
-            message_board.update(delta);
-        }
+        message_board.update(delta);
         mini_map.update(delta);
         cursor.update(delta);
         attack_cursor.update(delta);
@@ -722,7 +732,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onScreenUpdateRequested() {
-        this.action_button_bar.updateButtons();
+        action_button_bar.updateButtons();
+        btn_message.setVisible(!message_box.isVisible());
+        message_board.setFading(!message_box.isVisible());
         GameContext.setButtonEnabled(btn_end_turn, canEndTurn());
         GameContext.setButtonEnabled(btn_menu, !menu.isVisible());
     }

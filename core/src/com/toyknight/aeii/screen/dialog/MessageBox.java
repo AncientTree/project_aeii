@@ -69,6 +69,7 @@ public class MessageBox extends BasicDialog {
             }
         });
         tf_message.setFocusTraversal(false);
+        tf_message.setMaxLength(48);
         add(tf_message).width(ts * 6 + ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
 
         Table button_bar = new Table();
@@ -113,20 +114,22 @@ public class MessageBox extends BasicDialog {
     }
 
     public void sendMessage(String message) {
-        if (message.startsWith("/")) {
-            PlayerSnapshot selected_player = player_list.getSelected();
-            getCommandExecutor().execute(message, selected_player.id);
-        } else {
-            getContext().submitAsyncTask(new MessageSendingTask(message) {
-                @Override
-                public void onFinish(Void result) {
-                }
+        if (message.length() > 0) {
+            if (message.startsWith("/")) {
+                PlayerSnapshot selected_player = player_list.getSelected();
+                getCommandExecutor().execute(message, selected_player.id);
+            } else {
+                getContext().submitAsyncTask(new MessageSendingTask(message) {
+                    @Override
+                    public void onFinish(Void result) {
+                    }
 
-                @Override
-                public void onFail(String message) {
-                }
-            });
-            getOwner().closeDialog("message");
+                    @Override
+                    public void onFail(String message) {
+                    }
+                });
+                getOwner().closeDialog("message");
+            }
         }
     }
 

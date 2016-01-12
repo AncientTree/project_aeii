@@ -6,18 +6,25 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.renderer.FontRenderer;
 
 /**
- * Created by toyknight on 9/7/2015.
+ * @author toyknight 9/7/2015.
  */
 public class MessageBoard extends Table {
 
     private final int ts;
     private final Array<Message> messages;
 
+    private boolean fading;
+
     private float alpha = 3f;
 
     public MessageBoard(int ts) {
         this.ts = ts;
+        this.fading = true;
         this.messages = new Array<Message>();
+    }
+
+    public void setFading(boolean fading) {
+        this.fading = fading;
     }
 
     public void display() {
@@ -46,7 +53,7 @@ public class MessageBoard extends Table {
     }
 
     public void update(float delta) {
-        if (alpha > 0) {
+        if (alpha > 0 && fading) {
             if (alpha > 1) {
                 alpha -= delta;
             } else {
@@ -62,7 +69,8 @@ public class MessageBoard extends Table {
             Message message = messages.get(messages.size - i - 1);
             float font_height = FontRenderer.getTextFont().getCapHeight();
             float draw_y = (i * font_height * 2) + font_height;
-            if (draw_y <= getHeight() - font_height * 2) {
+            float cap_height = fading ? font_height * 8 : getHeight() - font_height * 2;
+            if (draw_y <= cap_height) {
                 String username = message.getUsername();
                 String content = message.getMessage();
                 if (username == null) {
