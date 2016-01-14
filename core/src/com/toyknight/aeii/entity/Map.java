@@ -309,7 +309,11 @@ public class Map implements Serializable {
     }
 
     public Point getPosition(int x, int y) {
-        return position_map[x][y];
+        if (isWithinMap(x, y)) {
+            return position_map[x][y];
+        } else {
+            return null;
+        }
     }
 
     public int getPlayerCount() {

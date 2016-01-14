@@ -1,7 +1,5 @@
 package com.toyknight.aeii.screen.dialog;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,7 +31,6 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     private int castle_y;
 
     private Unit selected_unit;
-    private int price;
 
     public UnitStoreDialog(GameScreen screen) {
         super(screen);
@@ -120,24 +117,10 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     private void updateButton() {
         int current_team = getGame().getCurrentTeam();
         if (selected_unit != null) {
-            price = getGame().getUnitPrice(selected_unit.getIndex(), current_team);
-            btn_buy.setVisible(canBuy(selected_unit.getIndex(), price));
+            getManager().canBuy(selected_unit.getIndex(), current_team, castle_x, castle_y);
         } else {
             btn_buy.setVisible(false);
         }
-    }
-
-    private boolean canBuy(int unit_index, int unit_price) {
-        Unit sample_unit = UnitFactory.getSample(unit_index);
-        int movement_point = sample_unit.getMovementPoint();
-        sample_unit.setCurrentMovementPoint(movement_point);
-        sample_unit.setX(castle_x);
-        sample_unit.setY(castle_y);
-        return unit_price >= 0
-                && getGame().getCurrentPlayer().getGold() >= unit_price
-                && getManager().createMovablePositions(sample_unit).size > 0
-                && (getGame().getCurrentPlayer().getPopulation() < getGame().getRule().getInteger(MAX_POPULATION)
-                || sample_unit.isCommander());
     }
 
     @Override
@@ -146,12 +129,15 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         int interval = ts * 13 / 24;
         int lw = FontRenderer.getLNumberWidth(0, false);
         int lh = FontRenderer.getLCharHeight();
+        int current_team = getGame().getCurrentTeam();
+        int price = getGame().getUnitPrice(selected_unit.getIndex(), current_team);
         //price
         batch.draw(ResourceManager.getStatusHudIcon(1),
                 x + ts * 10 + ts / 2 - lw * 4 - 11 * ts / 24,
                 y + height - ts / 2 - lh,
                 11 * ts / 24,
                 11 * ts / 24);
+
         if (price >= 0) {
             FontRenderer.drawLNumber(batch,
                     price,

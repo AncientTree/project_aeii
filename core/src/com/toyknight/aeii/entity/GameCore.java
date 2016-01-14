@@ -131,10 +131,6 @@ public class GameCore implements Serializable {
         return getPlayer(team) != null && getPlayer(team).getType() != Player.NONE;
     }
 
-    public void removePlayer(int team) {
-        player_list[team].setType(Player.NONE);
-    }
-
     public Player getPlayer(int team) {
         return player_list[team];
     }
@@ -149,6 +145,18 @@ public class GameCore implements Serializable {
 
     public int getCurrentTurn() {
         return turn;
+    }
+
+    public int getMaxPopulation() {
+        return getRule().getInteger(MAX_POPULATION);
+    }
+
+    public int getPopulation(int team) {
+        return getPlayer(team).getPopulation();
+    }
+
+    public int getCurrentTeamPopulation() {
+        return getPopulation(getCurrentTeam());
     }
 
     public void removeTeam(int team) {
@@ -370,8 +378,8 @@ public class GameCore implements Serializable {
         } else {
             if (canReceiveHeal(target)) {
                 return !isEnemy(healer, target)
-                        && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target))
-                        && (healer.hasAbility(Ability.REFRESH_AURA) || healer.hasAbility(Ability.HEALER));
+                        && canHealReachTarget(healer, target)
+                        && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target));
             } else {
                 //heal becomes damage for the undead
                 return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
@@ -381,6 +389,10 @@ public class GameCore implements Serializable {
 
     public boolean canClean(Unit cleaner, Unit target) {
         return target != null && !isEnemy(cleaner, target) && Status.isDebuff(target.getStatus());
+    }
+
+    public boolean canHealReachTarget(Unit healer, Unit target) {
+        return healer.hasAbility(Ability.AIR_FORCE) || !target.hasAbility(Ability.AIR_FORCE);
     }
 
     public boolean canReceiveHeal(Unit target) {
@@ -400,7 +412,9 @@ public class GameCore implements Serializable {
     }
 
     public boolean canMoveThrough(Unit unit, Unit target_unit) {
-        return target_unit == null || !isEnemy(unit, target_unit) || unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
+        return target_unit == null
+                || !isEnemy(unit, target_unit)
+                || unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
     }
 
     public boolean isUnitAccessible(Unit unit) {

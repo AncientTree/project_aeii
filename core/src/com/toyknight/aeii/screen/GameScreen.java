@@ -117,7 +117,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.btn_end_turn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getManager().doNextTurn();
+                getManager().doEndTurn();
                 onScreenUpdateRequested();
             }
         });
@@ -487,7 +487,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                         return true;
                     }
                     if (keyCode == Input.Keys.SPACE) {
-                        getManager().doStandbyUnit();
+                        getManager().doStandbySelectedUnit();
                         onScreenUpdateRequested();
                         return true;
                     }
@@ -570,7 +570,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 switch (getManager().getState()) {
                     case GameManager.STATE_MOVE:
                     case GameManager.STATE_REMOVE:
-                        if (getManager().isMovablePosition(release_map_x, release_map_y)) {
+                        Point target = getGame().getMap().getPosition(release_map_x, release_map_y);
+                        if (getManager().getMovablePositions().contains(target)) {
                             if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
                                 doClick(release_map_x, release_map_y);
                             } else {
@@ -627,7 +628,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     break;
                 case GameManager.STATE_MOVE:
                 case GameManager.STATE_REMOVE:
-                    getManager().doMoveUnit(cursor_x, cursor_y);
+                    getManager().doMove(cursor_x, cursor_y);
                     break;
                 case GameManager.STATE_ACTION:
                     getManager().doReverseMove();
@@ -759,7 +760,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public boolean canOperate() {
-        return getGame().getCurrentPlayer().isLocalPlayer()
+        return getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && !getManager().isProcessing()
                 && !getManager().isAnimating();
     }

@@ -81,7 +81,9 @@ public class UnitToolkit {
     }
 
     public static boolean isTheSameUnit(Unit unit_a, Unit unit_b) {
-        return !(unit_a == null || unit_b == null) && unit_a.isAt(unit_b.getX(), unit_b.getY()) && unit_a.getUnitCode().equals(unit_b.getUnitCode());
+        return !(unit_a == null || unit_b == null)
+                && unit_a.isAt(unit_b.getX(), unit_b.getY())
+                && unit_a.getUnitCode().equals(unit_b.getUnitCode());
     }
 
     public static boolean isWithinRange(Unit unit, int target_x, int target_y) {

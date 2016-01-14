@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.toyknight.aeii.ResourceManager;
 
 /**
- * Created by toyknight on 4/6/2015.
+ * @author toyknight 4/6/2015.
  */
 public class BorderRenderer {
 

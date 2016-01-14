@@ -360,7 +360,8 @@ public class GameEventExecutor {
             getGameManager().setSelectedUnit(unit);
             getGameManager().createMovablePositions();
             Array<Point> move_path = getGameManager().getMovePath(target_x, target_y);
-            int movement_point = getGameManager().getMovementPointRemains(target_x, target_y);
+            int movement_point =
+                    getGameManager().getMovementGenerator().getMovementPointRemains(unit, target_x, target_y);
 
             getGame().moveUnit(unit_x, unit_y, target_x, target_y);
             unit.setCurrentMovementPoint(movement_point);
@@ -439,16 +440,20 @@ public class GameEventExecutor {
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGameManager().setSelectedUnit(unit);
-            if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                Unit selected_unit = getGameManager().getSelectedUnit();
-                Tile tile = getGame().getMap().getTile(target_x, target_y);
-                if (selected_unit.isCommander() && !selected_unit.isStandby() && getGame().isCastleAccessible(tile)) {
-                    getGameManager().setState(GameManager.STATE_BUY);
-                } else {
-                    if (!selected_unit.isStandby()) {
+            switch (getGame().getCurrentPlayer().getType()) {
+                case Player.LOCAL:
+                    Tile tile = getGame().getMap().getTile(target_x, target_y);
+                    if (unit.isCommander() && getGame().isCastleAccessible(tile)) {
+                        getGameManager().setState(GameManager.STATE_BUY);
+                    } else {
                         getGameManager().beginMovePhase();
                     }
-                }
+                    break;
+                case Player.ROBOT:
+                    getGameManager().beginMovePhase();
+                    break;
+                default:
+                    //do nothing
             }
         }
     }
@@ -597,7 +602,7 @@ public class GameEventExecutor {
 
     private void onCheckTeamDestroy(int team) {
         Analyzer analyzer = new Analyzer(getGame());
-        if (analyzer.isTeamDestroyed(team)) {
+        if (team >=0 && analyzer.isTeamDestroyed(team)) {
             getGame().removeTeam(team);
             int winner_alliance = analyzer.getWinnerAlliance();
             if (winner_alliance >= 0) {

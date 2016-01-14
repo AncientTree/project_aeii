@@ -5,7 +5,6 @@ import static com.toyknight.aeii.rule.Rule.Entry.*;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.entity.Point;
-import com.toyknight.aeii.entity.Tile;
 
 /**
  * @author toyknight 1/10/2016.
@@ -34,15 +33,7 @@ public class Analyzer {
         }
         boolean castle_check = true;
         if (getGame().getRule().getBoolean(CASTLE_CLEAR)) {
-            for (int x = 0; x < getGame().getMap().getWidth(); x++) {
-                for (int y = 0; y < getGame().getMap().getHeight(); y++) {
-                    Tile tile = getGame().getMap().getTile(x, y);
-                    if (tile.isCastle() && tile.getTeam() == team) {
-                        castle_check = false;
-                        break;
-                    }
-                }
-            }
+            castle_check = getGame().getMap().getCastleCount(team) <= 0;
         }
         return unit_check && castle_check;
     }
