@@ -158,10 +158,12 @@ public class GameManager implements GameEventListener, AnimationListener {
             getGameEventExecutor().dispatchGameEvents();
         }
         if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
-            if (getRobot().isOperating()) {
-                getRobot().operate(delta);
-            } else {
-                getRobot().calculate();
+            if (!getRobot().isCalculating()) {
+                if (getRobot().isOperating()) {
+                    getRobot().operate(delta);
+                } else {
+                    getRobot().calculate();
+                }
             }
         }
     }

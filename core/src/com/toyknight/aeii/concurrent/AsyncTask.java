@@ -1,4 +1,4 @@
-package com.toyknight.aeii;
+package com.toyknight.aeii.concurrent;
 
 import com.badlogic.gdx.Gdx;
 

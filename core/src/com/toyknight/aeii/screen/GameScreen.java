@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.animation.AnimationManager;
 import com.toyknight.aeii.manager.GameEvent;

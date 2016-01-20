@@ -17,7 +17,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.net.NetworkListener;
-import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;

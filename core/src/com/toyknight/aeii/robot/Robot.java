@@ -20,7 +20,18 @@ public class Robot {
 
     private final Queue<Operation> operation_queue;
 
+    private final Runnable calculate_task = new Runnable() {
+        @Override
+        public void run() {
+            calculating = true;
+            doCalculate();
+            calculating = false;
+        }
+    };
+
     private float current_delay = 0f;
+
+    private boolean calculating;
 
     public Robot(GameManager manager) {
         this.manager = manager;
@@ -29,6 +40,7 @@ public class Robot {
     }
 
     public void reset() {
+        calculating = false;
         target_units.clear();
     }
 
@@ -44,6 +56,10 @@ public class Robot {
         return operation_queue.size() > 0;
     }
 
+    public boolean isCalculating() {
+        return calculating;
+    }
+
     public void operate(float delta) {
         if (isOperating()) {
             if (current_delay < 0.25f) {
@@ -56,6 +72,12 @@ public class Robot {
     }
 
     public void calculate() {
+        if (!isCalculating()) {
+            new Thread(calculate_task, "robot-thread").start();
+        }
+    }
+
+    private void doCalculate() {
         int current_team = getGame().getCurrentTeam();
 
         Unit commander = null;
@@ -83,17 +105,19 @@ public class Robot {
         submitOperation(Operation.END_TURN);
     }
 
+    private boolean isTargetUnit(String unit_code) {
+        return target_units.contains(unit_code);
+    }
+
     private void submitOperation(int type, int x, int y) {
-        Operation operation = new Operation(type, x, y);
-        operation_queue.add(operation);
+        if (calculating) {
+            Operation operation = new Operation(type, x, y);
+            operation_queue.add(operation);
+        }
     }
 
     private void submitOperation(int type) {
         submitOperation(type, -1, -1);
-    }
-
-    private boolean isTargetUnit(String unit_code) {
-        return target_units.contains(unit_code);
     }
 
     private void executeOperation(Operation operation) {

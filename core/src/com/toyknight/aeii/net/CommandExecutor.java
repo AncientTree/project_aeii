@@ -1,6 +1,6 @@
 package com.toyknight.aeii.net;
 
-import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;

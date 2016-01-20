@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.*;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;

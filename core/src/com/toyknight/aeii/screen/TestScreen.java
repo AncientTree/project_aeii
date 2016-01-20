@@ -102,7 +102,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
                     game.getPlayer(team).setAlliance(team);
                 }
             }
-//            game.getPlayer(0).setType(Player.ROBOT);
+            game.getPlayer(0).setType(Player.ROBOT);
             getContext().gotoGameScreen(game);
         }
     }

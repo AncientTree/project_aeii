@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Player;
-import com.toyknight.aeii.AsyncTask;
+import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.net.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
