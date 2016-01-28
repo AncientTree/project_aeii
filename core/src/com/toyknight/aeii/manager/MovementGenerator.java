@@ -3,7 +3,7 @@ package com.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.entity.Step;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -20,8 +20,8 @@ public class MovementGenerator {
     private final int[] x_dir = {1, -1, 0, 0};
     private final int[] y_dir = {0, 0, 1, -1};
 
-    private final Array<Point> move_path;
-    private final ObjectSet<Point> movable_positions;
+    private final Array<Position> move_path;
+    private final ObjectSet<Position> movable_positions;
 
     private GameCore game;
 
@@ -30,8 +30,8 @@ public class MovementGenerator {
     private int[][] move_mark_map;
 
     public MovementGenerator() {
-        this.move_path = new Array<Point>();
-        this.movable_positions = new ObjectSet<Point>();
+        this.move_path = new Array<Position>();
+        this.movable_positions = new ObjectSet<Position>();
     }
 
     public void setGame(GameCore game) {
@@ -43,7 +43,7 @@ public class MovementGenerator {
         return game;
     }
 
-    public Point getPosition(Unit unit) {
+    public Position getPosition(Unit unit) {
         return getGame().getMap().getPosition(unit.getX(), unit.getY());
     }
 
@@ -65,7 +65,7 @@ public class MovementGenerator {
         }
     }
 
-    public ObjectSet<Point> createMovablePositions(Unit unit) {
+    public ObjectSet<Position> createMovablePositions(Unit unit) {
         current_unit = UnitFactory.cloneUnit(unit);
         movable_positions.clear();
         initializeMoveMarkMap();
@@ -91,7 +91,7 @@ public class MovementGenerator {
                 int next_x = current_step.getPosition().x + x_dir[i];
                 int next_y = current_step.getPosition().y + y_dir[i];
                 if (getGame().getMap().isWithinMap(next_x, next_y)) {
-                    Point next = getGame().getMap().getPosition(next_x, next_y);
+                    Position next_position = getGame().getMap().getPosition(next_x, next_y);
                     int movement_point_cost =
                             UnitToolkit.getMovementPointCost(unit, getGame().getMap().getTile(next_x, next_y));
                     int movement_point_left = current_movement_point - movement_point_cost;
@@ -99,7 +99,7 @@ public class MovementGenerator {
                             && movement_point_left > move_mark_map[next_x][next_y]) {
                         Unit target_unit = game.getMap().getUnit(next_x, next_y);
                         if (getGame().canMoveThrough(unit, target_unit)) {
-                            Step next_step = new Step(next, movement_point_left);
+                            Step next_step = new Step(next_position, movement_point_left);
                             next_steps.add(next_step);
                         }
                     }
@@ -111,7 +111,7 @@ public class MovementGenerator {
         }
     }
 
-    public Array<Point> createMovePath(Unit unit, int dest_x, int dest_y) {
+    public Array<Position> createMovePath(Unit unit, int dest_x, int dest_y) {
         checkIdentity(unit);
         move_path.clear();
         int start_x = unit.getX();
@@ -152,7 +152,7 @@ public class MovementGenerator {
 
     public int getMovementPointRemains(Unit unit, int dest_x, int dest_y) {
         checkIdentity(unit);
-        Point dest_position = getGame().getMap().getPosition(dest_x, dest_y);
+        Position dest_position = getGame().getMap().getPosition(dest_x, dest_y);
         if (movable_positions.contains(dest_position)) {
             return move_mark_map[dest_x][dest_y];
         } else {
@@ -160,7 +160,7 @@ public class MovementGenerator {
         }
     }
 
-    public Point getNextPositionToTarget(Unit unit, int target_x, int target_y) {
+    public Position getNextPositionToTarget(Unit unit, int target_x, int target_y) {
         current_unit = UnitFactory.cloneUnit(unit);
         initializeMoveMarkMap();
         searchPathToTarget(createStartStep(unit), unit, getGame().getMap().getPosition(target_x, target_y));
@@ -180,7 +180,7 @@ public class MovementGenerator {
         }
     }
 
-    private void searchPathToTarget(Queue<Step> current_steps, Unit unit, Point target) {
+    private void searchPathToTarget(Queue<Step> current_steps, Unit unit, Position target) {
         Queue<Step> next_steps = new LinkedList<Step>();
         while (!current_steps.isEmpty()) {
             Step current_step = current_steps.poll();
@@ -198,7 +198,7 @@ public class MovementGenerator {
                     int next_x = current_step.getPosition().x + x_dir[i];
                     int next_y = current_step.getPosition().y + y_dir[i];
                     if (getGame().getMap().isWithinMap(next_x, next_y)) {
-                        Point next_position = getGame().getMap().getPosition(next_x, next_y);
+                        Position next_position = getGame().getMap().getPosition(next_x, next_y);
                         int movement_point_cost =
                                 UnitToolkit.getMovementPointCost(unit, getGame().getMap().getTile(next_x, next_y));
                         int movement_point_left = current_movement_point - movement_point_cost;

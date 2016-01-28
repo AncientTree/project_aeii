@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animation.*;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.entity.Unit;
 
 /**
@@ -14,7 +14,7 @@ public interface AnimationDispatcher {
 
     void setListener(AnimationListener listener);
 
-    void submitHpChangeAnimation(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units);
+    void submitHpChangeAnimation(ObjectMap<Position, Integer> change_map, ObjectSet<Unit> units);
 
     void submitHpChangeAnimation(Unit unit, int change);
 
@@ -34,11 +34,11 @@ public interface AnimationDispatcher {
 
     void submitUnitDestroyAnimation(Unit unit);
 
-    void submitUnitMoveAnimation(Unit unit, Array<Point> path);
+    void submitUnitMoveAnimation(Unit unit, Array<Position> path);
 
     void submitAnimation(Animator animation);
 
-    void clearAnimations();
+    void reset();
 
     void updateAnimation(float delta);
 

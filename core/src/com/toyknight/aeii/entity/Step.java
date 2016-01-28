@@ -6,14 +6,14 @@ package com.toyknight.aeii.entity;
 public class Step {
 
     private final int movement_point;
-    private final Point position;
+    private final Position position;
 
-    public Step(Point position, int movement_point) {
+    public Step(Position position, int movement_point) {
         this.movement_point = movement_point;
         this.position = position;
     }
 
-    public Point getPosition() {
+    public Position getPosition() {
         return position;
     }
 

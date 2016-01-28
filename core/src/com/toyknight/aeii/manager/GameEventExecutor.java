@@ -52,7 +52,7 @@ public class GameEventExecutor {
         return animation_dispatcher;
     }
 
-    public void clearGameEvents() {
+    public void reset() {
         event_queue.clear();
         buffer_event_queue.clear();
     }
@@ -288,8 +288,8 @@ public class GameEventExecutor {
                 0.8f);
 
         //update status
-        Array<Point> unit_position_set = getGame().getMap().getUnitPositionSet().toArray();
-        for (Point position : unit_position_set) {
+        Array<Position> unit_position_set = getGame().getMap().getUnitPositionSet().toArray();
+        for (Position position : unit_position_set) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 unit.updateStatus();
@@ -298,10 +298,10 @@ public class GameEventExecutor {
         }
 
         //calculate hp change at turn start
-        ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
+        ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
 
         //terrain heal and poison damage
-        for (Point position : getGame().getMap().getUnitPositionSet()) {
+        for (Position position : getGame().getMap().getUnitPositionSet()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             int change = 0;
             if (unit.getTeam() == team) {
@@ -359,7 +359,7 @@ public class GameEventExecutor {
             Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
             getGameManager().setSelectedUnit(unit);
             getGameManager().createMovablePositions();
-            Array<Point> move_path = getGameManager().getMovePath(target_x, target_y);
+            Array<Position> move_path = getGameManager().getMovePath(target_x, target_y);
             int movement_point =
                     getGameManager().getMovementGenerator().getMovementPointRemains(unit, target_x, target_y);
 
@@ -471,10 +471,10 @@ public class GameEventExecutor {
             getGame().standbyUnit(target_x, target_y);
             getGameManager().setState(GameManager.STATE_SELECT);
 
-            ObjectSet<Point> aura_positions = getGameManager().createPositionsWithinRange(target_x, target_y, 0, 2);
+            ObjectSet<Position> aura_positions = getGameManager().createPositionsWithinRange(target_x, target_y, 0, 2);
 
             //all the status auras
-            for (Point target_position : aura_positions) {
+            for (Position target_position : aura_positions) {
                 Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
                 if (target != null) {
                     if (unit.hasAbility(Ability.ATTACK_AURA) && !getGame().isEnemy(unit, target)) {
@@ -487,10 +487,10 @@ public class GameEventExecutor {
                 }
             }
             //the refresh aura
-            ObjectMap<Point, Integer> hp_change_map = new ObjectMap<Point, Integer>();
+            ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
             if (unit.hasAbility(Ability.REFRESH_AURA)) {
                 int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                for (Point target_position : aura_positions) {
+                for (Position target_position : aura_positions) {
                     Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
                     if (getGame().canClean(unit, target)) {
                         target.clearStatus();
@@ -585,10 +585,10 @@ public class GameEventExecutor {
         }
     }
 
-    private void onHpChange(ObjectMap<Point, Integer> change_map) {
+    private void onHpChange(ObjectMap<Position, Integer> change_map) {
         if (change_map.keys().toArray().size > 0) {
             ObjectSet<Unit> units = new ObjectSet<Unit>();
-            for (Point position : change_map.keys()) {
+            for (Position position : change_map.keys()) {
                 Unit target = getGame().getMap().getUnit(position);
                 target.changeCurrentHp(change_map.get(position));
                 units.add(target);

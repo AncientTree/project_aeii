@@ -12,27 +12,23 @@ public class Operation {
     public static final int HEAL = 0x4;
     public static final int STANDBY = 0x5;
     public static final int END_TURN = 0x6;
+    public static final int BUY = 0x7;
 
     private final int type;
-    private final int map_x;
-    private final int map_y;
 
-    public Operation(int type, int map_x, int map_y) {
+    private final int[] parameters;
+
+    public Operation(int type, int... parameters) {
         this.type = type;
-        this.map_x = map_x;
-        this.map_y = map_y;
+        this.parameters = parameters;
     }
 
     public int getType() {
         return type;
     }
 
-    public int getMapX() {
-        return map_x;
-    }
-
-    public int getMapY() {
-        return map_y;
+    public int getParameter(int index) {
+        return parameters[index];
     }
 
 }

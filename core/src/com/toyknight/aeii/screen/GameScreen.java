@@ -236,8 +236,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawUnits() {
-        ObjectMap.Keys<Point> unit_positions = getGame().getMap().getUnitPositionSet();
-        for (Point position : unit_positions) {
+        ObjectMap.Keys<Position> unit_positions = getGame().getMap().getUnitPositionSet();
+        for (Position position : unit_positions) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             //if this unit isn't animating, then paint it. otherwise, let animation paint it
             if (!isOnUnitAnimation(unit.getX(), unit.getY())) {
@@ -428,7 +428,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         scale = 1.0f;
         manager.setGame(game);
         manager.setGameManagerListener(this);
-        Point team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
+        Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
         locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
@@ -570,7 +570,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 switch (getManager().getState()) {
                     case GameManager.STATE_MOVE:
                     case GameManager.STATE_REMOVE:
-                        Point target = getGame().getMap().getPosition(release_map_x, release_map_y);
+                        Position target = getGame().getMap().getPosition(release_map_x, release_map_y);
                         if (getManager().getMovablePositions().contains(target)) {
                             if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
                                 doClick(release_map_x, release_map_y);
@@ -588,7 +588,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     case GameManager.STATE_ATTACK:
                     case GameManager.STATE_SUMMON:
                     case GameManager.STATE_HEAL:
-                        if (getManager().getAttackablePositions().contains(new Point(release_map_x, release_map_y))) {
+                        if (getManager().getAttackablePositions().contains(new Position(release_map_x, release_map_y))) {
                             if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
                                 doClick(release_map_x, release_map_y);
                             } else {

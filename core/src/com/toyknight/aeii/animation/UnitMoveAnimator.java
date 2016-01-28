@@ -2,7 +2,7 @@ package com.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.entity.Unit;
 
 /**
@@ -12,13 +12,13 @@ public class UnitMoveAnimator extends UnitAnimator {
 
     private static final String MOVER_KEY = "mover";
 
-    private final Array<Point> path;
+    private final Array<Position> path;
 
     private int current_location;
     private float x_offset;
     private float y_offset;
 
-    public UnitMoveAnimator(Unit unit, Array<Point> path) {
+    public UnitMoveAnimator(Unit unit, Array<Position> path) {
         this.addUnit(unit, MOVER_KEY);
         this.path = path;
 
@@ -30,7 +30,7 @@ public class UnitMoveAnimator extends UnitAnimator {
     @Override
     public void render(Batch batch) {
         if (path.size > 0) {
-            Point current = path.get(current_location);
+            Position current = path.get(current_location);
             getCanvas().getUnitRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
         }
     }
@@ -39,8 +39,8 @@ public class UnitMoveAnimator extends UnitAnimator {
     public void update(float delta) {
         if (current_location < path.size - 1) {
             float offset_delta = ts() / (4 * (1f / delta) / 30f);
-            Point current = path.get(current_location);
-            Point next = path.get(current_location + 1);
+            Position current = path.get(current_location);
+            Position next = path.get(current_location + 1);
             if (current.x > next.x) {
                 x_offset -= offset_delta;
             }

@@ -3,7 +3,7 @@ package com.toyknight.aeii.animation;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.manager.AnimationDispatcher;
 import com.toyknight.aeii.manager.AnimationListener;
@@ -31,13 +31,13 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
-    public void clearAnimations() {
+    public void reset() {
         animation_queue.clear();
         current_animation = null;
     }
 
     @Override
-    public void submitHpChangeAnimation(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units) {
+    public void submitHpChangeAnimation(ObjectMap<Position, Integer> change_map, ObjectSet<Unit> units) {
         submitAnimation(new HpChangeAnimator(change_map, units));
     }
 
@@ -87,7 +87,7 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
-    public void submitUnitMoveAnimation(Unit unit, Array<Point> path) {
+    public void submitUnitMoveAnimation(Unit unit, Array<Position> path) {
         submitAnimation(new UnitMoveAnimator(unit, path));
     }
 

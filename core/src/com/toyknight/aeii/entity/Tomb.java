@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * @author toyknight 4/3/2015.
  */
-public class Tomb extends Point implements Serializable {
+public class Tomb extends Position implements Serializable {
 
     private static final long serialVersionUID = 4032015L;
 

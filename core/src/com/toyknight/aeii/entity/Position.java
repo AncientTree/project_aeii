@@ -5,23 +5,23 @@ import java.io.Serializable;
 /**
  * @author toyknight 4/3/2015.
  */
-public class Point implements Serializable {
+public class Position implements Serializable {
 
     private static final long serialVersionUID = 4032015L;
 
     public int x;
     public int y;
 
-    public Point() {
+    public Position() {
         this(0, 0);
     }
 
 
-    public Point(Point p) {
+    public Position(Position p) {
         this(p.x, p.y);
     }
 
-    public Point(int x, int y) {
+    public Position(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -36,8 +36,8 @@ public class Point implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Point) {
-            Point pt = (Point) obj;
+        if (obj instanceof Position) {
+            Position pt = (Position) obj;
             return (x == pt.x) && (y == pt.y);
         }
         return super.equals(obj);

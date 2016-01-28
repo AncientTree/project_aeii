@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.net.server.EmptyAnimationManager;
+import com.toyknight.aeii.robot.OperationExecutor;
 import com.toyknight.aeii.robot.Robot;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -31,7 +32,9 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     private final MovementGenerator movement_generator;
 
-    private final Robot robot;
+    private final Robot[] robots;
+
+    private final OperationExecutor operation_executor;
 
     private GameCore game;
     private UnitToolkit unit_toolkit;
@@ -39,39 +42,52 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     private int state;
     protected Unit selected_unit;
-    protected Point last_position;
+    protected Position last_position;
 
-    private final Array<Point> move_path;
-    private final ObjectSet<Point> movable_positions;
-    private final ObjectSet<Point> attackable_positions;
+    private final Array<Position> move_path;
+    private final ObjectSet<Position> movable_positions;
+    private final ObjectSet<Position> attackable_positions;
 
     public GameManager() {
         this(new EmptyAnimationManager());
     }
 
     public GameManager(AnimationDispatcher dispatcher) {
-        this.robot = new Robot(this);
         this.animation_dispatcher = dispatcher;
         this.animation_dispatcher.setListener(this);
         this.movement_generator = new MovementGenerator();
+        this.operation_executor = new OperationExecutor(this);
         this.event_executor = new GameEventExecutor(this, dispatcher);
-        this.move_path = new Array<Point>();
-        this.movable_positions = new ObjectSet<Point>();
-        this.attackable_positions = new ObjectSet<Point>();
+
+        this.robots = new Robot[4];
+        for (int team = 0; team < 4; team++) {
+            robots[team] = new Robot(this, team);
+        }
+
+        this.move_path = new Array<Position>();
+        this.movable_positions = new ObjectSet<Position>();
+        this.attackable_positions = new ObjectSet<Position>();
     }
 
     public void setGame(GameCore game) {
         this.game = game;
         this.unit_toolkit = new UnitToolkit(game);
         this.state = STATE_SELECT;
-        getGameEventExecutor().clearGameEvents();
-        getAnimationDispatcher().clearAnimations();
+        getGameEventExecutor().reset();
+        getOperationExecutor().reset();
+        getAnimationDispatcher().reset();
         getMovementGenerator().setGame(game);
-        getRobot().reset();
+        for (int team = 0; team < 4; team++) {
+            getRobot(team).reset();
+        }
     }
 
     public GameCore getGame() {
         return game;
+    }
+
+    public OperationExecutor getOperationExecutor() {
+        return operation_executor;
     }
 
     public GameEventExecutor getGameEventExecutor() {
@@ -90,8 +106,8 @@ public class GameManager implements GameEventListener, AnimationListener {
         return unit_toolkit;
     }
 
-    public Robot getRobot() {
-        return robot;
+    public Robot getRobot(int team) {
+        return robots[team];
     }
 
     public void setGameManagerListener(GameManagerListener listener) {
@@ -158,11 +174,11 @@ public class GameManager implements GameEventListener, AnimationListener {
             getGameEventExecutor().dispatchGameEvents();
         }
         if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
-            if (!getRobot().isCalculating()) {
-                if (getRobot().isOperating()) {
-                    getRobot().operate(delta);
+            if (!getRobot(getGame().getCurrentTeam()).isCalculating()) {
+                if (getOperationExecutor().isOperating()) {
+                    getOperationExecutor().operate(delta);
                 } else {
-                    getRobot().calculate();
+                    getRobot(getGame().getCurrentTeam()).calculate();
                 }
             }
         }
@@ -188,18 +204,18 @@ public class GameManager implements GameEventListener, AnimationListener {
     public void setSelectedUnit(Unit unit) {
         this.selected_unit = unit;
         this.movable_positions.clear();
-        setLastPosition(new Point(unit.getX(), unit.getY()));
+        setLastPosition(new Position(unit.getX(), unit.getY()));
     }
 
     public Unit getSelectedUnit() {
         return selected_unit;
     }
 
-    public void setLastPosition(Point position) {
+    public void setLastPosition(Position position) {
         this.last_position = position;
     }
 
-    public Point getLastPosition() {
+    public Position getLastPosition() {
         return last_position;
     }
 
@@ -265,7 +281,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public void doReverseMove() {
-        Point last_position = getLastPosition();
+        Position last_position = getLastPosition();
         Unit selected_unit = getSelectedUnit();
         submitGameEvent(GameEvent.REVERSE, selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y);
     }
@@ -428,7 +444,7 @@ public class GameManager implements GameEventListener, AnimationListener {
             setState(GameManager.STATE_SELECT);
         } else {
             if (UnitToolkit.canMoveAgain(unit)) {
-                setLastPosition(new Point(unit.getX(), unit.getY()));
+                setLastPosition(new Position(unit.getX(), unit.getY()));
                 beginRemovePhase();
             } else {
                 doStandbySelectedUnit();
@@ -441,19 +457,19 @@ public class GameManager implements GameEventListener, AnimationListener {
         movable_positions.addAll(getMovementGenerator().createMovablePositions(getSelectedUnit()));
     }
 
-    public ObjectSet<Point> getMovablePositions() {
+    public ObjectSet<Position> getMovablePositions() {
         return movable_positions;
     }
 
-    public ObjectSet<Point> getAttackablePositions() {
+    public ObjectSet<Position> getAttackablePositions() {
         return attackable_positions;
     }
 
-    public Array<Point> getMovePath(int dest_x, int dest_y) {
+    public Array<Position> getMovePath(int dest_x, int dest_y) {
         if (move_path == null || move_path.size == 0) {
             createMovePath(dest_x, dest_y);
         } else {
-            Point current_dest = move_path.get(move_path.size - 1);
+            Position current_dest = move_path.get(move_path.size - 1);
             if (dest_x != current_dest.x || dest_y != current_dest.y) {
                 createMovePath(dest_x, dest_y);
             }
@@ -466,29 +482,29 @@ public class GameManager implements GameEventListener, AnimationListener {
         move_path.addAll(getMovementGenerator().createMovePath(getSelectedUnit(), dest_x, dest_y));
     }
 
-    public ObjectSet<Point> createAttackablePositions(Unit unit, boolean itself) {
+    public ObjectSet<Position> createAttackablePositions(Unit unit, boolean itself) {
         int unit_x = unit.getX();
         int unit_y = unit.getY();
         int min_ar = unit.getMinAttackRange();
         int max_ar = unit.getMaxAttackRange();
-        ObjectSet<Point> attackable_positions = createPositionsWithinRange(unit_x, unit_y, min_ar, max_ar);
+        ObjectSet<Position> attackable_positions = createPositionsWithinRange(unit_x, unit_y, min_ar, max_ar);
         if (itself) {
             attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
         }
         return attackable_positions;
     }
 
-    public ObjectSet<Point> createPositionsWithinRange(int x, int y, int min_range, int max_range) {
-        ObjectSet<Point> positions = new ObjectSet<Point>();
+    public ObjectSet<Position> createPositionsWithinRange(int x, int y, int min_range, int max_range) {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
         for (int ar = min_range; ar <= max_range; ar++) {
             for (int dx = -ar; dx <= ar; dx++) {
                 int dy = dx >= 0 ? ar - dx : -ar - dx;
                 if (game.getMap().isWithinMap(x + dx, y + dy)) {
-                    positions.add(new Point(x + dx, y + dy));
+                    positions.add(new Position(x + dx, y + dy));
                 }
                 if (dy != 0) {
                     if (game.getMap().isWithinMap(x + dx, y - dy)) {
-                        positions.add(new Point(x + dx, y - dy));
+                        positions.add(new Position(x + dx, y - dy));
                     }
                 }
             }
@@ -497,13 +513,13 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean hasEnemyWithinRange(Unit unit) {
-        ObjectSet<Point> attackable_positions = createAttackablePositions(unit, false);
-        for (Point point : attackable_positions) {
-            if (getSelectedUnit().hasAbility(Ability.DESTROYER) && getGame().getMap().getUnit(point.x, point.y) == null
-                    && getGame().getMap().getTile(point.x, point.y).isDestroyable()) {
+        ObjectSet<Position> attackable_positions = createAttackablePositions(unit, false);
+        for (Position position : attackable_positions) {
+            if (getSelectedUnit().hasAbility(Ability.DESTROYER) && getGame().getMap().getUnit(position.x, position.y) == null
+                    && getGame().getMap().getTile(position.x, position.y).isDestroyable()) {
                 return true;
             }
-            Unit target = getGame().getMap().getUnit(point.x, point.y);
+            Unit target = getGame().getMap().getUnit(position.x, position.y);
             if (getGame().isEnemy(unit, target)) {
                 return true;
             }
@@ -512,9 +528,9 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean hasAllyCanHealWithinRange(Unit unit) {
-        ObjectSet<Point> attackable_positions = createAttackablePositions(unit, true);
-        for (Point point : attackable_positions) {
-            Unit target = getGame().getMap().getUnit(point.x, point.y);
+        ObjectSet<Position> attackable_positions = createAttackablePositions(unit, true);
+        for (Position position : attackable_positions) {
+            Unit target = getGame().getMap().getUnit(position.x, position.y);
             if (getGame().canHeal(unit, target)) {
                 return true;
             }
@@ -523,9 +539,9 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean hasTombWithinRange(Unit unit) {
-        ObjectSet<Point> attackable_positions = createAttackablePositions(unit, false);
-        for (Point point : attackable_positions) {
-            if (getGame().getMap().isTomb(point.x, point.y) && getGame().getMap().getUnit(point.x, point.y) == null) {
+        ObjectSet<Position> attackable_positions = createAttackablePositions(unit, false);
+        for (Position position : attackable_positions) {
+            if (getGame().getMap().isTomb(position.x, position.y) && getGame().getMap().getUnit(position.x, position.y) == null) {
                 return true;
             }
         }
@@ -538,8 +554,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {
-        Point destination = getGame().getMap().getPosition(dest_x, dest_y);
-        System.out.println(getMovablePositions().size);
+        Position destination = getGame().getMap().getPosition(dest_x, dest_y);
         return getMovablePositions().contains(destination)
                 && getGame().isUnitAccessible(getSelectedUnit())
                 && getGame().canUnitMove(getSelectedUnit(), dest_x, dest_y);

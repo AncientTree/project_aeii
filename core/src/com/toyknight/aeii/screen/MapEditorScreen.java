@@ -225,8 +225,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     }
 
     private void drawUnits() {
-        ObjectMap.Keys<Point> unit_positions = getMap().getUnitPositionSet();
-        for (Point position : unit_positions) {
+        ObjectMap.Keys<Position> unit_positions = getMap().getUnitPositionSet();
+        for (Position position : unit_positions) {
             Unit unit = getMap().getUnit(position.x, position.y);
             int unit_x = unit.getX();
             int unit_y = unit.getY();

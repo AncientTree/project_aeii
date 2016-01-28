@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
 
@@ -113,8 +113,8 @@ public class MapFactory {
                 }
             }
         }
-        ObjectMap.Keys<Point> unit_positions = map.getUnitPositionSet();
-        for (Point position : unit_positions) {
+        ObjectMap.Keys<Position> unit_positions = map.getUnitPositionSet();
+        for (Position position : unit_positions) {
             Unit unit = map.getUnit(position.x, position.y);
             if (!map.hasTeamAccess(unit.getTeam())) {
                 map.setTeamAccess(unit.getTeam(), true);

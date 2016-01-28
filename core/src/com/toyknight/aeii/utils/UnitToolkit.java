@@ -108,7 +108,7 @@ public class UnitToolkit {
         }
     }
 
-    private static int getRange(int unit_x, int unit_y, int target_x, int target_y) {
+    public static int getRange(int unit_x, int unit_y, int target_x, int target_y) {
         return Math.abs(target_x - unit_x) + Math.abs(target_y - unit_y);
     }
 

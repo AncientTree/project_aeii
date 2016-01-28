@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.screen.MapCanvas;
 
 /**
@@ -34,19 +34,19 @@ public class AlphaRenderer {
         return getCanvas().ts();
     }
 
-    public void drawMoveAlpha(SpriteBatch batch, ObjectSet<Point> movable_positions) {
-        for (Point point : movable_positions) {
-            int screen_x = getCanvas().getXOnScreen(point.x);
-            int screen_y = getCanvas().getYOnScreen(point.y);
+    public void drawMoveAlpha(SpriteBatch batch, ObjectSet<Position> movable_positions) {
+        for (Position position : movable_positions) {
+            int screen_x = getCanvas().getXOnScreen(position.x);
+            int screen_y = getCanvas().getYOnScreen(position.y);
             batch.draw(move_alpha, screen_x, screen_y, ts(), ts());
         }
         batch.flush();
     }
 
-    public void drawAttackAlpha(SpriteBatch batch, ObjectSet<Point> attackable_positions) {
-        for (Point point : attackable_positions) {
-            int screen_x = getCanvas().getXOnScreen(point.x);
-            int screen_y = getCanvas().getYOnScreen(point.y);
+    public void drawAttackAlpha(SpriteBatch batch, ObjectSet<Position> attackable_positions) {
+        for (Position position : attackable_positions) {
+            int screen_x = getCanvas().getXOnScreen(position.x);
+            int screen_y = getCanvas().getYOnScreen(position.y);
             batch.draw(attack_alpha, screen_x, screen_y, ts(), ts());
         }
         batch.flush();

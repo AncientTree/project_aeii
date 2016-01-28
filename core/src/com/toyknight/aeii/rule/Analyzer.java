@@ -4,7 +4,7 @@ import static com.toyknight.aeii.rule.Rule.Entry.*;
 
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 
 /**
  * @author toyknight 1/10/2016.
@@ -24,7 +24,7 @@ public class Analyzer {
     public boolean isTeamDestroyed(int team) {
         boolean unit_check = true;
         if (getGame().getRule().getBoolean(ENEMY_CLEAR)) {
-            for (Point position : getGame().getMap().getUnitPositionSet()) {
+            for (Position position : getGame().getMap().getUnitPositionSet()) {
                 if (getGame().getMap().getUnit(position).getTeam() == team) {
                     unit_check = false;
                     break;

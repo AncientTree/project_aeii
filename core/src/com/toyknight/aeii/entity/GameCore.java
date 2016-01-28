@@ -79,8 +79,8 @@ public class GameCore implements Serializable {
 
     public void initialize() {
         if (!initialized) {
-            ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
-            for (Point position : position_set) {
+            ObjectMap.Keys<Position> position_set = getMap().getUnitPositionSet();
+            for (Position position : position_set) {
                 Unit unit = getMap().getUnit(position.x, position.y);
                 if (unit.isCommander()) {
                     commanders[unit.getTeam()] = unit;
@@ -244,8 +244,8 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCommanderAlive(int team) {
-        ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
-        for (Point position : position_set) {
+        ObjectMap.Keys<Position> position_set = getMap().getUnitPositionSet();
+        for (Position position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team && unit.isCommander()) {
                 return true;
@@ -436,11 +436,11 @@ public class GameCore implements Serializable {
         this.game_over = game_over;
     }
 
-    public Point getTeamFocus(int team) {
-        Point commander_position = null;
-        Point first_unit_position = null;
-        ObjectMap.Keys<Point> position_set = getMap().getUnitPositionSet();
-        for (Point position : position_set) {
+    public Position getTeamFocus(int team) {
+        Position commander_position = null;
+        Position first_unit_position = null;
+        ObjectMap.Keys<Position> position_set = getMap().getUnitPositionSet();
+        for (Position position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 first_unit_position = position;
@@ -459,11 +459,11 @@ public class GameCore implements Serializable {
             for (int y = 0; y < getMap().getHeight(); y++) {
                 Tile tile = getMap().getTile(x, y);
                 if (tile.getTeam() == team && tile.isCastle()) {
-                    return new Point(x, y);
+                    return new Position(x, y);
                 }
             }
         }
-        return new Point(-1, -1);
+        return new Position(-1, -1);
     }
 
     public void nextTurn() {

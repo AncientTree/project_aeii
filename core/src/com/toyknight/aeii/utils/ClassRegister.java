@@ -43,9 +43,9 @@ public class ClassRegister {
         kryo.register(ObjectSet.class);
         kryo.register(ObjectMap.class);
 
-        kryo.register(Point.class);
-        kryo.register(Point[].class);
-        kryo.register(Point[][].class);
+        kryo.register(Position.class);
+        kryo.register(Position[].class);
+        kryo.register(Position[][].class);
 
         kryo.register(RoomSnapshot.class);
         kryo.register(PlayerSnapshot.class);

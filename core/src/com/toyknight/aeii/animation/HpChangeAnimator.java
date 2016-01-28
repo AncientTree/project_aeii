@@ -3,7 +3,7 @@ package com.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.entity.Point;
+import com.toyknight.aeii.entity.Position;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
 
@@ -14,11 +14,11 @@ public class HpChangeAnimator extends UnitAnimator {
 
     private final int[] y_offset = {2, 0, -1, -1, -2, -2, -2, -2, -1, -1, 0, 1, 2, 4, 6, 4, 3, 4, 6, 6, 6, 6};
 
-    private final ObjectMap<Point, Integer> change_map;
+    private final ObjectMap<Position, Integer> change_map;
 
     private int current_frame = 0;
 
-    public HpChangeAnimator(ObjectMap<Point, Integer> change_map, ObjectSet<Unit> units) {
+    public HpChangeAnimator(ObjectMap<Position, Integer> change_map, ObjectSet<Unit> units) {
         int index = 0;
         for (Unit unit : units) {
             addUnit(unit, Integer.toString(index++));
@@ -28,8 +28,8 @@ public class HpChangeAnimator extends UnitAnimator {
 
     public HpChangeAnimator(Unit unit, int change) {
         addUnit(unit, Integer.toString(0));
-        this.change_map = new ObjectMap<Point, Integer>();
-        this.change_map.put(new Point(unit.getX(), unit.getY()), change);
+        this.change_map = new ObjectMap<Position, Integer>();
+        this.change_map.put(new Position(unit.getX(), unit.getY()), change);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class HpChangeAnimator extends UnitAnimator {
         int dy = (ts() - FontRenderer.getLCharHeight()) / 2;
         for (int index = 0; index < getUnitCount(); index++) {
             Unit unit = getUnit(Integer.toString(index));
-            int change = change_map.get(new Point(unit.getX(), unit.getY()));
+            int change = change_map.get(new Position(unit.getX(), unit.getY()));
             getCanvas().getUnitRenderer().drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
             int sx = getCanvas().getXOnScreen(unit.getX());
             int sy = getCanvas().getYOnScreen(unit.getY());

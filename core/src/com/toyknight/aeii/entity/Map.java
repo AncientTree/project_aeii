@@ -19,9 +19,9 @@ public class Map implements Serializable {
 
     protected final short[][] map_data;
     protected final Unit[][] upper_unit_layer;
-    protected final ObjectMap<Point, Unit> unit_map;
+    protected final ObjectMap<Position, Unit> unit_map;
     protected final Array<Tomb> tomb_list;
-    protected final Point[][] position_map;
+    protected final Position[][] position_map;
 
     public Map() {
         this(10, 10);
@@ -33,19 +33,19 @@ public class Map implements Serializable {
         System.arraycopy(map.team_access, 0, team_access, 0, 4);
         map_data = new short[map.getWidth()][map.getHeight()];
         upper_unit_layer = new Unit[map.getWidth()][map.getHeight()];
-        position_map = new Point[map.getWidth()][map.getHeight()];
+        position_map = new Position[map.getWidth()][map.getHeight()];
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 map_data[x][y] = map.map_data[x][y];
-                position_map[x][y] = new Point(x, y);
+                position_map[x][y] = new Position(x, y);
                 Unit unit = map.upper_unit_layer[x][y];
                 if (unit != null) {
                     upper_unit_layer[x][y] = new Unit(unit);
                 }
             }
         }
-        unit_map = new ObjectMap<Point, Unit>();
-        for (Point position : map.unit_map.keys()) {
+        unit_map = new ObjectMap<Position, Unit>();
+        for (Position position : map.unit_map.keys()) {
             Unit unit = map.unit_map.get(position);
             unit_map.put(position, new Unit(unit));
         }
@@ -59,13 +59,13 @@ public class Map implements Serializable {
         map_data = new short[width][height];
         team_access = new boolean[4];
 
-        unit_map = new ObjectMap<Point, Unit>();
+        unit_map = new ObjectMap<Position, Unit>();
         tomb_list = new Array<Tomb>();
         upper_unit_layer = new Unit[width][height];
-        position_map = new Point[width][height];
+        position_map = new Position[width][height];
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
-                position_map[x][y] = new Point(x, y);
+                position_map[x][y] = new Position(x, y);
             }
         }
     }
@@ -173,8 +173,8 @@ public class Map implements Serializable {
     public void moveUnit(Unit unit, int dest_x, int dest_y) {
         int start_x = unit.getX();
         int start_y = unit.getY();
-        Point start_position = getPosition(start_x, start_y);
-        Point dest_position = getPosition(dest_x, dest_y);
+        Position start_position = getPosition(start_x, start_y);
+        Position dest_position = getPosition(dest_x, dest_y);
         if (canMove(dest_x, dest_y)) {
             unit.setX(dest_x);
             unit.setY(dest_y);
@@ -193,7 +193,7 @@ public class Map implements Serializable {
     }
 
     public void addUnit(Unit unit) {
-        Point position = getPosition(unit.getX(), unit.getY());
+        Position position = getPosition(unit.getX(), unit.getY());
         if (!unit_map.containsKey(position)) {
             unit_map.put(position, unit);
         } else {
@@ -215,7 +215,7 @@ public class Map implements Serializable {
         }
     }
 
-    public Unit getUnit(Point position) {
+    public Unit getUnit(Position position) {
         return getUnit(position.x, position.y);
     }
 
@@ -237,13 +237,13 @@ public class Map implements Serializable {
         return unit_map.values();
     }
 
-    public ObjectMap.Keys<Point> getUnitPositionSet() {
+    public ObjectMap.Keys<Position> getUnitPositionSet() {
         return unit_map.keys();
     }
 
     public void removeTeam(int team) {
-        Array<Point> positions = new Array<Point>(getUnitPositionSet().toArray());
-        for (Point position : positions) {
+        Array<Position> positions = new Array<Position>(getUnitPositionSet().toArray());
+        for (Position position : positions) {
             Unit unit = getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
                 removeUnit(position.x, position.y);
@@ -295,12 +295,12 @@ public class Map implements Serializable {
     }
 
     public boolean canMove(int x, int y) {
-        Point dest_position = getPosition(x, y);
+        Position dest_position = getPosition(x, y);
         return unit_map.get(dest_position) == null || upper_unit_layer[x][y] == null;
     }
 
     public boolean canStandby(Unit unit) {
-        Point position = getPosition(unit.getX(), unit.getY());
+        Position position = getPosition(unit.getX(), unit.getY());
         if (UnitToolkit.isTheSameUnit(unit, upper_unit_layer[unit.getX()][unit.getY()])) {
             return unit_map.get(position) == null;
         } else {
@@ -308,7 +308,7 @@ public class Map implements Serializable {
         }
     }
 
-    public Point getPosition(int x, int y) {
+    public Position getPosition(int x, int y) {
         if (isWithinMap(x, y)) {
             return position_map[x][y];
         } else {
