@@ -79,7 +79,7 @@ public class GameCore implements Serializable {
 
     public void initialize() {
         if (!initialized) {
-            ObjectMap.Keys<Position> position_set = getMap().getUnitPositionSet();
+            ObjectMap.Keys<Position> position_set = getMap().getUnitPositions();
             for (Position position : position_set) {
                 Unit unit = getMap().getUnit(position.x, position.y);
                 if (unit.isCommander()) {
@@ -244,7 +244,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCommanderAlive(int team) {
-        ObjectMap.Keys<Position> position_set = getMap().getUnitPositionSet();
+        ObjectMap.Keys<Position> position_set = getMap().getUnitPositions();
         for (Position position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team && unit.isCommander()) {
@@ -305,6 +305,10 @@ public class GameCore implements Serializable {
     }
 
     public int getEnemyAroundCount(Unit unit, int range) {
+        return getEnemyAroundCount(unit.getX(), unit.getY(), unit.getTeam(), range);
+    }
+
+    public int getEnemyAroundCount(int map_x, int map_y, int team, int range) {
         if (range < 1) {
             return 0;
         }
@@ -312,11 +316,14 @@ public class GameCore implements Serializable {
         for (int ar = -range; ar <= range; ar++) {
             for (int dx = -ar; dx <= ar; dx++) {
                 int dy = dx >= 0 ? ar - dx : -ar - dx;
-                if (isEnemy(unit, getMap().getUnit(unit.getX() + dx, unit.getY() + dy))) {
-                    count++;
-                }
-                if (dy != 0 && isEnemy(unit, getMap().getUnit(unit.getX() + dx, unit.getY() - dy))) {
-                    count++;
+                Unit target = getMap().getUnit(map_x + dx, map_y + dy);
+                if (target != null) {
+                    if (isEnemy(team, target.getTeam())) {
+                        count++;
+                    }
+                    if (dy != 0 && isEnemy(team, target.getTeam())) {
+                        count++;
+                    }
                 }
             }
         }
@@ -439,7 +446,7 @@ public class GameCore implements Serializable {
     public Position getTeamFocus(int team) {
         Position commander_position = null;
         Position first_unit_position = null;
-        ObjectMap.Keys<Position> position_set = getMap().getUnitPositionSet();
+        ObjectMap.Keys<Position> position_set = getMap().getUnitPositions();
         for (Position position : position_set) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
@@ -467,7 +474,7 @@ public class GameCore implements Serializable {
     }
 
     public void nextTurn() {
-        ObjectMap.Values<Unit> units = getMap().getUnitSet();
+        ObjectMap.Values<Unit> units = getMap().getUnits();
         for (Unit unit : units) {
             if (unit.getTeam() == getCurrentTeam()) {
                 resetUnit(unit);

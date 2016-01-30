@@ -13,7 +13,7 @@ public class Unit implements Serializable {
     private static final long serialVersionUID = 4032015L;
 
     public static final int ATTACK_PHYSICAL = 0;
-    public static final int ATTACK_MAGICAL = 1;
+    public static final int ATTACK_MAGIC = 1;
     private static final int[] level_up_experience = {100, 200, 300};
 
     private final int index;
@@ -386,6 +386,21 @@ public class Unit implements Serializable {
             str += ability;
         }
         return str;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Unit) {
+            Unit unit = (Unit) object;
+            return getUnitCode().equals(unit.getUnitCode());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getUnitCode().hashCode();
     }
 
     public static class UnitDefinition {

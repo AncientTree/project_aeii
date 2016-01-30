@@ -561,6 +561,14 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean canBuy(int index, int team, int map_x, int map_y) {
+        Tile tile = getGame().getMap().getTile(map_x, map_y);
+        Unit unit = getGame().getMap().getUnit(map_x, map_y);
+        if (!tile.isCastle() || tile.getTeam() != team) {
+            return false;
+        }
+        if (unit != null && (!unit.isCommander() || unit.getTeam() != team)) {
+            return false;
+        }
         Unit sample_unit = UnitFactory.getSample(index);
         int price = getGame().getUnitPrice(index, team);
         int movement_point = sample_unit.getMovementPoint();

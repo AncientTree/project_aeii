@@ -74,7 +74,7 @@ public class MapFactory {
                 fos.writeShort(map.getTileIndex(x, y));
             }
         }
-        Array<Unit> unit_list = map.getUnitSet().toArray();
+        Array<Unit> unit_list = map.getUnits().toArray();
         fos.writeInt(unit_list.size);
         for (Unit unit : unit_list) {
             fos.writeInt(unit.getTeam());
@@ -113,7 +113,7 @@ public class MapFactory {
                 }
             }
         }
-        ObjectMap.Keys<Position> unit_positions = map.getUnitPositionSet();
+        ObjectMap.Keys<Position> unit_positions = map.getUnitPositions();
         for (Position position : unit_positions) {
             Unit unit = map.getUnit(position.x, position.y);
             if (!map.hasTeamAccess(unit.getTeam())) {

@@ -75,7 +75,7 @@ public class MiniMapDialog extends BasicDialog {
             }
         }
 
-        ObjectMap.Keys<Position> unit_positions = getMap().getUnitPositionSet();
+        ObjectMap.Keys<Position> unit_positions = getMap().getUnitPositions();
         for (Position position : unit_positions) {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (((int) (state_time / 0.3f)) % 2 != 0) {

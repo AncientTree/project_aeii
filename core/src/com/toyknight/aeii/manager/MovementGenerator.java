@@ -2,10 +2,7 @@ package com.toyknight.aeii.manager;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Position;
-import com.toyknight.aeii.entity.Step;
-import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -79,9 +76,8 @@ public class MovementGenerator {
             Step current_step = current_steps.poll();
             int step_x = current_step.getPosition().x;
             int step_y = current_step.getPosition().y;
-            int current_mark = move_mark_map[step_x][step_y];
             int current_movement_point = current_step.getMovementPoint();
-            if (current_movement_point > current_mark) {
+            if (current_movement_point > move_mark_map[step_x][step_y]) {
                 move_mark_map[step_x][step_y] = current_movement_point;
                 if (getGame().canUnitMove(unit, step_x, step_y)) {
                     movable_positions.add(current_step.getPosition());
@@ -92,12 +88,12 @@ public class MovementGenerator {
                 int next_y = current_step.getPosition().y + y_dir[i];
                 if (getGame().getMap().isWithinMap(next_x, next_y)) {
                     Position next_position = getGame().getMap().getPosition(next_x, next_y);
-                    int movement_point_cost =
-                            UnitToolkit.getMovementPointCost(unit, getGame().getMap().getTile(next_x, next_y));
+                    Tile next_tile = getGame().getMap().getTile(next_x, next_y);
+                    int movement_point_cost = UnitToolkit.getMovementPointCost(unit, next_tile);
                     int movement_point_left = current_movement_point - movement_point_cost;
                     if (movement_point_cost <= current_movement_point
                             && movement_point_left > move_mark_map[next_x][next_y]) {
-                        Unit target_unit = game.getMap().getUnit(next_x, next_y);
+                        Unit target_unit = getGame().getMap().getUnit(next_x, next_y);
                         if (getGame().canMoveThrough(unit, target_unit)) {
                             Step next_step = new Step(next_position, movement_point_left);
                             next_steps.add(next_step);
@@ -160,6 +156,10 @@ public class MovementGenerator {
         }
     }
 
+    public Position getNextPositionToTarget(Unit unit, Position target_position) {
+        return getNextPositionToTarget(unit, target_position.x, target_position.y);
+    }
+
     public Position getNextPositionToTarget(Unit unit, int target_x, int target_y) {
         current_unit = UnitFactory.cloneUnit(unit);
         initializeMoveMarkMap();
@@ -180,15 +180,29 @@ public class MovementGenerator {
         }
     }
 
+    public int getMovementPointsToTarget(Unit unit, Position target_position) {
+        return getMovementPointsToTarget(unit, target_position.x, target_position.y);
+    }
+
+    public int getMovementPointsToTarget(Unit unit, int target_x, int target_y) {
+        current_unit = UnitFactory.cloneUnit(unit);
+        initializeMoveMarkMap();
+        searchPathToTarget(createStartStep(unit), unit, getGame().getMap().getPosition(target_x, target_y));
+        if (move_mark_map[target_x][target_y] == Integer.MIN_VALUE) {
+            return -1;
+        } else {
+            return unit.getCurrentMovementPoint() - move_mark_map[target_x][target_y];
+        }
+    }
+
     private void searchPathToTarget(Queue<Step> current_steps, Unit unit, Position target) {
         Queue<Step> next_steps = new LinkedList<Step>();
         while (!current_steps.isEmpty()) {
             Step current_step = current_steps.poll();
             int step_x = current_step.getPosition().x;
             int step_y = current_step.getPosition().y;
-            int current_mark = move_mark_map[step_x][step_y];
             int current_movement_point = current_step.getMovementPoint();
-            if (current_movement_point > current_mark) {
+            if (current_movement_point > move_mark_map[step_x][step_y]) {
                 move_mark_map[step_x][step_y] = current_step.getMovementPoint();
             }
             if (current_step.getPosition().equals(target)) {
@@ -199,11 +213,11 @@ public class MovementGenerator {
                     int next_y = current_step.getPosition().y + y_dir[i];
                     if (getGame().getMap().isWithinMap(next_x, next_y)) {
                         Position next_position = getGame().getMap().getPosition(next_x, next_y);
-                        int movement_point_cost =
-                                UnitToolkit.getMovementPointCost(unit, getGame().getMap().getTile(next_x, next_y));
+                        Tile next_tile = getGame().getMap().getTile(next_x, next_y);
+                        int movement_point_cost = UnitToolkit.getMovementPointCost(unit, next_tile);
                         int movement_point_left = current_movement_point - movement_point_cost;
                         if (movement_point_left > move_mark_map[next_x][next_y]) {
-                            Unit target_unit = game.getMap().getUnit(next_x, next_y);
+                            Unit target_unit = getGame().getMap().getUnit(next_x, next_y);
                             if (getGame().canMoveThrough(unit, target_unit)) {
                                 Step next_step = new Step(next_position, movement_point_left);
                                 next_steps.add(next_step);

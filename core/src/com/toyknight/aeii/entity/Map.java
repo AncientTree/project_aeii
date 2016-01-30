@@ -2,6 +2,7 @@ package com.toyknight.aeii.entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -166,7 +167,7 @@ public class Map implements Serializable {
         }
     }
 
-    public Array<Tomb> getTombList() {
+    public Array<Tomb> getTombs() {
         return tomb_list;
     }
 
@@ -233,16 +234,26 @@ public class Map implements Serializable {
         unit_map.remove(getPosition(x, y));
     }
 
-    public ObjectMap.Values<Unit> getUnitSet() {
+    public ObjectMap.Values<Unit> getUnits() {
         return unit_map.values();
     }
 
-    public ObjectMap.Keys<Position> getUnitPositionSet() {
+    public ObjectSet<Unit> getUnits(int team) {
+        ObjectSet<Unit> units = new ObjectSet<Unit>();
+        for (Unit unit : getUnits()) {
+            if(unit.getTeam() == team) {
+                units.add(unit);
+            }
+        }
+        return units;
+    }
+
+    public ObjectMap.Keys<Position> getUnitPositions() {
         return unit_map.keys();
     }
 
     public void removeTeam(int team) {
-        Array<Position> positions = new Array<Position>(getUnitPositionSet().toArray());
+        Array<Position> positions = new Array<Position>(getUnitPositions().toArray());
         for (Position position : positions) {
             Unit unit = getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
@@ -269,7 +280,7 @@ public class Map implements Serializable {
     }
 
     public int getUnitCount(int team, boolean count_skeleton) {
-        ObjectMap.Values<Unit> units = getUnitSet();
+        ObjectMap.Values<Unit> units = getUnits();
         int count = 0;
         for (Unit unit : units) {
             if (unit != null && unit.getTeam() == team) {

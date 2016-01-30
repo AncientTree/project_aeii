@@ -98,7 +98,7 @@ public class AttackInformationRenderer {
             case Unit.ATTACK_PHYSICAL:
                 FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
                 break;
-            case Unit.ATTACK_MAGICAL:
+            case Unit.ATTACK_MAGIC:
                 FontRenderer.setTextColor(ResourceManager.getMagicalAttackColor());
                 break;
         }
@@ -128,7 +128,7 @@ public class AttackInformationRenderer {
             case Unit.ATTACK_PHYSICAL:
                 FontRenderer.setTextColor(ResourceManager.getPhysicalAttackColor());
                 break;
-            case Unit.ATTACK_MAGICAL:
+            case Unit.ATTACK_MAGIC:
                 FontRenderer.setTextColor(ResourceManager.getMagicalAttackColor());
                 break;
         }

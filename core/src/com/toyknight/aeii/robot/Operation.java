@@ -13,6 +13,8 @@ public class Operation {
     public static final int STANDBY = 0x5;
     public static final int END_TURN = 0x6;
     public static final int BUY = 0x7;
+    public static final int OCCUPY = 0x8;
+    public static final int REPAIR = 0x9;
 
     private final int type;
 

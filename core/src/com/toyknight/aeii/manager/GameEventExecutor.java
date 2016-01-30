@@ -288,7 +288,7 @@ public class GameEventExecutor {
                 0.8f);
 
         //update status
-        Array<Position> unit_position_set = getGame().getMap().getUnitPositionSet().toArray();
+        Array<Position> unit_position_set = getGame().getMap().getUnitPositions().toArray();
         for (Position position : unit_position_set) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             if (unit.getTeam() == team) {
@@ -301,7 +301,7 @@ public class GameEventExecutor {
         ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
 
         //terrain heal and poison damage
-        for (Position position : getGame().getMap().getUnitPositionSet()) {
+        for (Position position : getGame().getMap().getUnitPositions()) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             int change = 0;
             if (unit.getTeam() == team) {

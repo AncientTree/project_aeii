@@ -50,20 +50,12 @@ public class UnitFactory {
     }
 
     public static Unit getSample(int index) {
-        return cloneUnit(default_units[index]);
+        return default_units[index];
     }
 
     public static Unit createUnit(int index, int team) {
         String unit_code = "#" + Long.toString(current_code++);
         return createUnit(index, team, unit_code);
-    }
-
-    public static Unit cloneUnit(Unit unit) {
-        if (unit == null) {
-            return null;
-        } else {
-            return new Unit(unit, unit.getUnitCode());
-        }
     }
 
     public static Unit createUnit(int index, int team, String unit_code) {
@@ -73,6 +65,14 @@ public class UnitFactory {
         unit.setCurrentHp(unit.getMaxHp());
         unit.setCurrentMovementPoint(unit.getMovementPoint());
         return unit;
+    }
+
+    public static Unit cloneUnit(Unit unit) {
+        if (unit == null) {
+            return null;
+        } else {
+            return new Unit(unit, unit.getUnitCode());
+        }
     }
 
     public static String getVerificationString() {

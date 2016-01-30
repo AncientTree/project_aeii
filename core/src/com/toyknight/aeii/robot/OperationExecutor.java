@@ -92,6 +92,12 @@ public class OperationExecutor {
                 map_y = operation.getParameter(2);
                 getManager().doBuyUnit(unit_index, map_x, map_y);
                 break;
+            case Operation.OCCUPY:
+                getManager().doOccupy();
+                break;
+            case Operation.REPAIR:
+                getManager().doRepair();
+                break;
             default:
                 //do nothing
         }

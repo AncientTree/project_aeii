@@ -24,7 +24,7 @@ public class Analyzer {
     public boolean isTeamDestroyed(int team) {
         boolean unit_check = true;
         if (getGame().getRule().getBoolean(ENEMY_CLEAR)) {
-            for (Position position : getGame().getMap().getUnitPositionSet()) {
+            for (Position position : getGame().getMap().getUnitPositions()) {
                 if (getGame().getMap().getUnit(position).getTeam() == team) {
                     unit_check = false;
                     break;

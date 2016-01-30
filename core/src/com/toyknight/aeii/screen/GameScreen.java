@@ -226,7 +226,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawTombs() {
-        Array<Tomb> tomb_list = getGame().getMap().getTombList();
+        Array<Tomb> tomb_list = getGame().getMap().getTombs();
         for (Tomb tomb : tomb_list) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
@@ -236,7 +236,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawUnits() {
-        ObjectMap.Keys<Position> unit_positions = getGame().getMap().getUnitPositionSet();
+        ObjectMap.Keys<Position> unit_positions = getGame().getMap().getUnitPositions();
         for (Position position : unit_positions) {
             Unit unit = getGame().getMap().getUnit(position.x, position.y);
             //if this unit isn't animating, then paint it. otherwise, let animation paint it
