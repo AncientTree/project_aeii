@@ -603,7 +603,7 @@ public class GameEventExecutor {
     private void onCheckTeamDestroy(int team) {
         Analyzer analyzer = new Analyzer(getGame());
         if (team >=0 && analyzer.isTeamDestroyed(team)) {
-            getGame().removeTeam(team);
+            getGame().destroyTeam(team);
             int winner_alliance = analyzer.getWinnerAlliance();
             if (winner_alliance >= 0) {
                 getGame().setGameOver(true);

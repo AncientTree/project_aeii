@@ -24,6 +24,7 @@ public class GameCore implements Serializable {
     protected final Map map;
     protected final Rule rule;
     protected final Player[] player_list;
+    protected final boolean[] team_destroyed;
     protected final Unit[] commanders;
 
     protected int turn;
@@ -44,8 +45,9 @@ public class GameCore implements Serializable {
         type = game.type;
         map = new Map(game.map);
         rule = new Rule(game.rule);
-        player_list = new Player[4];
         commanders = new Unit[4];
+        player_list = new Player[4];
+        team_destroyed = new boolean[4];
         for (int team = 0; team < 4; team++) {
             if (game.player_list[team] != null) {
                 player_list[team] = new Player(game.player_list[team]);
@@ -53,6 +55,7 @@ public class GameCore implements Serializable {
             if (game.commanders[team] != null) {
                 commanders[team] = new Unit(game.commanders[team]);
             }
+            team_destroyed[team] = game.team_destroyed[team];
         }
         turn = game.turn;
         current_team = game.current_team;
@@ -65,14 +68,16 @@ public class GameCore implements Serializable {
         this.map = map;
         this.rule = rule;
         this.type = type;
-        player_list = new Player[4];
+        this.commanders = new Unit[4];
+        this.player_list = new Player[4];
+        this.team_destroyed = new boolean[4];
         for (int team = 0; team < 4; team++) {
             player_list[team] = Player.createPlayer(Player.NONE, 0, 0, 0);
             player_list[team].setGold(start_gold);
+            team_destroyed[team] = false;
         }
         this.turn = 1;
         this.game_over = false;
-        this.commanders = new Unit[4];
         this.statistics = new Statistics();
         this.initialized = false;
     }
@@ -128,7 +133,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isPlayerAvailable(int team) {
-        return getPlayer(team) != null && getPlayer(team).getType() != Player.NONE;
+        return 0 <= team && team < 4 && getPlayer(team).getType() != Player.NONE && !team_destroyed[team];
     }
 
     public Player getPlayer(int team) {
@@ -159,9 +164,9 @@ public class GameCore implements Serializable {
         return getPopulation(getCurrentTeam());
     }
 
-    public void removeTeam(int team) {
+    public void destroyTeam(int team) {
         getMap().removeTeam(team);
-        getPlayer(team).setType(Player.NONE);
+        team_destroyed[team] = true;
     }
 
     public void destroyUnit(int target_x, int target_y) {
@@ -244,9 +249,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCommanderAlive(int team) {
-        ObjectMap.Keys<Position> position_set = getMap().getUnitPositions();
-        for (Position position : position_set) {
-            Unit unit = getMap().getUnit(position.x, position.y);
+        for (Unit unit : getMap().getUnits()) {
             if (unit.getTeam() == team && unit.isCommander()) {
                 return true;
             }
@@ -261,23 +264,25 @@ public class GameCore implements Serializable {
 
     private int calcIncome(int team) {
         int income = 0;
-        for (int x = 0; x < getMap().getWidth(); x++) {
-            for (int y = 0; y < getMap().getHeight(); y++) {
-                Tile tile = getMap().getTile(x, y);
-                if (tile.getTeam() == team) {
-                    if (tile.isVillage()) {
-                        income += getRule().getInteger(VILLAGE_INCOME);
-                    }
-                    if (tile.isCastle()) {
-                        income += getRule().getInteger(CASTLE_INCOME);
-                    }
-                }
+        for (Position position : getMap().getCastlePositions()) {
+            if (getMap().getTile(position).getTeam() == team) {
+                income += getRule().getInteger(CASTLE_INCOME);
             }
         }
-        if (isCommanderAlive(team)) {
-            income += getRule().getInteger(COMMANDER_INCOME) * (getCommander(team).getLevel() + 1);
+        for (Position position : getMap().getVillagePositions()) {
+            if (getMap().getTile(position).getTeam() == team) {
+                income += getRule().getInteger(VILLAGE_INCOME);
+            }
         }
-        return income;
+        return income + getCommanderIncome(team);
+    }
+
+    private int getCommanderIncome(int team) {
+        if (isCommanderAlive(team)) {
+            return getRule().getInteger(COMMANDER_INCOME) * (getCommander(team).getLevel() + 1);
+        } else {
+            return 0;
+        }
     }
 
     public int gainIncome(int team) {
@@ -424,7 +429,7 @@ public class GameCore implements Serializable {
                 || unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
     }
 
-    public boolean isUnitAccessible(Unit unit) {
+    public boolean isUnitAvailable(Unit unit) {
         return unit != null
                 && unit.getTeam() == getCurrentTeam()
                 && unit.getCurrentHp() > 0
@@ -487,7 +492,7 @@ public class GameCore implements Serializable {
                 current_team = 0;
                 getMap().updateTombs();
             }
-        } while (getCurrentPlayer().getType() == Player.NONE);
+        } while (!isPlayerAvailable(current_team));
         turn++;
     }
 

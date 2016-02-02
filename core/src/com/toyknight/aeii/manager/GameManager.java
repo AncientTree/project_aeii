@@ -78,7 +78,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         getAnimationDispatcher().reset();
         getMovementGenerator().setGame(game);
         for (int team = 0; team < 4; team++) {
-            getRobot(team).reset();
+            getRobot(team).initialize();
         }
     }
 
@@ -267,7 +267,7 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public void doSelect(int x, int y) {
         Unit unit = getGame().getMap().getUnit(x, y);
-        if (getGame().isUnitAccessible(unit)) {
+        if (getGame().isUnitAvailable(unit)) {
             submitGameEvent(GameEvent.SELECT, x, y);
         }
     }
@@ -419,7 +419,7 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public void doStandbySelectedUnit() {
         Unit unit = getSelectedUnit();
-        if (getGame().isUnitAccessible(unit)) {
+        if (getGame().isUnitAvailable(unit)) {
             submitGameEvent(GameEvent.STANDBY, unit.getX(), unit.getY());
         }
     }
@@ -556,7 +556,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {
         Position destination = getGame().getMap().getPosition(dest_x, dest_y);
         return getMovablePositions().contains(destination)
-                && getGame().isUnitAccessible(getSelectedUnit())
+                && getGame().isUnitAvailable(getSelectedUnit())
                 && getGame().canUnitMove(getSelectedUnit(), dest_x, dest_y);
     }
 

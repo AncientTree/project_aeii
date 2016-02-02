@@ -24,33 +24,30 @@ public class Map implements Serializable {
     protected final Array<Tomb> tomb_list;
     protected final Position[][] position_map;
 
+    private final ObjectSet<Position> castle_positions;
+    private final ObjectSet<Position> village_positions;
+
     public Map() {
         this(10, 10);
     }
 
     public Map(Map map) {
+        this(map.getWidth(), map.getHeight());
         author = map.author;
-        team_access = new boolean[4];
         System.arraycopy(map.team_access, 0, team_access, 0, 4);
-        map_data = new short[map.getWidth()][map.getHeight()];
-        upper_unit_layer = new Unit[map.getWidth()][map.getHeight()];
-        position_map = new Position[map.getWidth()][map.getHeight()];
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
-                map_data[x][y] = map.map_data[x][y];
-                position_map[x][y] = new Position(x, y);
+                setTile(map.getTileIndex(x, y), x, y);
                 Unit unit = map.upper_unit_layer[x][y];
                 if (unit != null) {
                     upper_unit_layer[x][y] = new Unit(unit);
                 }
             }
         }
-        unit_map = new ObjectMap<Position, Unit>();
-        for (Position position : map.unit_map.keys()) {
+        for (Position position : map.getUnitPositions()) {
             Unit unit = map.unit_map.get(position);
             unit_map.put(position, new Unit(unit));
         }
-        tomb_list = new Array<Tomb>();
         for (Tomb tomb : map.tomb_list) {
             tomb_list.add(new Tomb(tomb));
         }
@@ -69,6 +66,8 @@ public class Map implements Serializable {
                 position_map[x][y] = new Position(x, y);
             }
         }
+        castle_positions = new ObjectSet<Position>();
+        village_positions = new ObjectSet<Position>();
     }
 
     public void setAuthor(String author) {
@@ -109,6 +108,19 @@ public class Map implements Serializable {
 
     public void setTile(short index, int x, int y) {
         map_data[x][y] = index;
+
+        Position position = getPosition(x, y);
+        Tile tile = getTile(position);
+        if (tile.isCastle()) {
+            getCastlePositions().add(position);
+        } else {
+            if (tile.isVillage()) {
+                getVillagePositions().add(position);
+            } else {
+                getCastlePositions().remove(position);
+                getVillagePositions().remove(position);
+            }
+        }
     }
 
     public short getTileIndex(int x, int y) {
@@ -125,6 +137,18 @@ public class Map implements Serializable {
         } else {
             return null;
         }
+    }
+
+    public Tile getTile(Position position) {
+        return getTile(position.x, position.y);
+    }
+
+    public ObjectSet<Position> getCastlePositions() {
+        return castle_positions;
+    }
+
+    public ObjectSet<Position> getVillagePositions() {
+        return village_positions;
     }
 
     public void addTomb(int x, int y) {
@@ -241,7 +265,7 @@ public class Map implements Serializable {
     public ObjectSet<Unit> getUnits(int team) {
         ObjectSet<Unit> units = new ObjectSet<Unit>();
         for (Unit unit : getUnits()) {
-            if(unit.getTeam() == team) {
+            if (unit.getTeam() == team) {
                 units.add(unit);
             }
         }
@@ -272,7 +296,6 @@ public class Map implements Serializable {
                 }
             }
         }
-        team_access[team] = false;
     }
 
     public int getPopulation(int team) {

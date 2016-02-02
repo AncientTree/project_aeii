@@ -45,7 +45,7 @@ public class Robot {
         this.routines = new ObjectMap<String, Position>();
     }
 
-    public void reset() {
+    public void initialize() {
         calculating = false;
         getRoutines().clear();
         target_units.clear();

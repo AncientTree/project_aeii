@@ -685,7 +685,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 showDialog("store");
             }
         } else {
-            if (getGame().isUnitAccessible(target_unit)) {
+            if (getGame().isUnitAvailable(target_unit)) {
                 if (getGame().isCastleAccessible(getGame().getMap().getTile(map_x, map_y))
                         && target_unit.isCommander() && target_unit.getTeam() == getGame().getCurrentTeam()) {
                     getManager().doSelect(map_x, map_y);
