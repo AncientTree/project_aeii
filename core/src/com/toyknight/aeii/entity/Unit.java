@@ -364,6 +364,10 @@ public class Unit implements Serializable {
         return this.x_position == x && this.y_position == y;
     }
 
+    public boolean isDebuffGiver() {
+        return hasAbility(Ability.POISONER) || hasAbility(Ability.SLOWING_AURA) || hasAbility(Ability.BLINDER);
+    }
+
     public String getVerificationString() {
         String str = "";
         str = str

@@ -147,8 +147,28 @@ public class Map implements Serializable {
         return castle_positions;
     }
 
+    public ObjectSet<Position> getCastlePositions(int team) {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
+        for (Position position : getCastlePositions()) {
+            if (getTile(position).getTeam() == team) {
+                positions.add(position);
+            }
+        }
+        return positions;
+    }
+
     public ObjectSet<Position> getVillagePositions() {
         return village_positions;
+    }
+
+    public ObjectSet<Position> getVillagePositions(int team) {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
+        for (Position position : getVillagePositions()) {
+            if (getTile(position).getTeam() == team) {
+                positions.add(position);
+            }
+        }
+        return positions;
     }
 
     public void addTomb(int x, int y) {
@@ -178,6 +198,10 @@ public class Map implements Serializable {
             }
         }
         return false;
+    }
+
+    public boolean isTomb(Position position) {
+        return isTomb(position.x, position.y);
     }
 
     public void updateTombs() {

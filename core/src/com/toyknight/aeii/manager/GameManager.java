@@ -541,7 +541,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     public boolean hasTombWithinRange(Unit unit) {
         ObjectSet<Position> attackable_positions = createAttackablePositions(unit, false);
         for (Position position : attackable_positions) {
-            if (getGame().getMap().isTomb(position.x, position.y) && getGame().getMap().getUnit(position.x, position.y) == null) {
+            if (getGame().getMap().isTomb(position) && getGame().getMap().getUnit(position) == null) {
                 return true;
             }
         }
@@ -563,22 +563,20 @@ public class GameManager implements GameEventListener, AnimationListener {
     public boolean canBuy(int index, int team, int map_x, int map_y) {
         Tile tile = getGame().getMap().getTile(map_x, map_y);
         Unit unit = getGame().getMap().getUnit(map_x, map_y);
-        if (!tile.isCastle() || tile.getTeam() != team) {
+        if (getGame().isCastleAccessible(tile, team) && getGame().canBuyOverUnit(unit, team)) {
+            Unit sample = UnitFactory.getSample(index);
+            int price = getGame().getUnitPrice(index, team);
+            int movement_point = sample.getMovementPoint();
+            sample.setCurrentMovementPoint(movement_point);
+            sample.setX(map_x);
+            sample.setY(map_y);
+            return price >= 0
+                    && getGame().getCurrentPlayer().getGold() >= price
+                    && getMovementGenerator().createMovablePositions(sample).size > 0
+                    && (!getGame().hasReachPopulationCapcity(team) || sample.isCommander());
+        } else {
             return false;
         }
-        if (unit != null && (!unit.isCommander() || unit.getTeam() != team)) {
-            return false;
-        }
-        Unit sample_unit = UnitFactory.getSample(index);
-        int price = getGame().getUnitPrice(index, team);
-        int movement_point = sample_unit.getMovementPoint();
-        sample_unit.setCurrentMovementPoint(movement_point);
-        sample_unit.setX(map_x);
-        sample_unit.setY(map_y);
-        return price >= 0
-                && getGame().getCurrentPlayer().getGold() >= price
-                && getMovementGenerator().createMovablePositions(sample_unit).size > 0
-                && (getGame().getCurrentTeamPopulation() < getGame().getMaxPopulation() || sample_unit.isCommander());
     }
 
 }

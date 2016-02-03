@@ -164,6 +164,15 @@ public class GameCore implements Serializable {
         return getPopulation(getCurrentTeam());
     }
 
+    public boolean hasReachPopulationCapcity(int team) {
+        Player player = getPlayer(team);
+        if (player.getType() == Player.NONE) {
+            return false;
+        } else {
+            return player.getPopulation() >= getRule().getInteger(MAX_POPULATION);
+        }
+    }
+
     public void destroyTeam(int team) {
         getMap().removeTeam(team);
         team_destroyed[team] = true;
@@ -437,7 +446,15 @@ public class GameCore implements Serializable {
     }
 
     public boolean isCastleAccessible(Tile tile) {
-        return tile.isCastle() && tile.getTeam() == getCurrentTeam();
+        return isCastleAccessible(tile, getCurrentTeam());
+    }
+
+    public boolean isCastleAccessible(Tile tile, int team) {
+        return tile.isCastle() && tile.getTeam() == team;
+    }
+
+    public boolean canBuyOverUnit(Unit unit, int team) {
+        return unit == null || (unit.isCommander() && unit.getTeam() == team);
     }
 
     public boolean isGameOver() {

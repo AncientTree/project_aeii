@@ -1,11 +1,12 @@
 package com.toyknight.aeii.robot;
 
+import static com.toyknight.aeii.robot.BattleData.*;
+
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
@@ -21,6 +22,8 @@ public class Robot {
     private final Random random;
 
     private final GameManager manager;
+
+    private final BattleData battle_data;
 
     private final ObjectSet<String> target_units;
 
@@ -41,6 +44,7 @@ public class Robot {
         this.team = team;
         this.manager = manager;
         this.random = new Random();
+        this.battle_data = new BattleData();
         this.target_units = new ObjectSet<String>();
         this.routines = new ObjectMap<String, Position>();
     }
@@ -60,6 +64,10 @@ public class Robot {
         return getManager().getGame();
     }
 
+    private BattleData getBattleData() {
+        return battle_data;
+    }
+
     private ObjectMap<String, Position> getRoutines() {
         return routines;
     }
@@ -75,21 +83,187 @@ public class Robot {
     }
 
     private void doCalculate() {
-        int unit_to_buy = calculateUnitToBuy();
-        Position buying_position = getUnitBuyingPosition(unit_to_buy);
-        if (unit_to_buy >= 0 && buying_position != null) {
-            getManager().getOperationExecutor().submitOperation(
-                    Operation.BUY, unit_to_buy, buying_position.x, buying_position.y);
-            Unit bought_unit = getBoughtUnit(unit_to_buy, buying_position.x, buying_position.y);
-            doUnitAction(bought_unit);
-        } else {
-            Unit next_unit = getNextUnit(team);
-            if (next_unit == null) {
-                getManager().getOperationExecutor().submitOperation(Operation.END_TURN);
-                getRoutines().clear();
+        if (getGame().isPlayerAvailable(team)) {
+            calculateBattleData();
+            UnitBuyingOption unit_to_buy = calculateUnitToBuy();
+            if (unit_to_buy.getUnitIndex() >= 0) {
+                int unit_index = unit_to_buy.getUnitIndex();
+                int buying_map_x = unit_to_buy.getPosition().x;
+                int buying_map_y = unit_to_buy.getPosition().y;
+                getManager().getOperationExecutor().submitOperation(
+                        Operation.BUY, unit_index, buying_map_x, buying_map_y);
+                Unit bought_unit = createBoughtUnit(unit_index, buying_map_x, buying_map_y);
+                doUnitAction(bought_unit);
             } else {
-                doUnitAction(next_unit);
+                Unit next_unit = getNextUnit(team);
+                if (next_unit == null) {
+                    getManager().getOperationExecutor().submitOperation(Operation.END_TURN);
+                    getRoutines().clear();
+                } else {
+                    doUnitAction(next_unit);
+                }
             }
+        }
+    }
+
+    private void calculateBattleData() {
+        getBattleData().clear();
+        int enemy_team_count = 0;
+        int enemy_total_population = 0;
+        for (int team = 0; team < 4; team++) {
+            if (getGame().isPlayerAvailable(team) && getGame().isEnemy(this.team, team)) {
+                enemy_team_count++;
+                enemy_total_population += getGame().getPopulation(team);
+            }
+        }
+        getBattleData().setValue(ENEMY_AVERAGE_POPULATION, enemy_total_population / enemy_team_count);
+        int enemy_count = 0;
+        int enemy_air_force_count = 0;
+        int enemy_debuff_giver_count = 0;
+        int enemy_total_physical_attack = 0;
+        int enemy_total_physical_defence = 0;
+        int enemy_total_magic_attack = 0;
+        int enemy_total_magic_defence = 0;
+        int enemy_total_reach_range = 0;
+        int enemy_total_value = 0;
+
+        int unit_total_value = 0;
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isEnemy(team, unit.getTeam())) {
+                enemy_count++;
+                if (unit.isDebuffGiver()) {
+                    enemy_debuff_giver_count++;
+                }
+                if (unit.hasAbility(Ability.AIR_FORCE)) {
+                    enemy_air_force_count++;
+                }
+                if (unit.getAttackType() == Unit.ATTACK_MAGIC) {
+                    enemy_total_magic_attack += unit.getAttack();
+                }
+                enemy_total_physical_defence += unit.getPhysicalDefence();
+                if (unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
+                    enemy_total_physical_attack += unit.getAttack();
+                }
+                enemy_total_magic_defence += unit.getMagicDefence();
+                enemy_total_reach_range += getUnitReachRange(unit);
+                enemy_total_value += unit.getPrice();
+            } else {
+                if (unit.getTeam() == team) {
+                    unit_total_value += unit.getPrice();
+                }
+            }
+        }
+        getBattleData().setValue(ENEMY_AIR_FORCE_COUNT, enemy_air_force_count);
+        getBattleData().setValue(ENEMY_DEBUFF_GIVER_COUNT, enemy_debuff_giver_count);
+        getBattleData().setValue(ENEMY_AVERAGE_PHYSICAL_ATTACK, enemy_total_physical_attack / enemy_count);
+        getBattleData().setValue(ENEMY_AVERAGE_PHYSICAL_DEFENCE, enemy_total_physical_defence / enemy_count);
+        getBattleData().setValue(ENEMY_AVERAGE_MAGIC_ATTACK, enemy_total_magic_attack / enemy_count);
+        getBattleData().setValue(ENEMY_AVERAGE_MAGIC_DEFENCE, enemy_total_magic_defence / enemy_count);
+        getBattleData().setValue(ENEMY_AVERAGE_REACH_RANGE, enemy_total_reach_range / enemy_count);
+        getBattleData().setValue(ENEMY_AVERAGE_TOTAL_VALUE, enemy_total_value / enemy_team_count);
+        getBattleData().setValue(UNIT_TOTAL_VALUE, unit_total_value);
+    }
+
+    private UnitBuyingOption calculateUnitToBuy() {
+        int unit_index = -1;
+        int buying_map_x = -1;
+        int buying_map_y = -1;
+        int highest_buying_score = 0;
+
+        Position buying_position = calculateBuyingPosition();
+        for (Integer index : getGame().getRule().getAvailableUnits()) {
+            int score = calculateBuyingScore(index, buying_position.x, buying_position.y);
+            if (score > highest_buying_score) {
+                unit_index = index;
+                buying_map_x = buying_position.x;
+                buying_map_y = buying_position.y;
+                highest_buying_score = score;
+            }
+        }
+        if (unit_index >= 0) {
+            return new UnitBuyingOption(unit_index, getGame().getMap().getPosition(buying_map_x, buying_map_y));
+        } else {
+            return new UnitBuyingOption(unit_index, null);
+        }
+    }
+
+    private Position calculateBuyingPosition() {
+        return getGame().getMap().getCastlePositions(team).first();
+    }
+
+    private int calculateBuyingScore(int unit_index, int map_x, int map_y) {
+        if (getManager().canBuy(unit_index, team, map_x, map_y)) {
+            int score = 0;
+            Unit unit = createBoughtUnit(unit_index, map_x, map_y);
+            if (UnitFactory.getCommanderIndex() == unit_index && !getGame().isCommanderAlive(team)) {
+                score += (getGame().getCommander(team).getLevel() + 1) * 100;
+            }
+            if (unit.hasAbility(Ability.CONQUEROR) && unit.getPrice() < 500) {
+                score += (3 - getUnitWithAbilityCount(Ability.CONQUEROR)) * 100;
+            }
+            if (unit.hasAbility(Ability.REPAIRER) && unit.getPrice() < 500) {
+                score += (2 - getUnitWithAbilityCount(Ability.REPAIRER)) * 100;
+            }
+            if (unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
+                score += (unit.getAttack() - getBattleData().getValue(ENEMY_AVERAGE_PHYSICAL_DEFENCE)) * 5;
+            }
+            if (unit.getAttackType() == Unit.ATTACK_MAGIC) {
+                score += (unit.getAttack() - getBattleData().getValue(ENEMY_AVERAGE_MAGIC_DEFENCE)) * 5;
+            }
+            score -= (getBattleData().getValue(ENEMY_AVERAGE_PHYSICAL_ATTACK) - unit.getPhysicalDefence()) * 5;
+            score -= (getBattleData().getValue(ENEMY_AVERAGE_MAGIC_ATTACK) - unit.getMagicDefence()) * 5;
+            score += (getUnitReachRange(unit) - getBattleData().getValue(ENEMY_AVERAGE_REACH_RANGE)) * 10;
+            if (unit.hasAbility(Ability.REFRESH_AURA)) {
+                score += getBattleData().getValue(ENEMY_DEBUFF_GIVER_COUNT) * 25;
+            }
+            if (unit.hasAbility(Ability.MARKSMAN)) {
+                score += getBattleData().getValue(ENEMY_AIR_FORCE_COUNT) * 25;
+            }
+            if (unit.hasAbility(Ability.HEALER)) {
+                score += (2 - getUnitWithAbilityCount(Ability.HEALER)) * 50;
+            }
+            if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
+                score += getBattleData().getValue(ENEMY_AVERAGE_POPULATION) * 10;
+            }
+            if (unit.hasAbility(Ability.NECROMANCER)) {
+                score += getGame().getMap().getTombs().size * 25;
+            }
+            if (unit.hasAbility(Ability.POISONER)) {
+                score += 25;
+            }
+            if (unit.hasAbility(Ability.CHARGER)) {
+                score += 25;
+            }
+            if (unit.hasAbility(Ability.ATTACK_AURA)) {
+                score += (getBattleData().getValue(ENEMY_DEBUFF_GIVER_COUNT) + 1) * 25;
+            }
+            if (unit.hasAbility(Ability.CRAWLER)) {
+                score += 25;
+            }
+            if (unit.hasAbility(Ability.AIR_FORCE)) {
+                score += 25;
+            }
+            return score - unit.getPrice() / 5 - getUnitCount(unit_index) * 50;
+        } else {
+            return -1;
+        }
+    }
+
+    private Unit createBoughtUnit(int unit_index, int map_x, int map_y) {
+        if (UnitFactory.getCommanderIndex() == unit_index) {
+            Unit commander = getGame().getCommander(team);
+            Unit unit = new Unit(commander, commander.getUnitCode());
+            unit.setCurrentHp(unit.getMaxHp());
+            getGame().resetUnit(unit);
+            unit.clearStatus();
+            unit.setX(map_x);
+            unit.setY(map_y);
+            return unit;
+        } else {
+            Unit unit = UnitFactory.createUnit(unit_index, team);
+            unit.setX(map_x);
+            unit.setY(map_y);
+            return unit;
         }
     }
 
@@ -231,134 +405,6 @@ public class Robot {
         return false;
     }
 
-    private int calculateUnitToBuy() {
-        int enemy_team_count = 0;
-        int enemy_total_population = 0;
-        for (int team = 0; team < 4; team++) {
-            Player player = getGame().getPlayer(team);
-            if (player.getType() != Player.NONE && getGame().isEnemy(team, this.team)) {
-                enemy_team_count++;
-                enemy_total_population += player.getPopulation();
-            }
-        }
-        int enemy_average_population = enemy_total_population / enemy_team_count;
-
-        int unit_to_buy = -1;
-        int highest_buying_score = 0;
-        if (getGame().getPlayer(team).getPopulation() < getGame().getRule().getInteger(Rule.Entry.MAX_POPULATION)
-                && getGame().getPlayer(team).getPopulation() - enemy_average_population <= 3) {
-            for (int unit_index : getGame().getRule().getAvailableUnits()) {
-                int buying_score = getUnitBuyingScore(unit_index, enemy_average_population);
-                if (buying_score > highest_buying_score) {
-                    highest_buying_score = buying_score;
-                    unit_to_buy = unit_index;
-                }
-            }
-
-        }
-        return unit_to_buy;
-    }
-
-    private int getUnitBuyingScore(int unit_index, int enemy_average_population) {
-        int price = getGame().getUnitPrice(unit_index, team);
-        if (price >= 0 && getGame().getPlayer(team).getGold() >= price) {
-            int enemy_count = 0;
-            int enemy_air_force_count = 0;
-            int enemy_debuff_giver_count = 0;
-            int enemy_total_physical_attack = 0;
-            int enemy_total_physical_defence = 0;
-            int enemy_total_magic_attack = 0;
-            int enemy_total_magic_defence = 0;
-            int enemy_total_reach_range = 0;
-            for (Unit unit : getGame().getMap().getUnits()) {
-                if (getGame().isEnemy(team, unit.getTeam())) {
-                    enemy_count++;
-                    if (unit.hasAbility(Ability.POISONER)
-                            || unit.hasAbility(Ability.SLOWING_AURA)
-                            || unit.hasAbility(Ability.BLINDER)) {
-                        enemy_debuff_giver_count++;
-                    }
-                    if (unit.hasAbility(Ability.AIR_FORCE)) {
-                        enemy_air_force_count++;
-                    }
-                    enemy_total_physical_defence += unit.getPhysicalDefence();
-                    enemy_total_magic_defence += unit.getMagicDefence();
-                    if (unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
-                        enemy_total_physical_attack += unit.getAttack();
-                    }
-                    if (unit.getAttackType() == Unit.ATTACK_MAGIC) {
-                        enemy_total_magic_attack += unit.getAttack();
-                    }
-                    enemy_total_reach_range += getUnitReachRange(unit);
-                }
-            }
-            int enemy_average_physical_attack = enemy_total_physical_attack / enemy_count;
-            int enemy_average_physical_defence = enemy_total_physical_defence / enemy_count;
-            int enemy_average_magic_attack = enemy_total_magic_attack / enemy_count;
-            int enemy_average_magic_defence = enemy_total_magic_defence / enemy_count;
-            int enemy_average_reach_range = enemy_total_reach_range / enemy_count;
-
-            Unit sample_unit = UnitFactory.getSample(unit_index);
-
-            int score = 0;
-            if (UnitFactory.getCommanderIndex() == unit_index && !getGame().isCommanderAlive(team)) {
-                score += 100 + getGame().getCommander(team).getLevel() * 50;
-            }
-            if (sample_unit.hasAbility(Ability.CONQUEROR) && getUnitWithAbilityCount(Ability.CONQUEROR) < 3) {
-                score += 100;
-            }
-            if (sample_unit.hasAbility(Ability.REPAIRER) && getUnitWithAbilityCount(Ability.REPAIRER) < 2) {
-                score += 100;
-            }
-            if (enemy_average_physical_defence > enemy_average_magic_defence
-                    && sample_unit.getAttackType() == Unit.ATTACK_MAGIC) {
-                score += (sample_unit.getAttack() - 50) * 5;
-            }
-            if (enemy_average_physical_defence <= enemy_average_magic_defence
-                    && sample_unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
-                score += (sample_unit.getAttack() - 50) * 5;
-            }
-            if (enemy_average_physical_attack > enemy_average_magic_attack) {
-                score += (sample_unit.getPhysicalDefence() - 10) * 2;
-            }
-            if (enemy_average_physical_attack < enemy_average_magic_attack) {
-                score += (sample_unit.getMagicDefence() - 10) * 2;
-            }
-            int reach_range = getUnitReachRange(sample_unit);
-            if (reach_range >= enemy_average_reach_range) {
-                score += reach_range * 10;
-            } else {
-                score += reach_range * 5;
-            }
-            if (sample_unit.hasAbility(Ability.REFRESH_AURA) && enemy_debuff_giver_count > 0) {
-                score += 50 + enemy_debuff_giver_count * 25;
-            }
-            if (sample_unit.hasAbility(Ability.MARKSMAN) && enemy_air_force_count > 1) {
-                score += 50 + enemy_air_force_count * 25;
-            }
-            if (sample_unit.hasAbility(Ability.HEALER)) {
-                int healer_count = getUnitWithAbilityCount(Ability.HEALER);
-                if (healer_count < 2) {
-                    if (healer_count < 1) {
-                        score += 100;
-                    } else {
-                        score += 50;
-                    }
-                }
-            }
-            if (sample_unit.hasAbility(Ability.BLOODTHIRSTY) && enemy_average_population >= 8) {
-                score += 100;
-            }
-            if (sample_unit.hasAbility(Ability.NECROMANCER) && getGame().getMap().getTombs().size > 3) {
-                score += 100;
-            }
-            return score - sample_unit.getPrice() / 10 - getUnitCount(unit_index) * 50;
-        } else {
-            return -1;
-        }
-
-    }
-
     private int getUnitReachRange(Unit unit) {
         int reach_range = unit.getMaxAttackRange();
         if (!unit.hasAbility(Ability.HEAVY_MACHINE)) {
@@ -367,39 +413,6 @@ public class Robot {
         return reach_range;
     }
 
-    private Position getUnitBuyingPosition(int unit_index) {
-        //TODO: Needs to be improved.
-        if (unit_index >= 0) {
-            for (int x = 0; x < getGame().getMap().getWidth(); x++) {
-                for (int y = 0; y < getGame().getMap().getHeight(); y++) {
-                    Tile tile = getGame().getMap().getTile(x, y);
-                    if (tile.isCastle() && tile.getTeam() == team && getManager().canBuy(unit_index, team, x, y)) {
-                        return getGame().getMap().getPosition(x, y);
-                    }
-                }
-            }
-            return null;
-        } else {
-            return null;
-        }
-    }
-
-    private Unit getBoughtUnit(int unit_index, int map_x, int map_y) {
-        if (UnitFactory.getCommanderIndex() == unit_index) {
-            Unit unit = getGame().getCommander(team);
-            unit.setCurrentHp(unit.getMaxHp());
-            getGame().resetUnit(unit);
-            unit.clearStatus();
-            unit.setX(map_x);
-            unit.setY(map_y);
-            return unit;
-        } else {
-            Unit unit = UnitFactory.createUnit(unit_index, team);
-            unit.setX(map_x);
-            unit.setY(map_y);
-            return unit;
-        }
-    }
 
     private Unit getNextUnit(int team) {
         Array<Unit> units = new Array<Unit>();
