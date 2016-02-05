@@ -287,24 +287,16 @@ public class GameEventExecutor {
                 Language.getText("LB_INCOME") + ": " + income,
                 0.8f);
 
-        //update status
-        Array<Position> unit_position_set = getGame().getMap().getUnitPositions().toArray();
-        for (Position position : unit_position_set) {
-            Unit unit = getGame().getMap().getUnit(position.x, position.y);
-            if (unit.getTeam() == team) {
-                unit.updateStatus();
-                getGame().resetUnit(unit);
-            }
-        }
-
         //calculate hp change at turn start
         ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
 
         //terrain heal and poison damage
-        for (Position position : getGame().getMap().getUnitPositions()) {
-            Unit unit = getGame().getMap().getUnit(position.x, position.y);
+        for (Unit unit : getGame().getMap().getUnits()) {
             int change = 0;
             if (unit.getTeam() == team) {
+                //update status
+                unit.updateStatus();
+                getGame().resetUnit(unit);
                 //the terrain heal
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 change = getUnitToolkit().getTerrainHeal(unit, tile);
@@ -328,7 +320,7 @@ public class GameEventExecutor {
             }
             change = UnitToolkit.validateHpChange(unit, change);
             if (change != 0) {
-                hp_change_map.put(position, change);
+                hp_change_map.put(getGame().getMap().getPosition(unit), change);
             }
         }
         submitBufferGameEvent(new GameEvent(GameEvent.HP_CHANGE, hp_change_map));
@@ -471,34 +463,31 @@ public class GameEventExecutor {
             getGame().standbyUnit(target_x, target_y);
             getGameManager().setState(GameManager.STATE_SELECT);
 
+            //deal with auras
             ObjectSet<Position> aura_positions = getGameManager().createPositionsWithinRange(target_x, target_y, 0, 2);
 
-            //all the status auras
+            ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
+
             for (Position target_position : aura_positions) {
-                Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
+                Unit target = getGame().getMap().getUnit(target_position);
                 if (target != null) {
                     if (unit.hasAbility(Ability.ATTACK_AURA) && !getGame().isEnemy(unit, target)) {
                         target.attachStatus(new Status(Status.INSPIRED, 0));
                     }
-                    if (unit.hasAbility(Ability.SLOWING_AURA)
-                            && !target.hasAbility(Ability.SLOWING_AURA) && getGame().isEnemy(unit, target)) {
+                    if (unit.hasAbility(Ability.SLOWING_AURA) && !target.hasAbility(Ability.SLOWING_AURA)
+                            && getGame().isEnemy(unit, target)) {
                         target.attachStatus(new Status(Status.SLOWED, 1));
                     }
-                }
-            }
-            //the refresh aura
-            ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
-            if (unit.hasAbility(Ability.REFRESH_AURA)) {
-                int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                for (Position target_position : aura_positions) {
-                    Unit target = getGame().getMap().getUnit(target_position.x, target_position.y);
-                    if (getGame().canClean(unit, target)) {
-                        target.clearStatus();
-                    }
-                    if (getGame().canHeal(unit, target)) {
-                        int change = UnitToolkit.validateHpChange(target, heal);
-                        if (change != 0) {
-                            hp_change_map.put(target_position, change);
+                    if (unit.hasAbility(Ability.REFRESH_AURA)) {
+                        int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
+                        if (getGame().canClean(unit, target)) {
+                            target.clearStatus();
+                        }
+                        if (getGame().canHeal(unit, target)) {
+                            int change = UnitToolkit.validateHpChange(target, heal);
+                            if (change != 0) {
+                                hp_change_map.put(target_position, change);
+                            }
                         }
                     }
                 }
@@ -602,7 +591,7 @@ public class GameEventExecutor {
 
     private void onCheckTeamDestroy(int team) {
         Analyzer analyzer = new Analyzer(getGame());
-        if (team >=0 && analyzer.isTeamDestroyed(team)) {
+        if (team >= 0 && analyzer.isTeamDestroyed(team)) {
             getGame().destroyTeam(team);
             int winner_alliance = analyzer.getWinnerAlliance();
             if (winner_alliance >= 0) {

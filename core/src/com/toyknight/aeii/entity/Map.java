@@ -374,6 +374,10 @@ public class Map implements Serializable {
         }
     }
 
+    public Position getPosition(Unit unit) {
+        return getPosition(unit.getX(), unit.getY());
+    }
+
     public int getPlayerCount() {
         int count = 0;
         for (int team = 0; team < 4; team++) {
