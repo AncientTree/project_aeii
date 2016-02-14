@@ -16,7 +16,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.renderer.BorderRenderer;
-import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;

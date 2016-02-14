@@ -1,4 +1,4 @@
-package com.toyknight.aeii.rule;
+package com.toyknight.aeii.entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -13,25 +13,25 @@ public class Rule implements Serializable {
 
     private static final long serialVersionUID = 4152015L;
 
-    public static int POISON_DAMAGE = 10;
-    public static int HEALER_BASE_HEAL = 40;
-    public static int REFRESH_BASE_HEAL = 10;
+    public static final int POISON_DAMAGE = 10;
+    public static final int HEALER_BASE_HEAL = 40;
+    public static final int REFRESH_BASE_HEAL = 10;
 
-    private final ObjectMap<Integer, Object> values;
+    private final ObjectMap<String, Object> values;
 
     private final Array<Integer> available_units;
 
     public Rule() {
-        values = new ObjectMap<Integer, Object>();
+        values = new ObjectMap<String, Object>();
         available_units = new Array<Integer>();
     }
 
     public Rule(Rule rule) {
-        values = new ObjectMap<Integer, Object>(rule.getValues());
+        values = new ObjectMap<String, Object>(rule.getValues());
         available_units = new Array<Integer>(rule.getAvailableUnits());
     }
 
-    protected ObjectMap<Integer, Object> getValues() {
+    protected ObjectMap<String, Object> getValues() {
         return values;
     }
 
@@ -39,15 +39,24 @@ public class Rule implements Serializable {
         return available_units;
     }
 
-    public void setValue(Integer entry, Object value) {
+    public void setAvailableUnits(Array<Integer> list) {
+        available_units.clear();
+        available_units.addAll(list);
+    }
+
+    public void addAvailableUnit(int index) {
+        available_units.add(index);
+    }
+
+    public void setValue(String entry, Object value) {
         values.put(entry, value);
     }
 
-    public int getInteger(Integer entry) {
+    public int getInteger(String entry) {
         return getInteger(entry, 0);
     }
 
-    public int getInteger(Integer entry, int default_value) {
+    public int getInteger(String entry, int default_value) {
         Object value = values.get(entry, null);
         if (value instanceof Integer) {
             return (Integer) value;
@@ -56,11 +65,11 @@ public class Rule implements Serializable {
         }
     }
 
-    public boolean getBoolean(Integer entry) {
+    public boolean getBoolean(String entry) {
         return getBoolean(entry, false);
     }
 
-    public boolean getBoolean(Integer entry, boolean default_value) {
+    public boolean getBoolean(String entry, boolean default_value) {
         Object value = values.get(entry, null);
         if (value instanceof Boolean) {
             return (Boolean) value;
@@ -69,22 +78,17 @@ public class Rule implements Serializable {
         }
     }
 
-    public String getString(Integer entry) {
+    public String getString(String entry) {
         return getString(entry, null);
     }
 
-    public String getString(Integer entry, String default_value) {
+    public String getString(String entry, String default_value) {
         Object value = values.get(entry, null);
         if (value instanceof String) {
             return (String) value;
         } else {
             return default_value;
         }
-    }
-
-    public void setAvailableUnits(Array<Integer> list) {
-        available_units.clear();
-        available_units.addAll(list);
     }
 
     public static Rule createDefault() {
@@ -131,16 +135,16 @@ public class Rule implements Serializable {
 
     public class Entry {
 
-        public static final int CASTLE_INCOME = 0x1;
-        public static final int VILLAGE_INCOME = 0x2;
-        public static final int COMMANDER_INCOME = 0x3;
-        public static final int KILL_EXPERIENCE = 0x4;
-        public static final int ATTACK_EXPERIENCE = 0x5;
-        public static final int COUNTER_EXPERIENCE = 0x6;
-        public static final int COMMANDER_PRICE_STEP = 0x7;
-        public static final int MAX_POPULATION = 0x8;
-        public static final int ENEMY_CLEAR = 0x9;
-        public static final int CASTLE_CLEAR = 0x10;
+        public static final String CASTLE_INCOME = "CASTLE_INCOME";
+        public static final String VILLAGE_INCOME = "VILLAGE_INCOME";
+        public static final String COMMANDER_INCOME = "COMMANDER_INCOME";
+        public static final String KILL_EXPERIENCE = "KILL_EXPERIENCE";
+        public static final String ATTACK_EXPERIENCE = "ATTACK_EXPERIENCE";
+        public static final String COUNTER_EXPERIENCE = "COUNTER_EXPERIENCE";
+        public static final String COMMANDER_PRICE_STEP = "COMMANDER_PRICE_STEP";
+        public static final String MAX_POPULATION = "MAX_POPULATION";
+        public static final String ENEMY_CLEAR = "ENEMY_CLEAR";
+        public static final String CASTLE_CLEAR = "CASTLE_CLEAR";
 
     }
 

@@ -1,6 +1,6 @@
 package com.toyknight.aeii.manager;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -573,7 +573,7 @@ public class GameManager implements GameEventListener, AnimationListener {
             return price >= 0
                     && getGame().getCurrentPlayer().getGold() >= price
                     && getMovementGenerator().createMovablePositions(sample).size > 0
-                    && (!getGame().hasReachPopulationCapcity(team) || sample.isCommander());
+                    && (!getGame().hasReachPopulationCapacity(team) || sample.isCommander());
         } else {
             return false;
         }

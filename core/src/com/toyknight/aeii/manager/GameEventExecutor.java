@@ -1,14 +1,13 @@
 package com.toyknight.aeii.manager;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.record.Recorder;
-import com.toyknight.aeii.rule.Analyzer;
-import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;

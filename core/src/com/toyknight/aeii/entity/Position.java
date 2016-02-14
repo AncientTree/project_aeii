@@ -1,24 +1,15 @@
 package com.toyknight.aeii.entity;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class Position implements Serializable {
-
-    private static final long serialVersionUID = 4032015L;
+public class Position {
 
     public int x;
     public int y;
 
-    public Position() {
-        this(0, 0);
-    }
-
-
-    public Position(Position p) {
-        this(p.x, p.y);
+    public Position(Position position) {
+        this(position.x, position.y);
     }
 
     public Position(int x, int y) {

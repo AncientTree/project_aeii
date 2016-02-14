@@ -1,6 +1,6 @@
 package com.toyknight.aeii.renderer;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

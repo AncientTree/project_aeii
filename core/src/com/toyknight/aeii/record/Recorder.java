@@ -62,9 +62,9 @@ public class Recorder {
     public static void saveRecord() {
         if (record_on) {
             try {
-                Serializer serializer = new Serializer();
-                record.setEvents(event_queue);
-                serializer.writeObject(output, record);
+//                Serializer serializer = new Serializer();
+//                record.setEvents(event_queue);
+//                serializer.writeObject(output, record);
                 output.flush();
                 output.close();
             } catch (KryoException ex) {

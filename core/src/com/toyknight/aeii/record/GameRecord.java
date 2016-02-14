@@ -9,9 +9,7 @@ import java.util.Queue;
 /**
  * @author toyknight 9/22/2015.
  */
-public class GameRecord implements Serializable {
-
-    private static final long serialVersionUID = 11032015L;
+public class GameRecord {
 
     private final String V_STRING;
 

@@ -3,18 +3,15 @@ package com.toyknight.aeii.entity;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.utils.UnitFactory;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class Unit implements Serializable {
-
-    private static final long serialVersionUID = 4032015L;
+public class Unit {
 
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGIC = 1;
-    private static final int[] level_up_experience = {100, 200, 300};
+
+    private static final int[] LEVEL_UP_EXPERIENCE = {100, 200, 300};
 
     private final int index;
 
@@ -51,10 +48,6 @@ public class Unit implements Serializable {
     private int min_attack_range;
 
     private boolean is_standby;
-
-    public Unit() {
-        this(-1);
-    }
 
     public Unit(int index, String unit_code) {
         this.level = 0;
@@ -219,7 +212,7 @@ public class Unit implements Serializable {
         return abilities.indexOf(ability, false) >= 0;
     }
 
-    private Array<Integer> getAbilities() {
+    public Array<Integer> getAbilities() {
         return abilities;
     }
 
@@ -304,18 +297,17 @@ public class Unit implements Serializable {
     }
 
     /**
-     * @param exp experience
-     * @return returns if unit level is up after gaining exp
+     * @param experience experience
+     * @return returns if unit level is up after gaining experience
      */
-    public boolean gainExperience(int exp) {
+    public boolean gainExperience(int experience) {
         if (level < 3) {
-            boolean level_up_flag = false;
-            if (getLevelUpExperience() - getCurrentExperience() <= exp) {
-                level_up_flag = true;
+            int old_level = getLevel();
+            setTotalExperience(getTotalExperience() + experience);
+            for (int i = 0; i < getLevel() - old_level; i++) {
                 levelUp();
             }
-            experience += exp;
-            return level_up_flag;
+            return getLevel() > old_level;
         } else {
             return false;
         }
@@ -325,17 +317,30 @@ public class Unit implements Serializable {
         return experience;
     }
 
+    public void setTotalExperience(int experience) {
+        this.experience = experience;
+        int temp_experience = 0;
+        for (int level = 0; level < 3; level++) {
+            temp_experience += LEVEL_UP_EXPERIENCE[level];
+            if (experience < temp_experience) {
+                this.level = level;
+                return;
+            }
+        }
+        this.level = 3;
+    }
+
     public int getCurrentExperience() {
         int exp = experience;
         for (int i = 0; i < level; i++) {
-            exp -= level_up_experience[i];
+            exp -= LEVEL_UP_EXPERIENCE[i];
         }
         return exp;
     }
 
     public int getLevelUpExperience() {
         if (0 <= level && level < 3) {
-            return level_up_experience[level];
+            return LEVEL_UP_EXPERIENCE[level];
         } else {
             return -1;
         }
@@ -347,8 +352,12 @@ public class Unit implements Serializable {
 
     public void attachStatus(Status status) {
         if ((getStatus() == null || getStatus().equals(status)) && !hasAbility(Ability.HEAVY_MACHINE)) {
-            this.status = status;
+            setStatus(status);
         }
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void updateStatus() {

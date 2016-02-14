@@ -1,13 +1,9 @@
 package com.toyknight.aeii.entity;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 9/22/2015.
  */
-public class Statistics implements Serializable {
-
-    private static final long serialVersionUID = 9222015L;
+public class Statistics {
 
     private final int[] income;
     private final int[] destroy;

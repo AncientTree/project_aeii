@@ -1,6 +1,6 @@
-package com.toyknight.aeii.rule;
+package com.toyknight.aeii.manager;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;

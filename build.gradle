@@ -23,6 +23,7 @@ allprojects {
         aiVersion = '1.5.0'
         rhinoVersion = '1.7R2'
         kryonetVersion = '2.22.0-RC1'
+        jsonVersion = '20151123'
     }
 
     repositories {
@@ -87,6 +88,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "rhino:js:$rhinoVersion"
         compile "com.esotericsoftware:kryonet:$kryonetVersion"
+        compile "org.json:json:$jsonVersion"
     }
 }
 

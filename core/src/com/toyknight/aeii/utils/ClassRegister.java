@@ -10,7 +10,7 @@ import com.toyknight.aeii.net.serializable.Notification;
 import com.toyknight.aeii.net.serializable.Request;
 import com.toyknight.aeii.net.serializable.Response;
 import com.toyknight.aeii.record.GameRecord;
-import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.entity.GameSave;
 import com.toyknight.aeii.net.serializable.PlayerSnapshot;
 import com.toyknight.aeii.net.serializable.RoomSetting;

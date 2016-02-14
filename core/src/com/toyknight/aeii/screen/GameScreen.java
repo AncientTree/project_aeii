@@ -226,8 +226,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     private void drawTombs() {
-        Array<Tomb> tomb_list = getGame().getMap().getTombs();
-        for (Tomb tomb : tomb_list) {
+        for (Tomb tomb : getGame().getMap().getTombs()) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
             batch.draw(ResourceManager.getTombTexture(), tomb_sx, tomb_sy, ts(), ts());

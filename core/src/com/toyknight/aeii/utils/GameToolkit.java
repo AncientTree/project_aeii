@@ -9,6 +9,8 @@ import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.entity.GameSave;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,11 +48,11 @@ public class GameToolkit {
     public static void saveSkirmish(GameCore game, String filename) throws AEIIException {
         try {
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
+            String save_content = Serializer.toJson(game_save).toString();
             FileHandle save_file = FileProvider.getSaveFile("skirmish " + filename);
-            Serializer serializer = new Serializer();
             Output output = new Output(save_file.write(false));
             output.writeInt(SAVE);
-            serializer.writeObject(output, game_save);
+            output.writeString(save_content);
             output.flush();
             output.close();
         } catch (KryoException ex) {
@@ -60,36 +62,41 @@ public class GameToolkit {
 
     public static GameSave loadGame(FileHandle save_file) {
         try {
-            Serializer serializer = new Serializer();
             Input input = new Input(save_file.read());
             int type = input.readInt();
             if (type == SAVE) {
-                GameSave save = serializer.readObject(input, GameSave.class);
+                JSONObject json = new JSONObject(input.readString());
+                GameSave save = Serializer.toSave(json);
                 input.close();
                 return save;
             } else {
                 return null;
             }
-        } catch (KryoException ex) {
+        } catch (AEIIException ex) {
+            Gdx.app.log(TAG, ex.toString());
+            return null;
+        } catch (JSONException ex) {
             Gdx.app.log(TAG, ex.toString());
             return null;
         }
     }
 
     public static GameRecord loadRecord(FileHandle record_file) {
-        try {
-            Serializer serializer = new Serializer();
-            Input input = new Input(record_file.read());
-            int type = input.readInt();
-            if (type == RECORD) {
-                return serializer.readObject(input, GameRecord.class);
-            } else {
-                return null;
-            }
-        } catch (KryoException ex) {
-            Gdx.app.log(TAG, ex.toString());
-            return null;
-        }
+//        try {
+//            Serializer serializer = new Serializer();
+//            Input input = new Input(record_file.read());
+//            int type = input.readInt();
+//            if (type == RECORD) {
+//                return serializer.readObject(input, GameRecord.class);
+//            } else {
+//                return null;
+//            }
+//            return null;
+//        } catch (KryoException ex) {
+//            Gdx.app.log(TAG, ex.toString());
+//            return null;
+//        }
+        return null;
     }
 
     public static int getType(FileHandle save_file) {

@@ -1,18 +1,11 @@
 package com.toyknight.aeii.entity;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class Tomb extends Position implements Serializable {
-
-    private static final long serialVersionUID = 4032015L;
+public class Tomb extends Position {
 
     private int remains = 1;
-
-    public Tomb() {
-    }
 
     public Tomb(int x, int y) {
         super(x, y);
@@ -30,6 +23,10 @@ public class Tomb extends Position implements Serializable {
 
     public int getRemains() {
         return remains;
+    }
+
+    public void setRemains(int remains) {
+        this.remains = remains;
     }
 
 }

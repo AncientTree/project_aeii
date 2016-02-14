@@ -6,30 +6,26 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class Map implements Serializable {
-
-    private static final long serialVersionUID = 4032015L;
+public class Map {
 
     protected String author;
-    protected final boolean[] team_access;
 
     protected final short[][] map_data;
+
     protected final Unit[][] upper_unit_layer;
-    protected final ObjectMap<Position, Unit> unit_map;
-    protected final Array<Tomb> tomb_list;
-    protected final Position[][] position_map;
+    protected final ObjectMap<Position, Unit> units;
+
+    protected final ObjectSet<Tomb> tombs;
 
     private final ObjectSet<Position> castle_positions;
     private final ObjectSet<Position> village_positions;
 
-    public Map() {
-        this(10, 10);
-    }
+    protected final boolean[] team_access;
+
+    protected final Position[][] position_map;
 
     public Map(Map map) {
         this(map.getWidth(), map.getHeight());
@@ -45,11 +41,11 @@ public class Map implements Serializable {
             }
         }
         for (Position position : map.getUnitPositions()) {
-            Unit unit = map.unit_map.get(position);
-            unit_map.put(position, new Unit(unit));
+            Unit unit = map.units.get(position);
+            units.put(position, new Unit(unit));
         }
-        for (Tomb tomb : map.tomb_list) {
-            tomb_list.add(new Tomb(tomb));
+        for (Tomb tomb : map.tombs) {
+            tombs.add(new Tomb(tomb));
         }
     }
 
@@ -57,8 +53,8 @@ public class Map implements Serializable {
         map_data = new short[width][height];
         team_access = new boolean[4];
 
-        unit_map = new ObjectMap<Position, Unit>();
-        tomb_list = new Array<Tomb>();
+        units = new ObjectMap<Position, Unit>();
+        tombs = new ObjectSet<Tomb>();
         upper_unit_layer = new Unit[width][height];
         position_map = new Position[width][height];
         for (int x = 0; x < getWidth(); x++) {
@@ -94,11 +90,11 @@ public class Map implements Serializable {
         }
     }
 
-    public final int getWidth() {
+    public int getWidth() {
         return map_data.length;
     }
 
-    public final int getHeight() {
+    public int getHeight() {
         return map_data[0].length;
     }
 
@@ -172,27 +168,25 @@ public class Map implements Serializable {
     }
 
     public void addTomb(int x, int y) {
-        Tomb tomb = new Tomb(x, y);
-        if (isTomb(x, y)) {
-            int index = tomb_list.indexOf(tomb, false);
-            tomb_list.set(index, tomb);
-        } else {
-            tomb_list.add(tomb);
-        }
+        addTomb(new Tomb(x, y));
+    }
+
+    public void addTomb(Tomb tomb) {
+        tombs.add(tomb);
     }
 
     public void removeTomb(int x, int y) {
-        for (int i = 0; i < tomb_list.size; i++) {
-            Tomb tomb = tomb_list.get(i);
+        for (ObjectSet.ObjectSetIterator<Tomb> iterator = tombs.iterator(); iterator.hasNext(); ) {
+            Tomb tomb = iterator.next();
             if (tomb.x == x && tomb.y == y) {
-                tomb_list.removeIndex(i);
+                iterator.remove();
                 break;
             }
         }
     }
 
     public boolean isTomb(int x, int y) {
-        for (Tomb tomb : tomb_list) {
+        for (Tomb tomb : tombs) {
             if (tomb.x == x && tomb.y == y) {
                 return true;
             }
@@ -205,18 +199,17 @@ public class Map implements Serializable {
     }
 
     public void updateTombs() {
-        Array<Tomb> list = new Array<Tomb>(tomb_list);
-        for (int i = 0; i < list.size; i++) {
-            Tomb tomb = list.get(i);
+        for (ObjectSet.ObjectSetIterator<Tomb> iterator = tombs.iterator(); iterator.hasNext(); ) {
+            Tomb tomb = iterator.next();
             tomb.update();
             if (tomb.getRemains() < 0) {
-                tomb_list.removeIndex(i);
+                iterator.remove();
             }
         }
     }
 
-    public Array<Tomb> getTombs() {
-        return tomb_list;
+    public ObjectSet<Tomb> getTombs() {
+        return tombs;
     }
 
     public void moveUnit(Unit unit, int dest_x, int dest_y) {
@@ -230,11 +223,11 @@ public class Map implements Serializable {
             if (UnitToolkit.isTheSameUnit(unit, upper_unit_layer[start_x][start_y])) {
                 upper_unit_layer[start_x][start_y] = null;
             }
-            if (UnitToolkit.isTheSameUnit(unit, unit_map.get(start_position))) {
-                unit_map.remove(start_position);
+            if (UnitToolkit.isTheSameUnit(unit, units.get(start_position))) {
+                units.remove(start_position);
             }
-            if (unit_map.get(dest_position) == null) {
-                unit_map.put(dest_position, unit);
+            if (units.get(dest_position) == null) {
+                units.put(dest_position, unit);
             } else {
                 upper_unit_layer[dest_x][dest_y] = unit;
             }
@@ -242,12 +235,20 @@ public class Map implements Serializable {
     }
 
     public void addUnit(Unit unit) {
+        addUnit(unit, false);
+    }
+
+    public void addUnit(Unit unit, boolean replace) {
         Position position = getPosition(unit.getX(), unit.getY());
-        if (!unit_map.containsKey(position)) {
-            unit_map.put(position, unit);
+        if (replace) {
+            units.put(position, unit);
         } else {
-            if (upper_unit_layer[position.x][position.y] == null) {
-                upper_unit_layer[position.x][position.y] = unit;
+            if (!units.containsKey(position)) {
+                units.put(position, unit);
+            } else {
+                if (upper_unit_layer[position.x][position.y] == null) {
+                    upper_unit_layer[position.x][position.y] = unit;
+                }
             }
         }
     }
@@ -257,7 +258,7 @@ public class Map implements Serializable {
             if (upper_unit_layer[x][y] != null) {
                 return upper_unit_layer[x][y];
             } else {
-                return unit_map.get(getPosition(x, y));
+                return units.get(getPosition(x, y));
             }
         } else {
             return null;
@@ -269,7 +270,7 @@ public class Map implements Serializable {
     }
 
     public Unit getUnit(String unit_code) {
-        ObjectMap.Values<Unit> units = unit_map.values();
+        ObjectMap.Values<Unit> units = this.units.values();
         for (Unit unit : units) {
             if (unit.getUnitCode().equals(unit_code)) {
                 return unit;
@@ -279,11 +280,11 @@ public class Map implements Serializable {
     }
 
     public void removeUnit(int x, int y) {
-        unit_map.remove(getPosition(x, y));
+        units.remove(getPosition(x, y));
     }
 
     public ObjectMap.Values<Unit> getUnits() {
-        return unit_map.values();
+        return units.values();
     }
 
     public ObjectSet<Unit> getUnits(int team) {
@@ -297,7 +298,7 @@ public class Map implements Serializable {
     }
 
     public ObjectMap.Keys<Position> getUnitPositions() {
-        return unit_map.keys();
+        return units.keys();
     }
 
     public void removeTeam(int team) {
@@ -354,15 +355,15 @@ public class Map implements Serializable {
 
     public boolean canMove(int x, int y) {
         Position dest_position = getPosition(x, y);
-        return unit_map.get(dest_position) == null || upper_unit_layer[x][y] == null;
+        return units.get(dest_position) == null || upper_unit_layer[x][y] == null;
     }
 
     public boolean canStandby(Unit unit) {
         Position position = getPosition(unit.getX(), unit.getY());
         if (UnitToolkit.isTheSameUnit(unit, upper_unit_layer[unit.getX()][unit.getY()])) {
-            return unit_map.get(position) == null;
+            return units.get(position) == null;
         } else {
-            return UnitToolkit.isTheSameUnit(unit, unit_map.get(position));
+            return UnitToolkit.isTheSameUnit(unit, units.get(position));
         }
     }
 

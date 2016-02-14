@@ -1,13 +1,9 @@
 package com.toyknight.aeii.entity;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class Status implements Serializable {
-
-    private static final long serialVersionUID = 4032015L;
+public class Status {
 
     public static final int POISONED = 0x1;
     public static final int SLOWED = 0x2;
@@ -17,18 +13,17 @@ public class Status implements Serializable {
     private final int type;
     private int remaining_turn;
 
-    public Status() {
-        this(-1, -1);
+    public Status(Status status) {
+        this(status.getType(), status.getRemainingTurn());
     }
 
-    public Status(Status status) {
-        this.type = status.getType();
-        this.remaining_turn = status.getRemainingTurn();
+    public Status(int type) {
+        this(type, 0);
     }
 
     public Status(int type, int turn) {
         this.type = type;
-        this.remaining_turn = turn;
+        setRemainingTurn(turn);
     }
 
     public void update() {

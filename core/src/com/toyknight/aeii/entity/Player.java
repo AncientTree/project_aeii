@@ -1,13 +1,9 @@
 package com.toyknight.aeii.entity;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class Player implements Serializable {
-
-    private static final long serialVersionUID = 4032015L;
+public class Player {
 
     public static final int NONE = 0x0;
     public static final int LOCAL = 0x1;
@@ -16,8 +12,9 @@ public class Player implements Serializable {
     public static final int RECORD = 0x4;
 
     private int type;
-    private int alliance = 0;
     private int gold = 0;
+    private int alliance = 0;
+
     private int population = 0;
 
     public Player() {
@@ -25,8 +22,8 @@ public class Player implements Serializable {
 
     public Player(Player player) {
         type = player.getType();
-        alliance = player.getAlliance();
         gold = player.getGold();
+        alliance = player.getAlliance();
         population = player.getPopulation();
     }
 
@@ -36,14 +33,6 @@ public class Player implements Serializable {
 
     public int getType() {
         return type;
-    }
-
-    public void setPopulation(int population) {
-        this.population = population;
-    }
-
-    public int getPopulation() {
-        return population;
     }
 
     public void setGold(int gold) {
@@ -56,6 +45,14 @@ public class Player implements Serializable {
 
     public int getGold() {
         return gold;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
+    public int getPopulation() {
+        return population;
     }
 
     public void setAlliance(int alliance) {
@@ -74,6 +71,7 @@ public class Player implements Serializable {
         Player player = new Player();
         player.setType(type);
         player.setGold(gold);
+        player.setAlliance(alliance);
         player.setPopulation(population);
         return player;
     }

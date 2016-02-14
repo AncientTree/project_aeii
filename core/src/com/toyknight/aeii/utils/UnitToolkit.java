@@ -1,7 +1,7 @@
 package com.toyknight.aeii.utils;
 
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.entity.Rule;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
 package com.toyknight.aeii.net.server;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.GameCore;
@@ -9,7 +9,7 @@ import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.serializable.RoomSnapshot;
-import com.toyknight.aeii.rule.Rule;
+import com.toyknight.aeii.entity.Rule;
 
 import java.util.Arrays;
 

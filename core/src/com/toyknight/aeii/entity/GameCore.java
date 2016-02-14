@@ -1,20 +1,15 @@
 package com.toyknight.aeii.entity;
 
-import static com.toyknight.aeii.rule.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.ObjectMap;
-import com.toyknight.aeii.rule.Rule;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
-
-import java.io.Serializable;
 
 /**
  * @author toyknight 4/3/2015.
  */
-public class GameCore implements Serializable {
-
-    private static final long serialVersionUID = 9172015L;
+public class GameCore {
 
     public static final int SKIRMISH = 0x1;
     public static final int CAMPAIGN = 0x2;
@@ -23,9 +18,9 @@ public class GameCore implements Serializable {
 
     protected final Map map;
     protected final Rule rule;
-    protected final Player[] player_list;
-    protected final boolean[] team_destroyed;
+    protected final Player[] players;
     protected final Unit[] commanders;
+    protected final boolean[] team_destroy;
 
     protected int turn;
 
@@ -37,63 +32,63 @@ public class GameCore implements Serializable {
 
     protected boolean initialized;
 
-    public GameCore() {
-        this(new Map(), Rule.createDefault(), 0, SKIRMISH);
-    }
-
     public GameCore(GameCore game) {
         type = game.type;
         map = new Map(game.map);
         rule = new Rule(game.rule);
         commanders = new Unit[4];
-        player_list = new Player[4];
-        team_destroyed = new boolean[4];
-        for (int team = 0; team < 4; team++) {
-            if (game.player_list[team] != null) {
-                player_list[team] = new Player(game.player_list[team]);
-            }
-            if (game.commanders[team] != null) {
-                commanders[team] = new Unit(game.commanders[team]);
-            }
-            team_destroyed[team] = game.team_destroyed[team];
-        }
+        players = new Player[4];
+        team_destroy = new boolean[4];
         turn = game.turn;
         current_team = game.current_team;
         game_over = game.game_over;
         statistics = new Statistics(game.statistics);
         initialized = game.initialized;
+
+        for (int team = 0; team < 4; team++) {
+            if (game.players[team] != null) {
+                players[team] = new Player(game.players[team]);
+            }
+            if (game.commanders[team] != null) {
+                setCommander(team, new Unit(game.commanders[team]));
+
+            }
+            team_destroy[team] = game.team_destroy[team];
+        }
     }
 
     public GameCore(Map map, Rule rule, int start_gold, int type) {
         this.map = map;
         this.rule = rule;
         this.type = type;
+        this.players = new Player[4];
         this.commanders = new Unit[4];
-        this.player_list = new Player[4];
-        this.team_destroyed = new boolean[4];
-        for (int team = 0; team < 4; team++) {
-            player_list[team] = Player.createPlayer(Player.NONE, 0, 0, 0);
-            player_list[team].setGold(start_gold);
-            team_destroyed[team] = false;
-        }
+        this.team_destroy = new boolean[4];
         this.turn = 1;
         this.game_over = false;
         this.statistics = new Statistics();
         this.initialized = false;
+        for (Unit unit: getMap().getUnits()) {
+            if (unit.isCommander()) {
+                commanders[unit.getTeam()] = unit;
+            }
+        }
+        for (int team = 0; team < 4; team++) {
+            players[team] = Player.createPlayer(Player.NONE, 0, 0, 0);
+            players[team].setGold(start_gold);
+            team_destroy[team] = false;
+
+            if (commanders[team] == null) {
+                commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
+            }
+        }
     }
 
     public void initialize() {
         if (!initialized) {
-            ObjectMap.Keys<Position> position_set = getMap().getUnitPositions();
-            for (Position position : position_set) {
-                Unit unit = getMap().getUnit(position.x, position.y);
-                if (unit.isCommander()) {
-                    commanders[unit.getTeam()] = unit;
-                }
-            }
             current_team = -1;
             for (int team = 0; team < 4; team++) {
-                if (player_list[team].getType() == Player.NONE) {
+                if (players[team].getType() == Player.NONE) {
                     if (getMap().hasTeamAccess(team)) {
                         getMap().removeTeam(team);
                     }
@@ -101,14 +96,11 @@ public class GameCore implements Serializable {
                     if (current_team == -1) {
                         current_team = team;
                     }
-                    if (commanders[team] == null) {
-                        commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
-                    }
                     statistics.addIncome(team, getPlayer(team).getGold());
                     updatePopulation(team);
                 }
             }
-            initialized = true;
+            setInitialized(true);
         }
     }
 
@@ -118,6 +110,10 @@ public class GameCore implements Serializable {
 
     public final boolean isInitialized() {
         return initialized;
+    }
+
+    public final void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     public final Map getMap() {
@@ -133,49 +129,61 @@ public class GameCore implements Serializable {
     }
 
     public boolean isPlayerAvailable(int team) {
-        return 0 <= team && team < 4 && getPlayer(team).getType() != Player.NONE && !team_destroyed[team];
+        return 0 <= team && team < 4 && getPlayer(team).getType() != Player.NONE && !team_destroy[team];
     }
 
     public Player getPlayer(int team) {
-        return player_list[team];
+        return players[team];
     }
 
     public Player getCurrentPlayer() {
-        return player_list[current_team];
+        return players[current_team];
     }
 
     public int getCurrentTeam() {
         return current_team;
     }
 
+    public void setCurrentTeam(int team) {
+        current_team = team;
+    }
+
     public int getCurrentTurn() {
         return turn;
     }
 
-    public int getMaxPopulation() {
-        return getRule().getInteger(MAX_POPULATION);
+    public void setCurrentTurn(int turn) {
+        this.turn = turn;
     }
 
     public int getPopulation(int team) {
         return getPlayer(team).getPopulation();
     }
 
-    public int getCurrentTeamPopulation() {
-        return getPopulation(getCurrentTeam());
-    }
-
-    public boolean hasReachPopulationCapcity(int team) {
+    public boolean hasReachPopulationCapacity(int team) {
         Player player = getPlayer(team);
-        if (player.getType() == Player.NONE) {
-            return false;
-        } else {
-            return player.getPopulation() >= getRule().getInteger(MAX_POPULATION);
-        }
+        return player.getType() != Player.NONE && player.getPopulation() >= getRule().getInteger(MAX_POPULATION);
     }
 
     public void destroyTeam(int team) {
         getMap().removeTeam(team);
-        team_destroyed[team] = true;
+        setTeamDestroyed(team, true);
+    }
+
+    public boolean isTeamDestroyed(int team) {
+        return team_destroy[team];
+    }
+
+    public void setTeamDestroyed(int team, boolean destroyed) {
+        team_destroy[team] = destroyed;
+    }
+
+    public boolean isGameOver() {
+        return game_over;
+    }
+
+    public void setGameOver(boolean game_over) {
+        this.game_over = game_over;
     }
 
     public void destroyUnit(int target_x, int target_y) {
@@ -242,6 +250,13 @@ public class GameCore implements Serializable {
 
     public Unit getCommander(int team) {
         return commanders[team];
+    }
+
+    public void setCommander(int team, Unit commander) {
+        commanders[team] = commander;
+        if (isCommanderAlive(team)) {
+            getMap().addUnit(commanders[team], true);
+        }
     }
 
     public int getUnitPrice(int index, int team) {
@@ -455,14 +470,6 @@ public class GameCore implements Serializable {
 
     public boolean canBuyOverUnit(Unit unit, int team) {
         return unit == null || (unit.isCommander() && unit.getTeam() == team);
-    }
-
-    public boolean isGameOver() {
-        return game_over;
-    }
-
-    public void setGameOver(boolean game_over) {
-        this.game_over = game_over;
     }
 
     public Position getTeamFocus(int team) {
