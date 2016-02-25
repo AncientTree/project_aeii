@@ -37,14 +37,14 @@ public class Language {
         return languageMap.get(key, "");
     }
 
-    public static String createCharset() {
+    public static String createCharset(String default_chars) {
         ObjectMap.Values<String> values = languageMap.values();
-        String charset = "";
+        String language_chars = "";
         for (String text : values) {
-            charset += text;
+            language_chars += text;
         }
-        //String additional_charset = FileProvider.getAssetsFile("lang/charset.dat").readString("UTF8");
-        return charset;
+        String additional_chars = FileProvider.getAssetsFile("lang/additional_chars.dat").readString("UTF8");
+        return removeDuplicate(default_chars + language_chars + additional_chars);
     }
 
     public static String removeDuplicate(String str) {

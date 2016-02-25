@@ -35,9 +35,7 @@ public class FontRenderer {
     }
 
     public static void loadFonts(int ts) {
-        String language_charset = Language.createCharset();
-        String default_charset = FreeTypeFontGenerator.DEFAULT_CHARS;
-        String charset = Language.removeDuplicate(default_charset + language_charset);
+        String charset = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getUIDefaultFont());
 
