@@ -1,9 +1,12 @@
 package com.toyknight.aeii.entity;
 
+import com.toyknight.aeii.Serializable;
+import org.json.JSONObject;
+
 /**
  * @author toyknight 4/3/2015.
  */
-public class Player {
+public class Player implements Serializable {
 
     public static final int NONE = 0x0;
     public static final int LOCAL = 0x1;
@@ -74,6 +77,16 @@ public class Player {
         player.setAlliance(alliance);
         player.setPopulation(population);
         return player;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", getType());
+        json.put("gold", getGold());
+        json.put("alliance", getAlliance());
+        json.put("population", getPopulation());
+        return json;
     }
 
 }

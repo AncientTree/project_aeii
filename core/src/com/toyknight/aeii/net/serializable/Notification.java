@@ -1,13 +1,13 @@
 package com.toyknight.aeii.net.serializable;
 
-import java.io.Serializable;
+import com.toyknight.aeii.Serializable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 10/28/2015.
  */
 public class Notification implements Serializable {
-
-    private static final long serialVersionUID = 10282015L;
 
     public static final int PLAYER_JOINING = 0x1;
 
@@ -23,26 +23,36 @@ public class Notification implements Serializable {
 
     private final int type;
 
-    private Object[] params;
+    private final JSONObject content;
 
-    public Notification() {
-        this(-1);
+    public Notification(JSONObject json) throws JSONException {
+        this.type = json.getInt("type");
+        this.content = json.getJSONObject("content");
     }
 
     public Notification(int type) {
         this.type = type;
+        this.content = new JSONObject();
     }
 
     public int getType() {
         return type;
     }
 
-    public void setParameters(Object... params) {
-        this.params = params;
+    public void setParameter(String name, Object parameter) {
+        content.put(name, parameter);
     }
 
-    public Object getParameter(int index) {
-        return params[index];
+    public Object getParameter(String name) throws JSONException {
+        return content.get(name);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", getType());
+        json.put("content", content);
+        return json;
     }
 
 }

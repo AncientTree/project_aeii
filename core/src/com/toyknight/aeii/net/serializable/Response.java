@@ -1,36 +1,45 @@
 package com.toyknight.aeii.net.serializable;
 
-import java.io.Serializable;
+import com.toyknight.aeii.Serializable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 10/27/2015.
  */
 public class Response implements Serializable {
 
-    private static final long serialVersionUID = 10272015L;
-
     private final long id;
 
-    private Object[] params;
+    private final JSONObject content;
 
-    public Response() {
-        this(-1);
+    public Response(JSONObject json) throws JSONException {
+        this.id = json.getInt("id");
+        this.content = json.getJSONObject("content");
     }
 
     public Response(long id) {
         this.id = id;
+        this.content = new JSONObject();
     }
 
     public long getRequestID() {
         return id;
     }
 
-    public void setParameters(Object... params) {
-        this.params = params;
+    public void setParameter(String name, Object parameter) {
+        content.put(name, parameter);
     }
 
-    public Object getParameter(int index) {
-        return params[index];
+    public Object getParameter(String name) throws JSONException {
+        return content.get(name);
     }
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("id", getRequestID());
+        json.put("content", content);
+        return json;
+    }
 }

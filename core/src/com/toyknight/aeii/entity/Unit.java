@@ -1,12 +1,15 @@
 package com.toyknight.aeii.entity;
 
 import com.badlogic.gdx.utils.Array;
+import com.toyknight.aeii.Serializable;
+import com.toyknight.aeii.Verifiable;
 import com.toyknight.aeii.utils.UnitFactory;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 4/3/2015.
  */
-public class Unit {
+public class Unit implements Serializable, Verifiable {
 
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGIC = 1;
@@ -90,11 +93,7 @@ public class Unit {
         this.max_attack_range = unit.getMaxAttackRange();
         this.min_attack_range = unit.getMinAttackRange();
         this.abilities = new Array<Integer>(unit.getAbilities());
-        if (unit.getStatus() == null) {
-            this.status = null;
-        } else {
-            this.status = new Status(unit.getStatus());
-        }
+        this.status = unit.getStatus() == null ? null : new Status(unit.getStatus());
     }
 
     public Unit(UnitDefinition definition, int index) {
@@ -377,7 +376,42 @@ public class Unit {
         return hasAbility(Ability.POISONER) || hasAbility(Ability.SLOWING_AURA) || hasAbility(Ability.BLINDER);
     }
 
-    public String getVerificationString() {
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Unit) {
+            Unit unit = (Unit) object;
+            return getUnitCode().equals(unit.getUnitCode());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getUnitCode().hashCode();
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("index", getIndex());
+        json.put("price", getPrice());
+        json.put("experience", getTotalExperience());
+        json.put("unit_code", getUnitCode());
+        json.put("team", getTeam());
+        json.put("current_hp", getCurrentHp());
+        json.put("current_movement_point", getCurrentMovementPoint());
+        json.put("x_position", getX());
+        json.put("y_position", getY());
+        json.put("standby", isStandby());
+        if (getStatus() != null) {
+            json.put("status", getStatus().toJson());
+        }
+        return json;
+    }
+
+    @Override
+    public String getVerification() {
         String str = "";
         str = str
                 + index
@@ -399,21 +433,6 @@ public class Unit {
             str += ability;
         }
         return str;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof Unit) {
-            Unit unit = (Unit) object;
-            return getUnitCode().equals(unit.getUnitCode());
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return getUnitCode().hashCode();
     }
 
     public static class UnitDefinition {

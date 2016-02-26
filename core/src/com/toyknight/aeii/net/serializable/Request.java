@@ -1,14 +1,14 @@
 
 package com.toyknight.aeii.net.serializable;
 
-import java.io.Serializable;
+import com.toyknight.aeii.Serializable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author toyknight
  */
 public class Request implements Serializable {
-
-    private static final long serialVersionUID = 10272015L;
 
     public static final int AUTHENTICATION = 0x0;
 
@@ -26,15 +26,18 @@ public class Request implements Serializable {
 
     private final long id;
 
-    private Object[] params;
+    private final JSONObject content;
 
-    public Request() {
-        this(-1, -1);
+    public Request(JSONObject json) throws JSONException {
+        this.id = json.getInt("id");
+        this.type = json.getInt("type");
+        this.content = json.getJSONObject("content");
     }
 
     public Request(int type, long id) {
         this.type = type;
         this.id = id;
+        this.content = new JSONObject();
     }
 
     public int getType() {
@@ -45,12 +48,21 @@ public class Request implements Serializable {
         return id;
     }
 
-    public void setParameters(Object... params) {
-        this.params = params;
+    public void setParameter(String name, Object parameter) {
+        content.put(name, parameter);
     }
 
-    public Object getParameter(int index) {
-        return params[index];
+    public Object getParameter(String name) throws JSONException {
+        return content.get(name);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("id", getID());
+        json.put("type", getType());
+        json.put("content", content);
+        return json;
     }
 
     public static Request getInstance(int type) {

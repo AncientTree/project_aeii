@@ -3,13 +3,17 @@ package com.toyknight.aeii.entity;
 import static com.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.ObjectMap;
+import com.toyknight.aeii.Serializable;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 4/3/2015.
  */
-public class GameCore {
+public class GameCore implements Serializable {
 
     public static final int SKIRMISH = 0x1;
     public static final int CAMPAIGN = 0x2;
@@ -32,6 +36,32 @@ public class GameCore {
 
     protected boolean initialized;
 
+    public GameCore(JSONObject json) throws JSONException {
+        this(new Map(json.getJSONObject("map")), new Rule(json.getJSONObject("rule")), 0, json.getInt("type"));
+        setCurrentTurn(json.getInt("current_turn"));
+        setCurrentTeam(json.getInt("current_team"));
+        setGameOver(json.getBoolean("game_over"));
+        setInitialized(json.getBoolean("initialized"));
+        JSONArray players = json.getJSONArray("players");
+        JSONArray commanders = json.getJSONArray("commanders");
+        JSONArray team_destroy = json.getJSONArray("team_destroy");
+        JSONArray income = json.getJSONObject("statistics").getJSONArray("income");
+        JSONArray destroy = json.getJSONObject("statistics").getJSONArray("destroy");
+        JSONArray lose = json.getJSONObject("statistics").getJSONArray("lose");
+        for (int team = 0; team < 4; team++) {
+            JSONObject player = players.getJSONObject(team);
+            getPlayer(team).setType(player.getInt("type"));
+            getPlayer(team).setGold(player.getInt("gold"));
+            getPlayer(team).setAlliance(player.getInt("alliance"));
+            getPlayer(team).setPopulation(player.getInt("population"));
+            setTeamDestroyed(team, team_destroy.getBoolean(team));
+            getStatistics().addIncome(team, income.getInt(team));
+            getStatistics().addDestroy(team, destroy.getInt(team));
+            getStatistics().addLose(team, lose.getInt(team));
+            setCommander(team, UnitFactory.createUnit(commanders.getJSONObject(team)));
+        }
+    }
+
     public GameCore(GameCore game) {
         type = game.type;
         map = new Map(game.map);
@@ -51,7 +81,6 @@ public class GameCore {
             }
             if (game.commanders[team] != null) {
                 setCommander(team, new Unit(game.commanders[team]));
-
             }
             team_destroy[team] = game.team_destroy[team];
         }
@@ -68,7 +97,7 @@ public class GameCore {
         this.game_over = false;
         this.statistics = new Statistics();
         this.initialized = false;
-        for (Unit unit: getMap().getUnits()) {
+        for (Unit unit : getMap().getUnits()) {
             if (unit.isCommander()) {
                 commanders[unit.getTeam()] = unit;
             }
@@ -79,7 +108,7 @@ public class GameCore {
             team_destroy[team] = false;
 
             if (commanders[team] == null) {
-                commanders[team] = UnitFactory.createUnit(UnitFactory.getCommanderIndex(), team);
+                commanders[team] = UnitFactory.createCommander(team);
             }
         }
     }
@@ -518,6 +547,31 @@ public class GameCore {
             }
         } while (!isPlayerAvailable(current_team));
         turn++;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", getType());
+        json.put("map", getMap().toJson());
+        json.put("rule", getRule().toJson());
+        JSONArray players = new JSONArray();
+        JSONArray commanders = new JSONArray();
+        JSONArray team_destroy = new JSONArray();
+        for (int team = 0; team < 4; team++) {
+            players.put(getPlayer(team).toJson());
+            team_destroy.put(isTeamDestroyed(team));
+            commanders.put(getCommander(team).toJson());
+        }
+        json.put("players", players);
+        json.put("commanders", commanders);
+        json.put("team_destroy", team_destroy);
+        json.put("current_turn", getCurrentTurn());
+        json.put("current_team", getCurrentTeam());
+        json.put("game_over", isGameOver());
+        json.put("statistics", getStatistics().toJson());
+        json.put("initialized", isInitialized());
+        return json;
     }
 
 }

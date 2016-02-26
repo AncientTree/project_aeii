@@ -2,16 +2,19 @@ package com.toyknight.aeii.entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.toyknight.aeii.Serializable;
 import com.toyknight.aeii.utils.UnitFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.Serializable;
+import static com.toyknight.aeii.entity.Rule.Entry.*;
+import static com.toyknight.aeii.entity.Rule.Entry.CASTLE_CLEAR;
 
 /**
  * @author toyknight 4/15/2015.
  */
 public class Rule implements Serializable {
-
-    private static final long serialVersionUID = 4152015L;
 
     public static final int POISON_DAMAGE = 10;
     public static final int HEALER_BASE_HEAL = 40;
@@ -24,6 +27,22 @@ public class Rule implements Serializable {
     public Rule() {
         values = new ObjectMap<String, Object>();
         available_units = new Array<Integer>();
+    }
+
+    public Rule(JSONObject json) throws JSONException {
+        this();
+        setValue(CASTLE_INCOME, json.getInt(CASTLE_INCOME));
+        setValue(VILLAGE_INCOME, json.getInt(VILLAGE_INCOME));
+        setValue(COMMANDER_INCOME, json.getInt(COMMANDER_INCOME));
+        setValue(KILL_EXPERIENCE, json.getInt(KILL_EXPERIENCE));
+        setValue(ATTACK_EXPERIENCE, json.getInt(ATTACK_EXPERIENCE));
+        setValue(COUNTER_EXPERIENCE, json.getInt(COUNTER_EXPERIENCE));
+        setValue(COMMANDER_PRICE_STEP, json.getInt(COMMANDER_PRICE_STEP));
+        setValue(MAX_POPULATION, json.getInt(MAX_POPULATION));
+        JSONArray available_units = json.getJSONArray("available_units");
+        for (int i = 0; i < available_units.length(); i++) {
+            addAvailableUnit(available_units.getInt(i));
+        }
     }
 
     public Rule(Rule rule) {
@@ -131,6 +150,27 @@ public class Rule implements Serializable {
         }
         unit_list.add(commander);
         return unit_list;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put(CASTLE_INCOME, getInteger(CASTLE_INCOME));
+        json.put(VILLAGE_INCOME, getInteger(VILLAGE_INCOME));
+        json.put(COMMANDER_INCOME, getInteger(COMMANDER_INCOME));
+        json.put(KILL_EXPERIENCE, getInteger(KILL_EXPERIENCE));
+        json.put(ATTACK_EXPERIENCE, getInteger(ATTACK_EXPERIENCE));
+        json.put(COUNTER_EXPERIENCE, getInteger(COUNTER_EXPERIENCE));
+        json.put(COMMANDER_PRICE_STEP, getInteger(COMMANDER_PRICE_STEP));
+        json.put(MAX_POPULATION, getInteger(MAX_POPULATION));
+        json.put(ENEMY_CLEAR, getBoolean(ENEMY_CLEAR));
+        json.put(CASTLE_CLEAR, getBoolean(CASTLE_CLEAR));
+        JSONArray available_units = new JSONArray();
+        for (Integer index : getAvailableUnits()) {
+            available_units.put(index);
+        }
+        json.put("available_units", available_units);
+        return json;
     }
 
     public class Entry {

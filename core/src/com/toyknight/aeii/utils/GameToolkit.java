@@ -48,11 +48,10 @@ public class GameToolkit {
     public static void saveSkirmish(GameCore game, String filename) throws AEIIException {
         try {
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
-            String save_content = Serializer.toJson(game_save).toString();
             FileHandle save_file = FileProvider.getSaveFile("skirmish " + filename);
             Output output = new Output(save_file.write(false));
             output.writeInt(SAVE);
-            output.writeString(save_content);
+            output.writeString(game_save.toJson().toString());
             output.flush();
             output.close();
         } catch (KryoException ex) {
@@ -66,15 +65,12 @@ public class GameToolkit {
             int type = input.readInt();
             if (type == SAVE) {
                 JSONObject json = new JSONObject(input.readString());
-                GameSave save = Serializer.toSave(json);
+                GameSave save = new GameSave(json);
                 input.close();
                 return save;
             } else {
                 return null;
             }
-        } catch (AEIIException ex) {
-            Gdx.app.log(TAG, ex.toString());
-            return null;
         } catch (JSONException ex) {
             Gdx.app.log(TAG, ex.toString());
             return null;

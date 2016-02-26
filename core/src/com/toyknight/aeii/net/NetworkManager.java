@@ -12,7 +12,8 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.net.serializable.*;
 import com.toyknight.aeii.net.server.ServerConfiguration;
-import com.toyknight.aeii.utils.ClassRegister;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.*;
 
@@ -72,7 +73,6 @@ public class NetworkManager {
                 onReceive(object);
             }
         });
-        new ClassRegister().register(client.getKryo());
         client.start();
         client.connect(5000, server.getAddress(), server.getPort());
         return requestAuthentication(username, v_string);
@@ -142,6 +142,26 @@ public class NetworkManager {
     }
 
     public static void onReceive(Object object) {
+        try {
+            if (object instanceof String) {
+                JSONObject packet = new JSONObject((String) object);
+                switch (packet.getInt("type")) {
+                    case NetworkConstants.RESPONSE:
+                        synchronized (RESPONSE_LOCK) {
+                            Response response = new Response(packet.getJSONObject("content"));
+                            responses.put(response.getRequestID(), response);
+                            RESPONSE_LOCK.notifyAll();
+                        }
+                        break;
+                    case NetworkConstants.NOTIFICATION:
+                        Notification notification = new Notification(packet.getJSONObject("content"));
+                        onReceiveNotification(notification);
+                        break;
+                }
+            }
+        } catch (JSONException ex) {
+            Gdx.app.log(TAG, ex.toString());
+        }
         if (object instanceof Response) {
             synchronized (RESPONSE_LOCK) {
                 Response response = (Response) object;
@@ -205,7 +225,10 @@ public class NetworkManager {
 
     private static Response sendRequest(Request request) {
         long id = request.getID();
-        client.sendTCP(request);
+        JSONObject packet = new JSONObject();
+        packet.put("type", NetworkConstants.REQUEST);
+        packet.put("content", request.toJson());
+        client.sendTCP(packet.toString());
         synchronized (RESPONSE_LOCK) {
             while (responses.get(id) == null && isConnected()) {
                 try {
@@ -223,12 +246,16 @@ public class NetworkManager {
     }
 
     private static void sendNotification(Notification notification) {
-        client.sendTCP(notification);
+        JSONObject packet = new JSONObject();
+        packet.put("type", NetworkConstants.NOTIFICATION);
+        packet.put("content", notification.toJson());
+        client.sendTCP(packet.toString());
     }
 
     public static boolean requestAuthentication(String username, String v_string) {
         Request request = Request.getInstance(Request.AUTHENTICATION);
-        request.setParameters(username, v_string);
+        request.setParameter("username", username);
+        request.setParameter("v_string", v_string);
         Response response = sendRequest(request);
         if (response == null) {
             return false;

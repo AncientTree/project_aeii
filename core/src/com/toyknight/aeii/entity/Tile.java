@@ -1,9 +1,11 @@
 package com.toyknight.aeii.entity;
 
+import com.toyknight.aeii.Verifiable;
+
 /**
  * @author toyknight 4/3/2015.
  */
-public class Tile {
+public class Tile implements Verifiable {
 
     public static final byte TYPE_LAND = 0;
     public static final byte TYPE_WATER = 1;
@@ -186,7 +188,8 @@ public class Tile {
         return animation_tile_index;
     }
 
-    public String getVerificationString() {
+    @Override
+    public String getVerification() {
         String str = "";
         str = str
                 + defence_bonus

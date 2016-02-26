@@ -1,9 +1,13 @@
 package com.toyknight.aeii.entity;
 
+import com.toyknight.aeii.Serializable;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * @author toyknight 4/3/2015.
  */
-public class Status {
+public class Status implements Serializable {
 
     public static final int POISONED = 0x1;
     public static final int SLOWED = 0x2;
@@ -12,6 +16,11 @@ public class Status {
 
     private final int type;
     private int remaining_turn;
+
+    public Status(JSONObject json) throws JSONException {
+        this.type = json.getInt("type");
+        this.remaining_turn = json.getInt("remaining_turn");
+    }
 
     public Status(Status status) {
         this(status.getType(), status.getRemainingTurn());
@@ -52,6 +61,13 @@ public class Status {
         int hash = 3;
         hash = 89 * hash + this.type;
         return hash;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("type", getType());
+        json.put("remaining_turn", getRemainingTurn());
+        return json;
     }
 
     public static boolean isBuff(Status status) {

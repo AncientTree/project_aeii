@@ -1,9 +1,13 @@
 package com.toyknight.aeii.entity;
 
+import com.toyknight.aeii.Serializable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * @author toyknight 9/22/2015.
  */
-public class Statistics {
+public class Statistics implements Serializable {
 
     private final int[] income;
     private final int[] destroy;
@@ -48,6 +52,23 @@ public class Statistics {
 
     public int getLost(int team) {
         return lose[team];
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        JSONArray income = new JSONArray();
+        JSONArray destroy = new JSONArray();
+        JSONArray lose = new JSONArray();
+        for (int team = 0; team < 4; team++) {
+            income.put(getIncome(team));
+            destroy.put(getDestroy(team));
+            lose.put(getLost(team));
+        }
+        json.put("income", income);
+        json.put("destroy", destroy);
+        json.put("lose", lose);
+        return json;
     }
 
 }

@@ -2,7 +2,10 @@ package com.toyknight.aeii.utils;
 
 import com.badlogic.gdx.utils.Json;
 import com.toyknight.aeii.AEIIException;
+import com.toyknight.aeii.entity.Status;
 import com.toyknight.aeii.entity.Unit;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.InputStreamReader;
 
@@ -53,6 +56,24 @@ public class UnitFactory {
         return default_units[index];
     }
 
+    public static Unit createUnit(JSONObject json) throws JSONException {
+        int index = json.getInt("index");
+        int team = json.getInt("team");
+        String unit_code = json.getString("unit_code");
+        Unit unit = createUnit(index, team, unit_code);
+        unit.setPrice(json.getInt("price"));
+        unit.gainExperience(json.getInt("experience"));
+        unit.setCurrentHp(json.getInt("current_hp"));
+        unit.setCurrentMovementPoint(json.getInt("current_movement_point"));
+        unit.setX(json.getInt("x_position"));
+        unit.setY(json.getInt("y_position"));
+        unit.setStandby(json.getBoolean("standby"));
+        if (json.has("status")) {
+            unit.setStatus(new Status(json.getJSONObject("status")));
+        }
+        return unit;
+    }
+
     public static Unit createUnit(int index, int team) {
         String unit_code = "#" + Long.toString(current_code++);
         return createUnit(index, team, unit_code);
@@ -67,6 +88,10 @@ public class UnitFactory {
         return unit;
     }
 
+    public static Unit createCommander(int team) {
+        return createUnit(getCommanderIndex(), team);
+    }
+
     public static Unit cloneUnit(Unit unit) {
         if (unit == null) {
             return null;
@@ -78,7 +103,7 @@ public class UnitFactory {
     public static String getVerificationString() {
         String str = "";
         for (Unit unit : default_units) {
-            str += unit.getVerificationString();
+            str += unit.getVerification();
         }
         return str;
     }

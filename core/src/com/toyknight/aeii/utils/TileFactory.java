@@ -96,7 +96,7 @@ public class TileFactory {
     public static String getVerificationString() {
         String str = "";
         for (Tile tile : tile_list) {
-            str += tile.getVerificationString();
+            str += tile.getVerification();
         }
         return str;
     }

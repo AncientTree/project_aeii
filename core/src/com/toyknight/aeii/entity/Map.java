@@ -3,13 +3,18 @@ package com.toyknight.aeii.entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.toyknight.aeii.Serializable;
 import com.toyknight.aeii.utils.TileFactory;
+import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 4/3/2015.
  */
-public class Map {
+public class Map implements Serializable {
 
     protected String author;
 
@@ -25,7 +30,32 @@ public class Map {
 
     protected final boolean[] team_access;
 
-    protected final Position[][] position_map;
+    protected final Position[][] positions;
+
+    public Map(JSONObject json) throws JSONException {
+        this(json.getInt("width"), json.getInt("height"));
+        setAuthor(json.getString("author"));
+        JSONArray map_data = json.getJSONArray("map_data");
+        int index = 0;
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                int tile = map_data.getInt(index++);
+                setTile((short) tile, x, y);
+            }
+        }
+        JSONArray units = json.getJSONArray("units");
+        for (int i = 0; i < units.length(); i++) {
+            addUnit(UnitFactory.createUnit(units.getJSONObject(i)));
+        }
+        JSONArray tombs = json.getJSONArray("tombs");
+        for (int i = 0; i < tombs.length(); i++) {
+            addTomb(new Tomb(tombs.getJSONObject(i)));
+        }
+        JSONArray team_access = json.getJSONArray("team_access");
+        for (int team = 0; team < 4; team++) {
+            setTeamAccess(team, team_access.getBoolean(team));
+        }
+    }
 
     public Map(Map map) {
         this(map.getWidth(), map.getHeight());
@@ -56,10 +86,10 @@ public class Map {
         units = new ObjectMap<Position, Unit>();
         tombs = new ObjectSet<Tomb>();
         upper_unit_layer = new Unit[width][height];
-        position_map = new Position[width][height];
+        positions = new Position[width][height];
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
-                position_map[x][y] = new Position(x, y);
+                positions[x][y] = new Position(x, y);
             }
         }
         castle_positions = new ObjectSet<Position>();
@@ -369,7 +399,7 @@ public class Map {
 
     public Position getPosition(int x, int y) {
         if (isWithinMap(x, y)) {
-            return position_map[x][y];
+            return positions[x][y];
         } else {
             return null;
         }
@@ -400,6 +430,37 @@ public class Map {
             }
         }
         return count;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("author", getAuthor());
+        json.put("width", getWidth());
+        json.put("height", getHeight());
+        JSONArray map_data = new JSONArray();
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                map_data.put(getTileIndex(x, y));
+            }
+        }
+        json.put("map_data", map_data);
+        JSONArray units = new JSONArray();
+        for (Unit unit : getUnits()) {
+            units.put(unit.toJson());
+        }
+        json.put("units", units);
+        JSONArray tombs = new JSONArray();
+        for (Tomb tomb : getTombs()) {
+            tombs.put(tomb.toJson());
+        }
+        json.put("tombs", tombs);
+        JSONArray team_access = new JSONArray();
+        for (int team = 0; team < 4; team++) {
+            team_access.put(hasTeamAccess(team));
+        }
+        json.put("team_access", team_access);
+        return json;
     }
 
 }
