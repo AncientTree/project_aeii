@@ -31,7 +31,7 @@ public class Room {
 
     private int host_player_id;
     private final ObjectSet<Integer> players;
-    private final Integer[] team_allocation;
+    private final int[] allocation;
 
     private GameManager manager;
 
@@ -50,8 +50,8 @@ public class Room {
         this.room_name = room_name;
         this.game_started = false;
         this.players = new ObjectSet<Integer>();
-        this.team_allocation = new Integer[4];
-        Arrays.fill(team_allocation, -1);
+        this.allocation = new int[4];
+        Arrays.fill(allocation, -1);
         host_player_id = -1;
         game_started = false;
     }
@@ -102,9 +102,9 @@ public class Room {
         synchronized (PLAYER_LOCK) {
             players.remove(id);
             for (int team = 0; team < 4; team++) {
-                if (team_allocation[team] == id) {
+                if (allocation[team] == id) {
                     setPlayerType(team, Player.NONE);
-                    team_allocation[team] = -1;
+                    allocation[team] = -1;
                 }
             }
             if (host_player_id == id) {
@@ -121,16 +121,20 @@ public class Room {
         host_player_id = id;
     }
 
-    public Integer getHostID() {
+    public int getHostID() {
         return host_player_id;
     }
 
-    public void setTeamAllocation(int team, int id) {
-        team_allocation[team] = id;
+    public void setAllocation(int team, int id) {
+        allocation[team] = id;
     }
 
-    public Integer[] getTeamAllocation() {
-        return team_allocation;
+    public int getAllocation(int team) {
+        return allocation[team];
+    }
+
+    public int[] getAllocation() {
+        return allocation;
     }
 
     public void setPlayerType(int team, int type) {
@@ -144,15 +148,8 @@ public class Room {
         }
     }
 
-    public Integer[] getPlayerTypes() {
-        synchronized (GAME_LOCK) {
-            Integer[] player_types = new Integer[4];
-            for (int team = 0; team < 4; team++) {
-                Player player = getGame().getPlayer(team);
-                player_types[team] = player.getType();
-            }
-            return player_types;
-        }
+    public int getPlayerType(int team) {
+        return getGame().getPlayer(team).getType();
     }
 
     public void setAlliance(int team, int alliance) {
@@ -165,14 +162,6 @@ public class Room {
 
     public int getAlliance(int team) {
         return getGame().getPlayer(team).getAlliance();
-    }
-
-    public Integer[] getAlliances() {
-        Integer[] alliances = new Integer[4];
-        for (int team = 0; team < 4; team++) {
-            alliances[team] = getGame().getPlayer(team).getAlliance();
-        }
-        return alliances;
     }
 
     public long getRoomNumber() {
@@ -234,7 +223,7 @@ public class Room {
         int alliance = -1;
         boolean alliance_ready = false;
         for (int team = 0; team < 4; team++) {
-            if (getMap().hasTeamAccess(team) && team_allocation[team] != -1) {
+            if (getMap().hasTeamAccess(team) && allocation[team] != -1) {
                 player_count++;
                 if (alliance == -1) {
                     alliance = getAlliance(team);

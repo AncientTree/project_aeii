@@ -15,6 +15,10 @@ public class PlayerSnapshot implements Serializable {
 
     public boolean is_host;
 
+    public PlayerSnapshot(int id, String username) {
+        this(id, username, false);
+    }
+
     public PlayerSnapshot(int id, String username, boolean is_host) {
         this.id = id;
         this.username = username;

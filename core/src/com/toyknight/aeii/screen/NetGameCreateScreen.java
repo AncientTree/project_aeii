@@ -219,8 +219,8 @@ public class NetGameCreateScreen extends StageScreen {
         return "";
     }
 
-    public Integer[] getPlayerTypes() {
-        Integer[] player_type = new Integer[4];
+    public int[] getPlayerTypes() {
+        int[] player_type = new int[4];
         for (int team = 0; team < 4; team++) {
             Player player = getRoomSetting().game.getPlayer(team);
             player_type[team] = player.getType();
@@ -228,8 +228,8 @@ public class NetGameCreateScreen extends StageScreen {
         return player_type;
     }
 
-    public Integer[] getAllianceState() {
-        Integer[] alliance = new Integer[4];
+    public int[] getAllianceState() {
+        int[] alliance = new int[4];
         for (int team = 0; team < 4; team++) {
             alliance[team] = getRoomSetting().game.getPlayer(team).getAlliance();
         }

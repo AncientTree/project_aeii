@@ -45,7 +45,7 @@ public class CommandExecutor {
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
-                Integer[] temp = new Integer[4];
+                int[] temp = new int[4];
                 Arrays.fill(temp, 0);
                 NetworkManager.notifyAllocationUpdate(temp, getAllocation(), temp);
                 return null;
@@ -65,7 +65,7 @@ public class CommandExecutor {
         return NetworkManager.getRoomSetting().game;
     }
 
-    private Integer[] getAllocation() {
+    private int[] getAllocation() {
         return NetworkManager.getRoomSetting().allocation;
     }
 

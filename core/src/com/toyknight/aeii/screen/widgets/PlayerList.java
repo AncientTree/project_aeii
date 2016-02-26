@@ -29,8 +29,8 @@ public class PlayerList extends StringList<PlayerSnapshot> {
         this.unit_offset = (big_circle_height - ts) / 2;
     }
 
-    public boolean hasTeamAccess(Integer id, int team) {
-        return NetworkManager.getRoomSetting().allocation[team].equals(id);
+    public boolean hasTeamAccess(int id, int team) {
+        return NetworkManager.getRoomSetting().allocation[team] == id;
     }
 
     @Override

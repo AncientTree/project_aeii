@@ -22,7 +22,7 @@ public class RoomSetting implements Serializable {
 
     public GameCore game;
 
-    public Integer[] allocation;
+    public int[] allocation;
 
     public int start_gold;
 
@@ -40,7 +40,7 @@ public class RoomSetting implements Serializable {
             players.add(new PlayerSnapshot(json.getJSONArray("players").getJSONObject(i)));
         }
         game = new GameCore(json.getJSONObject("game"));
-        allocation = new Integer[4];
+        allocation = new int[4];
         for (int team = 0; team < 4; team++) {
             allocation[team] = json.getJSONArray("allocation").getInt(team);
         }

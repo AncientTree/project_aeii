@@ -334,7 +334,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onAllocationUpdate() {
-        Integer[] allocation = NetworkManager.getRoomSetting().allocation;
+        int[] allocation = NetworkManager.getRoomSetting().allocation;
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (player.getType() == Player.LOCAL && allocation[team] != NetworkManager.getServiceID()) {

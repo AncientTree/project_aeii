@@ -125,7 +125,7 @@ public class NetworkManager {
         }
     }
 
-    private static void onAllocationUpdate(Integer[] alliance, Integer[] allocation, Integer[] types) {
+    private static void onAllocationUpdate(int[] alliance, int[] allocation, int[] types) {
         getRoomSetting().allocation = allocation;
         if (!getRoomSetting().started) {
             for (int team = 0; team < 4; team++) {
@@ -175,9 +175,9 @@ public class NetworkManager {
                 onPlayerLeave(id, username, host);
                 break;
             case NetworkConstants.UPDATE_ALLOCATION:
-                Integer[] types = new Integer[4];
-                Integer[] alliance = new Integer[4];
-                Integer[] allocation = new Integer[4];
+                int[] types = new int[4];
+                int[] alliance = new int[4];
+                int[] allocation = new int[4];
                 for (int team = 0; team < 4; team++) {
                     types[team] = notification.getJSONArray("types").getInt(team);
                     alliance[team] = notification.getJSONArray("alliance").getInt(team);
@@ -193,13 +193,13 @@ public class NetworkManager {
                 }
                 break;
             case NetworkConstants.GAME_EVENT:
-                GameEvent event = (GameEvent) notification.getParameter(0);
-                if (listener != null) {
-                    synchronized (GameContext.RENDER_LOCK) {
-                        listener.onReceiveGameEvent(event);
-                    }
-                }
-                Gdx.app.log(TAG, "Receive " + event.toString());
+//                GameEvent event = (GameEvent) notification.getParameter(0);
+//                if (listener != null) {
+//                    synchronized (GameContext.RENDER_LOCK) {
+//                        listener.onReceiveGameEvent(event);
+//                    }
+//                }
+//                Gdx.app.log(TAG, "Receive " + event.toString());
                 break;
             case NetworkConstants.MESSAGE:
                 username = notification.getString("username");
@@ -216,7 +216,6 @@ public class NetworkManager {
     }
 
     private static JSONObject sendRequest(JSONObject request) throws JSONException {
-        request.put("type", NetworkConstants.REQUEST);
         long id = request.getLong("request_id");
         client.sendTCP(request.toString());
         synchronized (RESPONSE_LOCK) {
@@ -236,12 +235,11 @@ public class NetworkManager {
     }
 
     private static void sendNotification(JSONObject notification) throws JSONException {
-        notification.put("type", NetworkConstants.NOTIFICATION);
         client.sendTCP(notification.toString());
     }
 
     public static boolean requestAuthentication(String username, String v_string) throws JSONException {
-        JSONObject request = createPacket(NetworkConstants.AUTHENTICATION);
+        JSONObject request = createRequest(NetworkConstants.AUTHENTICATION);
         request.put("username", username);
         request.put("v_string", v_string);
         JSONObject response = sendRequest(request);
@@ -254,14 +252,14 @@ public class NetworkManager {
     }
 
     public static Array<RoomSnapshot> requestRoomList() throws JSONException {
-        JSONObject request = createPacket(NetworkConstants.AUTHENTICATION);
+        JSONObject request = createRequest(NetworkConstants.LIST_ROOMS);
         JSONObject response = sendRequest(request);
         if (response == null) {
             return new Array<RoomSnapshot>();
         } else {
             Array<RoomSnapshot> snapshots = new Array<RoomSnapshot>();
-            for (int i = 0; i < response.getJSONArray("room_snapshots").length(); i++) {
-                snapshots.add(new RoomSnapshot(response.getJSONArray("room_snapshots").getJSONObject(i)));
+            for (int i = 0; i < response.getJSONArray("rooms").length(); i++) {
+                snapshots.add(new RoomSnapshot(response.getJSONArray("rooms").getJSONObject(i)));
             }
             return snapshots;
         }
@@ -269,7 +267,7 @@ public class NetworkManager {
 
     public static boolean requestCreateRoom(String map_name, Map map, int capacity, int start_gold, int max_population)
             throws JSONException {
-        JSONObject request = createPacket(NetworkConstants.CREATE_ROOM);
+        JSONObject request = createRequest(NetworkConstants.CREATE_ROOM);
         request.put("map_name", map_name);
         request.put("map", map.toJson());
         request.put("capacity", capacity);
@@ -279,13 +277,17 @@ public class NetworkManager {
         if (response == null) {
             return false;
         } else {
-            room_setting = new RoomSetting(response.getJSONObject("room_setting"));
-            return true;
+            if (response.getBoolean("approved")) {
+                room_setting = new RoomSetting(response.getJSONObject("room_setting"));
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
     public static boolean requestCreateRoom(String save_name, GameCore game, int capacity) throws JSONException {
-        JSONObject request = createPacket(NetworkConstants.CREATE_ROOM_SAVED);
+        JSONObject request = createRequest(NetworkConstants.CREATE_ROOM_SAVED);
         request.put("save_name", save_name);
         request.put("game", game.toJson());
         request.put("capacity", capacity);
@@ -293,37 +295,45 @@ public class NetworkManager {
         if (response == null) {
             return false;
         } else {
-            room_setting = new RoomSetting(response.getJSONObject("room_setting"));
-            return true;
+            if (response.getBoolean("approved")) {
+                room_setting = new RoomSetting(response.getJSONObject("room_setting"));
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
     public static boolean requestJoinRoom(long room_number) throws JSONException {
-        JSONObject request = createPacket(NetworkConstants.JOIN_ROOM);
+        JSONObject request = createRequest(NetworkConstants.JOIN_ROOM);
         request.put("room_number", room_number);
         JSONObject response = sendRequest(request);
         if (response == null) {
             return false;
         } else {
-            room_setting = new RoomSetting(response.getJSONObject("room_setting"));
-            return true;
+            if (response.getBoolean("approved")) {
+                room_setting = new RoomSetting(response.getJSONObject("room_setting"));
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
     public static boolean requestStartGame() throws JSONException {
-        JSONObject request = createPacket(NetworkConstants.START_GAME);
+        JSONObject request = createRequest(NetworkConstants.START_GAME);
         JSONObject response = sendRequest(request);
         return response != null && response.getBoolean("approved");
     }
 
     public static void notifyLeaveRoom() throws JSONException {
-        JSONObject notification = createPacket(NetworkConstants.JOIN_ROOM);
+        JSONObject notification = createNotification(NetworkConstants.PLAYER_LEAVING);
         sendNotification(notification);
     }
 
-    public static void notifyAllocationUpdate(Integer[] alliance, Integer[] allocation, Integer[] types)
+    public static void notifyAllocationUpdate(int[] alliance, int[] allocation, int[] types)
             throws JSONException {
-        JSONObject notification = createPacket(NetworkConstants.UPDATE_ALLOCATION);
+        JSONObject notification = createNotification(NetworkConstants.UPDATE_ALLOCATION);
         JSONArray types_json = new JSONArray();
         JSONArray alliance_json = new JSONArray();
         JSONArray allocation_json = new JSONArray();
@@ -339,20 +349,29 @@ public class NetworkManager {
     }
 
     public static void sendGameEvent(GameEvent event) throws JSONException {
-        JSONObject notification = createPacket(NetworkConstants.GAME_EVENT);
+        JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
         notification.put("game_event", event/*.toJson()*/);
         sendNotification(notification);
         Gdx.app.log(TAG, "Send " + event.toString());
     }
 
     public static void sendMessage(String message) throws JSONException {
-        JSONObject notification = createPacket(NetworkConstants.MESSAGE);
+        JSONObject notification = createNotification(NetworkConstants.MESSAGE);
         notification.put("message", message);
         sendNotification(notification);
     }
 
-    private static JSONObject createPacket(int operation) throws JSONException {
+    private static JSONObject createRequest(int operation) throws JSONException {
         JSONObject packet = new JSONObject();
+        packet.put("request_id", System.currentTimeMillis());
+        packet.put("type", NetworkConstants.REQUEST);
+        packet.put("operation", operation);
+        return packet;
+    }
+
+    private static JSONObject createNotification(int operation) throws JSONException {
+        JSONObject packet = new JSONObject();
+        packet.put("type", NetworkConstants.NOTIFICATION);
         packet.put("operation", operation);
         return packet;
     }

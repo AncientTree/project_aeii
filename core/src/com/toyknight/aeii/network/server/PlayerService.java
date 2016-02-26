@@ -1,6 +1,7 @@
 package com.toyknight.aeii.network.server;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.toyknight.aeii.network.entity.PlayerSnapshot;
 
 /**
  * @author toyknight 10/27/2015.
@@ -57,6 +58,10 @@ public class PlayerService {
 
     public long getRoomNumber() {
         return room_number;
+    }
+
+    public PlayerSnapshot createSnapshot() {
+        return new PlayerSnapshot(getID(), getUsername());
     }
 
 }
