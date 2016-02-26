@@ -8,7 +8,7 @@ import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;

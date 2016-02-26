@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.net.server.EmptyAnimationManager;
+import com.toyknight.aeii.network.server.EmptyAnimationManager;
 import com.toyknight.aeii.robot.OperationExecutor;
 import com.toyknight.aeii.robot.Robot;
 import com.toyknight.aeii.utils.UnitFactory;

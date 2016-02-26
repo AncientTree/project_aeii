@@ -12,15 +12,15 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.concurrent.AsyncTask;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
-import com.toyknight.aeii.net.serializable.PlayerSnapshot;
-import com.toyknight.aeii.net.serializable.RoomSetting;
+import com.toyknight.aeii.network.entity.PlayerSnapshot;
+import com.toyknight.aeii.network.entity.RoomSetting;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 
@@ -238,18 +238,18 @@ public class NetGameCreateScreen extends StageScreen {
 
     public boolean hasTeamAccess(int team) {
         return getRoomSetting().game.getMap().hasTeamAccess(team)
-                && NetworkManager.getServiceID() == getRoomSetting().team_allocation[team];
+                && NetworkManager.getServiceID() == getRoomSetting().allocation[team];
     }
 
     public void updateAllocation() {
         for (int team = 0; team < 4; team++) {
-            int player_id = getRoomSetting().team_allocation[team];
+            int player_id = getRoomSetting().allocation[team];
             if (getRoomSetting().game.getMap().hasTeamAccess(team)) {
                 if (player_id == -1) {
                     lb_username[team].setText("");
                     spinner_type[team].setSelectedIndex(0);
                 } else {
-                    lb_username[team].setText(getUsername(getRoomSetting().team_allocation[team]));
+                    lb_username[team].setText(getUsername(getRoomSetting().allocation[team]));
                     spinner_type[team].setSelectedIndex(1);
                 }
                 Player player = getRoomSetting().game.getPlayer(team);
@@ -263,11 +263,11 @@ public class NetGameCreateScreen extends StageScreen {
             if (getRoomSetting().game.getMap().hasTeamAccess(team)) {
                 String selected = spinner_type[team].getSelectedItem();
                 if (selected.equals(Language.getText("LB_NONE"))) {
-                    getRoomSetting().team_allocation[team] = -1;
+                    getRoomSetting().allocation[team] = -1;
                 }
                 if (selected.equals(Language.getText("LB_PLAYER"))) {
-                    if (getRoomSetting().team_allocation[team] == -1) {
-                        getRoomSetting().team_allocation[team] = NetworkManager.getServiceID();
+                    if (getRoomSetting().allocation[team] == -1) {
+                        getRoomSetting().allocation[team] = NetworkManager.getServiceID();
                         getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);
                     }
                 }
@@ -281,7 +281,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     public void allocateSelectedPlayer(int team) {
         int id = player_list.getSelected().id;
-        getRoomSetting().team_allocation[team] = id;
+        getRoomSetting().allocation[team] = id;
         getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);
         updateAllocation();
         tryUpdateAllocation();
@@ -311,7 +311,7 @@ public class NetGameCreateScreen extends StageScreen {
             @Override
             public Void doTask() {
                 NetworkManager.notifyAllocationUpdate(
-                        getAllianceState(), getRoomSetting().team_allocation, getPlayerTypes());
+                        getAllianceState(), getRoomSetting().allocation, getPlayerTypes());
                 return null;
             }
 
@@ -428,8 +428,8 @@ public class NetGameCreateScreen extends StageScreen {
         map_preview.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         lb_population.setText(" " + setting.max_population + " ");
-        if (setting.initial_gold >= 0) {
-            lb_gold.setText(" " + setting.initial_gold + " ");
+        if (setting.start_gold >= 0) {
+            lb_gold.setText(" " + setting.start_gold + " ");
         } else {
             lb_gold.setText(" - ");
         }

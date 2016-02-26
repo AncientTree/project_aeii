@@ -1,7 +1,7 @@
-package com.toyknight.aeii.net.task;
+package com.toyknight.aeii.network.task;
 
 import com.toyknight.aeii.concurrent.AsyncTask;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 
 /**
  * @author toyknight 9/7/2015.

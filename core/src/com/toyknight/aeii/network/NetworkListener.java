@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net;
+package com.toyknight.aeii.network;
 
 import com.toyknight.aeii.manager.GameEvent;
 

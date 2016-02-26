@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net.server;
+package com.toyknight.aeii.network.server;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;

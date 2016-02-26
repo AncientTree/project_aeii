@@ -1,13 +1,9 @@
 package com.toyknight.aeii.manager;
 
-import java.io.Serializable;
-
 /**
  * @author toyknight 4/3/2015.
  */
-public class GameEvent implements Serializable {
-
-    private static final long serialVersionUID = 11012015L;
+public class GameEvent {
 
     public static final int NONE = 0x0;
     public static final int BUY = 0x1;

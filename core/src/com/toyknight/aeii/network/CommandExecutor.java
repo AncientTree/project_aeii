@@ -1,9 +1,8 @@
-package com.toyknight.aeii.net;
+package com.toyknight.aeii.network;
 
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.entity.Player;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -67,7 +66,7 @@ public class CommandExecutor {
     }
 
     private Integer[] getAllocation() {
-        return NetworkManager.getRoomSetting().team_allocation;
+        return NetworkManager.getRoomSetting().allocation;
     }
 
     private boolean isHost() {

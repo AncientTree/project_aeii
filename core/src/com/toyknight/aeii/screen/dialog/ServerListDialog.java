@@ -12,9 +12,9 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.concurrent.AsyncTask;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.screen.MainMenuScreen;
-import com.toyknight.aeii.net.server.ServerConfiguration;
+import com.toyknight.aeii.network.server.ServerConfiguration;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 

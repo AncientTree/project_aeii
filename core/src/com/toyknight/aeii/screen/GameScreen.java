@@ -17,8 +17,8 @@ import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.net.NetworkManager;
-import com.toyknight.aeii.net.task.GameEventSendingTask;
+import com.toyknight.aeii.network.NetworkManager;
+import com.toyknight.aeii.network.task.GameEventSendingTask;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.renderer.*;
@@ -27,8 +27,8 @@ import com.toyknight.aeii.screen.widgets.ActionButtonBar;
 import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
 import com.toyknight.aeii.screen.dialog.MessageBox;
-import com.toyknight.aeii.net.serializable.PlayerSnapshot;
-import com.toyknight.aeii.net.serializable.RoomSetting;
+import com.toyknight.aeii.network.entity.PlayerSnapshot;
+import com.toyknight.aeii.network.entity.RoomSetting;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
@@ -334,7 +334,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     @Override
     public void onAllocationUpdate() {
-        Integer[] allocation = NetworkManager.getRoomSetting().team_allocation;
+        Integer[] allocation = NetworkManager.getRoomSetting().allocation;
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (player.getType() == Player.LOCAL && allocation[team] != NetworkManager.getServiceID()) {

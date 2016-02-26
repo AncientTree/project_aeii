@@ -3,7 +3,7 @@ package com.toyknight.aeii.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.toyknight.aeii.GameContext;
-import com.toyknight.aeii.net.server.GameServer;
+import com.toyknight.aeii.network.server.GameServer;
 import com.toyknight.aeii.utils.Platform;
 
 public class DesktopLauncher implements Runnable {

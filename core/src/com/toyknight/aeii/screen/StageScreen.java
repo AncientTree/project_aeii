@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.NetworkListener;
+import com.toyknight.aeii.network.NetworkListener;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 

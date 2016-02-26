@@ -16,7 +16,7 @@ import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Statistics;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;

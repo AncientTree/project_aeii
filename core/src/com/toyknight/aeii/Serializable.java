@@ -1,5 +1,6 @@
 package com.toyknight.aeii;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -7,6 +8,6 @@ import org.json.JSONObject;
  */
 public interface Serializable {
 
-    JSONObject toJson();
+    JSONObject toJson() throws JSONException;
 
 }

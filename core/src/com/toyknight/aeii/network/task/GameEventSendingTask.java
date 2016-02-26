@@ -1,8 +1,8 @@
-package com.toyknight.aeii.net.task;
+package com.toyknight.aeii.network.task;
 
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 
 /**
  * @author toyknight 8/29/2015.

@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net.server;
+package com.toyknight.aeii.network.server;
 
 import static com.toyknight.aeii.entity.Rule.Entry.*;
 
@@ -8,7 +8,7 @@ import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.serializable.RoomSnapshot;
+import com.toyknight.aeii.network.entity.RoomSnapshot;
 import com.toyknight.aeii.entity.Rule;
 
 import java.util.Arrays;

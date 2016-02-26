@@ -1,4 +1,4 @@
-package com.toyknight.aeii.net.server;
+package com.toyknight.aeii.network.server;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -11,12 +11,12 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.net.serializable.Notification;
-import com.toyknight.aeii.net.serializable.Request;
-import com.toyknight.aeii.net.serializable.Response;
-import com.toyknight.aeii.net.serializable.PlayerSnapshot;
-import com.toyknight.aeii.net.serializable.RoomSetting;
-import com.toyknight.aeii.net.serializable.RoomSnapshot;
+import com.toyknight.aeii.network.entity.Notification;
+import com.toyknight.aeii.network.entity.Request;
+import com.toyknight.aeii.network.entity.Response;
+import com.toyknight.aeii.network.entity.PlayerSnapshot;
+import com.toyknight.aeii.network.entity.RoomSetting;
+import com.toyknight.aeii.network.entity.RoomSnapshot;
 import com.toyknight.aeii.utils.ClassRegister;
 import com.toyknight.aeii.utils.Encryptor;
 import com.toyknight.aeii.utils.TileFactory;
@@ -118,8 +118,8 @@ public class GameServer {
         configuration.room_number = room.getRoomNumber();
         configuration.started = !room.isOpen();
         configuration.host = room.getHostID();
-        configuration.team_allocation = room.getTeamAllocation();
-        configuration.initial_gold = room.getStartGold();
+        configuration.allocation = room.getTeamAllocation();
+        configuration.start_gold = room.getStartGold();
         configuration.max_population = room.getMaxPopulation();
         ObjectSet<Integer> players = room.getPlayers();
         configuration.players = new Array<PlayerSnapshot>();

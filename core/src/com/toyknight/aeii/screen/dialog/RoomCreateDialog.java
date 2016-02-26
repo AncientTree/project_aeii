@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.*;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.concurrent.AsyncTask;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.StringList;

@@ -3,9 +3,9 @@ package com.toyknight.aeii.screen.widgets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.net.NetworkManager;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.net.serializable.PlayerSnapshot;
+import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.utils.UnitFactory;
 
 /**
@@ -30,7 +30,7 @@ public class PlayerList extends StringList<PlayerSnapshot> {
     }
 
     public boolean hasTeamAccess(Integer id, int team) {
-        return NetworkManager.getRoomSetting().team_allocation[team].equals(id);
+        return NetworkManager.getRoomSetting().allocation[team].equals(id);
     }
 
     @Override

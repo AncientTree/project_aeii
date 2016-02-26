@@ -11,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.net.CommandExecutor;
-import com.toyknight.aeii.net.task.MessageSendingTask;
+import com.toyknight.aeii.network.CommandExecutor;
+import com.toyknight.aeii.network.task.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.PlayerList;
-import com.toyknight.aeii.net.serializable.PlayerSnapshot;
+import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.utils.Language;
 
 /**
