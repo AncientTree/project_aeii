@@ -434,6 +434,29 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
+    public boolean dialogKeyDown(int keyCode) {
+        switch (keyCode) {
+            case Input.Keys.ENTER:
+                if (message_box.isVisible()) {
+                    message_box.sendMessage();
+                    return true;
+                } else {
+                    return false;
+                }
+            case Input.Keys.ESCAPE:
+                if (isDialogShown()) {
+                    closeAllDialogs();
+                    onScreenUpdateRequested();
+                    return true;
+                } else {
+                    return false;
+                }
+            default:
+                return false;
+        }
+    }
+
+    @Override
     public boolean keyDown(int keyCode) {
         boolean event_handled = super.keyDown(keyCode);
         if (event_handled) {
@@ -443,7 +466,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 doCancel();
                 return true;
             }
-            if (keyCode == Input.Keys.ENTER && !isDialogShown()) {
+            if (keyCode == Input.Keys.ENTER) {
                 showDialog("message");
             }
             switch (getManager().getState()) {

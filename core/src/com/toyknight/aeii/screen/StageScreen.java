@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.Callable;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.network.NetworkListener;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
@@ -32,7 +31,13 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         this.context = context;
         this.ts = context.getTileSize();
         this.batch = new SpriteBatch();
-        this.dialog_stage = new Stage();
+        this.dialog_stage = new Stage() {
+            @Override
+            public boolean keyDown(int keyCode) {
+                boolean event_handled = super.keyDown(keyCode);
+                return event_handled || dialogKeyDown(keyCode);
+            }
+        };
         this.dialogs = new HashMap<String, BasicDialog>();
         this.dialog_shown = false;
     }
@@ -79,6 +84,10 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public boolean isDialogShown() {
         return dialog_shown;
+    }
+
+    public boolean dialogKeyDown(int keyCode) {
+        return false;
     }
 
     public Stage getDialogLayer() {

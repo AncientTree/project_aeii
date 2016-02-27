@@ -1,12 +1,13 @@
 package com.toyknight.aeii.screen.dialog;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -26,7 +27,6 @@ public class MessageBox extends BasicDialog {
     private final CommandExecutor command_executor;
 
     private PlayerList player_list;
-    private TextField tf_message;
 
     public MessageBox(StageScreen owner) {
         super(owner);
@@ -49,31 +49,10 @@ public class MessageBox extends BasicDialog {
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_player_list.setScrollBarPositions(false, true);
         sp_player_list.setFadeScrollBars(false);
-        add(sp_player_list).size(ts * 6 + ts / 2, ts * 5).pad(ts / 2).row();
-
-        tf_message = new TextField("", getContext().getSkin()) {
-            @Override
-            public void draw(Batch batch, float parentAlpha) {
-                batch.draw(
-                        ResourceManager.getBorderDarkColor(),
-                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
-                super.draw(batch, parentAlpha);
-            }
-        };
-        tf_message.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char key) {
-                if ((key == '\r' || key == '\n')) {
-                    sendMessage();
-                }
-            }
-        });
-        tf_message.setFocusTraversal(false);
-        tf_message.setMaxLength(48);
-        add(tf_message).width(ts * 6 + ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
+        add(sp_player_list).size(ts * 6 + ts / 2, ts * 5).padTop(ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
 
         Table button_bar = new Table();
-        TextButton btn_send = new TextButton(Language.getText("LB_SEND"), getContext().getSkin());
+        TextButton btn_send = new TextButton(Language.getText("LB_SEND_MESSAGE"), getContext().getSkin());
         btn_send.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,19 +77,12 @@ public class MessageBox extends BasicDialog {
         return command_executor;
     }
 
-    @Override
-    public void display() {
-        tf_message.setText("");
-    }
-
     public void setPlayers(Array<PlayerSnapshot> players) {
         player_list.setItems(players);
     }
 
     public void sendMessage() {
-        sendMessage(tf_message.getText());
-        getOwner().closeDialog("message");
-        getOwner().setKeyboardFocus(null);
+        Gdx.input.getTextInput(input_listener, Language.getText("MSG_INFO_IM"), "", "");
     }
 
     public void sendMessage(String message) {
@@ -128,9 +100,20 @@ public class MessageBox extends BasicDialog {
                     public void onFail(String message) {
                     }
                 });
-                getOwner().closeDialog("message");
             }
         }
     }
+
+    private Input.TextInputListener input_listener = new Input.TextInputListener() {
+        @Override
+        public void input(String message) {
+            sendMessage(message);
+        }
+
+        @Override
+        public void canceled() {
+            //do nothing
+        }
+    };
 
 }

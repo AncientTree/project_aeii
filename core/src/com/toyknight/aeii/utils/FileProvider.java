@@ -77,6 +77,7 @@ public class FileProvider {
         } else {
             return getAssetsFile("lang/en_US.dat");
         }
+//        return getAssetsFile("lang/zh_CN.dat");
     }
 
     public static FileHandle getUIDefaultFont() {

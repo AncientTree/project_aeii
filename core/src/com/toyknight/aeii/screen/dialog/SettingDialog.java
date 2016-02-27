@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.screen.MainMenuScreen;
 import com.toyknight.aeii.utils.Language;
@@ -68,7 +67,7 @@ public class SettingDialog extends BasicDialog {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.input.getTextInput(input_listener,
                         Language.getText("MSG_INFO_IYUN"),
-                        getContext().getUsername(),
+                        value_username.getText().toString(),
                         "");
             }
         });
@@ -98,7 +97,6 @@ public class SettingDialog extends BasicDialog {
     private Input.TextInputListener input_listener = new Input.TextInputListener() {
         @Override
         public void input(String username) {
-
             value_username.setText(username);
         }
 
@@ -107,14 +105,5 @@ public class SettingDialog extends BasicDialog {
             //do nothing
         }
     };
-
-    private class TextFilter implements TextField.TextFieldFilter {
-
-        @Override
-        public boolean acceptChar(TextField textField, char c) {
-            return c == 32 || (65 <= c && c <= 90) || (97 <= c && c <= 122);
-        }
-
-    }
 
 }
