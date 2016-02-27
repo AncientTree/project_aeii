@@ -49,7 +49,7 @@ public class MessageBox extends BasicDialog {
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_player_list.setScrollBarPositions(false, true);
         sp_player_list.setFadeScrollBars(false);
-        add(sp_player_list).size(ts * 6 + ts / 2, ts * 5).padTop(ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
+        add(sp_player_list).size(ts * 6 + ts / 2, ts * 6).padTop(ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
 
         Table button_bar = new Table();
         TextButton btn_send = new TextButton(Language.getText("LB_SEND_MESSAGE"), getContext().getSkin());
