@@ -78,21 +78,18 @@ public class GameToolkit {
     }
 
     public static GameRecord loadRecord(FileHandle record_file) {
-//        try {
-//            Serializer serializer = new Serializer();
-//            Input input = new Input(record_file.read());
-//            int type = input.readInt();
-//            if (type == RECORD) {
-//                return serializer.readObject(input, GameRecord.class);
-//            } else {
-//                return null;
-//            }
-//            return null;
-//        } catch (KryoException ex) {
-//            Gdx.app.log(TAG, ex.toString());
-//            return null;
-//        }
-        return null;
+        try {
+            Input input = new Input(record_file.read());
+            int type = input.readInt();
+            if (type == RECORD) {
+                return new GameRecord(new JSONObject(input.readString()));
+            } else {
+                return null;
+            }
+        } catch (JSONException ex) {
+            Gdx.app.log(TAG, ex.toString());
+            return null;
+        }
     }
 
     public static int getType(FileHandle save_file) {

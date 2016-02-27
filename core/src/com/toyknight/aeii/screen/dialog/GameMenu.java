@@ -9,10 +9,10 @@ import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.network.NetworkManager;
+import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.record.Recorder;
 
 /**
  * @author toyknight 6/1/2015.
@@ -79,7 +79,7 @@ public class GameMenu extends BasicDialog {
                 getContext().submitAsyncTask(new AsyncTask<Void>() {
                     @Override
                     public Void doTask() {
-                        Recorder.saveRecord();
+                        GameRecorder.saveRecord();
                         return null;
                     }
 

@@ -2,15 +2,19 @@ package com.toyknight.aeii.manager;
 
 import static com.toyknight.aeii.entity.Rule.Entry.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.record.Recorder;
+import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,19 +24,21 @@ import java.util.Queue;
  */
 public class GameEventExecutor {
 
+    private static final String TAG = "Executor";
+
     private final GameManager game_manager;
 
-    private final Queue<GameEvent> event_queue;
+    private final Queue<JSONObject> event_queue;
 
-    private final Queue<GameEvent> buffer_event_queue;
+    private final Queue<JSONObject> buffer_event_queue;
 
     private final AnimationDispatcher animation_dispatcher;
 
     public GameEventExecutor(GameManager game_manager, AnimationDispatcher dispatcher) {
         this.game_manager = game_manager;
         this.animation_dispatcher = dispatcher;
-        this.event_queue = new LinkedList<GameEvent>();
-        this.buffer_event_queue = new LinkedList<GameEvent>();
+        this.event_queue = new LinkedList<JSONObject>();
+        this.buffer_event_queue = new LinkedList<JSONObject>();
     }
 
     public GameManager getGameManager() {
@@ -60,11 +66,11 @@ public class GameEventExecutor {
         return event_queue.size() > 0 || buffer_event_queue.size() > 0;
     }
 
-    public void submitGameEvent(GameEvent event) {
+    public void submitGameEvent(JSONObject event) {
         event_queue.add(event);
     }
 
-    private void submitBufferGameEvent(GameEvent event) {
+    private void submitBufferGameEvent(JSONObject event) {
         buffer_event_queue.add(event);
     }
 
@@ -73,7 +79,11 @@ public class GameEventExecutor {
             getGameManager().onGameEventFinished();
         } else {
             if (buffer_event_queue.size() > 0) {
-                executeGameEvent(buffer_event_queue.poll(), false);
+                try {
+                    executeGameEvent(buffer_event_queue.poll(), false);
+                } catch (JSONException ex) {
+                    Gdx.app.log(TAG, ex.toString());
+                }
                 checkEventFinishing();
             } else {
                 if (event_queue.size() > 0) {
@@ -90,120 +100,125 @@ public class GameEventExecutor {
         }
     }
 
-    public void executeGameEvent(GameEvent event) {
-        executeGameEvent(event, true);
+    public void executeGameEvent(JSONObject event) {
+        try {
+            executeGameEvent(event, true);
+        } catch (JSONException ex) {
+            Gdx.app.log(TAG, ex.toString());
+        }
     }
 
-    public void executeGameEvent(GameEvent event, boolean record) {
-        switch (event.getType()) {
+    public void executeGameEvent(JSONObject event, boolean record) throws JSONException {
+        switch (event.getInt("type")) {
             case GameEvent.ATTACK:
-                int attacker_x = (Integer) event.getParameter(0);
-                int attacker_y = (Integer) event.getParameter(1);
-                int target_x = (Integer) event.getParameter(2);
-                int target_y = (Integer) event.getParameter(3);
-                int attack_damage = (Integer) event.getParameter(4);
-                int counter_damage = (Integer) event.getParameter(5);
+                int attacker_x = event.getJSONArray("parameters").getInt(0);
+                int attacker_y = event.getJSONArray("parameters").getInt(1);
+                int target_x = event.getJSONArray("parameters").getInt(2);
+                int target_y = event.getJSONArray("parameters").getInt(3);
+                int attack_damage = event.getJSONArray("parameters").getInt(4);
+                int counter_damage = event.getJSONArray("parameters").getInt(5);
                 onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage, counter_damage);
                 break;
             case GameEvent.BUY:
-                int index = (Integer) event.getParameter(0);
-                int team = (Integer) event.getParameter(1);
-                target_x = (Integer) event.getParameter(2);
-                target_y = (Integer) event.getParameter(3);
+                int index = event.getJSONArray("parameters").getInt(0);
+                int team = event.getJSONArray("parameters").getInt(1);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
                 onBuy(index, team, target_x, target_y);
                 break;
             case GameEvent.NEXT_TURN:
                 onNextTurn();
                 break;
             case GameEvent.HEAL:
-                int healer_x = (Integer) event.getParameter(0);
-                int healer_y = (Integer) event.getParameter(1);
-                target_x = (Integer) event.getParameter(2);
-                target_y = (Integer) event.getParameter(3);
-                int heal = (Integer) event.getParameter(4);
+                int healer_x = event.getJSONArray("parameters").getInt(0);
+                int healer_y = event.getJSONArray("parameters").getInt(1);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
+                int heal = event.getJSONArray("parameters").getInt(4);
                 onHeal(healer_x, healer_y, target_x, target_y, heal);
                 break;
             case GameEvent.MOVE:
-                int unit_x = (Integer) event.getParameter(0);
-                int unit_y = (Integer) event.getParameter(1);
-                target_x = (Integer) event.getParameter(2);
-                target_y = (Integer) event.getParameter(3);
+                int unit_x = event.getJSONArray("parameters").getInt(0);
+                int unit_y = event.getJSONArray("parameters").getInt(1);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
                 onMove(unit_x, unit_y, target_x, target_y);
                 break;
             case GameEvent.OCCUPY:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
-                team = (Integer) event.getParameter(2);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
+                team = event.getJSONArray("parameters").getInt(2);
                 onOccupy(target_x, target_y, team);
                 break;
             case GameEvent.REPAIR:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
                 onRepair(target_x, target_y);
                 break;
             case GameEvent.REVERSE:
-                unit_x = (Integer) event.getParameter(0);
-                unit_y = (Integer) event.getParameter(1);
-                target_x = (Integer) event.getParameter(2);
-                target_y = (Integer) event.getParameter(3);
+                unit_x = event.getJSONArray("parameters").getInt(0);
+                unit_y = event.getJSONArray("parameters").getInt(1);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
                 onReverse(unit_x, unit_y, target_x, target_y);
                 break;
             case GameEvent.SELECT:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
                 onSelect(target_x, target_y);
                 break;
             case GameEvent.STANDBY:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
                 onStandby(target_x, target_y);
                 break;
             case GameEvent.SUMMON:
-                int summoner_x = (Integer) event.getParameter(0);
-                int summoner_y = (Integer) event.getParameter(1);
-                target_x = (Integer) event.getParameter(2);
-                target_y = (Integer) event.getParameter(3);
+                int summoner_x = event.getJSONArray("parameters").getInt(0);
+                int summoner_y = event.getJSONArray("parameters").getInt(1);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
                 onSummon(summoner_x, summoner_y, target_x, target_y);
                 break;
             case GameEvent.HP_CHANGE:
-                ObjectMap change_map = (ObjectMap) event.getParameter(0);
-                onHpChange(change_map);
+                JSONArray changes = event.getJSONArray("parameters").getJSONArray(0);
+                onHpChange(changes);
                 break;
             case GameEvent.TILE_DESTROY:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
                 onTileDestroy(target_x, target_y);
                 break;
             case GameEvent.UNIT_DESTROY:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
                 onUnitDestroy(target_x, target_y);
                 break;
             case GameEvent.GAIN_EXPERIENCE:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
-                int experience = (Integer) event.getParameter(2);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
+                int experience = event.getJSONArray("parameters").getInt(2);
                 onUnitGainExperience(target_x, target_y, experience);
                 break;
             case GameEvent.ACTION_FINISH:
-                target_x = (Integer) event.getParameter(0);
-                target_y = (Integer) event.getParameter(1);
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
                 onUnitActionFinish(target_x, target_y);
                 break;
             case GameEvent.CHECK_TEAM_DESTROY:
-                team = (Integer) event.getParameter(0);
+                team = event.getJSONArray("parameters").getInt(0);
                 onCheckTeamDestroy(team);
                 break;
             default:
                 //do nothing
         }
         if (record) {
-            Recorder.submitGameEvent(event);
+            GameRecorder.submitGameEvent(event);
         }
     }
 
     private void onAttack(
-            int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, int counter_damage) {
+            int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, int counter_damage)
+            throws JSONException {
         if (canAttack(attacker_x, attacker_y, target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -219,7 +234,7 @@ public class GameEventExecutor {
                         getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, attack_damage);
                         if (defender.getCurrentHp() <= 0) {
                             getGame().getStatistics().addDestroy(attacker.getTeam(), defender.getPrice());
-                            submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y));
+                            submitBufferGameEvent(GameEvent.create(GameEvent.UNIT_DESTROY, target_x, target_y));
                         }
                     }
                     if (counter_damage >= 0) {
@@ -228,7 +243,7 @@ public class GameEventExecutor {
                         getAnimationDispatcher().submitUnitAttackAnimation(defender, attacker, counter_damage);
                         if (attacker.getCurrentHp() <= 0) {
                             getGame().getStatistics().addDestroy(defender.getTeam(), attacker.getPrice());
-                            submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, attacker_x, attacker_y));
+                            submitBufferGameEvent(GameEvent.create(GameEvent.UNIT_DESTROY, attacker_x, attacker_y));
                         }
                     }
                 }
@@ -276,7 +291,7 @@ public class GameEventExecutor {
                 && getGame().getPlayer(team).getPopulation() < getGame().getRule().getInteger(MAX_POPULATION);
     }
 
-    private void onNextTurn() {
+    private void onNextTurn() throws JSONException {
         getGameManager().setState(GameManager.STATE_SELECT);
         getGame().nextTurn();
         int team = getGame().getCurrentTeam();
@@ -287,7 +302,7 @@ public class GameEventExecutor {
                 0.8f);
 
         //calculate hp change at turn start
-        ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
+        JSONArray hp_changes = new JSONArray();
 
         //terrain heal and poison damage
         for (Unit unit : getGame().getMap().getUnits()) {
@@ -319,13 +334,13 @@ public class GameEventExecutor {
             }
             change = UnitToolkit.validateHpChange(unit, change);
             if (change != 0) {
-                hp_change_map.put(getGame().getMap().getPosition(unit), change);
+                hp_changes.put(createHpChange(getGame().getMap().getPosition(unit), change));
             }
         }
-        submitBufferGameEvent(new GameEvent(GameEvent.HP_CHANGE, hp_change_map));
+        submitBufferGameEvent(GameEvent.create(GameEvent.HP_CHANGE, hp_changes));
     }
 
-    private void onHeal(int healer_x, int healer_y, int target_x, int target_y, int heal) {
+    private void onHeal(int healer_x, int healer_y, int target_x, int target_y, int heal) throws JSONException {
         if (canHeal(healer_x, healer_y, target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -333,7 +348,7 @@ public class GameEventExecutor {
             target.changeCurrentHp(heal);
             getAnimationDispatcher().submitHpChangeAnimation(target, heal);
             if (target.getCurrentHp() <= 0) {
-                submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target_x, target_y));
+                submitBufferGameEvent(GameEvent.create(GameEvent.UNIT_DESTROY, target_x, target_y));
             }
         }
     }
@@ -368,7 +383,7 @@ public class GameEventExecutor {
         return unit != null && getGame().canUnitMove(unit, target_x, target_y);
     }
 
-    private void onOccupy(int target_x, int target_y, int team) {
+    private void onOccupy(int target_x, int target_y, int team) throws JSONException {
         if (canOccupy(target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -376,7 +391,7 @@ public class GameEventExecutor {
             getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
 
-            submitBufferGameEvent(new GameEvent(GameEvent.CHECK_TEAM_DESTROY, target_tile.getTeam()));
+            submitBufferGameEvent(GameEvent.create(GameEvent.CHECK_TEAM_DESTROY, target_tile.getTeam()));
         }
     }
 
@@ -431,6 +446,7 @@ public class GameEventExecutor {
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGameManager().setSelectedUnit(unit);
+
             switch (getGame().getCurrentPlayer().getType()) {
                 case Player.LOCAL:
                     Tile tile = getGame().getMap().getTile(target_x, target_y);
@@ -454,7 +470,7 @@ public class GameEventExecutor {
         return target != null && getGame().getCurrentTeam() == target.getTeam() && !target.isStandby();
     }
 
-    private void onStandby(int target_x, int target_y) {
+    private void onStandby(int target_x, int target_y) throws JSONException {
         if (canStandby(target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -465,7 +481,7 @@ public class GameEventExecutor {
             //deal with auras
             ObjectSet<Position> aura_positions = getGameManager().createPositionsWithinRange(target_x, target_y, 0, 2);
 
-            ObjectMap<Position, Integer> hp_change_map = new ObjectMap<Position, Integer>();
+            JSONArray hp_changes = new JSONArray();
 
             for (Position target_position : aura_positions) {
                 Unit target = getGame().getMap().getUnit(target_position);
@@ -485,7 +501,7 @@ public class GameEventExecutor {
                         if (getGame().canHeal(unit, target)) {
                             int change = UnitToolkit.validateHpChange(target, heal);
                             if (change != 0) {
-                                hp_change_map.put(target_position, change);
+                                hp_changes.put(createHpChange(target_position, change));
                             }
                         }
                     }
@@ -498,7 +514,7 @@ public class GameEventExecutor {
                     unit.attachStatus(new Status(Status.POISONED, 3));
                 }
             }
-            submitBufferGameEvent(new GameEvent(GameEvent.HP_CHANGE, hp_change_map));
+            submitBufferGameEvent(GameEvent.create(GameEvent.HP_CHANGE, hp_changes));
         }
     }
 
@@ -539,7 +555,7 @@ public class GameEventExecutor {
         return tile != null && tile.isDestroyable();
     }
 
-    private void onUnitDestroy(int target_x, int target_y) {
+    private void onUnitDestroy(int target_x, int target_y) throws JSONException {
         if (canDestroyUnit(target_x, target_y)) {
             getGameManager().requestMapFocus(target_x, target_y);
 
@@ -548,7 +564,7 @@ public class GameEventExecutor {
             getAnimationDispatcher().submitUnitDestroyAnimation(unit);
             getAnimationDispatcher().submitDustAriseAnimation(unit.getX(), unit.getY());
 
-            submitBufferGameEvent(new GameEvent(GameEvent.CHECK_TEAM_DESTROY, unit.getTeam()));
+            submitBufferGameEvent(GameEvent.create(GameEvent.CHECK_TEAM_DESTROY, unit.getTeam()));
         }
     }
 
@@ -573,15 +589,23 @@ public class GameEventExecutor {
         }
     }
 
-    private void onHpChange(ObjectMap<Position, Integer> change_map) {
-        if (change_map.keys().toArray().size > 0) {
+    private void onHpChange(JSONArray changes) throws JSONException {
+        if (changes.length() > 0) {
+            ObjectMap<Position, Integer> change_map = new ObjectMap<Position, Integer>();
             ObjectSet<Unit> units = new ObjectSet<Unit>();
-            for (Position position : change_map.keys()) {
+            for (int i = 0; i < changes.length(); i++) {
+                JSONObject change = changes.getJSONObject(i);
+                int x = change.getInt("x");
+                int y = change.getInt("y");
+                Position position = getGame().getMap().getPosition(x, y);
                 Unit target = getGame().getMap().getUnit(position);
-                target.changeCurrentHp(change_map.get(position));
-                units.add(target);
-                if (target.getCurrentHp() <= 0) {
-                    submitBufferGameEvent(new GameEvent(GameEvent.UNIT_DESTROY, target.getX(), target.getY()));
+                if (target != null) {
+                    target.changeCurrentHp(change.getInt("change"));
+                    change_map.put(position, change.getInt("change"));
+                    units.add(target);
+                    if (target.getCurrentHp() <= 0) {
+                        submitBufferGameEvent(GameEvent.create(GameEvent.UNIT_DESTROY, target.getX(), target.getY()));
+                    }
                 }
             }
             getAnimationDispatcher().submitHpChangeAnimation(change_map, units);
@@ -597,6 +621,14 @@ public class GameEventExecutor {
                 getGame().setGameOver(true);
             }
         }
+    }
+
+    private JSONObject createHpChange(Position position, int change) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("x", position.x);
+        json.put("y", position.y);
+        json.put("change", change);
+        return json;
     }
 
 }

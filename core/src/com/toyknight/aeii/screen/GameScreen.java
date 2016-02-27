@@ -11,7 +11,6 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.animation.AnimationManager;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.manager.GameManagerListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.ResourceManager;
@@ -21,6 +20,7 @@ import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.network.task.GameEventSendingTask;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
+import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.renderer.*;
 import com.toyknight.aeii.screen.dialog.*;
 import com.toyknight.aeii.screen.widgets.ActionButtonBar;
@@ -30,8 +30,8 @@ import com.toyknight.aeii.screen.dialog.MessageBox;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.network.entity.RoomSetting;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.record.Recorder;
 import com.toyknight.aeii.utils.TileFactory;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 4/4/2015.
@@ -295,7 +295,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() {
-                Recorder.saveRecord();
+                GameRecorder.saveRecord();
                 return null;
             }
 
@@ -364,7 +364,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onReceiveGameEvent(GameEvent event) {
+    public void onReceiveGameEvent(JSONObject event) {
         getManager().getGameEventExecutor().submitGameEvent(event);
     }
 
@@ -413,7 +413,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     public void prepare(GameCore game) {
-        Recorder.prepare(getContext().getVerificationString(), game);
+        GameRecorder.prepare(getContext().getVerificationString(), game);
         record_player.setRecord(null);
         initialize(game);
     }
@@ -704,7 +704,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onGameEventSubmitted(GameEvent event) {
+    public void onGameEventSubmitted(JSONObject event) {
         if (NetworkManager.isConnected()) {
             getContext().submitAsyncTask(new GameEventSendingTask(event) {
                 @Override

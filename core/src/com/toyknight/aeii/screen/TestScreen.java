@@ -15,12 +15,12 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Player;
+import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
-import com.toyknight.aeii.record.Recorder;
 
 /**
  * @author toyknight 6/21/2015.
@@ -94,19 +94,21 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
 
     private void tryStartGame() {
         if (map != null) {
-            Recorder.setRecord(false);
+            GameRecorder.setRecord(false);
             GameCore game = new GameCore(map, Rule.createDefault(), 1000, GameCore.SKIRMISH);
             boolean has_local_player = false;
             for (int team = 0; team < 4; team++) {
                 if (game.getMap().hasTeamAccess(team)) {
-                    if (has_local_player) {
-                        game.getPlayer(team).setType(Player.ROBOT);
-                        game.getPlayer(team).setAlliance(1);
-                    } else {
-                        game.getPlayer(team).setType(Player.LOCAL);
-                        game.getPlayer(team).setAlliance(0);
-                        has_local_player = true;
-                    }
+//                    if (has_local_player) {
+//                        game.getPlayer(team).setType(Player.ROBOT);
+//                        game.getPlayer(team).setAlliance(1);
+//                    } else {
+//                        game.getPlayer(team).setType(Player.LOCAL);
+//                        game.getPlayer(team).setAlliance(0);
+//                        has_local_player = true;
+//                    }
+                    game.getPlayer(team).setType(Player.LOCAL);
+                    game.getPlayer(team).setAlliance(team);
                 }
             }
             getContext().gotoGameScreen(game);

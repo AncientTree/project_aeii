@@ -37,14 +37,18 @@ public class Language {
         return languageMap.get(key, "");
     }
 
-    public static String createCharset(String default_chars) {
+    public static String createCharset(String default_chars, boolean include_additional) {
         ObjectMap.Values<String> values = languageMap.values();
         String language_chars = "";
         for (String text : values) {
             language_chars += text;
         }
-        String additional_chars = FileProvider.getAssetsFile("lang/additional_chars.dat").readString("UTF8");
-        return removeDuplicate(default_chars + language_chars + additional_chars);
+        if (include_additional) {
+            String additional_chars = FileProvider.getAssetsFile("lang/additional_chars.dat").readString("UTF8");
+            return removeDuplicate(default_chars + language_chars + additional_chars);
+        } else {
+            return removeDuplicate(default_chars + language_chars);
+        }
     }
 
     public static String removeDuplicate(String str) {

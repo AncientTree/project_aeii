@@ -2,6 +2,7 @@ package com.toyknight.aeii.manager;
 
 import static com.toyknight.aeii.entity.Rule.Entry.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animation.*;
@@ -11,11 +12,15 @@ import com.toyknight.aeii.robot.OperationExecutor;
 import com.toyknight.aeii.robot.Robot;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author toyknight  5/28/2015.
  */
 public class GameManager implements GameEventListener, AnimationListener {
+
+    private final static String TAG = "Manager";
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -185,10 +190,14 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public void submitGameEvent(int type, Object... params) {
-        submitGameEvent(new GameEvent(type, params));
+        try {
+            submitGameEvent(GameEvent.create(type, params));
+        } catch (JSONException ex) {
+            Gdx.app.log(TAG, ex.toString());
+        }
     }
 
-    public void submitGameEvent(GameEvent event) {
+    public void submitGameEvent(JSONObject event) {
         if (getListener() != null) {
             getListener().onGameEventSubmitted(event);
         }
@@ -204,6 +213,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     public void setSelectedUnit(Unit unit) {
         this.selected_unit = unit;
         this.movable_positions.clear();
+        getMovementGenerator().resetUnit();
         setLastPosition(new Position(unit.getX(), unit.getY()));
     }
 

@@ -1,11 +1,16 @@
 package com.toyknight.aeii.manager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * @author toyknight 4/3/2015.
  */
 public class GameEvent {
 
-    public static final int NONE = 0x0;
+    private static final String TAG = "Event";
+
     public static final int BUY = 0x1;
     public static final int MOVE = 0x2;
     public static final int HEAL = 0x3;
@@ -24,24 +29,15 @@ public class GameEvent {
     public static final int ACTION_FINISH = 0x16;
     public static final int CHECK_TEAM_DESTROY = 0x17;
 
-    private final int type;
-    private final Object[] params;
-
-    public GameEvent() {
-        this(NONE);
-    }
-
-    public GameEvent(int type, Object... params) {
-        this.type = type;
-        this.params = params;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public Object getParameter(int index) {
-        return params[index];
+    public static JSONObject create(int type, Object... params) throws JSONException {
+        JSONObject event = new JSONObject();
+        event.put("type", type);
+        JSONArray parameters = new JSONArray();
+        for (Object param : params) {
+            parameters.put(param);
+        }
+        event.put("parameters", parameters);
+        return event;
     }
 
 }

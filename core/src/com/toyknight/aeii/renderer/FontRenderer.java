@@ -35,7 +35,6 @@ public class FontRenderer {
     }
 
     public static void loadFonts(int ts) {
-        String charset = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getUIDefaultFont());
 
@@ -45,7 +44,7 @@ public class FontRenderer {
         title_parameter.shadowColor = Color.DARK_GRAY;
         title_parameter.shadowOffsetX = ts / 24;
         title_parameter.shadowOffsetY = ts / 24;
-        title_parameter.characters = charset;
+        title_parameter.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, false);
         ui_font_title = generator.generateFont(title_parameter);
 
         FreeTypeFontParameter text_parameter = new FreeTypeFontParameter();
@@ -53,7 +52,7 @@ public class FontRenderer {
         text_parameter.color = Color.WHITE;
         text_parameter.borderColor = Color.BLACK;
         text_parameter.borderWidth = ts / 24;
-        text_parameter.characters = charset;
+        text_parameter.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, true);
         ui_font_text = generator.generateFont(text_parameter);
         generator.dispose();
 

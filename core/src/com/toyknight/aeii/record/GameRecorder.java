@@ -5,9 +5,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Output;
 import com.toyknight.aeii.entity.GameCore;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameToolkit;
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,11 +15,11 @@ import java.util.Queue;
 /**
  * @author toyknight 9/22/2015.
  */
-public class Recorder {
+public class GameRecorder {
 
     private static final String TAG = "Recorder";
 
-    private final static Queue<GameEvent> event_queue = new LinkedList<GameEvent>();
+    private final static Queue<JSONObject> event_queue = new LinkedList<JSONObject>();
 
     private static boolean record_on;
 
@@ -28,7 +28,7 @@ public class Recorder {
     private static GameRecord record;
 
     public static void setRecord(boolean on) {
-        Recorder.record_on = on;
+        GameRecorder.record_on = on;
         event_queue.clear();
         output = null;
         record = null;
@@ -45,13 +45,13 @@ public class Recorder {
                 record = new GameRecord(V_STRING);
                 record.setGame(new GameCore(game));
             } catch (KryoException ex) {
-                Recorder.setRecord(false);
+                GameRecorder.setRecord(false);
                 Gdx.app.log(TAG, ex.toString());
             }
         }
     }
 
-    public static void submitGameEvent(GameEvent event) {
+    public static void submitGameEvent(JSONObject event) {
         if (record_on) {
             Gdx.app.log(TAG, "Record " + event.toString());
             event_queue.add(event);
@@ -61,9 +61,8 @@ public class Recorder {
     public static void saveRecord() {
         if (record_on) {
             try {
-//                Serializer serializer = new Serializer();
-//                record.setEvents(event_queue);
-//                serializer.writeObject(output, record);
+                record.setEvents(event_queue);
+                output.writeString(record.toJson().toString());
                 output.flush();
                 output.close();
             } catch (KryoException ex) {

@@ -20,7 +20,7 @@ import com.toyknight.aeii.entity.GameSave;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.record.Recorder;
+import com.toyknight.aeii.record.GameRecorder;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -115,7 +115,7 @@ public class GameLoadDialog extends BasicDialog {
         if (game_save == null) {
             getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {
-            Recorder.setRecord(false);
+            GameRecorder.setRecord(false);
             GameCore game = game_save.game;
             for (int team = 0; team < 4; team++) {
                 Player player = game.getPlayer(team);
@@ -133,7 +133,7 @@ public class GameLoadDialog extends BasicDialog {
             getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {
             if (getContext().getVerificationString().equals(record.getVerificationString())) {
-                Recorder.setRecord(false);
+                GameRecorder.setRecord(false);
                 for (int team = 0; team < 4; team++) {
                     Player player = record.getGame().getPlayer(team);
                     if (player != null) {

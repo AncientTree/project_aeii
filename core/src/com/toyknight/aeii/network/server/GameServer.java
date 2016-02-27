@@ -11,7 +11,6 @@ import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.network.NetworkConstants;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.network.entity.RoomSetting;
@@ -387,13 +386,19 @@ public class GameServer {
     }
 
     public void onSubmitGameEvent(PlayerService submitter, JSONObject notification) {
-        if (submitter.isAuthenticated()) {
-//            GameEvent event = (GameEvent) notification.getParameter(0);
-//            Room room = getRoom(submitter.getRoomNumber());
-//            if (!room.isOpen()) {
-//                room.submitGameEvent(event);
-//                notifyGameEvent(room, submitter.getID(), event);
-//            }
+        try {
+            if (submitter.isAuthenticated()) {
+                JSONObject event = notification.getJSONObject("game_event");
+                Room room = getRoom(submitter.getRoomNumber());
+                if (!room.isOpen()) {
+                    room.submitGameEvent(event);
+                    notifyGameEvent(room, submitter.getID(), event);
+                }
+            }
+        } catch (JSONException ex) {
+            String message = String.format(
+                    "Bad game event notification from %s@%s", submitter.getUsername(), submitter.getAddress());
+            Log.error(TAG, message, ex);
         }
     }
 
@@ -412,74 +417,98 @@ public class GameServer {
     }
 
     public void notifyPlayerJoin(Room room, int joiner_id, String username) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null && joiner_id != player_id) {
-                JSONObject notification = createNotification(NetworkConstants.PLAYER_JOINING);
-                notification.put("player_id", joiner_id);
-                notification.put("username", username);
-                sendNotification(player, notification);
+        try {
+            for (int player_id : room.getPlayers()) {
+                PlayerService player = getPlayer(player_id);
+                if (player != null && joiner_id != player_id) {
+                    JSONObject notification = createNotification(NetworkConstants.PLAYER_JOINING);
+                    notification.put("player_id", joiner_id);
+                    notification.put("username", username);
+                    sendNotification(player, notification);
+                }
             }
+        } catch (JSONException ex) {
+            Log.error(TAG, "An error occurred while notifying player join", ex);
         }
     }
 
     public void notifyPlayerLeave(Room room, int leaver_id, String username, int host_id) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null && leaver_id != player_id) {
-                JSONObject notification = createNotification(NetworkConstants.PLAYER_LEAVING);
-                notification.put("player_id", leaver_id);
-                notification.put("username", username);
-                notification.put("host_id", host_id);
-                sendNotification(player, notification);
+        try {
+            for (int player_id : room.getPlayers()) {
+                PlayerService player = getPlayer(player_id);
+                if (player != null && leaver_id != player_id) {
+                    JSONObject notification = createNotification(NetworkConstants.PLAYER_LEAVING);
+                    notification.put("player_id", leaver_id);
+                    notification.put("username", username);
+                    notification.put("host_id", host_id);
+                    sendNotification(player, notification);
+                }
             }
+        } catch (JSONException ex) {
+            Log.error(TAG, "An error occurred while notifying player leave", ex);
         }
     }
 
     public void notifyAllocationUpdate(
             Room room, int updater_id, JSONArray alliance, JSONArray allocation, JSONArray types) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null && player_id != updater_id) {
-                JSONObject notification = createNotification(NetworkConstants.UPDATE_ALLOCATION);
-                notification.put("types", types);
-                notification.put("alliance", alliance);
-                notification.put("allocation", allocation);
-                sendNotification(player, notification);
+        try {
+            for (int player_id : room.getPlayers()) {
+                PlayerService player = getPlayer(player_id);
+                if (player != null && player_id != updater_id) {
+                    JSONObject notification = createNotification(NetworkConstants.UPDATE_ALLOCATION);
+                    notification.put("types", types);
+                    notification.put("alliance", alliance);
+                    notification.put("allocation", allocation);
+                    sendNotification(player, notification);
+                }
             }
+        } catch (JSONException ex) {
+            Log.error(TAG, "An error occurred while notifying allocation update", ex);
         }
     }
 
     public void notifyGameStart(Room room, int starter_id) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null && player_id != starter_id) {
-                JSONObject notification = createNotification(NetworkConstants.GAME_START);
-                sendNotification(player, notification);
+        try {
+            for (int player_id : room.getPlayers()) {
+                PlayerService player = getPlayer(player_id);
+                if (player != null && player_id != starter_id) {
+                    JSONObject notification = createNotification(NetworkConstants.GAME_START);
+                    sendNotification(player, notification);
+                }
             }
+        } catch (JSONException ex) {
+            Log.error(TAG, "An error occurred while notifying game start", ex);
         }
     }
 
-    public void notifyGameEvent(Room room, int submitter_id, GameEvent event) {
-        for (int player_id : room.getPlayers()) {
-//            PlayerService player = getPlayer(player_id);
-//            if (player != null && player_id != submitter_id) {
-//                JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
-//                notification.setParameters(event);
-//                sendNotification(player, notification);
-//            }
+    public void notifyGameEvent(Room room, int submitter_id, JSONObject event) {
+        try {
+            for (int player_id : room.getPlayers()) {
+                PlayerService player = getPlayer(player_id);
+                if (player != null && player_id != submitter_id) {
+                    JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
+                    notification.put("game_event", event);
+                    sendNotification(player, notification);
+                }
+            }
+        } catch (JSONException ex) {
+            Log.error(TAG, "An error occurred while notifying game event", ex);
         }
     }
 
     public void notifyMessage(Room room, String username, String message) {
-        for (int player_id : room.getPlayers()) {
-            PlayerService player = getPlayer(player_id);
-            if (player != null) {
-                JSONObject notification = createNotification(NetworkConstants.MESSAGE);
-                notification.put("username", username);
-                notification.put("message", message);
-                sendNotification(player, notification);
+        try {
+            for (int player_id : room.getPlayers()) {
+                PlayerService player = getPlayer(player_id);
+                if (player != null) {
+                    JSONObject notification = createNotification(NetworkConstants.MESSAGE);
+                    notification.put("username", username);
+                    notification.put("message", message);
+                    sendNotification(player, notification);
+                }
             }
+        } catch (JSONException ex) {
+            Log.error(TAG, "An error occurred while notifying message", ex);
         }
     }
 
@@ -532,14 +561,14 @@ public class GameServer {
         }
     }
 
-    private JSONObject createResponse(JSONObject request) {
+    private JSONObject createResponse(JSONObject request) throws JSONException {
         JSONObject response = new JSONObject();
         response.put("request_id", request.getLong("request_id"));
         response.put("type", NetworkConstants.RESPONSE);
         return response;
     }
 
-    private JSONObject createNotification(int operation) {
+    private JSONObject createNotification(int operation) throws JSONException {
         JSONObject notification = new JSONObject();
         notification.put("type", NetworkConstants.NOTIFICATION);
         notification.put("operation", operation);

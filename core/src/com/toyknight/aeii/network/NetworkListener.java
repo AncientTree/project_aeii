@@ -1,6 +1,6 @@
 package com.toyknight.aeii.network;
 
-import com.toyknight.aeii.manager.GameEvent;
+import org.json.JSONObject;
 
 /**
  * @author toyknight 8/25/2015.
@@ -17,7 +17,7 @@ public interface NetworkListener {
 
     void onGameStart();
 
-    void onReceiveGameEvent(GameEvent event);
+    void onReceiveGameEvent(JSONObject event);
 
     void onReceiveMessage(String username, String message);
 

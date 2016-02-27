@@ -10,6 +10,8 @@ import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.network.entity.RoomSnapshot;
 import com.toyknight.aeii.entity.Rule;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -254,7 +256,7 @@ public class Room {
         game_started = true;
     }
 
-    public void submitGameEvent(GameEvent event) {
+    public void submitGameEvent(JSONObject event) {
         synchronized (GAME_LOCK) {
             getManager().submitGameEvent(event);
             while (getManager().getGameEventExecutor().isProcessing()) {

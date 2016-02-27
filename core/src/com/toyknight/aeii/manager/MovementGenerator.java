@@ -44,6 +44,10 @@ public class MovementGenerator {
         return getGame().getMap().getPosition(unit.getX(), unit.getY());
     }
 
+    public void resetUnit() {
+        current_unit = null;
+    }
+
     private Queue<Step> createStartStep(Unit unit) {
         Step start_step = new Step(getPosition(unit), unit.getCurrentMovementPoint());
         Queue<Step> start_steps = new LinkedList<Step>();

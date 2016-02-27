@@ -10,6 +10,7 @@ import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.network.NetworkListener;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -141,7 +142,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     @Override
-    public void onReceiveGameEvent(GameEvent event) {
+    public void onReceiveGameEvent(JSONObject event) {
     }
 
     @Override

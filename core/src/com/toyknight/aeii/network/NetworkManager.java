@@ -9,7 +9,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.network.entity.*;
 import com.toyknight.aeii.network.server.ServerConfiguration;
 import org.json.JSONArray;
@@ -193,13 +192,12 @@ public class NetworkManager {
                 }
                 break;
             case NetworkConstants.GAME_EVENT:
-//                GameEvent event = (GameEvent) notification.getParameter(0);
-//                if (listener != null) {
-//                    synchronized (GameContext.RENDER_LOCK) {
-//                        listener.onReceiveGameEvent(event);
-//                    }
-//                }
-//                Gdx.app.log(TAG, "Receive " + event.toString());
+                JSONObject event = notification.getJSONObject("game_event");
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onReceiveGameEvent(event);
+                    }
+                }
                 break;
             case NetworkConstants.MESSAGE:
                 username = notification.getString("username");
@@ -348,11 +346,10 @@ public class NetworkManager {
         sendNotification(notification);
     }
 
-    public static void sendGameEvent(GameEvent event) throws JSONException {
+    public static void sendGameEvent(JSONObject event) throws JSONException {
         JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
-        notification.put("game_event", event/*.toJson()*/);
+        notification.put("game_event", event);
         sendNotification(notification);
-        Gdx.app.log(TAG, "Send " + event.toString());
     }
 
     public static void sendMessage(String message) throws JSONException {
