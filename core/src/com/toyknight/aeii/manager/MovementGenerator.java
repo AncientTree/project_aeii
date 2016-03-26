@@ -20,24 +20,24 @@ public class MovementGenerator {
     private final Array<Position> move_path;
     private final ObjectSet<Position> movable_positions;
 
-    private GameCore game;
+    private GameManager manager;
 
     private Unit current_unit;
 
     private int[][] move_mark_map;
 
-    public MovementGenerator() {
+    public MovementGenerator(GameManager manager) {
+        this.manager = manager;
         this.move_path = new Array<Position>();
         this.movable_positions = new ObjectSet<Position>();
     }
 
-    public void setGame(GameCore game) {
-        this.game = game;
+    public void reset() {
         this.current_unit = null;
     }
 
     public GameCore getGame() {
-        return game;
+        return manager.getGame();
     }
 
     public Position getPosition(Unit unit) {
@@ -131,7 +131,7 @@ public class MovementGenerator {
             for (int i = 0; i < 4; i++) {
                 int temp_next_x = current_x + x_dir[i];
                 int temp_next_y = current_y + y_dir[i];
-                if (game.getMap().isWithinMap(temp_next_x, temp_next_y)) {
+                if (getGame().getMap().isWithinMap(temp_next_x, temp_next_y)) {
                     if (temp_next_x == start_x && temp_next_y == start_y) {
                         next_x = temp_next_x;
                         next_y = temp_next_y;

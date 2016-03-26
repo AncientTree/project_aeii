@@ -7,10 +7,8 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
-import com.toyknight.aeii.manager.GameEvent;
 import com.toyknight.aeii.network.entity.RoomSnapshot;
 import com.toyknight.aeii.entity.Rule;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -250,7 +248,7 @@ public class Room {
                 player.setType(Player.REMOTE);
             }
         }
-        if (!getGame().isInitialized()) {
+        if (!getGame().initialized()) {
             getGame().initialize();
         }
         game_started = true;
@@ -258,8 +256,8 @@ public class Room {
 
     public void submitGameEvent(JSONObject event) {
         synchronized (GAME_LOCK) {
-            getManager().submitGameEvent(event);
-            while (getManager().getGameEventExecutor().isProcessing()) {
+            getManager().getGameEventExecutor().submitGameEvent(event);
+            while (!getGame().isGameOver() && getManager().getGameEventExecutor().isProcessing()) {
                 getManager().getGameEventExecutor().dispatchGameEvents();
             }
         }

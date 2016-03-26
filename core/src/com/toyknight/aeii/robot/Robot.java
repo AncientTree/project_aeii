@@ -83,7 +83,7 @@ public class Robot {
     }
 
     private void doCalculate() {
-        if (getGame().isPlayerAvailable(team)) {
+        if (getGame().isTeamAlive(team)) {
             calculateBattleData();
             UnitBuyingOption unit_to_buy = calculateUnitToBuy();
             if (unit_to_buy.getUnitIndex() >= 0) {
@@ -111,7 +111,7 @@ public class Robot {
         int enemy_team_count = 0;
         int enemy_total_population = 0;
         for (int team = 0; team < 4; team++) {
-            if (getGame().isPlayerAvailable(team) && getGame().isEnemy(this.team, team)) {
+            if (getGame().isTeamAlive(team) && getGame().isEnemy(this.team, team)) {
                 enemy_team_count++;
                 enemy_total_population += getGame().getPopulation(team);
             }

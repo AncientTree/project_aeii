@@ -117,7 +117,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     private void updateButton() {
         int current_team = getGame().getCurrentTeam();
         if (selected_unit != null) {
-            getManager().canBuy(selected_unit.getIndex(), current_team, castle_x, castle_y);
+            btn_buy.setVisible(getManager().canBuy(selected_unit.getIndex(), current_team, castle_x, castle_y));
         } else {
             btn_buy.setVisible(false);
         }

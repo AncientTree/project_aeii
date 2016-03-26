@@ -39,6 +39,8 @@ public class Rule implements Serializable {
         setValue(COUNTER_EXPERIENCE, json.getInt(COUNTER_EXPERIENCE));
         setValue(COMMANDER_PRICE_STEP, json.getInt(COMMANDER_PRICE_STEP));
         setValue(MAX_POPULATION, json.getInt(MAX_POPULATION));
+        setValue(ENEMY_CLEAR, json.getBoolean(ENEMY_CLEAR));
+        setValue(CASTLE_CLEAR, json.getBoolean(CASTLE_CLEAR));
         JSONArray available_units = json.getJSONArray("available_units");
         for (int i = 0; i < available_units.length(); i++) {
             addAvailableUnit(available_units.getInt(i));

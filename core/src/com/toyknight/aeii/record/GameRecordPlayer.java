@@ -55,14 +55,14 @@ public class GameRecordPlayer {
                     int type = preview.getInt("type");
                     if (type == GameEvent.TILE_DESTROY || type == GameEvent.ATTACK) {
                         JSONObject event = getRecord().getEvents().poll();
-                        getManager().submitGameEvent(event);
+                        getManager().getGameEventExecutor().submitGameEvent(event);
                     } else {
                         if (playback_delay < 1.0f) {
                             playback_delay += delta;
                         } else {
                             playback_delay = 0f;
                             JSONObject event = getRecord().getEvents().poll();
-                            getManager().submitGameEvent(event);
+                            getManager().getGameEventExecutor().submitGameEvent(event);
                         }
                     }
                 }

@@ -137,7 +137,7 @@ public class GameCore implements Serializable {
         return statistics;
     }
 
-    public final boolean isInitialized() {
+    public final boolean initialized() {
         return initialized;
     }
 
@@ -157,7 +157,7 @@ public class GameCore implements Serializable {
         return type;
     }
 
-    public boolean isPlayerAvailable(int team) {
+    public boolean isTeamAlive(int team) {
         return 0 <= team && team < 4 && getPlayer(team).getType() != Player.NONE && !team_destroy[team];
     }
 
@@ -545,7 +545,7 @@ public class GameCore implements Serializable {
                 current_team = 0;
                 getMap().updateTombs();
             }
-        } while (!isPlayerAvailable(current_team));
+        } while (!isTeamAlive(current_team));
         turn++;
     }
 
@@ -570,7 +570,7 @@ public class GameCore implements Serializable {
         json.put("current_team", getCurrentTeam());
         json.put("game_over", isGameOver());
         json.put("statistics", getStatistics().toJson());
-        json.put("initialized", isInitialized());
+        json.put("initialized", initialized());
         return json;
     }
 

@@ -756,7 +756,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     @Override
     public void onScreenUpdateRequested() {
         action_button_bar.updateButtons();
-        btn_message.setVisible(!message_box.isVisible());
+        btn_message.setVisible(NetworkManager.isConnected() && !message_box.isVisible());
         message_board.setFading(!message_box.isVisible());
         GameContext.setButtonEnabled(btn_end_turn, canEndTurn());
         GameContext.setButtonEnabled(btn_menu, !menu.isVisible());

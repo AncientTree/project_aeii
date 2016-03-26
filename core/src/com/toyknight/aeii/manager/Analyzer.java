@@ -43,11 +43,11 @@ public class Analyzer {
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (alliance == -1) {
-                if (getGame().isPlayerAvailable(team)) {
+                if (getGame().isTeamAlive(team)) {
                     alliance = player.getAlliance();
                 }
             } else {
-                if (getGame().isPlayerAvailable(team) && player.getAlliance() != alliance) {
+                if (getGame().isTeamAlive(team) && player.getAlliance() != alliance) {
                     alliance = -1;
                     break;
                 }

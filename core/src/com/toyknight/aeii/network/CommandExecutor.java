@@ -30,7 +30,7 @@ public class CommandExecutor {
                 String entry = scanner.next();
                 if (entry.equals("/assign")) {
                     int team = scanner.nextInt();
-                    if (getGame().isPlayerAvailable(team)) {
+                    if (getGame().isTeamAlive(team)) {
                         assign(selected_id, team);
                     }
                 }

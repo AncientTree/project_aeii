@@ -1,8 +1,5 @@
 package com.toyknight.aeii.manager;
 
-import static com.toyknight.aeii.entity.Rule.Entry.*;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.animation.*;
@@ -12,15 +9,12 @@ import com.toyknight.aeii.robot.OperationExecutor;
 import com.toyknight.aeii.robot.Robot;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * @author toyknight  5/28/2015.
  */
 public class GameManager implements GameEventListener, AnimationListener {
-
-    private final static String TAG = "Manager";
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -60,9 +54,9 @@ public class GameManager implements GameEventListener, AnimationListener {
     public GameManager(AnimationDispatcher dispatcher) {
         this.animation_dispatcher = dispatcher;
         this.animation_dispatcher.setListener(this);
-        this.movement_generator = new MovementGenerator();
+        this.movement_generator = new MovementGenerator(this);
         this.operation_executor = new OperationExecutor(this);
-        this.event_executor = new GameEventExecutor(this, dispatcher);
+        this.event_executor = new GameEventExecutor(this);
 
         this.robots = new Robot[4];
         for (int team = 0; team < 4; team++) {
@@ -81,7 +75,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         getGameEventExecutor().reset();
         getOperationExecutor().reset();
         getAnimationDispatcher().reset();
-        getMovementGenerator().setGame(game);
+        getMovementGenerator().reset();
         for (int team = 0; team < 4; team++) {
             getRobot(team).initialize();
         }
@@ -190,18 +184,10 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public void submitGameEvent(int type, Object... params) {
-        try {
-            submitGameEvent(GameEvent.create(type, params));
-        } catch (JSONException ex) {
-            Gdx.app.log(TAG, ex.toString());
-        }
-    }
-
-    public void submitGameEvent(JSONObject event) {
+        JSONObject event = getGameEventExecutor().submitGameEvent(type, params);
         if (getListener() != null) {
             getListener().onGameEventSubmitted(event);
         }
-        getGameEventExecutor().submitGameEvent(event);
     }
 
     public void requestMapFocus(int map_x, int map_y) {
@@ -315,15 +301,8 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     private void onUnitAttackTile(Unit attacker, int target_x, int target_y) {
         submitGameEvent(GameEvent.ATTACK, attacker.getX(), attacker.getY(), target_x, target_y, -1, -1);
-        submitGameEvent(GameEvent.STANDBY, attacker.getX(), attacker.getY());
+//        submitGameEvent(GameEvent.STANDBY, attacker.getX(), attacker.getY());
         submitGameEvent(GameEvent.TILE_DESTROY, target_x, target_y);
-
-        submitGameEvent(
-                GameEvent.GAIN_EXPERIENCE,
-                attacker.getX(), attacker.getY(),
-                getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-
-        submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
     }
 
     private void onUnitAttackUnit(Unit attacker, Unit defender) {
@@ -332,59 +311,27 @@ public class GameManager implements GameEventListener, AnimationListener {
         UnitToolkit.attachAttackStatus(attacker, defender);
         defender.changeCurrentHp(-attack_damage);
         if (defender.getCurrentHp() > 0) {
-            int counter_damage = getUnitToolkit().canCounter(defender, attacker) ?
-                    getUnitToolkit().getDamage(defender, attacker) : -1;
+            int counter_damage =
+                    getUnitToolkit().canCounter(defender, attacker) ?
+                            getUnitToolkit().getDamage(defender, attacker) : -1;
             submitGameEvent(
                     GameEvent.ATTACK,
                     attacker.getX(), attacker.getY(),
                     defender.getX(), defender.getY(),
                     attack_damage, counter_damage);
-            if (counter_damage >= 0) {
-                attacker.changeCurrentHp(-counter_damage);
-                if (attacker.getCurrentHp() > 0) {
-                    submitGameEvent(
-                            GameEvent.GAIN_EXPERIENCE,
-                            attacker.getX(), attacker.getY(),
-                            getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-                    submitGameEvent(
-                            GameEvent.GAIN_EXPERIENCE,
-                            defender.getX(), defender.getY(),
-                            getGame().getRule().getInteger(COUNTER_EXPERIENCE));
-                } else {
-                    submitGameEvent(
-                            GameEvent.GAIN_EXPERIENCE,
-                            defender.getX(), defender.getY(),
-                            getGame().getRule().getInteger(KILL_EXPERIENCE));
-                }
-            } else {
-                submitGameEvent(
-                        GameEvent.GAIN_EXPERIENCE,
-                        attacker.getX(), attacker.getY(),
-                        getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-            }
         } else {
             submitGameEvent(
                     GameEvent.ATTACK,
                     attacker.getX(), attacker.getY(),
                     defender.getX(), defender.getY(),
                     attack_damage, -1);
-            submitGameEvent(
-                    GameEvent.GAIN_EXPERIENCE,
-                    attacker.getX(), attacker.getY(),
-                    getGame().getRule().getInteger(KILL_EXPERIENCE));
         }
-        submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
     }
 
     public void doSummon(int target_x, int target_y) {
         Unit summoner = getSelectedUnit();
         if (getGame().canSummon(summoner, target_x, target_y)) {
             submitGameEvent(GameEvent.SUMMON, summoner.getX(), summoner.getY(), target_x, target_y);
-            submitGameEvent(
-                    GameEvent.GAIN_EXPERIENCE,
-                    summoner.getX(), summoner.getY(),
-                    getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-            submitGameEvent(GameEvent.ACTION_FINISH, summoner.getX(), summoner.getY());
         }
     }
 
@@ -394,37 +341,23 @@ public class GameManager implements GameEventListener, AnimationListener {
         if (getGame().canHeal(healer, target_x, target_y)) {
             int heal = UnitToolkit.getHeal(healer, target);
             submitGameEvent(GameEvent.HEAL, healer.getX(), healer.getY(), target_x, target_y, heal);
-            if (target.getCurrentHp() + heal > 0) {
-                submitGameEvent(
-                        GameEvent.GAIN_EXPERIENCE,
-                        healer.getX(), healer.getY(),
-                        getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-            } else {
-                submitGameEvent(GameEvent.UNIT_DESTROY, target.getX(), target.getY());
-                submitGameEvent(
-                        GameEvent.GAIN_EXPERIENCE,
-                        healer.getX(), healer.getY(),
-                        getGame().getRule().getInteger(KILL_EXPERIENCE));
-            }
-            submitGameEvent(GameEvent.ACTION_FINISH, healer.getX(), healer.getY());
         }
     }
 
     public void doRepair() {
         Unit unit = getSelectedUnit();
         submitGameEvent(GameEvent.REPAIR, unit.getX(), unit.getY());
-        submitGameEvent(GameEvent.ACTION_FINISH, unit.getX(), unit.getY());
     }
 
     public void doOccupy() {
         Unit unit = getSelectedUnit();
         submitGameEvent(GameEvent.OCCUPY, unit.getX(), unit.getY(), unit.getTeam());
-        submitGameEvent(GameEvent.ACTION_FINISH, unit.getX(), unit.getY());
     }
 
     public void doBuyUnit(int index, int x, int y) {
         int team = getGame().getCurrentTeam();
         submitGameEvent(GameEvent.BUY, index, team, x, y);
+        submitGameEvent(GameEvent.SELECT, x, y);
     }
 
     public void doStandbySelectedUnit() {
@@ -436,30 +369,6 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public void doEndTurn() {
         submitGameEvent(GameEvent.NEXT_TURN);
-    }
-
-    public void onUnitMoveFinish() {
-        switch (getState()) {
-            case GameManager.STATE_MOVE:
-                setState(GameManager.STATE_ACTION);
-                break;
-            case GameManager.STATE_REMOVE:
-                doStandbySelectedUnit();
-                break;
-        }
-    }
-
-    public void onUnitActionFinish(Unit unit) {
-        if (unit == null || unit.getCurrentHp() <= 0) {
-            setState(GameManager.STATE_SELECT);
-        } else {
-            if (UnitToolkit.canMoveAgain(unit)) {
-                setLastPosition(new Position(unit.getX(), unit.getY()));
-                beginRemovePhase();
-            } else {
-                doStandbySelectedUnit();
-            }
-        }
     }
 
     public void createMovablePositions() {

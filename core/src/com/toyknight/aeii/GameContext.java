@@ -186,7 +186,7 @@ public class GameContext extends Game {
 
     public void gotoGameScreen(GameCore game) {
         //AudioManager.stopCurrentBGM();
-        if (!game.isInitialized()) {
+        if (!game.initialized()) {
             game.initialize();
         }
         game_screen.prepare(game);
