@@ -14,7 +14,7 @@ public class Unit implements Serializable, Verifiable {
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGIC = 1;
 
-    private static final int[] LEVEL_UP_EXPERIENCE = {100, 200, 300};
+    private static final int[] LEVEL_EXPERIENCE = {0, 100, 300, 600};
 
     private final int index;
 
@@ -156,7 +156,7 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public int getMaxHp() {
-        return max_hp;
+        return max_hp + getHpGrowth() * getLevel();
     }
 
     public int getCurrentHp() {
@@ -172,7 +172,7 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public int getAttack() {
-        return attack;
+        return attack + getAttackGrowth() * getLevel();
     }
 
     public int getAttackType() {
@@ -180,22 +180,18 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public int getPhysicalDefence() {
-        return physical_defence;
+        return physical_defence + getPhysicalDefenceGrowth() * getLevel();
     }
 
     public int getMagicDefence() {
-        return magic_defence;
-    }
-
-    public int getMovementGrowth() {
-        return movement_growth;
+        return magic_defence + getMagicDefenceGrowth() * getLevel();
     }
 
     public int getMovementPoint() {
         if (hasStatus(Status.SLOWED)) {
             return 1;
         } else {
-            return movement_point;
+            return movement_point + getMovementGrowth() * getLevel();
         }
     }
 
@@ -243,6 +239,10 @@ public class Unit implements Serializable, Verifiable {
         return magic_defence_growth;
     }
 
+    public int getMovementGrowth() {
+        return movement_growth;
+    }
+
     public int getX() {
         return x_position;
     }
@@ -283,18 +283,6 @@ public class Unit implements Serializable, Verifiable {
         return is_standby;
     }
 
-    protected void levelUp() {
-        if (level < 3) {
-            level++;
-            this.attack += this.getAttackGrowth();
-            this.max_hp += this.getHpGrowth();
-            this.changeCurrentHp(getHpGrowth());
-            this.movement_point += this.getMovementGrowth();
-            this.physical_defence += this.getPhysicalDefenceGrowth();
-            this.magic_defence += this.getMagicDefenceGrowth();
-        }
-    }
-
     /**
      * @param experience experience
      * @return returns if unit level is up after gaining experience
@@ -302,11 +290,11 @@ public class Unit implements Serializable, Verifiable {
     public boolean gainExperience(int experience) {
         if (level < 3) {
             int old_level = getLevel();
-            setTotalExperience(getTotalExperience() + experience);
-            for (int i = 0; i < getLevel() - old_level; i++) {
-                levelUp();
-            }
-            return getLevel() > old_level;
+            int total_experience = getTotalExperience();
+            setTotalExperience(total_experience + experience);
+            int level_advance = getLevel() - old_level;
+            current_hp += getHpGrowth() * level_advance;
+            return level_advance > 0;
         } else {
             return false;
         }
@@ -318,28 +306,21 @@ public class Unit implements Serializable, Verifiable {
 
     public void setTotalExperience(int experience) {
         this.experience = experience;
-        int temp_experience = 0;
-        for (int level = 0; level < 3; level++) {
-            temp_experience += LEVEL_UP_EXPERIENCE[level];
-            if (experience < temp_experience) {
-                this.level = level;
-                return;
+        for (level = 0; level <= 3; level++) {
+            if (experience < LEVEL_EXPERIENCE[level]) {
+                level--;
+                break;
             }
         }
-        this.level = 3;
     }
 
     public int getCurrentExperience() {
-        int exp = experience;
-        for (int i = 0; i < level; i++) {
-            exp -= LEVEL_UP_EXPERIENCE[i];
-        }
-        return exp;
+        return experience - LEVEL_EXPERIENCE[level];
     }
 
     public int getLevelUpExperience() {
-        if (0 <= level && level < 3) {
-            return LEVEL_UP_EXPERIENCE[level];
+        if (level < 3) {
+            return LEVEL_EXPERIENCE[level + 1] - LEVEL_EXPERIENCE[level];
         } else {
             return -1;
         }
