@@ -30,7 +30,7 @@ import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GameContext extends Game {
+public class GameContext extends Game implements TaskService {
 
     public static final Object RENDER_LOCK = new Object();
 
@@ -171,6 +171,7 @@ public class GameContext extends Game {
         return dialog.isVisible();
     }
 
+    @Override
     public void submitAsyncTask(AsyncTask task) {
         executor.submit(task);
     }

@@ -26,9 +26,6 @@ public class GameEvent {
     public static final int UNIT_DESTROY = 0x13;
     public static final int TILE_DESTROY = 0x14;
     public static final int GAIN_EXPERIENCE = 0x15;
-    public static final int ACTION_FINISH = 0x16;
-    public static final int CHECK_UNIT_DESTROY = 0x17;
-    public static final int CHECK_TEAM_DESTROY = 0x18;
 
     public static JSONObject create(int type, Object... params) throws JSONException {
         JSONObject event = new JSONObject();

@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.record.GameRecorder;
-import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -30,12 +29,9 @@ public class GameEventExecutor {
 
     private final Queue<JSONObject> event_queue;
 
-    private final Queue<JSONObject> buffer_event_queue;
-
     public GameEventExecutor(GameManager game_manager) {
         this.game_manager = game_manager;
         this.event_queue = new LinkedList<JSONObject>();
-        this.buffer_event_queue = new LinkedList<JSONObject>();
     }
 
     public GameManager getGameManager() {
@@ -46,66 +42,38 @@ public class GameEventExecutor {
         return getGameManager().getGame();
     }
 
-    public UnitToolkit getUnitToolkit() {
-        return getGameManager().getUnitToolkit();
-    }
-
     public AnimationDispatcher getAnimationDispatcher() {
         return getGameManager().getAnimationDispatcher();
     }
 
     public void reset() {
         event_queue.clear();
-        buffer_event_queue.clear();
     }
 
     public boolean isProcessing() {
-        return event_queue.size() > 0 || buffer_event_queue.size() > 0;
+        return event_queue.size() > 0;
     }
 
     public void submitGameEvent(JSONObject event) {
         event_queue.add(event);
     }
 
-    public JSONObject submitGameEvent(int type, Object... params) {
+    public void submitGameEvent(int type, Object... params) {
         JSONObject event = GameEvent.create(type, params);
         submitGameEvent(event);
-        return event;
-    }
-
-    private void submitBufferGameEvent(JSONObject event) {
-        buffer_event_queue.add(event);
-    }
-
-    private JSONObject submitBufferGameEvent(int type, Object... params) {
-        JSONObject event = GameEvent.create(type, params);
-        submitBufferGameEvent(event);
-        return event;
+        getGameManager().onGameEventSubmitted(event);
     }
 
     public void dispatchGameEvents() {
         if (getGame().isGameOver()) {
             getGameManager().onGameEventFinished();
         } else {
-            if (buffer_event_queue.size() > 0) {
-                try {
-                    executeGameEvent(buffer_event_queue.poll(), false);
-                } catch (JSONException ex) {
-                    Gdx.app.log(TAG, ex.toString());
-                }
-                checkEventFinishing();
-            } else {
-                if (event_queue.size() > 0) {
-                    executeGameEvent(event_queue.poll());
-                    checkEventFinishing();
+            if (event_queue.size() > 0) {
+                executeGameEvent(event_queue.poll());
+                if (event_queue.isEmpty()) {
+                    getGameManager().onGameEventFinished();
                 }
             }
-        }
-    }
-
-    private void checkEventFinishing() {
-        if (event_queue.isEmpty() && buffer_event_queue.isEmpty()) {
-            getGameManager().onGameEventFinished();
         }
     }
 
@@ -125,8 +93,7 @@ public class GameEventExecutor {
                 int target_x = event.getJSONArray("parameters").getInt(2);
                 int target_y = event.getJSONArray("parameters").getInt(3);
                 int attack_damage = event.getJSONArray("parameters").getInt(4);
-                int counter_damage = event.getJSONArray("parameters").getInt(5);
-                onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage, counter_damage);
+                onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage);
                 break;
             case GameEvent.BUY:
                 int index = event.getJSONArray("parameters").getInt(0);
@@ -151,7 +118,9 @@ public class GameEventExecutor {
                 int unit_y = event.getJSONArray("parameters").getInt(1);
                 target_x = event.getJSONArray("parameters").getInt(2);
                 target_y = event.getJSONArray("parameters").getInt(3);
-                onMove(unit_x, unit_y, target_x, target_y);
+                int movement_point = event.getJSONArray("parameters").getInt(4);
+                JSONArray move_path = event.getJSONArray("parameters").getJSONArray(5);
+                onMove(unit_x, unit_y, target_x, target_y, movement_point, move_path);
                 break;
             case GameEvent.OCCUPY:
                 target_x = event.getJSONArray("parameters").getInt(0);
@@ -208,18 +177,6 @@ public class GameEventExecutor {
                 int experience = event.getJSONArray("parameters").getInt(2);
                 onUnitGainExperience(target_x, target_y, experience);
                 break;
-            case GameEvent.ACTION_FINISH:
-                target_x = event.getJSONArray("parameters").getInt(0);
-                target_y = event.getJSONArray("parameters").getInt(1);
-                onUnitActionFinish(target_x, target_y);
-                break;
-            case GameEvent.CHECK_UNIT_DESTROY:
-                onCheckUnitDestroy();
-                break;
-            case GameEvent.CHECK_TEAM_DESTROY:
-                team = event.getJSONArray("parameters").getInt(0);
-                onCheckTeamDestroy(team);
-                break;
             default:
                 //do nothing
         }
@@ -228,20 +185,15 @@ public class GameEventExecutor {
         }
     }
 
-    private void onAttack(
-            int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, int counter_damage)
+    private void onAttack(int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage)
             throws JSONException {
         if (canAttack(attacker_x, attacker_y, target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Unit attacker = getGame().getMap().getUnit(attacker_x, attacker_y);
             Unit defender = getGame().getMap().getUnit(target_x, target_y);
             if (defender == null) {
                 getAnimationDispatcher().submitUnitAttackAnimation(attacker, target_x, target_y);
-                submitBufferGameEvent(
-                        GameEvent.GAIN_EXPERIENCE,
-                        attacker.getX(), attacker.getY(),
-                        getGame().getRule().getInteger(ATTACK_EXPERIENCE));
             } else {
                 if (attack_damage >= 0) {
                     defender.changeCurrentHp(-attack_damage);
@@ -249,66 +201,28 @@ public class GameEventExecutor {
                     getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, attack_damage);
                     if (defender.getCurrentHp() <= 0) {
                         getGame().getStatistics().addDestroy(attacker.getTeam(), defender.getPrice());
-                        submitBufferGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y);
-                        submitBufferGameEvent(
-                                GameEvent.GAIN_EXPERIENCE,
-                                attacker.getX(), attacker.getY(),
-                                getGame().getRule().getInteger(KILL_EXPERIENCE));
-                    } else {
-                        submitBufferGameEvent(
-                                GameEvent.GAIN_EXPERIENCE,
-                                attacker.getX(), attacker.getY(),
-                                getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-                    }
-                }
-                if (counter_damage >= 0) {
-                    attacker.changeCurrentHp(-counter_damage);
-                    UnitToolkit.attachAttackStatus(defender, attacker);
-                    getAnimationDispatcher().submitUnitAttackAnimation(defender, attacker, counter_damage);
-                    if (attacker.getCurrentHp() <= 0) {
-                        getGame().getStatistics().addDestroy(defender.getTeam(), attacker.getPrice());
-                        submitBufferGameEvent(GameEvent.UNIT_DESTROY, attacker_x, attacker_y);
-                        submitBufferGameEvent(
-                                GameEvent.GAIN_EXPERIENCE,
-                                defender.getX(), defender.getY(),
-                                getGame().getRule().getInteger(KILL_EXPERIENCE));
-                    } else {
-                        submitBufferGameEvent(
-                                GameEvent.GAIN_EXPERIENCE,
-                                defender.getX(), defender.getY(),
-                                getGame().getRule().getInteger(COUNTER_EXPERIENCE));
                     }
                 }
             }
-            submitGameEvent(GameEvent.ACTION_FINISH, attacker.getX(), attacker.getY());
         }
     }
 
     private boolean canAttack(int attacker_x, int attacker_y, int target_x, int target_y) {
         Unit attacker = getGame().getMap().getUnit(attacker_x, attacker_y);
-        Unit defender = getGame().getMap().getUnit(target_x, target_y);
-        if (attacker == null) {
-            return false;
-        } else {
-            if (defender == null) {
-                Tile tile = getGame().getMap().getTile(target_x, target_y);
-                return tile != null && tile.isDestroyable();
-            } else {
-                return getGame().isEnemy(attacker, defender);
-            }
-        }
+        return getGame().canAttack(attacker, target_x, target_y);
     }
 
     private void onBuy(int index, int team, int target_x, int target_y) {
         if (canBuy(index, team)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
             int price = getGame().getUnitPrice(index, team);
+            getGame().getCurrentPlayer().changeGold(-price);
+
             if (index == UnitFactory.getCommanderIndex()) {
                 getGame().restoreCommander(team, target_x, target_y);
             } else {
                 getGame().createUnit(index, team, target_x, target_y);
             }
-            getGame().getCurrentPlayer().changeGold(-price);
         }
     }
 
@@ -319,7 +233,6 @@ public class GameEventExecutor {
     }
 
     private void onNextTurn() throws JSONException {
-        getGameManager().setState(GameManager.STATE_SELECT);
         getGame().nextTurn();
         int team = getGame().getCurrentTeam();
         int income = getGame().gainIncome(team);
@@ -327,68 +240,15 @@ public class GameEventExecutor {
                 Language.getText("LB_CURRENT_TURN") + ": " + getGame().getCurrentTurn(),
                 Language.getText("LB_INCOME") + ": " + income,
                 0.8f);
-
-        //calculate hp change at turn start
-        JSONArray hp_changes = new JSONArray();
-
-        //terrain heal and poison damage
-        for (Unit unit : getGame().getMap().getUnits()) {
-            int change = 0;
-            if (unit.getTeam() == team) {
-                //update status
-                unit.updateStatus();
-                getGame().resetUnit(unit);
-                //the terrain heal
-                Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
-                change = getUnitToolkit().getTerrainHeal(unit, tile);
-                //the poison damage
-                if (unit.hasStatus(Status.POISONED)) {
-                    if (unit.hasAbility(Ability.UNDEAD)) {
-                        change += Rule.POISON_DAMAGE;
-                    } else {
-                        change = -Rule.POISON_DAMAGE;
-                    }
-                }
-                //rehabilitation
-                if (unit.hasAbility(Ability.REHABILITATION)) {
-                    change += unit.getMaxHp() / 4;
-                }
-            } else {
-                Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
-                if (getGame().isEnemy(unit.getTeam(), team) && tile.isCastle() && tile.getTeam() == team) {
-                    change = -50;
-                }
-            }
-            change = UnitToolkit.validateHpChange(unit, change);
-            if (change != 0) {
-                JSONObject hp_change = createHpChange(getGame().getMap().getPosition(unit), change);
-                hp_changes.put(hp_change);
-            }
-        }
-        submitBufferGameEvent(GameEvent.HP_CHANGE, hp_changes);
-        submitBufferGameEvent(GameEvent.CHECK_UNIT_DESTROY);
     }
 
     private void onHeal(int healer_x, int healer_y, int target_x, int target_y, int heal) throws JSONException {
         if (canHeal(healer_x, healer_y, target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Unit target = getGame().getMap().getUnit(target_x, target_y);
             target.changeCurrentHp(heal);
             getAnimationDispatcher().submitHpChangeAnimation(target, heal);
-            if (target.getCurrentHp() <= 0) {
-                submitBufferGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y);
-                submitBufferGameEvent(
-                        GameEvent.GAIN_EXPERIENCE,
-                        healer_x, healer_y,
-                        getGame().getRule().getInteger(KILL_EXPERIENCE));
-            } else {
-                submitBufferGameEvent(
-                        GameEvent.GAIN_EXPERIENCE,
-                        healer_x, healer_y,
-                        getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-            }
-            submitGameEvent(GameEvent.ACTION_FINISH, healer_x, healer_y);
         }
     }
 
@@ -397,22 +257,21 @@ public class GameEventExecutor {
                 && getGame().getMap().getUnit(target_x, target_y) != null;
     }
 
-    private void onMove(int unit_x, int unit_y, int target_x, int target_y) {
+    private void onMove(int unit_x, int unit_y, int target_x, int target_y, int movement_point, JSONArray move_path) {
         if (canMove(unit_x, unit_y, target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
+
+            Array<Position> path = new Array<Position>();
+            for (int i = 0; i < move_path.length(); i++) {
+                JSONObject step = move_path.getJSONObject(i);
+                path.add(getGame().getMap().getPosition(step.getInt("x"), step.getInt("y")));
+            }
 
             Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
-            getGameManager().setSelectedUnit(unit);
-            getGameManager().createMovablePositions();
-            Array<Position> move_path = getGameManager().getMovePath(target_x, target_y);
-            int movement_point =
-                    getGameManager().getMovementGenerator().getMovementPointRemains(unit, target_x, target_y);
 
             getGame().moveUnit(unit_x, unit_y, target_x, target_y);
             unit.setCurrentMovementPoint(movement_point);
-            getAnimationDispatcher().submitUnitMoveAnimation(unit, move_path);
-
-            onUnitMoveFinish(target_x, target_y);
+            getAnimationDispatcher().submitUnitMoveAnimation(unit, path);
         }
     }
 
@@ -423,14 +282,13 @@ public class GameEventExecutor {
 
     private void onOccupy(int target_x, int target_y, int team) throws JSONException {
         if (canOccupy(target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
 
-            submitBufferGameEvent(GameEvent.ACTION_FINISH, target_x, target_y);
-            submitBufferGameEvent(GameEvent.CHECK_TEAM_DESTROY, target_tile.getTeam());
+            onCheckTeamDestroy(target_tile.getTeam());
         }
     }
 
@@ -441,13 +299,11 @@ public class GameEventExecutor {
 
     private void onRepair(int target_x, int target_y) {
         if (canRepair(target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_REPAIRED"), 0.5f);
-
-            submitBufferGameEvent(GameEvent.ACTION_FINISH, target_x, target_y);
         }
     }
 
@@ -457,47 +313,26 @@ public class GameEventExecutor {
     }
 
     private void onReverse(int unit_x, int unit_y, int origin_x, int origin_y) {
-        if (canReverse(unit_x, unit_y)) {
-            getGameManager().requestMapFocus(origin_x, origin_y);
+        if (canReverse(unit_x, unit_y, origin_x, origin_y)) {
+            getGameManager().fireMapFocusEvent(origin_x, origin_y);
 
             Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
-            if (getGame().getMap().canMove(origin_x, origin_y)) {
-                getGame().getMap().moveUnit(unit, origin_x, origin_y);
-            }
-            unit.setCurrentMovementPoint(unit.getMovementPoint());
-
-            if (getGame().getCurrentPlayer().isLocalPlayer()) {
-                getGameManager().beginMovePhase();
-            }
+            getGame().getMap().moveUnit(unit, origin_x, origin_y);
+            getGame().resetUnit(unit);
         }
     }
 
-    private boolean canReverse(int unit_x, int unit_y) {
-        return getGame().getMap().getUnit(unit_x, unit_y) != null;
+    private boolean canReverse(int unit_x, int unit_y, int origin_x, int origin_y) {
+        Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
+        return unit != null && getGame().getMap().canMove(origin_x, origin_y);
     }
 
     private void onSelect(int target_x, int target_y) {
         if (canSelect(target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGameManager().setSelectedUnit(unit);
-
-            switch (getGame().getCurrentPlayer().getType()) {
-                case Player.LOCAL:
-                    Tile tile = getGame().getMap().getTile(target_x, target_y);
-                    if (unit.isCommander() && getGame().isCastleAccessible(tile)) {
-                        getGameManager().setState(GameManager.STATE_BUY);
-                    } else {
-                        getGameManager().beginMovePhase();
-                    }
-                    break;
-                case Player.ROBOT:
-                    getGameManager().beginMovePhase();
-                    break;
-                default:
-                    //do nothing
-            }
         }
     }
 
@@ -508,16 +343,14 @@ public class GameEventExecutor {
 
     private void onStandby(int target_x, int target_y) throws JSONException {
         if (canStandby(target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGame().standbyUnit(target_x, target_y);
-            getGameManager().setState(GameManager.STATE_SELECT);
 
             //deal with auras
-            ObjectSet<Position> aura_positions = getGameManager().createPositionsWithinRange(target_x, target_y, 0, 2);
-
-            JSONArray hp_changes = new JSONArray();
+            ObjectSet<Position> aura_positions =
+                    getGameManager().getPositionGenerator().createPositionsWithinRange(target_x, target_y, 0, 2);
 
             for (Position target_position : aura_positions) {
                 Unit target = getGame().getMap().getUnit(target_position);
@@ -529,20 +362,12 @@ public class GameEventExecutor {
                             && getGame().isEnemy(unit, target)) {
                         target.attachStatus(new Status(Status.SLOWED, 1));
                     }
-                    if (unit.hasAbility(Ability.REFRESH_AURA)) {
-                        int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                        if (getGame().canClean(unit, target)) {
-                            target.clearStatus();
-                        }
-                        if (getGame().canHeal(unit, target)) {
-                            int change = UnitToolkit.validateHpChange(target, heal);
-                            if (change != 0) {
-                                hp_changes.put(createHpChange(target_position, change));
-                            }
-                        }
+                    if (unit.hasAbility(Ability.REFRESH_AURA) && getGame().canClean(unit, target)) {
+                        target.clearStatus();
                     }
                 }
             }
+
             //deal with tombs
             if (getGame().getMap().isTomb(unit.getX(), unit.getY())) {
                 getGame().getMap().removeTomb(unit.getX(), unit.getY());
@@ -550,8 +375,6 @@ public class GameEventExecutor {
                     unit.attachStatus(new Status(Status.POISONED, 3));
                 }
             }
-            submitBufferGameEvent(GameEvent.HP_CHANGE, hp_changes);
-            submitBufferGameEvent(GameEvent.CHECK_UNIT_DESTROY);
         }
     }
 
@@ -562,18 +385,12 @@ public class GameEventExecutor {
 
     private void onSummon(int summoner_x, int summoner_y, int target_x, int target_y) {
         if (canSummon(summoner_x, summoner_y, target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Unit summoner = getGame().getMap().getUnit(summoner_x, summoner_y);
             getGame().getMap().removeTomb(target_x, target_y);
             getGame().createUnit(UnitFactory.getSkeletonIndex(), summoner.getTeam(), target_x, target_y);
             getAnimationDispatcher().submitSummonAnimation(summoner, target_x, target_y);
-
-            submitBufferGameEvent(
-                    GameEvent.GAIN_EXPERIENCE,
-                    summoner.getX(), summoner.getY(),
-                    getGame().getRule().getInteger(ATTACK_EXPERIENCE));
-            submitBufferGameEvent(GameEvent.ACTION_FINISH, summoner.getX(), summoner.getY());
         }
     }
 
@@ -585,7 +402,7 @@ public class GameEventExecutor {
 
     private void onTileDestroy(int target_x, int target_y) {
         if (canDestroyTile(target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Tile tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(tile.getDestroyedTileIndex(), target_x, target_y);
@@ -600,14 +417,14 @@ public class GameEventExecutor {
 
     private void onUnitDestroy(int target_x, int target_y) throws JSONException {
         if (canDestroyUnit(target_x, target_y)) {
-            getGameManager().requestMapFocus(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y);
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGame().destroyUnit(unit.getX(), unit.getY());
             getAnimationDispatcher().submitUnitDestroyAnimation(unit);
             getAnimationDispatcher().submitDustAriseAnimation(unit.getX(), unit.getY());
 
-            submitBufferGameEvent(GameEvent.CHECK_TEAM_DESTROY, unit.getTeam());
+            onCheckTeamDestroy(unit.getTeam());
         }
     }
 
@@ -621,31 +438,6 @@ public class GameEventExecutor {
             boolean level_up = unit.gainExperience(experience);
             if (level_up) {
                 getAnimationDispatcher().submitUnitLevelUpAnimation(unit);
-            }
-        }
-    }
-
-    private void onUnitMoveFinish(int target_x, int target_y) {
-        switch (getGameManager().getState()) {
-            case GameManager.STATE_MOVE:
-                getGameManager().setState(GameManager.STATE_ACTION);
-                break;
-            case GameManager.STATE_REMOVE:
-                submitBufferGameEvent(GameEvent.STANDBY, target_x, target_y);
-                break;
-        }
-    }
-
-    private void onUnitActionFinish(int target_x, int target_y) {
-        Unit unit = getGame().getMap().getUnit(target_x, target_y);
-        if (unit == null || unit.getCurrentHp() <= 0) {
-            getGameManager().setState(GameManager.STATE_SELECT);
-        } else {
-            if (UnitToolkit.canMoveAgain(unit)) {
-                getGameManager().setLastPosition(new Position(unit.getX(), unit.getY()));
-                getGameManager().beginRemovePhase();
-            } else {
-                submitBufferGameEvent(GameEvent.STANDBY, target_x, target_y);
             }
         }
     }
@@ -670,14 +462,6 @@ public class GameEventExecutor {
         }
     }
 
-    private void onCheckUnitDestroy() {
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (unit.getCurrentHp() <= 0) {
-                submitBufferGameEvent(GameEvent.UNIT_DESTROY, unit.getX(), unit.getY());
-            }
-        }
-    }
-
     private void onCheckTeamDestroy(int team) {
         Analyzer analyzer = new Analyzer(getGame());
         if (team >= 0 && analyzer.isTeamDestroyed(team)) {
@@ -687,14 +471,6 @@ public class GameEventExecutor {
                 getGame().setGameOver(true);
             }
         }
-    }
-
-    private JSONObject createHpChange(Position position, int change) throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("x", position.x);
-        json.put("y", position.y);
-        json.put("change", change);
-        return json;
     }
 
 }

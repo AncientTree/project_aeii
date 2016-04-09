@@ -2,10 +2,12 @@ package com.toyknight.aeii.manager;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.toyknight.aeii.TaskService;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
+import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.network.server.EmptyAnimationManager;
-import com.toyknight.aeii.robot.OperationExecutor;
+import com.toyknight.aeii.network.task.GameEventSendingTask;
 import com.toyknight.aeii.robot.Robot;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -26,10 +28,11 @@ public class GameManager implements GameEventListener, AnimationListener {
     public static final int STATE_PREVIEW = 0x8;
     public static final int STATE_BUY = 0x9;
 
+    private final TaskService task_service;
     private final GameEventExecutor event_executor;
     private final AnimationDispatcher animation_dispatcher;
 
-    private final MovementGenerator movement_generator;
+    private final PositionGenerator position_generator;
 
     private final Robot[] robots;
 
@@ -48,13 +51,14 @@ public class GameManager implements GameEventListener, AnimationListener {
     private final ObjectSet<Position> attackable_positions;
 
     public GameManager() {
-        this(new EmptyAnimationManager());
+        this(null, new EmptyAnimationManager());
     }
 
-    public GameManager(AnimationDispatcher dispatcher) {
+    public GameManager(TaskService task_service, AnimationDispatcher dispatcher) {
+        this.task_service = task_service;
         this.animation_dispatcher = dispatcher;
         this.animation_dispatcher.setListener(this);
-        this.movement_generator = new MovementGenerator(this);
+        this.position_generator = new PositionGenerator(this);
         this.operation_executor = new OperationExecutor(this);
         this.event_executor = new GameEventExecutor(this);
 
@@ -75,7 +79,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         getGameEventExecutor().reset();
         getOperationExecutor().reset();
         getAnimationDispatcher().reset();
-        getMovementGenerator().reset();
+        getPositionGenerator().reset();
         for (int team = 0; team < 4; team++) {
             getRobot(team).initialize();
         }
@@ -83,6 +87,10 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public GameCore getGame() {
         return game;
+    }
+
+    public TaskService getTaskService() {
+        return task_service;
     }
 
     public OperationExecutor getOperationExecutor() {
@@ -97,8 +105,8 @@ public class GameManager implements GameEventListener, AnimationListener {
         return animation_dispatcher;
     }
 
-    public MovementGenerator getMovementGenerator() {
-        return movement_generator;
+    public PositionGenerator getPositionGenerator() {
+        return position_generator;
     }
 
     public UnitToolkit getUnitToolkit() {
@@ -109,7 +117,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         return robots[team];
     }
 
-    public void setGameManagerListener(GameManagerListener listener) {
+    public void setListener(GameManagerListener listener) {
         this.manager_listener = listener;
     }
 
@@ -120,9 +128,8 @@ public class GameManager implements GameEventListener, AnimationListener {
     public void setState(int state) {
         if (state != this.state) {
             this.state = state;
-            if (getListener() != null) {
-                getListener().onManagerStateChanged();
-            }
+            fireScreenUpdateEvent();
+            getPositionGenerator().reset();
         }
     }
 
@@ -131,7 +138,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean isProcessing() {
-        return getGameEventExecutor().isProcessing();
+        return getGameEventExecutor().isProcessing() || getOperationExecutor().isOperating();
     }
 
     public boolean isAnimating() {
@@ -150,6 +157,21 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     @Override
+    public void onGameEventSubmitted(JSONObject event) {
+        if (getTaskService() != null && NetworkManager.isConnected()) {
+            getTaskService().submitAsyncTask(new GameEventSendingTask(event) {
+                @Override
+                public void onFinish(Void result) {
+                }
+
+                @Override
+                public void onFail(String message) {
+                }
+            });
+        }
+    }
+
+    @Override
     public void onGameEventFinished() {
         if (!isAnimating()) {
             checkGameState();
@@ -157,12 +179,28 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     private void checkGameState() {
+        if (getGame().isGameOver()) {
+            fireGameOverEvent();
+        } else {
+            fireScreenUpdateEvent();
+        }
+    }
+
+    private void fireGameOverEvent() {
         if (getListener() != null) {
-            if (getGame().isGameOver()) {
-                getListener().onGameOver();
-            } else {
-                getListener().onScreenUpdateRequested();
-            }
+            getListener().onGameOver();
+        }
+    }
+
+    private void fireScreenUpdateEvent() {
+        if (getListener() != null) {
+            getListener().onScreenUpdateRequested();
+        }
+    }
+
+    public void fireMapFocusEvent(int map_x, int map_y) {
+        if (getListener() != null) {
+            getListener().onMapFocusRequired(map_x, map_y);
         }
     }
 
@@ -170,37 +208,28 @@ public class GameManager implements GameEventListener, AnimationListener {
         if (getAnimationDispatcher().isAnimating()) {
             getAnimationDispatcher().updateAnimation(delta);
         } else {
-            getGameEventExecutor().dispatchGameEvents();
-        }
-        if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
-            if (!getRobot(getGame().getCurrentTeam()).isCalculating()) {
-                if (getOperationExecutor().isOperating()) {
-                    getOperationExecutor().operate(delta);
-                } else {
-                    getRobot(getGame().getCurrentTeam()).calculate();
-                }
+            if (getGameEventExecutor().isProcessing()) {
+                getGameEventExecutor().dispatchGameEvents();
+            } else {
+                getOperationExecutor().operate();
             }
         }
-    }
-
-    public void submitGameEvent(int type, Object... params) {
-        JSONObject event = getGameEventExecutor().submitGameEvent(type, params);
-        if (getListener() != null) {
-            getListener().onGameEventSubmitted(event);
-        }
-    }
-
-    public void requestMapFocus(int map_x, int map_y) {
-        if (getListener() != null) {
-            getListener().onMapFocusRequired(map_x, map_y);
-        }
+//        if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
+//            if (!getRobot(getGame().getCurrentTeam()).isCalculating()) {
+//                if (getOperationExecutor().isOperating()) {
+//                    getOperationExecutor().operate(delta);
+//                } else {
+//                    getRobot(getGame().getCurrentTeam()).calculate();
+//                }
+//            }
+//        }
     }
 
     public void setSelectedUnit(Unit unit) {
         this.selected_unit = unit;
         this.movable_positions.clear();
-        getMovementGenerator().resetUnit();
-        setLastPosition(new Position(unit.getX(), unit.getY()));
+        getPositionGenerator().reset();
+        setLastPosition(getGame().getMap().getPosition(unit));
     }
 
     public Unit getSelectedUnit() {
@@ -228,6 +257,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     public void beginMovePhase() {
         createMovablePositions();
         setState(STATE_MOVE);
+        move_path.clear();
     }
 
     public void cancelMovePhase() {
@@ -237,24 +267,25 @@ public class GameManager implements GameEventListener, AnimationListener {
     public void beginAttackPhase() {
         setState(STATE_ATTACK);
         attackable_positions.clear();
-        attackable_positions.addAll(createAttackablePositions(getSelectedUnit(), false));
+        attackable_positions.addAll(getPositionGenerator().createAttackablePositions(getSelectedUnit(), false));
     }
 
     public void beginSummonPhase() {
         setState(STATE_SUMMON);
         attackable_positions.clear();
-        attackable_positions.addAll(createAttackablePositions(getSelectedUnit(), false));
+        attackable_positions.addAll(getPositionGenerator().createAttackablePositions(getSelectedUnit(), false));
     }
 
     public void beginHealPhase() {
         setState(STATE_HEAL);
         attackable_positions.clear();
-        attackable_positions.addAll(createAttackablePositions(getSelectedUnit(), true));
+        attackable_positions.addAll(getPositionGenerator().createAttackablePositions(getSelectedUnit(), true));
     }
 
     public void beginRemovePhase() {
         createMovablePositions();
         setState(STATE_REMOVE);
+        move_path.clear();
     }
 
     public void cancelActionPhase() {
@@ -263,8 +294,9 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public void doSelect(int x, int y) {
         Unit unit = getGame().getMap().getUnit(x, y);
-        if (getGame().isUnitAvailable(unit)) {
-            submitGameEvent(GameEvent.SELECT, x, y);
+        if (getGame().isUnitAccessible(unit)) {
+            getOperationExecutor().submitOperation(Operation.SELECT, x, y);
+            getOperationExecutor().submitOperation(Operation.SELECT_FINISH, x, y);
         }
     }
 
@@ -272,108 +304,87 @@ public class GameManager implements GameEventListener, AnimationListener {
         if (canSelectedUnitMove(dest_x, dest_y)) {
             int start_x = getSelectedUnit().getX();
             int start_y = getSelectedUnit().getY();
-            submitGameEvent(GameEvent.MOVE, start_x, start_y, dest_x, dest_y);
+            getOperationExecutor().submitOperation(Operation.MOVE, start_x, start_y, dest_x, dest_y);
+            getOperationExecutor().submitOperation(Operation.MOVE_FINISH, dest_x, dest_y);
         }
     }
 
     public void doReverseMove() {
-        Position last_position = getLastPosition();
-        Unit selected_unit = getSelectedUnit();
-        submitGameEvent(GameEvent.REVERSE, selected_unit.getX(), selected_unit.getY(), last_position.x, last_position.y);
+        int unit_x = getSelectedUnit().getX();
+        int unit_y = getSelectedUnit().getY();
+        int last_x = getLastPosition().x;
+        int last_y = getLastPosition().y;
+        getOperationExecutor().submitOperation(Operation.MOVE_REVERSE, unit_x, unit_y, last_x, last_y);
+        getOperationExecutor().submitOperation(Operation.MOVE_REVERSE_FINISH, last_x, last_y);
     }
 
     public void doAttack(int target_x, int target_y) {
         Unit attacker = getSelectedUnit();
-        if (UnitToolkit.isWithinRange(attacker, target_x, target_y)) {
-            Unit defender = getGame().getMap().getUnit(target_x, target_y);
-            if (defender == null) {
-                if (attacker.hasAbility(Ability.DESTROYER)
-                        && getGame().getMap().getTile(target_x, target_y).isDestroyable()) {
-                    onUnitAttackTile(attacker, target_x, target_y);
-                }
-            } else {
-                if (getGame().canAttack(attacker, target_x, target_y)) {
-                    onUnitAttackUnit(UnitFactory.cloneUnit(attacker), UnitFactory.cloneUnit(defender));
-                }
-            }
-        }
-    }
-
-    private void onUnitAttackTile(Unit attacker, int target_x, int target_y) {
-        submitGameEvent(GameEvent.ATTACK, attacker.getX(), attacker.getY(), target_x, target_y, -1, -1);
-//        submitGameEvent(GameEvent.STANDBY, attacker.getX(), attacker.getY());
-        submitGameEvent(GameEvent.TILE_DESTROY, target_x, target_y);
-    }
-
-    private void onUnitAttackUnit(Unit attacker, Unit defender) {
-        //attack pre-calculation
-        int attack_damage = getUnitToolkit().getDamage(attacker, defender);
-        UnitToolkit.attachAttackStatus(attacker, defender);
-        defender.changeCurrentHp(-attack_damage);
-        if (defender.getCurrentHp() > 0) {
-            int counter_damage =
-                    getUnitToolkit().canCounter(defender, attacker) ?
-                            getUnitToolkit().getDamage(defender, attacker) : -1;
-            submitGameEvent(
-                    GameEvent.ATTACK,
-                    attacker.getX(), attacker.getY(),
-                    defender.getX(), defender.getY(),
-                    attack_damage, counter_damage);
-        } else {
-            submitGameEvent(
-                    GameEvent.ATTACK,
-                    attacker.getX(), attacker.getY(),
-                    defender.getX(), defender.getY(),
-                    attack_damage, -1);
+        if (getGame().canAttack(attacker, target_x, target_y)) {
+            getOperationExecutor().submitOperation(
+                    Operation.ATTACK, attacker.getX(), attacker.getY(), target_x, target_y);
+            getOperationExecutor().submitOperation(
+                    Operation.COUNTER, attacker.getX(), attacker.getY(), target_x, target_y);
+            getOperationExecutor().submitOperation(Operation.ACTION_FINISH, attacker.getX(), attacker.getY());
         }
     }
 
     public void doSummon(int target_x, int target_y) {
         Unit summoner = getSelectedUnit();
         if (getGame().canSummon(summoner, target_x, target_y)) {
-            submitGameEvent(GameEvent.SUMMON, summoner.getX(), summoner.getY(), target_x, target_y);
+            getOperationExecutor().submitOperation(
+                    Operation.SUMMON, summoner.getX(), summoner.getY(), target_x, target_y);
+            getOperationExecutor().submitOperation(Operation.ACTION_FINISH, summoner.getX(), summoner.getY());
         }
     }
 
     public void doHeal(int target_x, int target_y) {
         Unit healer = getSelectedUnit();
-        Unit target = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canHeal(healer, target_x, target_y)) {
-            int heal = UnitToolkit.getHeal(healer, target);
-            submitGameEvent(GameEvent.HEAL, healer.getX(), healer.getY(), target_x, target_y, heal);
+            getOperationExecutor().submitOperation(Operation.HEAL, healer.getX(), healer.getY(), target_x, target_y);
+            getOperationExecutor().submitOperation(Operation.ACTION_FINISH, healer.getX(), healer.getY());
         }
     }
 
     public void doRepair() {
         Unit unit = getSelectedUnit();
-        submitGameEvent(GameEvent.REPAIR, unit.getX(), unit.getY());
+        if (getGame().canRepair(unit, unit.getX(), unit.getY())) {
+            getOperationExecutor().submitOperation(Operation.REPAIR, unit.getX(), unit.getY());
+            getOperationExecutor().submitOperation(Operation.ACTION_FINISH, unit.getX(), unit.getY());
+        }
     }
 
     public void doOccupy() {
         Unit unit = getSelectedUnit();
-        submitGameEvent(GameEvent.OCCUPY, unit.getX(), unit.getY(), unit.getTeam());
+        if (getGame().canOccupy(unit, unit.getX(), unit.getY())) {
+            getOperationExecutor().submitOperation(Operation.OCCUPY, unit.getX(), unit.getY());
+            getOperationExecutor().submitOperation(Operation.ACTION_FINISH, unit.getX(), unit.getY());
+        }
     }
 
     public void doBuyUnit(int index, int x, int y) {
         int team = getGame().getCurrentTeam();
-        submitGameEvent(GameEvent.BUY, index, team, x, y);
-        submitGameEvent(GameEvent.SELECT, x, y);
+        if (canBuy(index, team, x, y)) {
+            getOperationExecutor().submitOperation(Operation.BUY, index, team, x, y);
+            getOperationExecutor().submitOperation(Operation.SELECT, x, y);
+            getOperationExecutor().submitOperation(Operation.SELECT_FINISH, x, y);
+        }
     }
 
     public void doStandbySelectedUnit() {
         Unit unit = getSelectedUnit();
-        if (getGame().isUnitAvailable(unit)) {
-            submitGameEvent(GameEvent.STANDBY, unit.getX(), unit.getY());
+        if (getGame().isUnitAccessible(unit)) {
+            getOperationExecutor().submitOperation(Operation.STANDBY, unit.getX(), unit.getY());
         }
     }
 
     public void doEndTurn() {
-        submitGameEvent(GameEvent.NEXT_TURN);
+        getOperationExecutor().submitOperation(Operation.NEXT_TURN);
     }
 
     public void createMovablePositions() {
         movable_positions.clear();
-        movable_positions.addAll(getMovementGenerator().createMovablePositions(getSelectedUnit()));
+        movable_positions.addAll(getPositionGenerator().createMovablePositions(getSelectedUnit()));
     }
 
     public ObjectSet<Position> getMovablePositions() {
@@ -385,54 +396,20 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public Array<Position> getMovePath(int dest_x, int dest_y) {
-        if (move_path == null || move_path.size == 0) {
-            createMovePath(dest_x, dest_y);
-        } else {
-            Position current_dest = move_path.get(move_path.size - 1);
-            if (dest_x != current_dest.x || dest_y != current_dest.y) {
-                createMovePath(dest_x, dest_y);
-            }
+        if (move_path.size == 0 || checkDestination(dest_x, dest_y)) {
+            move_path.clear();
+            move_path.addAll(getPositionGenerator().createMovePath(getSelectedUnit(), dest_x, dest_y));
         }
         return move_path;
     }
 
-    private void createMovePath(int dest_x, int dest_y) {
-        move_path.clear();
-        move_path.addAll(getMovementGenerator().createMovePath(getSelectedUnit(), dest_x, dest_y));
-    }
-
-    public ObjectSet<Position> createAttackablePositions(Unit unit, boolean itself) {
-        int unit_x = unit.getX();
-        int unit_y = unit.getY();
-        int min_ar = unit.getMinAttackRange();
-        int max_ar = unit.getMaxAttackRange();
-        ObjectSet<Position> attackable_positions = createPositionsWithinRange(unit_x, unit_y, min_ar, max_ar);
-        if (itself) {
-            attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
-        }
-        return attackable_positions;
-    }
-
-    public ObjectSet<Position> createPositionsWithinRange(int x, int y, int min_range, int max_range) {
-        ObjectSet<Position> positions = new ObjectSet<Position>();
-        for (int ar = min_range; ar <= max_range; ar++) {
-            for (int dx = -ar; dx <= ar; dx++) {
-                int dy = dx >= 0 ? ar - dx : -ar - dx;
-                if (game.getMap().isWithinMap(x + dx, y + dy)) {
-                    positions.add(new Position(x + dx, y + dy));
-                }
-                if (dy != 0) {
-                    if (game.getMap().isWithinMap(x + dx, y - dy)) {
-                        positions.add(new Position(x + dx, y - dy));
-                    }
-                }
-            }
-        }
-        return positions;
+    private boolean checkDestination(int dest_x, int dest_y) {
+        Position current_dest = move_path.get(move_path.size - 1);
+        return dest_x != current_dest.x || dest_y != current_dest.y;
     }
 
     public boolean hasEnemyWithinRange(Unit unit) {
-        ObjectSet<Position> attackable_positions = createAttackablePositions(unit, false);
+        ObjectSet<Position> attackable_positions = getPositionGenerator().createAttackablePositions(unit, false);
         for (Position position : attackable_positions) {
             if (getSelectedUnit().hasAbility(Ability.DESTROYER) && getGame().getMap().getUnit(position.x, position.y) == null
                     && getGame().getMap().getTile(position.x, position.y).isDestroyable()) {
@@ -447,7 +424,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean hasAllyCanHealWithinRange(Unit unit) {
-        ObjectSet<Position> attackable_positions = createAttackablePositions(unit, true);
+        ObjectSet<Position> attackable_positions = getPositionGenerator().createAttackablePositions(unit, true);
         for (Position position : attackable_positions) {
             Unit target = getGame().getMap().getUnit(position.x, position.y);
             if (getGame().canHeal(unit, target)) {
@@ -458,7 +435,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean hasTombWithinRange(Unit unit) {
-        ObjectSet<Position> attackable_positions = createAttackablePositions(unit, false);
+        ObjectSet<Position> attackable_positions = getPositionGenerator().createAttackablePositions(unit, false);
         for (Position position : attackable_positions) {
             if (getGame().getMap().isTomb(position) && getGame().getMap().getUnit(position) == null) {
                 return true;
@@ -475,24 +452,28 @@ public class GameManager implements GameEventListener, AnimationListener {
     public boolean canSelectedUnitMove(int dest_x, int dest_y) {
         Position destination = getGame().getMap().getPosition(dest_x, dest_y);
         return getMovablePositions().contains(destination)
-                && getGame().isUnitAvailable(getSelectedUnit())
+                && getGame().isUnitAccessible(getSelectedUnit())
                 && getGame().canUnitMove(getSelectedUnit(), dest_x, dest_y);
     }
 
     public boolean canBuy(int index, int team, int map_x, int map_y) {
-        Tile tile = getGame().getMap().getTile(map_x, map_y);
-        Unit unit = getGame().getMap().getUnit(map_x, map_y);
-        if (getGame().isCastleAccessible(tile, team) && getGame().canBuyOverUnit(unit, team)) {
-            Unit sample = UnitFactory.getSample(index);
-            int price = getGame().getUnitPrice(index, team);
-            int movement_point = sample.getMovementPoint();
-            sample.setCurrentMovementPoint(movement_point);
-            sample.setX(map_x);
-            sample.setY(map_y);
-            return price >= 0
-                    && getGame().getCurrentPlayer().getGold() >= price
-                    && getMovementGenerator().createMovablePositions(sample).size > 0
-                    && (!getGame().hasReachPopulationCapacity(team) || sample.isCommander());
+        if (getGame().getMap().isWithinMap(map_x, map_y)) {
+            Tile tile = getGame().getMap().getTile(map_x, map_y);
+            Unit unit = getGame().getMap().getUnit(map_x, map_y);
+            if (getGame().isCastleAccessible(tile, team) && getGame().canBuyUponUnit(unit, team)) {
+                Unit sample = UnitFactory.getSample(index);
+                int price = getGame().getUnitPrice(index, team);
+                int movement_point = sample.getMovementPoint();
+                sample.setCurrentMovementPoint(movement_point);
+                sample.setX(map_x);
+                sample.setY(map_y);
+                return price >= 0
+                        && getGame().getCurrentPlayer().getGold() >= price
+                        && getPositionGenerator().createMovablePositions(sample).size > 0
+                        && (!getGame().hasReachedPopulationCapacity(team) || sample.isCommander());
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

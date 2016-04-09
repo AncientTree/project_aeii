@@ -173,6 +173,14 @@ public class GameCore implements Serializable {
         return current_team;
     }
 
+    public int getNextTeam() {
+        int team = getCurrentTeam();
+        do {
+            team = team < 3 ? team + 1 : 0;
+        } while (!isTeamAlive(team));
+        return team;
+    }
+
     public void setCurrentTeam(int team) {
         current_team = team;
     }
@@ -189,7 +197,7 @@ public class GameCore implements Serializable {
         return getPlayer(team).getPopulation();
     }
 
-    public boolean hasReachPopulationCapacity(int team) {
+    public boolean hasReachedPopulationCapacity(int team) {
         Player player = getPlayer(team);
         return player.getType() != Player.NONE && player.getPopulation() >= getRule().getInteger(MAX_POPULATION);
     }
@@ -405,27 +413,42 @@ public class GameCore implements Serializable {
         return canAttack(attacker, defender.getX(), defender.getY());
     }
 
+    public boolean canCounter(Unit attacker, Unit defender) {
+        if (isUnitAlive(defender) && isEnemy(defender, attacker) && UnitToolkit.isWithinRange(defender, attacker)) {
+            if (defender.hasAbility(Ability.COUNTER_MADNESS)) {
+                return UnitToolkit.getRange(defender, attacker) <= 2;
+            } else {
+                return UnitToolkit.getRange(defender, attacker) == 1
+                        && !(attacker.hasAbility(Ability.AMBUSH) && !defender.hasAbility(Ability.AMBUSH));
+            }
+        } else {
+            return false;
+        }
+    }
+
     public boolean canOccupy(Unit conqueror, int x, int y) {
-        if (conqueror == null) {
+        if (getMap().isWithinMap(x, y)) {
+            Tile tile = getMap().getTile(x, y);
+            return !(conqueror == null || tile.getTeam() == conqueror.getTeam())
+                    && tile.isCapturable()
+                    && ((tile.isCastle() && conqueror.hasAbility(Ability.COMMANDER))
+                    || (tile.isVillage() && conqueror.hasAbility(Ability.CONQUEROR)));
+        } else {
             return false;
         }
-        if (conqueror.getTeam() != getCurrentTeam()) {
-            return false;
-        }
-        Tile tile = getMap().getTile(x, y);
-        return tile.getTeam() != getCurrentTeam()
-                && ((tile.isCastle() && conqueror.hasAbility(Ability.COMMANDER)) || (tile.isVillage() && conqueror.hasAbility(Ability.CONQUEROR)));
     }
 
     public boolean canRepair(Unit repairer, int x, int y) {
-        if (repairer == null) {
+        if (getMap().isWithinMap(x, y)) {
+            if (repairer == null) {
+                return false;
+            } else {
+                Tile tile = getMap().getTile(x, y);
+                return repairer.hasAbility(Ability.REPAIRER) && tile.isRepairable();
+            }
+        } else {
             return false;
         }
-        if (repairer.getTeam() != getCurrentTeam()) {
-            return false;
-        }
-        Tile tile = getMap().getTile(x, y);
-        return repairer.hasAbility(Ability.REPAIRER) && tile.isRepairable();
     }
 
     public boolean canSummon(Unit summoner, int x, int y) {
@@ -433,8 +456,12 @@ public class GameCore implements Serializable {
     }
 
     public boolean canHeal(Unit healer, int x, int y) {
-        Unit target = getMap().getUnit(x, y);
-        return canHeal(healer, target);
+        if (getMap().isWithinMap(x, y)) {
+            Unit target = getMap().getUnit(x, y);
+            return canHeal(healer, target);
+        } else {
+            return false;
+        }
     }
 
     public boolean canHeal(Unit healer, Unit target) {
@@ -482,11 +509,16 @@ public class GameCore implements Serializable {
                 || unit.hasAbility(Ability.AIR_FORCE) && !target_unit.hasAbility(Ability.AIR_FORCE);
     }
 
-    public boolean isUnitAvailable(Unit unit) {
-        return unit != null
-                && unit.getTeam() == getCurrentTeam()
-                && unit.getCurrentHp() > 0
-                && !unit.isStandby();
+    public boolean canBuyUponUnit(Unit unit, int team) {
+        return unit == null || (unit.isCommander() && unit.getTeam() == team);
+    }
+
+    public boolean isUnitAccessible(Unit unit) {
+        return isUnitAlive(unit) && unit.getTeam() == getCurrentTeam() && !unit.isStandby();
+    }
+
+    public boolean isUnitAlive(Unit unit) {
+        return unit != null && unit.getCurrentHp() > 0;
     }
 
     public boolean isCastleAccessible(Tile tile) {
@@ -495,10 +527,6 @@ public class GameCore implements Serializable {
 
     public boolean isCastleAccessible(Tile tile, int team) {
         return tile.isCastle() && tile.getTeam() == team;
-    }
-
-    public boolean canBuyOverUnit(Unit unit, int team) {
-        return unit == null || (unit.isCommander() && unit.getTeam() == team);
     }
 
     public Position getTeamFocus(int team) {

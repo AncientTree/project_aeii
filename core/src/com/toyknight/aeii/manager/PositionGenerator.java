@@ -12,7 +12,7 @@ import java.util.Queue;
 /**
  * @author toyknight 1/12/2016.
  */
-public class MovementGenerator {
+public class PositionGenerator {
 
     private final int[] x_dir = {1, -1, 0, 0};
     private final int[] y_dir = {0, 0, 1, -1};
@@ -26,7 +26,7 @@ public class MovementGenerator {
 
     private int[][] move_mark_map;
 
-    public MovementGenerator(GameManager manager) {
+    public PositionGenerator(GameManager manager) {
         this.manager = manager;
         this.move_path = new Array<Position>();
         this.movable_positions = new ObjectSet<Position>();
@@ -42,10 +42,6 @@ public class MovementGenerator {
 
     public Position getPosition(Unit unit) {
         return getGame().getMap().getPosition(unit.getX(), unit.getY());
-    }
-
-    public void resetUnit() {
-        current_unit = null;
     }
 
     private Queue<Step> createStartStep(Unit unit) {
@@ -234,6 +230,36 @@ public class MovementGenerator {
         if (!next_steps.isEmpty()) {
             searchPathToTarget(next_steps, unit, target);
         }
+    }
+
+    public ObjectSet<Position> createAttackablePositions(Unit unit, boolean itself) {
+        int unit_x = unit.getX();
+        int unit_y = unit.getY();
+        int min_ar = unit.getMinAttackRange();
+        int max_ar = unit.getMaxAttackRange();
+        ObjectSet<Position> attackable_positions = createPositionsWithinRange(unit_x, unit_y, min_ar, max_ar);
+        if (itself) {
+            attackable_positions.add(getGame().getMap().getPosition(unit.getX(), unit.getY()));
+        }
+        return attackable_positions;
+    }
+
+    public ObjectSet<Position> createPositionsWithinRange(int x, int y, int min_range, int max_range) {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
+        for (int ar = min_range; ar <= max_range; ar++) {
+            for (int dx = -ar; dx <= ar; dx++) {
+                int dy = dx >= 0 ? ar - dx : -ar - dx;
+                if (getGame().getMap().isWithinMap(x + dx, y + dy)) {
+                    positions.add(new Position(x + dx, y + dy));
+                }
+                if (dy != 0) {
+                    if (getGame().getMap().isWithinMap(x + dx, y - dy)) {
+                        positions.add(new Position(x + dx, y - dy));
+                    }
+                }
+            }
+        }
+        return positions;
     }
 
     private void checkIdentity(Unit unit) {

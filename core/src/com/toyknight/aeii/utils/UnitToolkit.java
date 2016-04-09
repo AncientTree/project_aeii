@@ -100,8 +100,8 @@ public class UnitToolkit {
             if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
                 return getRange(counter, attacker) <= 2;
             } else {
-                return !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH))
-                        && getRange(counter, attacker) == 1;
+                return getRange(counter, attacker) == 1
+                        && !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH));
             }
         } else {
             return false;
@@ -219,6 +219,12 @@ public class UnitToolkit {
         return damage;
     }
 
+    public static boolean canMoveAgain(Unit unit) {
+        return unit.getCurrentHp() > 0
+                && unit.getCurrentMovementPoint() > 0
+                && unit.hasAbility(Ability.CHARGER);
+    }
+
     public static int getHeal(Unit healer, Unit target) {
         if (healer.hasAbility(Ability.HEALER)) {
             int heal = Rule.HEALER_BASE_HEAL + 10 * healer.getLevel();
@@ -230,12 +236,6 @@ public class UnitToolkit {
         } else {
             return 0;
         }
-    }
-
-    public static boolean canMoveAgain(Unit unit) {
-        return unit.getCurrentHp() > 0
-                && unit.getCurrentMovementPoint() > 0
-                && unit.hasAbility(Ability.CHARGER);
     }
 
     public static int validateHpChange(Unit unit, int change) {

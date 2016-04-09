@@ -134,7 +134,7 @@ public class AttackInformationRenderer {
         }
         int defender_atk = defender.getAttack();
         int defender_atk_bonus = getUnitToolkit().getAttackBonus(defender, attacker, defender_tile);
-        int modified_defender_atk = getUnitToolkit().canCounter(defender, attacker) ? defender_atk + defender_atk_bonus : 0;
+        int modified_defender_atk = getManager().getGame().canCounter(defender, attacker) ? defender_atk + defender_atk_bonus : 0;
         String defender_attack_str = Integer.toString(modified_defender_atk);
         FontRenderer.drawText(batch, defender_attack_str,
                 lmargin + hw + ts * 3 / 24 + ts / 4,

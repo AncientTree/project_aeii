@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.utils.UnitFactory;
-import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.Random;
 
@@ -83,27 +82,27 @@ public class Robot {
     }
 
     private void doCalculate() {
-        if (getGame().isTeamAlive(team)) {
-            calculateBattleData();
-            UnitBuyingOption unit_to_buy = calculateUnitToBuy();
-            if (unit_to_buy.getUnitIndex() >= 0) {
-                int unit_index = unit_to_buy.getUnitIndex();
-                int buying_map_x = unit_to_buy.getPosition().x;
-                int buying_map_y = unit_to_buy.getPosition().y;
-                getManager().getOperationExecutor().submitOperation(
-                        Operation.BUY, unit_index, buying_map_x, buying_map_y);
-                Unit bought_unit = createBoughtUnit(unit_index, buying_map_x, buying_map_y);
-                doUnitAction(bought_unit);
-            } else {
-                Unit next_unit = getNextUnit(team);
-                if (next_unit == null) {
-                    getManager().getOperationExecutor().submitOperation(Operation.END_TURN);
-                    getRoutines().clear();
-                } else {
-                    doUnitAction(next_unit);
-                }
-            }
-        }
+//        if (getGame().isTeamAlive(team)) {
+//            calculateBattleData();
+//            UnitBuyingOption unit_to_buy = calculateUnitToBuy();
+//            if (unit_to_buy.getUnitIndex() >= 0) {
+//                int unit_index = unit_to_buy.getUnitIndex();
+//                int buying_map_x = unit_to_buy.getPosition().x;
+//                int buying_map_y = unit_to_buy.getPosition().y;
+//                getManager().getOperationExecutor().submitOperation(
+//                        Operation.BUY, unit_index, buying_map_x, buying_map_y);
+//                Unit bought_unit = createBoughtUnit(unit_index, buying_map_x, buying_map_y);
+//                doUnitAction(bought_unit);
+//            } else {
+//                Unit next_unit = getNextUnit(team);
+//                if (next_unit == null) {
+//                    getManager().getOperationExecutor().submitOperation(Operation.NEXT_TURN);
+//                    getRoutines().clear();
+//                } else {
+//                    doUnitAction(next_unit);
+//                }
+//            }
+//        }
     }
 
     private void calculateBattleData() {
@@ -268,29 +267,29 @@ public class Robot {
     }
 
     private void doUnitAction(Unit unit) {
-        Position target_position = calculateTargetPosition(unit);
-        if (target_position == null) {
-            doFight(unit);
-        } else {
-            Position next_position = getManager().getMovementGenerator().getNextPositionToTarget(unit, target_position);
-            if (getGame().getEnemyAroundCount(next_position.x, next_position.y, unit.getTeam(), 4) > 2) {
-                doFight(unit);
-            } else {
-                getManager().getOperationExecutor().submitOperation(Operation.SELECT, unit.getX(), unit.getY());
-                getManager().getOperationExecutor().submitOperation(Operation.MOVE, next_position.x, next_position.y);
-                if (canOccupy(unit, next_position.x, next_position.y)) {
-                    getManager().getOperationExecutor().submitOperation(Operation.OCCUPY);
-                    getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-                } else {
-                    if (canRepair(unit, next_position.x, next_position.y)) {
-                        getManager().getOperationExecutor().submitOperation(Operation.REPAIR);
-                        getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-                    } else {
-                        getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-                    }
-                }
-            }
-        }
+//        Position target_position = calculateTargetPosition(unit);
+//        if (target_position == null) {
+//            doFight(unit);
+//        } else {
+//            Position next_position = getManager().getPositionGenerator().getNextPositionToTarget(unit, target_position);
+//            if (getGame().getEnemyAroundCount(next_position.x, next_position.y, unit.getTeam(), 4) > 2) {
+//                doFight(unit);
+//            } else {
+//                getManager().getOperationExecutor().submitOperation(Operation.SELECT, unit.getX(), unit.getY());
+//                getManager().getOperationExecutor().submitOperation(Operation.MOVE, next_position.x, next_position.y);
+//                if (canOccupy(unit, next_position.x, next_position.y)) {
+//                    getManager().getOperationExecutor().submitOperation(Operation.OCCUPY);
+//                    getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
+//                } else {
+//                    if (canRepair(unit, next_position.x, next_position.y)) {
+//                        getManager().getOperationExecutor().submitOperation(Operation.REPAIR);
+//                        getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
+//                    } else {
+//                        getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
+//                    }
+//                }
+//            }
+//        }
     }
 
     private boolean canOccupy(Unit unit, int map_x, int map_y) {
@@ -309,15 +308,15 @@ public class Robot {
     }
 
     private void doFight(Unit unit) {
-        ObjectSet<Position> movable_positions = getManager().getMovementGenerator().createMovablePositions(unit);
-        for (Position position : movable_positions) {
-            if (UnitToolkit.getRange(unit.getX(), unit.getY(), position.x, position.y) >= 0) {
-                getManager().getOperationExecutor().submitOperation(Operation.SELECT, unit.getX(), unit.getY());
-                getManager().getOperationExecutor().submitOperation(Operation.MOVE, position.x, position.y);
-                getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-                break;
-            }
-        }
+//        ObjectSet<Position> movable_positions = getManager().getPositionGenerator().createMovablePositions(unit);
+//        for (Position position : movable_positions) {
+//            if (UnitToolkit.getRange(unit.getX(), unit.getY(), position.x, position.y) >= 0) {
+//                getManager().getOperationExecutor().submitOperation(Operation.SELECT, unit.getX(), unit.getY());
+//                getManager().getOperationExecutor().submitOperation(Operation.MOVE, position.x, position.y);
+//                getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
+//                break;
+//            }
+//        }
     }
 
     private Position calculateTargetPosition(Unit unit) {
@@ -334,7 +333,7 @@ public class Robot {
                     Tile tile = getGame().getMap().getTile(x, y);
                     Position position = getGame().getMap().getPosition(x, y);
                     if (tile.isRepairable() && !hasRoutine(position)) {
-                        int distance = getManager().getMovementGenerator().getMovementPointsToTarget(unit, position);
+                        int distance = getManager().getPositionGenerator().getMovementPointsToTarget(unit, position);
                         if (distance >= 0 && distance < nearest_ruin_distance) {
                             nearest_ruin_distance = distance;
                             nearest_ruin_position = position;
@@ -361,7 +360,7 @@ public class Robot {
                     Position position = getGame().getMap().getPosition(x, y);
                     if (tile.isVillage() && getGame().getMap().getUnit(x, y) == null
                             && !getGame().isAlly(tile.getTeam(), team)) {
-                        int distance = getManager().getMovementGenerator().getMovementPointsToTarget(unit, position);
+                        int distance = getManager().getPositionGenerator().getMovementPointsToTarget(unit, position);
                         if (distance <= unit.getCurrentMovementPoint()) {
                             nearest_village_distance = distance;
                             nearest_village_position = position;
@@ -456,7 +455,7 @@ public class Robot {
     }
 
     private boolean hasRuinWithinReach(Unit unit) {
-        for (Position position : getManager().getMovementGenerator().createMovablePositions(unit)) {
+        for (Position position : getManager().getPositionGenerator().createMovablePositions(unit)) {
             Tile tile = getGame().getMap().getTile(position.x, position.y);
             if (tile.isRepairable() && getGame().getMap().getUnit(position) == null) {
                 return true;
@@ -466,7 +465,7 @@ public class Robot {
     }
 
     private boolean hasVillageWithinReach(Unit unit) {
-        for (Position position : getManager().getMovementGenerator().createMovablePositions(unit)) {
+        for (Position position : getManager().getPositionGenerator().createMovablePositions(unit)) {
             Tile tile = getGame().getMap().getTile(position.x, position.y);
             if (tile.isVillage() && tile.getTeam() != team && getGame().getMap().getUnit(position) == null) {
                 return true;

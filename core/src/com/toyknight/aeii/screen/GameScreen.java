@@ -17,7 +17,6 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.network.NetworkManager;
-import com.toyknight.aeii.network.task.GameEventSendingTask;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.record.GameRecorder;
@@ -97,7 +96,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
         this.cursor = new CursorAnimator();
         this.attack_cursor = new AttackCursorAnimator();
 
-        this.manager = new GameManager(new AnimationManager());
+        this.manager = new GameManager(getContext(), new AnimationManager());
         this.record_player = new GameRecordPlayer(this);
         initComponents();
     }
@@ -426,7 +425,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     private void initialize(GameCore game) {
         scale = 1.0f;
         manager.setGame(game);
-        manager.setGameManagerListener(this);
+        manager.setListener(this);
         Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
         locateViewport(team_focus.x, team_focus.y);
         cursor_map_x = team_focus.x;
@@ -586,19 +585,19 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
 
     private void onClick(int screen_x, int screen_y) {
         if (0 <= screen_x && screen_x <= viewport.width && 0 <= screen_y && screen_y <= viewport.height) {
-            int release_map_x = createCursorMapX(screen_x);
-            int release_map_y = createCursorMapY(screen_y);
-            if (press_map_x == release_map_x && press_map_y == release_map_y && drag_distance_x < ts && drag_distance_y < ts) {
+            int target_x = createCursorMapX(screen_x);
+            int target_y = createCursorMapY(screen_y);
+            Position target = getGame().getMap().getPosition(target_x, target_y);
+            if (press_map_x == target_x && press_map_y == target_y && drag_distance_x < ts && drag_distance_y < ts) {
                 switch (getManager().getState()) {
                     case GameManager.STATE_MOVE:
                     case GameManager.STATE_REMOVE:
-                        Position target = getGame().getMap().getPosition(release_map_x, release_map_y);
                         if (getManager().getMovablePositions().contains(target)) {
-                            if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
-                                doClick(release_map_x, release_map_y);
+                            if (target_x == cursor_map_x && target_y == cursor_map_y) {
+                                doClick(target_x, target_y);
                             } else {
-                                cursor_map_x = release_map_x;
-                                cursor_map_y = release_map_y;
+                                cursor_map_x = target_x;
+                                cursor_map_y = target_y;
                             }
                         } else {
                             if (getManager().getState() == GameManager.STATE_MOVE
@@ -610,12 +609,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                     case GameManager.STATE_ATTACK:
                     case GameManager.STATE_SUMMON:
                     case GameManager.STATE_HEAL:
-                        if (getManager().getAttackablePositions().contains(new Position(release_map_x, release_map_y))) {
-                            if (release_map_x == cursor_map_x && release_map_y == cursor_map_y) {
-                                doClick(release_map_x, release_map_y);
+                        if (getManager().getAttackablePositions().contains(target)) {
+                            if (target_x == cursor_map_x && target_y == cursor_map_y) {
+                                doClick(target_x, target_y);
                             } else {
-                                cursor_map_x = release_map_x;
-                                cursor_map_y = release_map_y;
+                                cursor_map_x = target_x;
+                                cursor_map_y = target_y;
                             }
                         } else {
                             getManager().cancelActionPhase();
@@ -623,12 +622,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                         break;
                     case GameManager.STATE_BUY:
                     case GameManager.STATE_ACTION:
-                        doClick(release_map_x, release_map_y);
+                        doClick(target_x, target_y);
                         break;
                     default:
-                        cursor_map_x = release_map_x;
-                        cursor_map_y = release_map_y;
-                        doClick(release_map_x, release_map_y);
+                        cursor_map_x = target_x;
+                        cursor_map_y = target_y;
+                        doClick(target_x, target_y);
                 }
             }
         }
@@ -707,7 +706,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
                 showDialog("store");
             }
         } else {
-            if (getGame().isUnitAvailable(target_unit)) {
+            if (getGame().isUnitAccessible(target_unit)) {
                 if (getGame().isCastleAccessible(getGame().getMap().getTile(map_x, map_y))
                         && target_unit.isCommander() && target_unit.getTeam() == getGame().getCurrentTeam()) {
                     getManager().doSelect(map_x, map_y);
@@ -727,30 +726,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameManagerLis
     }
 
     @Override
-    public void onGameEventSubmitted(JSONObject event) {
-        if (NetworkManager.isConnected()) {
-            getContext().submitAsyncTask(new GameEventSendingTask(event) {
-                @Override
-                public void onFinish(Void result) {
-                }
-
-                @Override
-                public void onFail(String message) {
-                }
-            });
-        }
-    }
-
-    @Override
     public void onMapFocusRequired(int map_x, int map_y) {
         cursor_map_x = map_x;
         cursor_map_y = map_y;
         //locateViewport(map_x, map_y);
-    }
-
-    @Override
-    public void onManagerStateChanged() {
-        onScreenUpdateRequested();
     }
 
     @Override
