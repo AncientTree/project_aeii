@@ -1,5 +1,6 @@
 package com.toyknight.aeii.screen.widgets;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -77,7 +78,7 @@ public class StringList<T> extends Widget {
         return selection.first();
     }
 
-    public void setItems(Array<T> items) {
+    public void setItems(Array<? extends T> items) {
         if (items == null) throw new IllegalArgumentException("list items cannot be null.");
         this.items.clear();
         this.items.addAll(items);
@@ -120,10 +121,19 @@ public class StringList<T> extends Widget {
                 batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
             FontRenderer.setTextColor(Color.WHITE);
-            FontRenderer.drawText(batch, item.toString(), x + text_offset, y + itemY - item_height + text_offset + FontRenderer.getTextFont().getCapHeight());
+            FontRenderer.drawText(batch, toString(item),
+                    x + text_offset, y + itemY - item_height + text_offset + FontRenderer.getTextFont().getCapHeight());
             itemY -= item_height;
         }
         super.draw(batch, parentAlpha);
+    }
+
+    private String toString(T item) {
+        if (item instanceof FileHandle) {
+            return ((FileHandle) item).name();
+        } else {
+            return item.toString();
+        }
     }
 
     public interface SelectionListener {

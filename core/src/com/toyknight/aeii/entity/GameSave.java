@@ -9,9 +9,9 @@ import org.json.JSONObject;
  */
 public class GameSave implements Serializable {
 
-    public final int type;
+    private final int type;
 
-    public final GameCore game;
+    private final GameCore game;
 
     public GameSave(JSONObject json) throws JSONException {
         this(new GameCore(json.getJSONObject("game")), json.getInt("type"));

@@ -35,9 +35,6 @@ import com.toyknight.aeii.utils.MapFactory;
  */
 public class LobbyScreen extends StageScreen implements NetworkListener {
 
-    public static final int NEW_GAME = 0x1;
-    public static final int LOAD_GAME = 0x2;
-
     private StringList<RoomSnapshot> room_list;
 
     private RoomCreateDialog room_create_dialog;
@@ -123,7 +120,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         map_preview_dialog.addClickListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                showDialog("create");
+                closeDialog("preview");
             }
         });
         addDialog("preview", map_preview_dialog);
@@ -175,9 +172,6 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                     getContext().showMessage(Language.getText("MSG_ERR_AEA"), null);
                 } else {
                     room_list.setItems(result);
-                    if (result.size > 0) {
-                        room_list.setSelectedIndex(0);
-                    }
                     Gdx.input.setInputProcessor(LobbyScreen.this);
                 }
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
@@ -275,8 +269,9 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             this.btn_new_game.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    room_create_dialog.setMode(NEW_GAME);
+                    room_create_dialog.setMode(RoomCreateDialog.NEW_GAME);
                     showDialog("create");
+                    closeDialog("mode");
                 }
             });
             this.addActor(btn_new_game);
@@ -286,8 +281,9 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             this.btn_load_game.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    room_create_dialog.setMode(LOAD_GAME);
+                    room_create_dialog.setMode(RoomCreateDialog.LOAD_GAME);
                     showDialog("create");
+                    closeDialog("mode");
                 }
             });
             this.addActor(btn_load_game);

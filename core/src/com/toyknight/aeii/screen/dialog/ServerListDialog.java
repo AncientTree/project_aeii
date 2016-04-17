@@ -117,12 +117,7 @@ public class ServerListDialog extends BasicDialog {
                 public void onFail(String message) {
                     setEnabled(true);
                     btn_connect.setText(Language.getText("LB_CONNECT"));
-                    getContext().showMessage(Language.getText("MSG_ERR_CCS"), new Callable() {
-                        @Override
-                        public void call() {
-                            Gdx.input.setInputProcessor(getOwner().getDialogLayer());
-                        }
-                    });
+                    getContext().showMessage(Language.getText("MSG_ERR_CCS"), null);
                 }
             });
         }

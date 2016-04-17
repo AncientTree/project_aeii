@@ -116,7 +116,7 @@ public class GameLoadDialog extends BasicDialog {
             getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
         } else {
             GameRecorder.setRecord(false);
-            GameCore game = game_save.game;
+            GameCore game = game_save.getGame();
             for (int team = 0; team < 4; team++) {
                 Player player = game.getPlayer(team);
                 if (player != null && player.getType() == Player.REMOTE) {

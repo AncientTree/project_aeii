@@ -196,7 +196,7 @@ public class GameContext extends Game implements TaskService {
 
     public void gotoGameScreen(GameSave save) {
         //AudioManager.stopCurrentBGM();
-        game_screen.prepare(save.game);
+        game_screen.prepare(save.getGame());
         gotoScreen(game_screen);
     }
 

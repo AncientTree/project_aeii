@@ -24,15 +24,13 @@ import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.MapFactory;
 
-import java.io.File;
-import java.io.FileFilter;
-
 /**
  * @author toyknight 8/31/2015.
  */
 public class RoomCreateDialog extends BasicDialog {
 
-    private final SaveFileFilter filter = new SaveFileFilter();
+    public static final int NEW_GAME = 0x1;
+    public static final int LOAD_GAME = 0x2;
 
     private final Integer[] gold_preset = new Integer[]{200, 250, 300, 450, 500, 550, 700, 850, 1000, 1500, 2000};
 
@@ -152,22 +150,16 @@ public class RoomCreateDialog extends BasicDialog {
 
     private void preview() {
         if (object_list.getSelected() != null) {
-            if (mode == LobbyScreen.NEW_GAME) {
+            if (mode == NEW_GAME) {
                 getOwner().showMapPreview((MapFactory.MapSnapshot) object_list.getSelected());
             }
-            if (mode == LobbyScreen.LOAD_GAME) {
-                String filename = (String) object_list.getSelected();
-                FileHandle save_file = FileProvider.getSaveFile(filename);
+            if (mode == LOAD_GAME) {
+                FileHandle save_file = (FileHandle) object_list.getSelected();
                 GameSave save = GameToolkit.loadGame(save_file);
                 if (save == null) {
-                    getContext().showMessage(Language.getText("MSG_ERR_BSF"), new Callable() {
-                        @Override
-                        public void call() {
-                            Gdx.input.setInputProcessor(getOwner().getDialogLayer());
-                        }
-                    });
+                    getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
                 } else {
-                    getOwner().showMapPreview(save.game.getMap());
+                    getOwner().showMapPreview(save.getGame().getMap());
                 }
             }
         }
@@ -206,22 +198,21 @@ public class RoomCreateDialog extends BasicDialog {
 
     private boolean tryCreateRoom() throws AEIIException {
         switch (getMode()) {
-            case LobbyScreen.NEW_GAME:
+            case NEW_GAME:
                 String map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
                 Map map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
                 int capacity = spinner_capacity.getSelectedItem();
                 int gold = spinner_gold.getSelectedItem();
                 int population = spinner_population.getSelectedItem();
                 return NetworkManager.requestCreateRoom(map_name, map, capacity, gold, population);
-            case LobbyScreen.LOAD_GAME:
-                String filename = (String) object_list.getSelected();
-                FileHandle save_file = FileProvider.getSaveFile(filename);
+            case LOAD_GAME:
+                FileHandle save_file = (FileHandle) object_list.getSelected();
                 GameSave game_save = GameToolkit.loadGame(save_file);
                 if (game_save == null) {
                     return false;
                 } else {
                     capacity = spinner_capacity.getSelectedItem();
-                    return NetworkManager.requestCreateRoom(filename, game_save.game, capacity);
+                    return NetworkManager.requestCreateRoom(save_file.name(), game_save.getGame(), capacity);
                 }
             default:
                 return false;
@@ -231,47 +222,33 @@ public class RoomCreateDialog extends BasicDialog {
     @Override
     public void display() {
         object_list.clearItems();
-        if (mode == LobbyScreen.NEW_GAME) {
-            lb_initial_gold.setVisible(true);
-            spinner_gold.setVisible(true);
-            lb_max_population.setVisible(true);
-            spinner_population.setVisible(true);
-            updateMaps();
-        }
-        if (mode == LobbyScreen.LOAD_GAME) {
-            lb_initial_gold.setVisible(false);
-            spinner_gold.setVisible(false);
-            lb_max_population.setVisible(false);
-            spinner_population.setVisible(false);
-
-            FileHandle save_dir = FileProvider.getUserDir("save");
-            FileHandle[] save_files = save_dir.list(filter);
-            Array<Object> list = new Array<Object>();
-            for (FileHandle file : save_files) {
-                list.add(file.name());
-            }
-            object_list.setItems(list);
+        switch (mode) {
+            case NEW_GAME:
+                lb_initial_gold.setVisible(true);
+                spinner_gold.setVisible(true);
+                lb_max_population.setVisible(true);
+                spinner_population.setVisible(true);
+                updateMaps();
+                break;
+            case LOAD_GAME:
+                lb_initial_gold.setVisible(false);
+                spinner_gold.setVisible(false);
+                lb_max_population.setVisible(false);
+                spinner_population.setVisible(false);
+                updateSaveFiles();
+            default:
+                //do nothing
         }
     }
 
     public void updateMaps() {
-        Array<Object> maps = new Array<Object>(MapFactory.getAllMapSnapshots());
+        Array<MapFactory.MapSnapshot> maps = MapFactory.getAllMapSnapshots();
         object_list.setItems(maps);
     }
 
-    private class SaveFileFilter implements FileFilter {
-
-        @Override
-        public boolean accept(File file) {
-            if (file.exists() && !file.isDirectory()) {
-                String filename = file.getName();
-                return filename.endsWith(".sav");
-            } else {
-                return false;
-            }
-
-        }
-
+    public void updateSaveFiles() {
+        Array<FileHandle> save_files = FileProvider.getSaveFiles();
+        object_list.setItems(save_files);
     }
 
 }

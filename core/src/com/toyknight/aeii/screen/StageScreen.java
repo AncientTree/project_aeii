@@ -12,6 +12,7 @@ import com.toyknight.aeii.utils.Language;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * @author toyknight 8/29/2015.
@@ -26,6 +27,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     private boolean dialog_shown;
     private final Stage dialog_stage;
     private final HashMap<String, BasicDialog> dialogs;
+    private final LinkedList<String> dialog_layer;
 
     public StageScreen(GameContext context) {
         this.context = context;
@@ -39,6 +41,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
             }
         };
         this.dialogs = new HashMap<String, BasicDialog>();
+        this.dialog_layer = new LinkedList<String>();
         this.dialog_shown = false;
     }
 
@@ -61,25 +64,36 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public void showDialog(String name) {
-        closeAllDialogs();
+        if (dialog_layer.size() > 0) {
+            dialogs.get(dialog_layer.peekFirst()).setVisible(false);
+        }
+
+        dialog_layer.addFirst(name);
         dialogs.get(name).setVisible(true);
         dialogs.get(name).display();
+
         Gdx.input.setInputProcessor(dialog_stage);
         dialog_shown = true;
     }
 
     public void closeAllDialogs() {
-        for (BasicDialog dialog : dialogs.values()) {
-            dialog.setVisible(false);
+        while (dialog_layer.size() > 0) {
+            String dialog_name = dialog_layer.peekFirst();
+            closeDialog(dialog_name);
         }
-        dialog_shown = false;
-        Gdx.input.setInputProcessor(this);
     }
 
     public void closeDialog(String name) {
+        dialog_layer.remove(name);
         dialogs.get(name).setVisible(false);
-        Gdx.input.setInputProcessor(this);
-        dialog_shown = false;
+
+        String top_dialog_name = dialog_layer.peekFirst();
+        if (top_dialog_name == null) {
+            Gdx.input.setInputProcessor(this);
+            dialog_shown = false;
+        } else {
+            dialogs.get(top_dialog_name).setVisible(true);
+        }
     }
 
     public boolean isDialogShown() {
@@ -88,10 +102,6 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public boolean dialogKeyDown(int keyCode) {
         return false;
-    }
-
-    public Stage getDialogLayer() {
-        return dialog_stage;
     }
 
     @Override
