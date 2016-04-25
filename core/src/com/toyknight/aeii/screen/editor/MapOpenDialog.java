@@ -73,12 +73,14 @@ public class MapOpenDialog extends BasicDialog {
 
     private void tryLoadMap() {
         MapFactory.MapSnapshot snapshot = map_list.getSelected();
-        try {
-            Map map = MapFactory.createMap(snapshot.file);
-            getEditor().setMap(map, snapshot.file.nameWithoutExtension());
-            getOwner().closeDialog("open");
-        } catch (AEIIException ex) {
-            getContext().showMessage(Language.getText("MSG_ERR_BMF"), null);
+        if (snapshot != null && snapshot.file.exists()) {
+            try {
+                Map map = MapFactory.createMap(snapshot.file);
+                getEditor().setMap(map, snapshot.file.nameWithoutExtension());
+                getOwner().closeDialog("open");
+            } catch (AEIIException ex) {
+                getContext().showMessage(Language.getText("MSG_ERR_BMF"), null);
+            }
         }
     }
 
