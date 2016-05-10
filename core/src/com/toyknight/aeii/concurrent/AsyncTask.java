@@ -9,8 +9,6 @@ public abstract class AsyncTask<T> implements Runnable {
 
     private static final String TAG = "Task";
 
-    private T result;
-
     private String message;
 
     abstract public T doTask() throws Exception;
@@ -22,7 +20,7 @@ public abstract class AsyncTask<T> implements Runnable {
     @Override
     public final void run() {
         try {
-            result = doTask();
+            final T result = doTask();
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {

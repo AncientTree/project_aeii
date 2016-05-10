@@ -26,7 +26,7 @@ public class AttackInformationRenderer {
     }
 
     private GameManager getManager() {
-        return screen.getManager();
+        return screen.getGameManager();
     }
 
     private UnitToolkit getUnitToolkit() {

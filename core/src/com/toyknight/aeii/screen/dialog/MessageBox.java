@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.network.CommandExecutor;
-import com.toyknight.aeii.network.task.MessageSendingTask;
+import com.toyknight.aeii.concurrent.MessageSendingTask;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.PlayerList;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;

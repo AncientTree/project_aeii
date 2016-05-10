@@ -419,6 +419,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         return unit_renderer;
     }
 
+    @Override
+    public void focus(int map_x, int map_y) {
+    }
+
     public void dragViewport(int delta_x, int delta_y) {
         viewport.x += delta_x;
         viewport.y += delta_y;

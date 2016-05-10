@@ -12,6 +12,8 @@ public interface MapCanvas {
 
     UnitRenderer getUnitRenderer();
 
+    void focus(int map_x, int map_y);
+
     boolean isWithinPaintArea(int sx, int sy);
 
     int getViewportWidth();

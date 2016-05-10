@@ -7,7 +7,7 @@ public interface GameManagerListener {
 
     void onMapFocusRequired(int map_x, int map_y);
 
-    void onScreenUpdateRequested();
+    void onGameManagerStateChanged();
 
     void onGameOver();
 

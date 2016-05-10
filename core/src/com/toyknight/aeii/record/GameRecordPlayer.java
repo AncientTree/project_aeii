@@ -1,10 +1,9 @@
 package com.toyknight.aeii.record;
 
 import com.badlogic.gdx.Gdx;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameEvent;
-import com.toyknight.aeii.screen.GameScreen;
-import com.toyknight.aeii.utils.Language;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,31 +14,42 @@ public class GameRecordPlayer {
 
     private static final String TAG = "Record Player";
 
-    private final GameScreen screen;
+    private final GameContext context;
+
+    private GameRecordPlayerListener listener;
 
     private GameRecord record;
     private float playback_delay;
     private boolean playback_finished;
 
-    public GameRecordPlayer(GameScreen screen) {
-        this.screen = screen;
+    public GameRecordPlayer(GameContext context) {
+        this.context = context;
     }
 
-    public GameScreen getScreen() {
-        return screen;
+    public GameContext getContext() {
+        return context;
     }
 
     public GameManager getManager() {
-        return getScreen().getManager();
+        return getContext().getGameManager();
     }
 
     public GameRecord getRecord() {
         return record;
     }
 
+    public void setListener(GameRecordPlayerListener listener) {
+        this.listener = listener;
+    }
+
     public void setRecord(GameRecord record) {
         this.record = record;
         playback_delay = 0f;
+        playback_finished = false;
+    }
+
+    public void reset() {
+        record = null;
     }
 
     public void update(float delta) {
@@ -48,7 +58,7 @@ public class GameRecordPlayer {
                 if (getRecord().getEvents().isEmpty()) {
                     if (!playback_finished) {
                         playback_finished = true;
-                        getScreen().appendMessage(null, Language.getText("MSG_INFO_RPF"));
+                        fireRecordFinishEvent();
                     }
                 } else {
                     JSONObject preview = getRecord().getEvents().peek();
@@ -69,6 +79,12 @@ public class GameRecordPlayer {
             }
         } catch (JSONException ex) {
             Gdx.app.log(TAG, ex.toString());
+        }
+    }
+
+    private void fireRecordFinishEvent() {
+        if (listener != null) {
+            listener.onRecordPlaybackFinished();
         }
     }
 

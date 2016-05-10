@@ -13,7 +13,6 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.network.NetworkManager;
-import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
@@ -380,7 +379,7 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void createGame() {
-        GameRecorder.setRecord(record_on);
+        getContext().getGameManager().getGameRecorder().setEnabled(record_on);
         for (int team = 0; team < 4; team++) {
             if (hasTeamAccess(team)) {
                 getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);

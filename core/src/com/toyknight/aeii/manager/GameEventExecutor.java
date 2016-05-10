@@ -2,12 +2,10 @@ package com.toyknight.aeii.manager;
 
 import static com.toyknight.aeii.entity.Rule.Entry.*;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
-import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -61,6 +59,7 @@ public class GameEventExecutor {
     public void submitGameEvent(int type, Object... params) {
         JSONObject event = GameEvent.create(type, params);
         submitGameEvent(event);
+
         getGameManager().onGameEventSubmitted(event);
     }
 
@@ -69,7 +68,11 @@ public class GameEventExecutor {
             getGameManager().onGameEventFinished();
         } else {
             if (event_queue.size() > 0) {
-                executeGameEvent(event_queue.poll());
+                try {
+                    executeGameEvent(event_queue.poll());
+                } catch (JSONException ex) {
+                    //TODO: Notify invalid event
+                }
                 if (event_queue.isEmpty()) {
                     getGameManager().onGameEventFinished();
                 }
@@ -77,15 +80,7 @@ public class GameEventExecutor {
         }
     }
 
-    public void executeGameEvent(JSONObject event) {
-        try {
-            executeGameEvent(event, true);
-        } catch (JSONException ex) {
-            Gdx.app.log(TAG, ex.toString());
-        }
-    }
-
-    public void executeGameEvent(JSONObject event, boolean record) throws JSONException {
+    public void executeGameEvent(JSONObject event) throws JSONException {
         switch (event.getInt("type")) {
             case GameEvent.ATTACK:
                 int attacker_x = event.getJSONArray("parameters").getInt(0);
@@ -179,9 +174,6 @@ public class GameEventExecutor {
                 break;
             default:
                 //do nothing
-        }
-        if (record) {
-            GameRecorder.submitGameEvent(event);
         }
     }
 

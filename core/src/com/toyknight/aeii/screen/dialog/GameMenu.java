@@ -9,7 +9,6 @@ import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.network.NetworkManager;
-import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.screen.GameScreen;
 import com.toyknight.aeii.utils.GameToolkit;
 import com.toyknight.aeii.utils.Language;
@@ -76,21 +75,6 @@ public class GameMenu extends BasicDialog {
         this.btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().submitAsyncTask(new AsyncTask<Void>() {
-                    @Override
-                    public Void doTask() {
-                        GameRecorder.saveRecord();
-                        return null;
-                    }
-
-                    @Override
-                    public void onFinish(Void result) {
-                    }
-
-                    @Override
-                    public void onFail(String message) {
-                    }
-                });
                 getContext().gotoStatisticsScreen(getOwner().getGame());
             }
         });
@@ -145,7 +129,7 @@ public class GameMenu extends BasicDialog {
 
     private boolean canSave() {
         return getOwner().getGame().getCurrentPlayer().isLocalPlayer()
-                && getOwner().getManager().getState() == GameManager.STATE_SELECT;
+                && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
     }
 
     private boolean canLoad() {

@@ -31,7 +31,7 @@ public class StatusBarRenderer {
     }
 
     private GameManager getManager() {
-        return screen.getManager();
+        return screen.getGameManager();
     }
 
     public void drawStatusBar(SpriteBatch batch) {

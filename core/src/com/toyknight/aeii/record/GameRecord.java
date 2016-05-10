@@ -64,6 +64,6 @@ public class GameRecord implements Serializable {
             events.put(temp_queue.poll());
         }
         json.put("events", events);
-        return null;
+        return json;
     }
 }

@@ -12,6 +12,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Unit;
 import com.toyknight.aeii.renderer.FontRenderer;
+import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.widgets.UnitListListener;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.screen.GameScreen;
@@ -32,8 +33,8 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
     private Unit selected_unit;
 
-    public UnitStoreDialog(GameScreen screen) {
-        super(screen);
+    public UnitStoreDialog(StageScreen owner) {
+        super(owner);
         int UNIT_STORE_WIDTH = 11 * ts;
         int UNIT_STORE_HEIGHT = ts + ts * 3 / 2 * 5;
         this.setBounds(
@@ -92,7 +93,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     }
 
     private GameManager getManager() {
-        return getOwner().getManager();
+        return getOwner().getContext().getGameManager();
     }
 
     @Override

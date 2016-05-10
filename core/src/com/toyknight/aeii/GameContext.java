@@ -12,11 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
+import com.toyknight.aeii.animation.AnimationManager;
 import com.toyknight.aeii.animation.Animator;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.concurrent.AsyncTask;
+import com.toyknight.aeii.manager.GameManager;
+import com.toyknight.aeii.manager.GameManagerListener;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.record.GameRecord;
+import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
@@ -30,7 +34,7 @@ import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GameContext extends Game implements TaskService {
+public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
@@ -47,6 +51,10 @@ public class GameContext extends Game implements TaskService {
     private Skin skin;
 
     private ObjectMap<String, String> configuration;
+
+    private GameManager game_manager;
+
+    private GameRecordPlayer record_player;
 
     private Screen previous_screen;
 
@@ -101,6 +109,12 @@ public class GameContext extends Game implements TaskService {
             game_screen = new GameScreen(this);
             statistics_screen = new StatisticsScreen(this);
             createDialogLayer();
+
+            game_manager = new GameManager(this, new AnimationManager());
+            game_manager.setListener(this);
+
+            record_player = new GameRecordPlayer(this);
+            record_player.setListener(game_screen);
 
             script_engine = new JavaScriptEngine();
 
@@ -163,17 +177,41 @@ public class GameContext extends Game implements TaskService {
         return configuration;
     }
 
+    public JavaScriptEngine getScriptEngine() {
+        return script_engine;
+    }
+
+    public String getUsername() {
+        return getConfiguration().get("username", "nobody");
+    }
+
+    public String getVersion() {
+        return VERSION;
+    }
+
+    public String getVerificationString() {
+        String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + VERSION;
+        return new Encryptor().encryptString(V_STRING);
+    }
+
     public Skin getSkin() {
         return skin;
     }
 
-    public boolean isDialogShown() {
-        return dialog.isVisible();
+    public GameManager getGameManager() {
+        return game_manager;
     }
 
-    @Override
-    public void submitAsyncTask(AsyncTask task) {
-        executor.submit(task);
+    public GameRecordPlayer getRecordPlayer() {
+        return record_player;
+    }
+
+    public GameCore getGame() {
+        return getGameManager().getGame();
+    }
+
+    public boolean isDialogShown() {
+        return dialog.isVisible();
     }
 
     public void gotoMainMenuScreen() {
@@ -190,19 +228,20 @@ public class GameContext extends Game implements TaskService {
         if (!game.initialized()) {
             game.initialize();
         }
-        game_screen.prepare(game);
+        getGameManager().setGame(game);
         gotoScreen(game_screen);
     }
 
     public void gotoGameScreen(GameSave save) {
         //AudioManager.stopCurrentBGM();
-        game_screen.prepare(save.getGame());
+        getGameManager().setGame(save.getGame());
         gotoScreen(game_screen);
     }
 
     public void gotoGameScreen(GameRecord record) {
         //AudioManager.stopCurrentBGM();
-        game_screen.prepare(record);
+        getGameManager().setGame(record.getGame());
+        getRecordPlayer().setRecord(record);
         gotoScreen(game_screen);
     }
 
@@ -215,6 +254,8 @@ public class GameContext extends Game implements TaskService {
     }
 
     public void gotoStatisticsScreen(GameCore game) {
+        getRecordPlayer().reset();
+        getGameManager().getGameRecorder().save();
         statistics_screen.setGame(game);
         gotoScreen(statistics_screen);
     }
@@ -274,21 +315,23 @@ public class GameContext extends Game implements TaskService {
         }
     }
 
-    public JavaScriptEngine getScriptEngine() {
-        return script_engine;
+    public void submitAsyncTask(AsyncTask task) {
+        executor.submit(task);
     }
 
-    public String getUsername() {
-        return getConfiguration().get("username", "nobody");
+    @Override
+    public void onMapFocusRequired(int map_x, int map_y) {
+        game_screen.focus(map_x, map_y);
     }
 
-    public String getVersion() {
-        return VERSION;
+    @Override
+    public void onGameManagerStateChanged() {
+        game_screen.update();
     }
 
-    public String getVerificationString() {
-        String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + VERSION;
-        return new Encryptor().encryptString(V_STRING);
+    @Override
+    public void onGameOver() {
+        gotoStatisticsScreen(getGame());
     }
 
     @Override
@@ -316,6 +359,5 @@ public class GameContext extends Game implements TaskService {
             button.setTouchable(Touchable.disabled);
         }
     }
-
 
 }

@@ -2,12 +2,13 @@ package com.toyknight.aeii.manager;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.TaskService;
+import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.animation.*;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.network.server.EmptyAnimationManager;
-import com.toyknight.aeii.network.task.GameEventSendingTask;
+import com.toyknight.aeii.concurrent.GameEventSendingTask;
+import com.toyknight.aeii.record.GameRecorder;
 import com.toyknight.aeii.robot.Robot;
 import com.toyknight.aeii.utils.UnitFactory;
 import com.toyknight.aeii.utils.UnitToolkit;
@@ -28,15 +29,15 @@ public class GameManager implements GameEventListener, AnimationListener {
     public static final int STATE_PREVIEW = 0x8;
     public static final int STATE_BUY = 0x9;
 
-    private final TaskService task_service;
+    private final GameContext context;
+    private final GameRecorder game_recorder;
     private final GameEventExecutor event_executor;
+    private final OperationExecutor operation_executor;
     private final AnimationDispatcher animation_dispatcher;
 
     private final PositionGenerator position_generator;
 
     private final Robot[] robots;
-
-    private final OperationExecutor operation_executor;
 
     private GameCore game;
     private UnitToolkit unit_toolkit;
@@ -54,10 +55,11 @@ public class GameManager implements GameEventListener, AnimationListener {
         this(null, new EmptyAnimationManager());
     }
 
-    public GameManager(TaskService task_service, AnimationDispatcher dispatcher) {
-        this.task_service = task_service;
+    public GameManager(GameContext context, AnimationDispatcher dispatcher) {
+        this.context = context;
         this.animation_dispatcher = dispatcher;
         this.animation_dispatcher.setListener(this);
+        this.game_recorder = new GameRecorder(context);
         this.position_generator = new PositionGenerator(this);
         this.operation_executor = new OperationExecutor(this);
         this.event_executor = new GameEventExecutor(this);
@@ -80,6 +82,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         getOperationExecutor().reset();
         getAnimationDispatcher().reset();
         getPositionGenerator().reset();
+        getGameRecorder().prepare(getGame());
         for (int team = 0; team < 4; team++) {
             getRobot(team).initialize();
         }
@@ -89,8 +92,12 @@ public class GameManager implements GameEventListener, AnimationListener {
         return game;
     }
 
-    public TaskService getTaskService() {
-        return task_service;
+    public GameContext getContext() {
+        return context;
+    }
+
+    public GameRecorder getGameRecorder() {
+        return game_recorder;
     }
 
     public OperationExecutor getOperationExecutor() {
@@ -128,7 +135,7 @@ public class GameManager implements GameEventListener, AnimationListener {
     public void setState(int state) {
         if (state != this.state) {
             this.state = state;
-            fireScreenUpdateEvent();
+            fireStateChangeEvent();
             getPositionGenerator().reset();
         }
     }
@@ -158,8 +165,9 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     @Override
     public void onGameEventSubmitted(JSONObject event) {
-        if (getTaskService() != null && NetworkManager.isConnected()) {
-            getTaskService().submitAsyncTask(new GameEventSendingTask(event) {
+        getGameRecorder().submit(event);
+        if (getContext() != null && NetworkManager.isConnected()) {
+            getContext().submitAsyncTask(new GameEventSendingTask(event) {
                 @Override
                 public void onFinish(Void result) {
                 }
@@ -182,7 +190,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         if (getGame().isGameOver()) {
             fireGameOverEvent();
         } else {
-            fireScreenUpdateEvent();
+            fireStateChangeEvent();
         }
     }
 
@@ -192,9 +200,9 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    private void fireScreenUpdateEvent() {
+    private void fireStateChangeEvent() {
         if (getListener() != null) {
-            getListener().onScreenUpdateRequested();
+            getListener().onGameManagerStateChanged();
         }
     }
 
