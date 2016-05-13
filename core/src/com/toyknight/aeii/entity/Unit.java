@@ -312,6 +312,9 @@ public class Unit implements Serializable, Verifiable {
                 break;
             }
         }
+        if (level > 3) {
+            level = 3;
+        }
     }
 
     public int getCurrentExperience() {
