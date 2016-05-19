@@ -143,13 +143,23 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
             FontRenderer.drawLNumber(batch,
                     price,
                     x + ts * 10 + ts / 2 - lw * 4,
-                    y + height - (ts / 2 + (interval - lh) / 2 + lh));
+                    y + height - (ts / 2 + (interval - lh) / 2 + lh) + ts / 24);
         } else {
             batch.draw(FontRenderer.getLMinus(),
                     x + ts * 10 + ts / 2 - lw * 2 - lw / 2,
-                    y + height - (ts / 2 + (interval - lh) / 2 + lh),
+                    y + height - (ts / 2 + (interval - lh) / 2 + lh + ts / 24),
                     lw, lh);
         }
+        //occupancy
+        batch.draw(ResourceManager.getStatusHudIcon(0),
+                x + ts * 10 + ts / 2 - lw * 7 - 11 * ts / 24,
+                y + height - ts / 2 - lh,
+                11 * ts / 24,
+                11 * ts / 24);
+        FontRenderer.drawLNumber(batch,
+                selected_unit.getOccupancy(),
+                x + ts * 10 + ts / 2 - lw * 7,
+                y + height - (ts / 2 + (interval - lh) / 2 + lh) + ts / 24);
         //split line
         batch.draw(ResourceManager.getWhiteColor(),
                 x + ts * 6,

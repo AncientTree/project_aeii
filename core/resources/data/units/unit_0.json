@@ -1,5 +1,6 @@
 {
 "price": 150,
+"occupancy":1,
 "max_hp": 100,
 "attack": 50,
 "attack_type": 0,

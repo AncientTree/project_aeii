@@ -19,6 +19,7 @@ public class Unit implements Serializable, Verifiable {
     private final int index;
 
     private int price;
+    private int occupancy;
 
     private int level;
     private int experience = 0;
@@ -52,16 +53,12 @@ public class Unit implements Serializable, Verifiable {
 
     private boolean is_standby;
 
-    public Unit(int index, String unit_code) {
+    private Unit(int index, String unit_code) {
         this.level = 0;
         this.index = index;
         this.abilities = new Array<Integer>();
         this.unit_code = unit_code;
         this.is_standby = false;
-    }
-
-    public Unit(int index) {
-        this(index, "#");
     }
 
     public Unit(Unit unit) {
@@ -74,6 +71,7 @@ public class Unit implements Serializable, Verifiable {
         this.level = unit.getLevel();
         this.experience = unit.getTotalExperience();
         this.price = unit.getPrice();
+        this.occupancy = unit.getOccupancy();
         this.team = unit.getTeam();
         this.max_hp = unit.getMaxHp();
         this.current_hp = unit.getCurrentHp();
@@ -97,8 +95,9 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public Unit(UnitDefinition definition, int index) {
-        this(index);
+        this(index, "#");
         this.price = definition.price;
+        this.occupancy = definition.occupancy;
         this.max_hp = definition.max_hp;
         this.attack = definition.attack;
         this.attack_type = definition.attack_type;
@@ -133,6 +132,14 @@ public class Unit implements Serializable, Verifiable {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getOccupancy() {
+        return occupancy;
+    }
+
+    public void setOccupancy(int occupancy) {
+        this.occupancy = occupancy;
     }
 
     public int getLevel() {
@@ -422,6 +429,8 @@ public class Unit implements Serializable, Verifiable {
     public static class UnitDefinition {
 
         public int price;
+
+        public int occupancy;
 
         public int max_hp;
 

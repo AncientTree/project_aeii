@@ -197,9 +197,10 @@ public class GameCore implements Serializable {
         return getPlayer(team).getPopulation();
     }
 
-    public boolean hasReachedPopulationCapacity(int team) {
+    public boolean canAddPopulation(int team, int population) {
         Player player = getPlayer(team);
-        return player.getType() != Player.NONE && player.getPopulation() >= getRule().getInteger(MAX_POPULATION);
+        return player.getType() != Player.NONE
+                && player.getPopulation() + population <= getRule().getInteger(MAX_POPULATION);
     }
 
     public void destroyTeam(int team) {

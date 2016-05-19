@@ -354,18 +354,18 @@ public class Map implements Serializable {
     }
 
     public int getPopulation(int team) {
-        return getUnitCount(team, false);
+        return getPopulation(team, false);
     }
 
-    public int getUnitCount(int team, boolean count_skeleton) {
+    public int getPopulation(int team, boolean count_skeleton) {
+        int population = 0;
         ObjectMap.Values<Unit> units = getUnits();
-        int count = 0;
         for (Unit unit : units) {
             if (unit != null && unit.getTeam() == team) {
                 if (unit.isSkeleton()) {
-                    count += count_skeleton ? 1 : 0;
+                    population += count_skeleton ? unit.getOccupancy() : 0;
                 } else {
-                    count++;
+                    population += unit.getOccupancy();
                 }
             }
         }
@@ -373,14 +373,14 @@ public class Map implements Serializable {
             for (Unit unit : unit_row) {
                 if (unit != null && unit.getTeam() == team) {
                     if (unit.isSkeleton()) {
-                        count += count_skeleton ? 1 : 0;
+                        population += count_skeleton ? unit.getOccupancy() : 0;
                     } else {
-                        count++;
+                        population += unit.getOccupancy();
                     }
                 }
             }
         }
-        return count;
+        return population;
     }
 
     public boolean canMove(int x, int y) {

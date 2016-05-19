@@ -478,7 +478,7 @@ public class GameManager implements GameEventListener, AnimationListener {
                 return price >= 0
                         && getGame().getCurrentPlayer().getGold() >= price
                         && getPositionGenerator().createMovablePositions(sample).size > 0
-                        && (!getGame().hasReachedPopulationCapacity(team) || sample.isCommander());
+                        && (getGame().canAddPopulation(team, sample.getOccupancy()) || sample.isCommander());
             } else {
                 return false;
             }
