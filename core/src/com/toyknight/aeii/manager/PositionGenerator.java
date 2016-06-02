@@ -176,7 +176,7 @@ public class PositionGenerator {
             }
             return move_path.get(0);
         } else {
-            return getGame().getMap().getPosition(target_x, target_y);
+            return getGame().getMap().getPosition(unit);
         }
     }
 

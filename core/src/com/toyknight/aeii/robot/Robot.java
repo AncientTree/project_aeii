@@ -212,6 +212,7 @@ public class Robot {
     private void calculateMoveAndAction() {
         Position cp;
         Position vp;
+        Position rp;
         Unit selected_unit = getManager().getSelectedUnit();
         ObjectSet<Unit> allies = getAlliesWithinReach(selected_unit);
         ObjectSet<Unit> enemies = getEnemiesWithinReach(selected_unit);
@@ -227,12 +228,15 @@ public class Robot {
             Unit ally = getPreferredHealTarget(selected_unit, allies);
             Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
             submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
-        } else if (selected_unit.hasAbility(Ability.CONQUEROR)
-                && (vp = getNearestEnemyVillagePositionWithinReach(selected_unit, movable_positions)) != null) {
-            submitAction(vp, vp, Operation.OCCUPY);
         } else if (selected_unit.hasAbility(Ability.COMMANDER)
                 && (cp = getNearestEnemyCastlePositionWithinReach(selected_unit, movable_positions)) != null) {
             submitAction(cp, cp, Operation.OCCUPY);
+        } else if (selected_unit.hasAbility(Ability.CONQUEROR)
+                && (vp = getNearestEnemyVillagePositionWithinReach(selected_unit, movable_positions)) != null) {
+            submitAction(vp, vp, Operation.OCCUPY);
+        } else if (selected_unit.hasAbility(Ability.REPAIRER)
+                && (rp = getNearestRuinPositionWithinReach(selected_unit, movable_positions)) != null) {
+            submitAction(rp, rp, Operation.REPAIR);
         } else {
             Unit target_enemy;
             if (enemies.size > 0 && (target_enemy = getPreferredAttackTarget(selected_unit, enemies)) != null) {
@@ -434,6 +438,9 @@ public class Robot {
         switch (action_type) {
             case Operation.OCCUPY:
                 getManager().doOccupy();
+                break;
+            case Operation.REPAIR:
+                getManager().doRepair();
                 break;
             case Operation.ATTACK:
                 getManager().doAttack(action_target.x, action_target.y);
@@ -697,11 +704,28 @@ public class Robot {
         return nearest_position;
     }
 
+    private Position getNearestRuinPositionWithinReach(Unit unit, ObjectSet<Position> movable_positions) {
+        Position nearest_position = null;
+        int min_distance = Integer.MAX_VALUE;
+        for (Position position : movable_positions) {
+            Tile tile = getGame().getMap().getTile(position);
+            Position unit_position = getGame().getMap().getPosition(unit);
+            if (tile.isRepairable() && getDistance(unit_position, position) < min_distance) {
+                nearest_position = position;
+                min_distance = getDistance(unit_position, position);
+            }
+        }
+        return nearest_position;
+    }
+
     private ObjectSet<Position> getTombPositionsWithinReach(Unit unit) {
+        ObjectSet<Tomb> all_tombs = new ObjectSet<Tomb>(getGame().getMap().getTombs());
+        ObjectSet<Position> reachable_positions = getManager().getPositionGenerator().createPositionsWithinReach(unit);
         ObjectSet<Position> tomb_positions = new ObjectSet<Position>();
-        for (Position position : getManager().getPositionGenerator().createPositionsWithinReach(unit)) {
-            if (getGame().getMap().isTomb(position)) {
-                tomb_positions.add(position);
+        for (Tomb tomb : all_tombs) {
+            Position tomb_position = getGame().getMap().getPosition(tomb.x, tomb.y);
+            if (reachable_positions.contains(tomb_position)) {
+                tomb_positions.add(tomb_position);
             }
         }
         return tomb_positions;
