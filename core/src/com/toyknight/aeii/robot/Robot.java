@@ -226,8 +226,13 @@ public class Robot {
             submitAction(summon_position, target, Operation.SUMMON);
         } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0) {
             Unit ally = getPreferredHealTarget(selected_unit, allies);
-            Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
-            submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
+            if (UnitToolkit.isTheSameUnit(selected_unit, ally)) {
+                Position target = getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                submitAction(target, target, Operation.HEAL);
+            } else {
+                Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
+                submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
+            }
         } else if (selected_unit.hasAbility(Ability.COMMANDER)
                 && (cp = getNearestEnemyCastlePositionWithinReach(selected_unit, movable_positions)) != null) {
             submitAction(cp, cp, Operation.OCCUPY);
@@ -314,12 +319,16 @@ public class Robot {
         Unit target = null;
         int max_attack = Integer.MIN_VALUE;
         for (Unit ally : allies) {
-            if (canHeal(unit, ally) && ally.getAttack() > max_attack) {
+            if (!UnitToolkit.isTheSameUnit(unit, ally) && canHeal(unit, ally) && ally.getAttack() > max_attack) {
                 target = ally;
                 max_attack = ally.getAttack();
             }
         }
-        return target;
+        if (target == null) {
+            return unit;
+        } else {
+            return target;
+        }
     }
 
     private Position getPreferredSummonTarget(Unit unit, ObjectSet<Position> tomb_positions) {
@@ -394,9 +403,6 @@ public class Robot {
     }
 
     private Position getPreferredHealPosition(Unit unit, Unit target, ObjectSet<Position> movable_positions) {
-        if (unit.isAt(target.getX(), target.getY())) {
-            return getGame().getMap().getPosition(target);
-        }
         for (Position position : movable_positions) {
             if (UnitToolkit.isWithinRange(
                     position.x, position.y, target.getX(), target.getY(),
