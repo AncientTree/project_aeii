@@ -37,7 +37,7 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     private final PositionGenerator position_generator;
 
-    private final Robot[] robots;
+    private final Robot robot;
 
     private GameCore game;
     private UnitToolkit unit_toolkit;
@@ -64,10 +64,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         this.operation_executor = new OperationExecutor(this);
         this.event_executor = new GameEventExecutor(this);
 
-        this.robots = new Robot[4];
-        for (int team = 0; team < 4; team++) {
-            robots[team] = new Robot(this, team);
-        }
+        this.robot = new Robot(this);
 
         this.move_path = new Array<Position>();
         this.movable_positions = new ObjectSet<Position>();
@@ -83,9 +80,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         getAnimationDispatcher().reset();
         getPositionGenerator().reset();
         getGameRecorder().prepare(getGame());
-        for (int team = 0; team < 4; team++) {
-            getRobot(team).initialize();
-        }
+        getRobot().initialize();
     }
 
     public GameCore getGame() {
@@ -120,8 +115,8 @@ public class GameManager implements GameEventListener, AnimationListener {
         return unit_toolkit;
     }
 
-    public Robot getRobot(int team) {
-        return robots[team];
+    public Robot getRobot() {
+        return robot;
     }
 
     public void setListener(GameManagerListener listener) {
@@ -222,15 +217,9 @@ public class GameManager implements GameEventListener, AnimationListener {
                 getOperationExecutor().operate();
             }
         }
-//        if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
-//            if (!getRobot(getGame().getCurrentTeam()).isCalculating()) {
-//                if (getOperationExecutor().isOperating()) {
-//                    getOperationExecutor().operate(delta);
-//                } else {
-//                    getRobot(getGame().getCurrentTeam()).calculate();
-//                }
-//            }
-//        }
+        if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
+            getRobot().calculate();
+        }
     }
 
     public void setSelectedUnit(Unit unit) {

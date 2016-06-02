@@ -83,6 +83,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         }
     }
 
+    public void closeTopDialog() {
+        String top_dialog_name = dialog_layer.peekFirst();
+        closeDialog(top_dialog_name);
+    }
+
     public void closeDialog(String name) {
         dialog_layer.remove(name);
         dialogs.get(name).setVisible(false);

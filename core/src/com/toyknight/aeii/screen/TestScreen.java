@@ -98,16 +98,16 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
             boolean has_local_player = false;
             for (int team = 0; team < 4; team++) {
                 if (game.getMap().hasTeamAccess(team)) {
-//                    if (has_local_player) {
-//                        game.getPlayer(team).setType(Player.ROBOT);
-//                        game.getPlayer(team).setAlliance(1);
-//                    } else {
-//                        game.getPlayer(team).setType(Player.LOCAL);
-//                        game.getPlayer(team).setAlliance(0);
-//                        has_local_player = true;
-//                    }
-                    game.getPlayer(team).setType(Player.LOCAL);
-                    game.getPlayer(team).setAlliance(team);
+                    if (has_local_player) {
+                        game.getPlayer(team).setType(Player.ROBOT);
+                        game.getPlayer(team).setAlliance(1);
+                    } else {
+                        game.getPlayer(team).setType(Player.LOCAL);
+                        game.getPlayer(team).setAlliance(0);
+                        has_local_player = true;
+                    }
+//                    game.getPlayer(team).setType(Player.LOCAL);
+//                    game.getPlayer(team).setAlliance(team);
                 }
             }
             getContext().gotoGameScreen(game);

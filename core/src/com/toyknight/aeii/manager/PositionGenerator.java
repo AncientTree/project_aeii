@@ -218,8 +218,12 @@ public class PositionGenerator {
                         int movement_point_left = current_movement_point - movement_point_cost;
                         if (movement_point_left > move_mark_map[next_x][next_y]) {
                             Unit target_unit = getGame().getMap().getUnit(next_x, next_y);
-                            if (getGame().canMoveThrough(unit, target_unit)) {
-                                Step next_step = new Step(next_position, movement_point_left);
+                            Step next_step = new Step(next_position, movement_point_left);
+//                            if (getGame().canMoveThrough(unit, target_unit)) {
+//                                Step next_step = new Step(next_position, movement_point_left);
+//                                next_steps.add(next_step);
+//                            }
+                            if (target_unit == null || next_step.getPosition().equals(target)) {
                                 next_steps.add(next_step);
                             }
                         }
@@ -258,6 +262,15 @@ public class PositionGenerator {
                     }
                 }
             }
+        }
+        return positions;
+    }
+
+    public ObjectSet<Position> createPositionsWithinReach(Unit unit) {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
+        for (Position position : createMovablePositions(unit)) {
+            positions.addAll(createPositionsWithinRange(
+                    position.x, position.y, unit.getMinAttackRange(), unit.getMaxAttackRange()));
         }
         return positions;
     }

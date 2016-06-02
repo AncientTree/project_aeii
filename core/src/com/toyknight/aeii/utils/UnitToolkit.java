@@ -86,9 +86,14 @@ public class UnitToolkit {
                 && unit_a.getUnitCode().equals(unit_b.getUnitCode());
     }
 
+    public static boolean isWithinRange(int x, int y, int target_x, int target_y, int min_ar, int max_ar) {
+        int range = getRange(x, y, target_x, target_y);
+        return min_ar <= range && range <= max_ar;
+    }
+
     public static boolean isWithinRange(Unit unit, int target_x, int target_y) {
-        int range = getRange(unit.getX(), unit.getY(), target_x, target_y);
-        return unit.getMinAttackRange() <= range && range <= unit.getMaxAttackRange();
+        return isWithinRange(
+                unit.getX(), unit.getY(), target_x, target_y, unit.getMinAttackRange(), unit.getMaxAttackRange());
     }
 
     public static boolean isWithinRange(Unit unit, Unit target) {

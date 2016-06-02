@@ -193,6 +193,10 @@ public class GameCore implements Serializable {
         this.turn = turn;
     }
 
+    public int getMaxPopulation() {
+        return getRule().getInteger(MAX_POPULATION);
+    }
+
     public int getPopulation(int team) {
         return getPlayer(team).getPopulation();
     }
@@ -365,6 +369,10 @@ public class GameCore implements Serializable {
 
     public boolean isEnemy(int team_a, int team_b) {
         return team_a >= 0 && team_b >= 0 && getAlliance(team_a) != getAlliance(team_b);
+    }
+
+    public boolean isAlly(Unit unit_a, Unit unit_b) {
+        return unit_a != null && unit_b != null && isAlly(unit_a.getTeam(), unit_b.getTeam());
     }
 
     public boolean isAlly(int team_a, int team_b) {

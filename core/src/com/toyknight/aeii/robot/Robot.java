@@ -1,13 +1,13 @@
 package com.toyknight.aeii.robot;
 
-import static com.toyknight.aeii.robot.BattleData.*;
-
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.entity.*;
 import com.toyknight.aeii.manager.GameManager;
+import com.toyknight.aeii.manager.Operation;
 import com.toyknight.aeii.utils.UnitFactory;
+import com.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.Random;
 
@@ -16,41 +16,50 @@ import java.util.Random;
  */
 public class Robot {
 
-    private final int team;
-
     private final Random random;
 
     private final GameManager manager;
 
-    private final BattleData battle_data;
-
     private final ObjectSet<String> target_units;
 
-    private final ObjectMap<String, Position> routines;
+    private final ObjectMap<String, Position> routes;
 
-    private final Runnable calculate_task = new Runnable() {
-        @Override
-        public void run() {
-            calculating = true;
-            doCalculate();
-            calculating = false;
-        }
-    };
+    private final ObjectMap<Integer, ObjectSet<Integer>> ability_map;
+
+    private boolean prepared;
 
     private boolean calculating;
 
-    public Robot(GameManager manager, int team) {
-        this.team = team;
+    private int team;
+
+    private int action_type;
+
+    private Position move_target;
+
+    private Position action_target;
+
+    public Robot(GameManager manager) {
         this.manager = manager;
         this.random = new Random();
-        this.battle_data = new BattleData();
         this.target_units = new ObjectSet<String>();
-        this.routines = new ObjectMap<String, Position>();
+        this.routes = new ObjectMap<String, Position>();
+        this.ability_map = new ObjectMap<Integer, ObjectSet<Integer>>();
     }
 
     public void initialize() {
+        prepared = false;
         calculating = false;
-        getRoutines().clear();
+        ability_map.clear();
+        for (Integer index : getGame().getRule().getAvailableUnits()) {
+            for (int ability : UnitFactory.getSample(index).getAbilities()) {
+                if (ability_map.containsKey(ability)) {
+                    ability_map.get(ability).add(index);
+                } else {
+                    ability_map.put(ability, new ObjectSet<Integer>());
+                    ability_map.get(ability).add(index);
+                }
+            }
+        }
         target_units.clear();
         //TODO: Add target units from rule.
     }
@@ -63,12 +72,12 @@ public class Robot {
         return getManager().getGame();
     }
 
-    private BattleData getBattleData() {
-        return battle_data;
+    public ObjectSet<String> getTargetUnits() {
+        return target_units;
     }
 
-    private ObjectMap<String, Position> getRoutines() {
-        return routines;
+    private int getGold() {
+        return getGame().getPlayer(team).getGold();
     }
 
     public boolean isCalculating() {
@@ -82,400 +91,637 @@ public class Robot {
     }
 
     private void doCalculate() {
-//        if (getGame().isTeamAlive(team)) {
-//            calculateBattleData();
-//            UnitBuyingOption unit_to_buy = calculateUnitToBuy();
-//            if (unit_to_buy.getUnitIndex() >= 0) {
-//                int unit_index = unit_to_buy.getUnitIndex();
-//                int buying_map_x = unit_to_buy.getPosition().x;
-//                int buying_map_y = unit_to_buy.getPosition().y;
-//                getManager().getOperationExecutor().submitOperation(
-//                        Operation.BUY, unit_index, buying_map_x, buying_map_y);
-//                Unit bought_unit = createBoughtUnit(unit_index, buying_map_x, buying_map_y);
-//                doUnitAction(bought_unit);
-//            } else {
-//                Unit next_unit = getNextUnit(team);
-//                if (next_unit == null) {
-//                    getManager().getOperationExecutor().submitOperation(Operation.NEXT_TURN);
-//                    getRoutines().clear();
-//                } else {
-//                    doUnitAction(next_unit);
-//                }
-//            }
-//        }
+        if (!prepared) {
+            prepare();
+        }
+        switch (getManager().getState()) {
+            case GameManager.STATE_SELECT:
+                move_target = null;
+                action_target = null;
+                action_type = -1;
+                if (!checkCastleOccupation()) {
+                    if (needRecruiting()) {
+                        recruit();
+                    } else {
+                        select();
+                    }
+                }
+                break;
+            case GameManager.STATE_MOVE:
+                move();
+                break;
+            case GameManager.STATE_ACTION:
+                act();
+                break;
+            case GameManager.STATE_REMOVE:
+                remove();
+                break;
+            default:
+                finish();
+        }
     }
 
-    private void calculateBattleData() {
-        getBattleData().clear();
-        int enemy_team_count = 0;
-        int enemy_total_population = 0;
-        for (int team = 0; team < 4; team++) {
-            if (getGame().isTeamAlive(team) && getGame().isEnemy(this.team, team)) {
-                enemy_team_count++;
-                enemy_total_population += getGame().getPopulation(team);
+    public void prepare() {
+        team = getGame().getCurrentTeam();
+        routes.clear();
+        prepared = true;
+    }
+
+    private boolean checkCastleOccupation() {
+        Unit commander = getGame().getCommander(team);
+        if (getGame().isCommanderAlive(team) && !commander.isStandby()) {
+            ObjectSet<Position> positions = getManager().getPositionGenerator().createMovablePositions(commander);
+            for (Position position : positions) {
+                Tile tile = getGame().getMap().getTile(position);
+                if (tile.isCastle() && (tile.getTeam() < 0 || getGame().isEnemy(team, tile.getTeam()))) {
+                    move_target = position;
+                    action_target = position;
+                    action_type = Operation.OCCUPY;
+                    getManager().doSelect(commander.getX(), commander.getY());
+                    return true;
+                }
             }
         }
-        getBattleData().setValue(ENEMY_AVERAGE_POPULATION, enemy_total_population / enemy_team_count);
-        int enemy_count = 0;
-        int enemy_air_force_count = 0;
-        int enemy_debuff_giver_count = 0;
-        int enemy_total_physical_attack = 0;
-        int enemy_total_physical_defence = 0;
-        int enemy_total_magic_attack = 0;
-        int enemy_total_magic_defence = 0;
-        int enemy_total_reach_range = 0;
-        int enemy_total_value = 0;
+        return false;
+    }
 
-        int unit_total_value = 0;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isEnemy(team, unit.getTeam())) {
-                enemy_count++;
-                if (unit.isDebuffGiver()) {
-                    enemy_debuff_giver_count++;
-                }
-                if (unit.hasAbility(Ability.AIR_FORCE)) {
-                    enemy_air_force_count++;
-                }
-                if (unit.getAttackType() == Unit.ATTACK_MAGIC) {
-                    enemy_total_magic_attack += unit.getAttack();
-                }
-                enemy_total_physical_defence += unit.getPhysicalDefence();
-                if (unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
-                    enemy_total_physical_attack += unit.getAttack();
-                }
-                enemy_total_magic_defence += unit.getMagicDefence();
-                enemy_total_reach_range += getUnitReachRange(unit);
-                enemy_total_value += unit.getPrice();
+    private void recruit() {
+        Position recruit_position = getRecruitingCastlePosition();
+        if (recruit_position == null) {
+            select();
+        } else {
+            if (!getGame().isCommanderAlive(team) && getGame().getCommander(team).getPrice() <= getGold()) {
+                getManager().doBuyUnit(UnitFactory.getCommanderIndex(), recruit_position.x, recruit_position.y);
             } else {
-                if (unit.getTeam() == team) {
-                    unit_total_value += unit.getPrice();
+                int index;
+                if (getAllyCountWithAbility(Ability.CONQUEROR) < 4) {
+                    index = getCheapestUnitIndexWithAbility(Ability.CONQUEROR);
+                } else if (getGame().getMap().getTombs().size > 3 && getAllyCountWithAbility(Ability.NECROMANCER) < 1) {
+                    index = getCheapestUnitIndexWithAbility(Ability.NECROMANCER);
+                } else if (getAllyCountWithAbility(Ability.HEALER) < 1) {
+                    index = getCheapestUnitIndexWithAbility(Ability.HEALER);
+                } else if (getUnhealthyAllyCount() >= 5 && getAllyCountWithAbility(Ability.REFRESH_AURA) < 1) {
+                    index = getCheapestUnitIndexWithAbility(Ability.REFRESH_AURA);
+                } else if (getEnemyCountWithAbility(Ability.AIR_FORCE) > 0 && getAllyCountWithAbility(Ability.MARKSMAN) < 2) {
+                    index = getCheapestUnitIndexWithAbility(Ability.MARKSMAN);
+                } else {
+                    if (getEnemyAveragePhysicalDefence() > getEnemyAverageMagicDefence()) {
+                        index = getRandomAffordableUnitIndexWithAttackType(Unit.ATTACK_MAGIC);
+                    } else {
+                        index = getRandomAffordableUnitIndexWithAttackType(Unit.ATTACK_PHYSICAL);
+                    }
                 }
+                if (index >= 0 && getManager().canBuy(index, team, recruit_position.x, recruit_position.y)) {
+                    getManager().doBuyUnit(index, recruit_position.x, recruit_position.y);
+                } else {
+                    select();
+                }
+
             }
         }
-        getBattleData().setValue(ENEMY_AIR_FORCE_COUNT, enemy_air_force_count);
-        getBattleData().setValue(ENEMY_DEBUFF_GIVER_COUNT, enemy_debuff_giver_count);
-        getBattleData().setValue(ENEMY_AVERAGE_PHYSICAL_ATTACK, enemy_total_physical_attack / enemy_count);
-        getBattleData().setValue(ENEMY_AVERAGE_PHYSICAL_DEFENCE, enemy_total_physical_defence / enemy_count);
-        getBattleData().setValue(ENEMY_AVERAGE_MAGIC_ATTACK, enemy_total_magic_attack / enemy_count);
-        getBattleData().setValue(ENEMY_AVERAGE_MAGIC_DEFENCE, enemy_total_magic_defence / enemy_count);
-        getBattleData().setValue(ENEMY_AVERAGE_REACH_RANGE, enemy_total_reach_range / enemy_count);
-        getBattleData().setValue(ENEMY_AVERAGE_TOTAL_VALUE, enemy_total_value / enemy_team_count);
-        getBattleData().setValue(UNIT_TOTAL_VALUE, unit_total_value);
     }
 
-    private UnitBuyingOption calculateUnitToBuy() {
-        int unit_index = -1;
-        int buying_map_x = -1;
-        int buying_map_y = -1;
-        int highest_buying_score = 0;
-
-        Position buying_position = calculateBuyingPosition();
-        for (Integer index : getGame().getRule().getAvailableUnits()) {
-            int score = calculateBuyingScore(index, buying_position.x, buying_position.y);
-            if (score > highest_buying_score) {
-                unit_index = index;
-                buying_map_x = buying_position.x;
-                buying_map_y = buying_position.y;
-                highest_buying_score = score;
+    private void select() {
+        Unit refresher = getFirstUnitWithAbility(Ability.REFRESH_AURA);
+        if (refresher != null && !refresher.isStandby()) {
+            getManager().doSelect(refresher.getX(), refresher.getY());
+            return;
+        }
+        Unit healer = getFirstUnitWithAbility(Ability.HEALER);
+        if (healer != null && !healer.isStandby()) {
+            getManager().doSelect(healer.getX(), healer.getY());
+            return;
+        }
+        for (Unit unit : getGame().getMap().getUnits(team)) {
+            if (!unit.isStandby()) {
+                getManager().doSelect(unit.getX(), unit.getY());
+                return;
             }
         }
-        if (unit_index >= 0) {
-            return new UnitBuyingOption(unit_index, getGame().getMap().getPosition(buying_map_x, buying_map_y));
+        finish();
+    }
+
+    private void move() {
+        if (move_target == null) {
+            calculateMoveAndAction();
         } else {
-            return new UnitBuyingOption(unit_index, null);
+            getManager().doMove(move_target.x, move_target.y);
         }
     }
 
-    private Position calculateBuyingPosition() {
-        return getGame().getMap().getCastlePositions(team).first();
-    }
+    private void calculateMoveAndAction() {
+        Position cp;
+        Position vp;
+        Unit selected_unit = getManager().getSelectedUnit();
+        ObjectSet<Unit> allies = getAlliesWithinReach(selected_unit);
+        ObjectSet<Unit> enemies = getEnemiesWithinReach(selected_unit);
+        ObjectSet<Position> tombs = getTombPositionsWithinReach(selected_unit);
+        ObjectSet<Position> movable_positions = getManager().getMovablePositions();
 
-    private int calculateBuyingScore(int unit_index, int map_x, int map_y) {
-        if (getManager().canBuy(unit_index, team, map_x, map_y)) {
-            int score = 0;
-            Unit unit = createBoughtUnit(unit_index, map_x, map_y);
-            if (UnitFactory.getCommanderIndex() == unit_index && !getGame().isCommanderAlive(team)) {
-                score += (getGame().getCommander(team).getLevel() + 1) * 100;
-            }
-            if (unit.hasAbility(Ability.CONQUEROR) && unit.getPrice() < 500) {
-                score += (3 - getUnitWithAbilityCount(Ability.CONQUEROR)) * 100;
-            }
-            if (unit.hasAbility(Ability.REPAIRER) && unit.getPrice() < 500) {
-                score += (2 - getUnitWithAbilityCount(Ability.REPAIRER)) * 100;
-            }
-            if (unit.getAttackType() == Unit.ATTACK_PHYSICAL) {
-                score += (unit.getAttack() - getBattleData().getValue(ENEMY_AVERAGE_PHYSICAL_DEFENCE)) * 5;
-            }
-            if (unit.getAttackType() == Unit.ATTACK_MAGIC) {
-                score += (unit.getAttack() - getBattleData().getValue(ENEMY_AVERAGE_MAGIC_DEFENCE)) * 5;
-            }
-            score -= (getBattleData().getValue(ENEMY_AVERAGE_PHYSICAL_ATTACK) - unit.getPhysicalDefence()) * 5;
-            score -= (getBattleData().getValue(ENEMY_AVERAGE_MAGIC_ATTACK) - unit.getMagicDefence()) * 5;
-            score += (getUnitReachRange(unit) - getBattleData().getValue(ENEMY_AVERAGE_REACH_RANGE)) * 10;
-            if (unit.hasAbility(Ability.REFRESH_AURA)) {
-                score += getBattleData().getValue(ENEMY_DEBUFF_GIVER_COUNT) * 25;
-            }
-            if (unit.hasAbility(Ability.MARKSMAN)) {
-                score += getBattleData().getValue(ENEMY_AIR_FORCE_COUNT) * 25;
-            }
-            if (unit.hasAbility(Ability.HEALER)) {
-                score += (2 - getUnitWithAbilityCount(Ability.HEALER)) * 50;
-            }
-            if (unit.hasAbility(Ability.BLOODTHIRSTY)) {
-                score += getBattleData().getValue(ENEMY_AVERAGE_POPULATION) * 10;
-            }
-            if (unit.hasAbility(Ability.NECROMANCER)) {
-                score += getGame().getMap().getTombs().size * 25;
-            }
-            if (unit.hasAbility(Ability.POISONER)) {
-                score += 25;
-            }
-            if (unit.hasAbility(Ability.CHARGER)) {
-                score += 25;
-            }
-            if (unit.hasAbility(Ability.ATTACK_AURA)) {
-                score += (getBattleData().getValue(ENEMY_DEBUFF_GIVER_COUNT) + 1) * 25;
-            }
-            if (unit.hasAbility(Ability.CRAWLER)) {
-                score += 25;
-            }
-            if (unit.hasAbility(Ability.AIR_FORCE)) {
-                score += 25;
-            }
-            return score - unit.getPrice() / 5 - getUnitCount(unit_index) * 50;
+        if (selected_unit.hasAbility(Ability.NECROMANCER) && tombs.size > 0) {
+            Position target = getPreferredSummonTarget(selected_unit, tombs);
+            Position summon_position = getPreferredSummonPosition(
+                    selected_unit, target, getManager().getMovablePositions());
+            submitAction(summon_position, target, Operation.SUMMON);
+        } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0) {
+            Unit ally = getPreferredHealTarget(selected_unit, allies);
+            Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
+            submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
+        } else if (selected_unit.hasAbility(Ability.CONQUEROR)
+                && (vp = getNearestEnemyVillagePositionWithinReach(selected_unit, movable_positions)) != null) {
+            submitAction(vp, vp, Operation.OCCUPY);
+        } else if (selected_unit.hasAbility(Ability.COMMANDER)
+                && (cp = getNearestEnemyCastlePositionWithinReach(selected_unit, movable_positions)) != null) {
+            submitAction(cp, cp, Operation.OCCUPY);
         } else {
-            return -1;
-        }
-    }
-
-    private Unit createBoughtUnit(int unit_index, int map_x, int map_y) {
-        if (UnitFactory.getCommanderIndex() == unit_index) {
-            Unit commander = getGame().getCommander(team);
-            Unit unit = new Unit(commander, commander.getUnitCode());
-            unit.setCurrentHp(unit.getMaxHp());
-            getGame().resetUnit(unit);
-            unit.clearStatus();
-            unit.setX(map_x);
-            unit.setY(map_y);
-            return unit;
-        } else {
-            Unit unit = UnitFactory.createUnit(unit_index, team);
-            unit.setX(map_x);
-            unit.setY(map_y);
-            return unit;
-        }
-    }
-
-    private void doUnitAction(Unit unit) {
-//        Position target_position = calculateTargetPosition(unit);
-//        if (target_position == null) {
-//            doFight(unit);
-//        } else {
-//            Position next_position = getManager().getPositionGenerator().getNextPositionToTarget(unit, target_position);
-//            if (getGame().getEnemyAroundCount(next_position.x, next_position.y, unit.getTeam(), 4) > 2) {
-//                doFight(unit);
-//            } else {
-//                getManager().getOperationExecutor().submitOperation(Operation.SELECT, unit.getX(), unit.getY());
-//                getManager().getOperationExecutor().submitOperation(Operation.MOVE, next_position.x, next_position.y);
-//                if (canOccupy(unit, next_position.x, next_position.y)) {
-//                    getManager().getOperationExecutor().submitOperation(Operation.OCCUPY);
-//                    getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-//                } else {
-//                    if (canRepair(unit, next_position.x, next_position.y)) {
-//                        getManager().getOperationExecutor().submitOperation(Operation.REPAIR);
-//                        getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-//                    } else {
-//                        getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-//                    }
-//                }
-//            }
-//        }
-    }
-
-    private boolean canOccupy(Unit unit, int map_x, int map_y) {
-        Tile tile = getGame().getMap().getTile(map_x, map_y);
-        Unit target = getGame().getMap().getUnit(map_x, map_y);
-        return (unit.isAt(map_x, map_y) || target == null) && !getGame().isAlly(tile.getTeam(), team)
-                && ((unit.hasAbility(Ability.CONQUEROR) && tile.isVillage())
-                || (unit.hasAbility(Ability.COMMANDER) && tile.isCastle()));
-    }
-
-
-    private boolean canRepair(Unit unit, int map_x, int map_y) {
-        Tile tile = getGame().getMap().getTile(map_x, map_y);
-        Unit target = getGame().getMap().getUnit(map_x, map_y);
-        return (unit.isAt(map_x, map_y) || target == null) && unit.hasAbility(Ability.REPAIRER) && tile.isRepairable();
-    }
-
-    private void doFight(Unit unit) {
-//        ObjectSet<Position> movable_positions = getManager().getPositionGenerator().createMovablePositions(unit);
-//        for (Position position : movable_positions) {
-//            if (UnitToolkit.getRange(unit.getX(), unit.getY(), position.x, position.y) >= 0) {
-//                getManager().getOperationExecutor().submitOperation(Operation.SELECT, unit.getX(), unit.getY());
-//                getManager().getOperationExecutor().submitOperation(Operation.MOVE, position.x, position.y);
-//                getManager().getOperationExecutor().submitOperation(Operation.STANDBY);
-//                break;
-//            }
-//        }
-    }
-
-    private Position calculateTargetPosition(Unit unit) {
-        //find tiles to repair
-        if (unit.hasAbility(Ability.REPAIRER)) {
-            Tile current_tile = getGame().getMap().getTile(unit.getX(), unit.getY());
-            if (current_tile.isRepairable()) {
-                return getGame().getMap().getPosition(unit.getX(), unit.getY());
-            }
-            Position nearest_ruin_position = null;
-            int nearest_ruin_distance = Integer.MAX_VALUE;
-            for (int x = 0; x < getGame().getMap().getWidth(); x++) {
-                for (int y = 0; y < getGame().getMap().getHeight(); y++) {
-                    Tile tile = getGame().getMap().getTile(x, y);
-                    Position position = getGame().getMap().getPosition(x, y);
-                    if (tile.isRepairable() && !hasRoutine(position)) {
-                        int distance = getManager().getPositionGenerator().getMovementPointsToTarget(unit, position);
-                        if (distance >= 0 && distance < nearest_ruin_distance) {
-                            nearest_ruin_distance = distance;
-                            nearest_ruin_position = position;
-                        }
+            Unit target_enemy;
+            if (enemies.size > 0 && (target_enemy = getPreferredAttackTarget(selected_unit, enemies)) != null) {
+                Position attack_position =
+                        getPreferredAttackPosition(selected_unit, target_enemy, getManager().getMovablePositions());
+                submitAction(attack_position, getGame().getMap().getPosition(target_enemy), Operation.ATTACK);
+            } else {
+                ObjectSet<Unit> enemy_commanders = getEnemyCommanders();
+                if (selected_unit.isCommander()) {
+                    ObjectSet<Position> enemy_castle_positions = getEnemyCastlePositions();
+                    if (enemy_castle_positions.size > 0) {
+                        Position move_position = getManager().getPositionGenerator().getNextPositionToTarget(
+                                selected_unit, enemy_castle_positions.first());
+                        submitAction(move_position, move_position, Operation.STANDBY);
+                    } else {
+                        Position move_position =
+                                getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                        submitAction(move_position, move_position, Operation.STANDBY);
+                    }
+                } else if (selected_unit.hasAbility(Ability.CONQUEROR)) {
+                    ObjectSet<Position> enemy_village_positions = getEnemyVillagePositions();
+                    if (enemy_village_positions.size > 0) {
+                        Position move_position = getManager().getPositionGenerator().getNextPositionToTarget(
+                                selected_unit, enemy_village_positions.first());
+                        submitAction(move_position, move_position, Operation.STANDBY);
+                    } else {
+                        Position move_position =
+                                getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                        submitAction(move_position, move_position, Operation.STANDBY);
+                    }
+                } else {
+                    if (enemy_commanders.size > 0) {
+                        Position move_position = getManager().getPositionGenerator().getNextPositionToTarget(
+                                selected_unit, getGame().getMap().getPosition(enemy_commanders.first()));
+                        submitAction(move_position, move_position, Operation.STANDBY);
+                    } else {
+                        Position move_position =
+                                getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                        submitAction(move_position, move_position, Operation.STANDBY);
                     }
                 }
             }
-            if (nearest_ruin_position != null) {
-                getRoutines().put(unit.getUnitCode(), nearest_ruin_position);
-                return nearest_ruin_position;
+        }
+    }
+
+    private void submitAction(Position move_position, Position action_target, int action_type) {
+        this.action_type = action_type;
+        this.action_target = action_target;
+        getManager().doMove(move_position.x, move_position.y);
+    }
+
+    private Unit getPreferredAttackTarget(Unit unit, ObjectSet<Unit> enemies) {
+        Unit target = null;
+        int max_damage = Integer.MIN_VALUE;
+        for (Unit enemy : enemies) {
+            int damage = getManager().getUnitToolkit().getDamage(unit, enemy);
+            if (enemy.getCurrentHp() - damage <= 10) {
+                target = enemy;
+                break;
+            }
+            if (damage > 10) {
+                if (enemy.isCommander()) {
+                    return enemy;
+                }
+                if (damage > max_damage) {
+                    target = enemy;
+                    max_damage = damage;
+                }
             }
         }
-        //find tiles to
-        if (unit.hasAbility(Ability.CONQUEROR)) {
-            Tile current_tile = getGame().getMap().getTile(unit.getX(), unit.getY());
-            if (current_tile.isVillage() && !getGame().isAlly(current_tile.getTeam(), team)) {
-                return getGame().getMap().getPosition(unit.getX(), unit.getY());
+        return target;
+    }
+
+    private Unit getPreferredHealTarget(Unit unit, ObjectSet<Unit> allies) {
+        Unit target = null;
+        int max_attack = Integer.MIN_VALUE;
+        for (Unit ally : allies) {
+            if (canHeal(unit, ally) && ally.getAttack() > max_attack) {
+                target = ally;
+                max_attack = ally.getAttack();
             }
-            Position nearest_village_position = null;
-            int nearest_village_distance = Integer.MAX_VALUE;
-            for (int x = 0; x < getGame().getMap().getWidth(); x++) {
-                for (int y = 0; y < getGame().getMap().getHeight(); y++) {
-                    Tile tile = getGame().getMap().getTile(x, y);
-                    Position position = getGame().getMap().getPosition(x, y);
-                    if (tile.isVillage() && getGame().getMap().getUnit(x, y) == null
-                            && !getGame().isAlly(tile.getTeam(), team)) {
-                        int distance = getManager().getPositionGenerator().getMovementPointsToTarget(unit, position);
-                        if (distance <= unit.getCurrentMovementPoint()) {
-                            nearest_village_distance = distance;
-                            nearest_village_position = position;
-                            break;
-                        } else {
-                            if (!hasRoutine(position) && distance >= 0 && distance < nearest_village_distance) {
-                                nearest_village_distance = distance;
-                                nearest_village_position = position;
+        }
+        return target;
+    }
+
+    private Position getPreferredSummonTarget(Unit unit, ObjectSet<Position> tomb_positions) {
+        Position preferred_position = null;
+        int min_distance = Integer.MAX_VALUE;
+        for (Position position : tomb_positions) {
+            if (getDistance(getGame().getMap().getPosition(unit), position) < min_distance) {
+                preferred_position = position;
+                min_distance = getDistance(getGame().getMap().getPosition(unit), position);
+            }
+        }
+        return preferred_position;
+    }
+
+    public boolean canHeal(Unit healer, Unit target) {
+        if (healer == null || target == null) {
+            return false;
+        } else {
+            if (getGame().canReceiveHeal(target)) {
+                return !getGame().isEnemy(healer, target)
+                        && getGame().canHealReachTarget(healer, target);
+            } else {
+                //heal becomes damage for the undead
+                return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
+            }
+        }
+    }
+
+    private Position getPreferredAttackPosition(Unit unit, Unit target, ObjectSet<Position> movable_positions) {
+        Position preferred_position = null;
+        int max_defence_bonus = Integer.MIN_VALUE;
+        for (Position position : movable_positions) {
+            Tile tile = getGame().getMap().getTile(position);
+            if (UnitToolkit.isWithinRange(
+                    position.x, position.y, target.getX(), target.getY(),
+                    unit.getMinAttackRange(), unit.getMaxAttackRange())) {
+                if (unit.hasAbility(Ability.FIGHTER_OF_THE_SEA) && tile.getType() == Tile.TYPE_WATER) {
+                    return position;
+                }
+                if (unit.hasAbility(Ability.FIGHTER_OF_THE_FOREST) && tile.getType() == Tile.TYPE_FOREST) {
+                    return position;
+                }
+                if (unit.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile.getType() == Tile.TYPE_MOUNTAIN) {
+                    return position;
+                }
+                if (preferred_position == null) {
+                    preferred_position = position;
+                    max_defence_bonus = tile.getDefenceBonus();
+                } else {
+                    if (UnitToolkit.getRange(target.getX(), target.getY(), position.x, position.y) > 1) {
+                        if (UnitToolkit.getRange(
+                                target.getX(), target.getY(), preferred_position.x, preferred_position.y) > 1) {
+                            if (tile.getDefenceBonus() > max_defence_bonus) {
+                                preferred_position = position;
+                                max_defence_bonus = tile.getDefenceBonus();
                             }
+                        } else {
+                            preferred_position = position;
+                            max_defence_bonus = tile.getDefenceBonus();
+                        }
+                    } else {
+                        if (tile.getDefenceBonus() > max_defence_bonus && UnitToolkit.getRange(
+                                target.getX(), target.getY(), preferred_position.x, preferred_position.y) == 1) {
+                            preferred_position = position;
+                            max_defence_bonus = tile.getDefenceBonus();
                         }
                     }
                 }
             }
-            if (nearest_village_position != null) {
-                getRoutines().put(unit.getUnitCode(), nearest_village_position);
-                return nearest_village_position;
-            }
         }
-        if (unit.hasAbility(Ability.COMMANDER)) {
-            for (int x = 0; x < getGame().getMap().getWidth(); x++) {
-                for (int y = 0; y < getGame().getMap().getHeight(); y++) {
-                    Tile tile = getGame().getMap().getTile(x, y);
-                    Position position = getGame().getMap().getPosition(x, y);
-                    if (tile.isCastle() && !getGame().isAlly(tile.getTeam(), team)
-                            && getGame().getMap().getUnit(x, y) == null && !hasRoutine(position)) {
-                        getRoutines().put(unit.getUnitCode(), position);
-                        return position;
-                    }
-                }
+        return preferred_position;
+    }
+
+    private Position getPreferredHealPosition(Unit unit, Unit target, ObjectSet<Position> movable_positions) {
+        if (unit.isAt(target.getX(), target.getY())) {
+            return getGame().getMap().getPosition(target);
+        }
+        for (Position position : movable_positions) {
+            if (UnitToolkit.isWithinRange(
+                    position.x, position.y, target.getX(), target.getY(),
+                    unit.getMinAttackRange(), unit.getMaxAttackRange())) {
+                return position;
             }
         }
         return null;
     }
 
-    private boolean hasRoutine(Position target) {
-        for (Position position : getRoutines().values()) {
-            if (position.equals(target)) {
-                return true;
+    private Position getPreferredSummonPosition(Unit unit, Position tomb_position, ObjectSet<Position> movable_positions) {
+        for (Position position : movable_positions) {
+            if (UnitToolkit.isWithinRange(
+                    position.x, position.y, tomb_position.x, tomb_position.y,
+                    unit.getMinAttackRange(), unit.getMaxAttackRange())) {
+                return position;
             }
         }
-        return false;
+        return null;
     }
 
-    private int getUnitReachRange(Unit unit) {
-        int reach_range = unit.getMaxAttackRange();
-        if (!unit.hasAbility(Ability.HEAVY_MACHINE)) {
-            reach_range += unit.getMovementPoint();
+    private Position getPreferredStandbyPosition(Unit unit, ObjectSet<Position> movable_positions) {
+        Position preferred_position = null;
+        int max_defence_bonus = Integer.MIN_VALUE;
+        for (Position position : movable_positions) {
+            Tile tile = getGame().getMap().getTile(position);
+            if (getManager().getUnitToolkit().getTerrainHeal(unit, tile) > 0) {
+                return position;
+            }
+            if (tile.getDefenceBonus() > max_defence_bonus) {
+                preferred_position = position;
+                max_defence_bonus = tile.getDefenceBonus();
+            }
         }
-        return reach_range;
+        return preferred_position;
     }
 
+    private void act() {
+        switch (action_type) {
+            case Operation.OCCUPY:
+                getManager().doOccupy();
+                break;
+            case Operation.ATTACK:
+                getManager().doAttack(action_target.x, action_target.y);
+                break;
+            case Operation.HEAL:
+                getManager().doHeal(action_target.x, action_target.y);
+                break;
+            case Operation.SUMMON:
+                getManager().doSummon(action_target.x, action_target.y);
+                break;
+            case Operation.STANDBY:
+            default:
+                getManager().doStandbySelectedUnit();
+        }
+    }
 
-    private Unit getNextUnit(int team) {
-        Array<Unit> units = new Array<Unit>();
-        for (Position position : getGame().getMap().getUnitPositions()) {
-            Unit unit = getGame().getMap().getUnit(position);
-            if (unit.getTeam() == team && !unit.isStandby()) {
-                if (unit.hasAbility(Ability.CONQUEROR) && hasVillageWithinReach(unit)) {
-                    return unit;
+    private void remove() {
+        Position target = getPreferredStandbyPosition(getManager().getSelectedUnit(), getManager().getMovablePositions());
+        getManager().doMove(target.x, target.y);
+    }
+
+    private void finish() {
+        getManager().doEndTurn();
+        prepared = false;
+    }
+
+    private boolean needRecruiting() {
+        return getGame().getMap().getCastleCount(team) > 0 &&
+                getGame().getPopulation(team) < getGame().getMaxPopulation();
+    }
+
+    private Position getRecruitingCastlePosition() {
+        Position position = null;
+        int min_enemy_distance = Integer.MIN_VALUE;
+        for (Position cp : getGame().getMap().getCastlePositions(team)) {
+            Unit unit = getGame().getMap().getUnit(cp);
+            if (unit == null || (unit.isCommander() && unit.getTeam() == team)) {
+                if (position == null) {
+                    position = cp;
+                    min_enemy_distance = getEnemyDistance(cp);
+                } else {
+                    int distance = getEnemyDistance(cp);
+                    if (distance < min_enemy_distance) {
+                        position = cp;
+                        min_enemy_distance = getEnemyDistance(cp);
+                    }
                 }
-                if (unit.hasAbility(Ability.REPAIRER) && hasRuinWithinReach(unit)) {
-                    return unit;
+            }
+        }
+        return position;
+    }
+
+    private int getEnemyDistance(Position position) {
+        int total_distance = 0;
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isEnemy(team, unit.getTeam())) {
+                int distance = getDistance(getGame().getMap().getPosition(unit), position);
+                if (distance <= 4) {
+                    return distance;
                 }
-                units.add(unit);
+                total_distance += distance;
+            }
+        }
+        for (Position cp : getGame().getMap().getCastlePositions()) {
+            if (getGame().isEnemy(team, getGame().getMap().getTile(cp).getTeam())) {
+                total_distance += getDistance(cp, position);
+            }
+        }
+        return total_distance;
+    }
+
+    private int getAllyCountWithAbility(int ability) {
+        int count = 0;
+        for (Unit unit : getGame().getMap().getUnits(team)) {
+            if (unit.hasAbility(ability)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getEnemyCountWithAbility(int ability) {
+        int count = 0;
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isEnemy(team, unit.getTeam()) && unit.hasAbility(ability)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getUnhealthyAllyCount() {
+        int count = 0;
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isAlly(team, unit.getTeam())
+                    && (Status.isDebuff(unit.getStatus()) || unit.getCurrentHp() < unit.getMaxHp())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getCheapestUnitIndexWithAbility(int ability) {
+        if (ability_map.containsKey(ability)) {
+            int cheapest_index = -1;
+            int cheapest_price = Integer.MAX_VALUE;
+            for (Integer index : ability_map.get(ability)) {
+                int price = getGame().getUnitPrice(index, team);
+                if (price >= 0 && price < cheapest_price) {
+                    cheapest_index = index;
+                    cheapest_price = price;
+                }
+            }
+            return cheapest_index;
+        } else {
+            return -1;
+        }
+    }
+
+    private Unit getFirstUnitWithAbility(int ability) {
+        for (Unit unit : getGame().getMap().getUnits(team)) {
+            if (unit.hasAbility(ability)) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    private int getEnemyAveragePhysicalDefence() {
+        int enemy_number = 0;
+        int enemy_total_physical_defence = 0;
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isEnemy(team, unit.getTeam())) {
+                enemy_number++;
+                enemy_total_physical_defence += unit.getPhysicalDefence();
+            }
+        }
+        if (enemy_number > 0) {
+            return enemy_total_physical_defence / enemy_number;
+        } else {
+            return 0;
+        }
+    }
+
+    private int getEnemyAverageMagicDefence() {
+        int enemy_number = 0;
+        int enemy_total_magic_defence = 0;
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isEnemy(team, unit.getTeam())) {
+                enemy_number++;
+                enemy_total_magic_defence += unit.getPhysicalDefence();
+            }
+        }
+        if (enemy_number > 0) {
+            return enemy_total_magic_defence / enemy_number;
+        } else {
+            return 0;
+        }
+    }
+
+    private int getRandomAffordableUnitIndexWithAttackType(int attack_type) {
+        Array<Integer> units = new Array<Integer>();
+        for (Integer index : getGame().getRule().getAvailableUnits()) {
+            if (getGame().getUnitPrice(index, team) < getGold()
+                    && getGame().canAddPopulation(team, UnitFactory.getSample(index).getOccupancy())
+                    && index != UnitFactory.getCommanderIndex()
+                    && UnitFactory.getSample(index).getAttackType() == attack_type) {
+                units.add(index);
             }
         }
         if (units.size > 0) {
             return units.get(random.nextInt(units.size));
         } else {
-            return null;
+            return -1;
         }
     }
 
-    private int getUnitWithAbilityCount(int ability) {
-        int count = 0;
-        for (Unit unit : getGame().getMap().getUnits(team)) {
-            if (unit.hasAbility(ability) && !unit.isCommander()) {
-                count++;
+    private ObjectSet<Unit> getEnemiesWithinReach(Unit unit) {
+        ObjectSet<Unit> enemies = new ObjectSet<Unit>();
+        for (Position position : getManager().getPositionGenerator().createPositionsWithinReach(unit)) {
+            Unit target = getGame().getMap().getUnit(position);
+            if (target != null && getGame().isEnemy(unit, target)) {
+                enemies.add(target);
             }
         }
-        return count;
+        return enemies;
     }
 
-    private int getUnitCount(int unit_index) {
-        int count = 0;
-        for (Unit unit : getGame().getMap().getUnits(team)) {
-            if (unit.getIndex() == unit_index) {
-                count++;
+    private ObjectSet<Unit> getAlliesWithinReach(Unit unit) {
+        ObjectSet<Unit> allies = new ObjectSet<Unit>();
+        for (Position position : getManager().getPositionGenerator().createPositionsWithinReach(unit)) {
+            Unit target = getGame().getMap().getUnit(position);
+            if (target != null && getGame().isAlly(unit, target)) {
+                allies.add(target);
             }
         }
-        return count;
+        return allies;
     }
 
-    private boolean hasRuinWithinReach(Unit unit) {
-        for (Position position : getManager().getPositionGenerator().createMovablePositions(unit)) {
-            Tile tile = getGame().getMap().getTile(position.x, position.y);
-            if (tile.isRepairable() && getGame().getMap().getUnit(position) == null) {
-                return true;
+    private ObjectSet<Unit> getEnemyCommanders() {
+        ObjectSet<Unit> commanders = new ObjectSet<Unit>();
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (unit.isCommander() && getGame().isEnemy(team, unit.getTeam())) {
+                commanders.add(unit);
             }
         }
-        return false;
+        return commanders;
     }
 
-    private boolean hasVillageWithinReach(Unit unit) {
-        for (Position position : getManager().getPositionGenerator().createMovablePositions(unit)) {
-            Tile tile = getGame().getMap().getTile(position.x, position.y);
-            if (tile.isVillage() && tile.getTeam() != team && getGame().getMap().getUnit(position) == null) {
-                return true;
+    private ObjectSet<Position> getEnemyCastlePositions() {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
+        for (Position position : getGame().getMap().getCastlePositions()) {
+            Tile tile = getGame().getMap().getTile(position);
+            if (!getGame().isAlly(team, tile.getTeam())) {
+                positions.add(position);
             }
         }
-        return false;
+        return positions;
     }
 
-    private boolean isTargetUnit(Unit unit) {
-        return target_units.contains(unit.getUnitCode());
+    private ObjectSet<Position> getEnemyVillagePositions() {
+        ObjectSet<Position> positions = new ObjectSet<Position>();
+        for (Position position : getGame().getMap().getVillagePositions()) {
+            Tile tile = getGame().getMap().getTile(position);
+            if (!getGame().isAlly(team, tile.getTeam())) {
+                positions.add(position);
+            }
+        }
+        return positions;
     }
+
+    private Position getNearestEnemyCastlePositionWithinReach(Unit unit, ObjectSet<Position> movable_positions) {
+        Position nearest_position = null;
+        int min_distance = Integer.MAX_VALUE;
+        for (Position position : movable_positions) {
+            Tile tile = getGame().getMap().getTile(position);
+            Position unit_position = getGame().getMap().getPosition(unit);
+            if (tile.isCastle()
+                    && !getGame().isAlly(team, tile.getTeam())
+                    && getDistance(unit_position, position) < min_distance) {
+                nearest_position = position;
+                min_distance = getDistance(unit_position, position);
+            }
+        }
+        return nearest_position;
+    }
+
+    private Position getNearestEnemyVillagePositionWithinReach(Unit unit, ObjectSet<Position> movable_positions) {
+        Position nearest_position = null;
+        int min_distance = Integer.MAX_VALUE;
+        for (Position position : movable_positions) {
+            Tile tile = getGame().getMap().getTile(position);
+            Position unit_position = getGame().getMap().getPosition(unit);
+            if (tile.isVillage()
+                    && !getGame().isAlly(team, tile.getTeam())
+                    && getDistance(unit_position, position) < min_distance) {
+                nearest_position = position;
+                min_distance = getDistance(unit_position, position);
+            }
+        }
+        return nearest_position;
+    }
+
+    private ObjectSet<Position> getTombPositionsWithinReach(Unit unit) {
+        ObjectSet<Position> tomb_positions = new ObjectSet<Position>();
+        for (Position position : getManager().getPositionGenerator().createPositionsWithinReach(unit)) {
+            if (getGame().getMap().isTomb(position)) {
+                tomb_positions.add(position);
+            }
+        }
+        return tomb_positions;
+    }
+
+    private int getDistance(Position p1, Position p2) {
+        return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+    }
+
+    private final Runnable calculate_task = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                calculating = true;
+                Thread.sleep(150);
+                doCalculate();
+                calculating = false;
+            } catch (InterruptedException ignored) {
+            }
+        }
+    };
 
 }

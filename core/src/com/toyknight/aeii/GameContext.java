@@ -210,8 +210,8 @@ public class GameContext extends Game implements GameManagerListener {
         return getGameManager().getGame();
     }
 
-    public boolean isDialogShown() {
-        return dialog.isVisible();
+    public Dialog getDialog() {
+        return dialog;
     }
 
     public void gotoMainMenuScreen() {
@@ -340,7 +340,7 @@ public class GameContext extends Game implements GameManagerListener {
             Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             super.render();
-            if (isDialogShown()) {
+            if (getDialog().isVisible()) {
                 dialog_layer.act(Gdx.graphics.getDeltaTime());
                 dialog_layer.draw();
             }

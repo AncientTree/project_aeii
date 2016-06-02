@@ -401,7 +401,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 }
             case Input.Keys.ESCAPE:
                 if (isDialogShown()) {
-                    closeAllDialogs();
+                    closeTopDialog();
                     update();
                     return true;
                 } else {

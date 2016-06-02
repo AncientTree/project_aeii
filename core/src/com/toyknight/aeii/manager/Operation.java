@@ -21,6 +21,7 @@ public class Operation {
     public static final int BUY = 0x13;
     public static final int STANDBY = 0x14;
     public static final int NEXT_TURN = 0x15;
+    public static final int TURN_START = 0x16;
 
     private final int type;
 
