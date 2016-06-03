@@ -156,7 +156,7 @@ public class Robot {
                 int index;
                 if (getAllyCountWithAbility(Ability.CONQUEROR) < 4) {
                     index = getCheapestUnitIndexWithAbility(Ability.CONQUEROR);
-                } else if (getGame().getMap().getTombs().size > 3 && getAllyCountWithAbility(Ability.NECROMANCER) < 1) {
+                } else if (getGame().getMap().getTombs().size > 1 && getAllyCountWithAbility(Ability.NECROMANCER) < 1) {
                     index = getCheapestUnitIndexWithAbility(Ability.NECROMANCER);
                 } else if (getAllyCountWithAbility(Ability.HEALER) < 1) {
                     index = getCheapestUnitIndexWithAbility(Ability.HEALER);
@@ -299,10 +299,9 @@ public class Robot {
         for (Unit enemy : enemies) {
             int damage = getManager().getUnitToolkit().getDamage(unit, enemy);
             if (enemy.getCurrentHp() - damage <= 10) {
-                target = enemy;
-                break;
+                return enemy;
             }
-            if (damage > 10) {
+            if (unit.hasAbility(Ability.POISONER) || damage > 10) {
                 if (enemy.isCommander()) {
                     return enemy;
                 }
@@ -597,7 +596,7 @@ public class Robot {
         for (Unit unit : getGame().getMap().getUnits()) {
             if (getGame().isEnemy(team, unit.getTeam())) {
                 enemy_number++;
-                enemy_total_magic_defence += unit.getPhysicalDefence();
+                enemy_total_magic_defence += unit.getMagicDefence();
             }
         }
         if (enemy_number > 0) {
@@ -613,6 +612,7 @@ public class Robot {
             if (getGame().getUnitPrice(index, team) < getGold()
                     && getGame().canAddPopulation(team, UnitFactory.getSample(index).getOccupancy())
                     && index != UnitFactory.getCommanderIndex()
+                    && UnitFactory.getSample(index).getAttack() >= 50
                     && UnitFactory.getSample(index).getAttackType() == attack_type) {
                 units.add(index);
             }

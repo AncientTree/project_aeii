@@ -223,8 +223,14 @@ public class PositionGenerator {
 //                                Step next_step = new Step(next_position, movement_point_left);
 //                                next_steps.add(next_step);
 //                            }
-                            if (target_unit == null || next_step.getPosition().equals(target)) {
+                            if (next_step.getPosition().equals(target)) {
                                 next_steps.add(next_step);
+                            } else {
+                                if (movement_point_left >= 0 && target_unit == null) {
+                                    next_steps.add(next_step);
+                                } else if (movement_point_left < 0 && getGame().canMoveThrough(unit, target_unit)) {
+                                    next_steps.add(next_step);
+                                }
                             }
                         }
                     }
