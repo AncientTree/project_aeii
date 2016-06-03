@@ -205,7 +205,7 @@ public class PositionGenerator {
             if (current_movement_point > move_mark_map[step_x][step_y]) {
                 move_mark_map[step_x][step_y] = current_step.getMovementPoint();
             }
-            if (current_step.getPosition().equals(target) && move_mark_map[step_x][step_y] >= 0) {
+            if (current_step.getPosition().equals(target)/* && move_mark_map[step_x][step_y] >= 0*/) {
                 return;
             } else {
                 for (int i = 0; i < 4; i++) {
