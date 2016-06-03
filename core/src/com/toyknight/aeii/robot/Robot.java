@@ -301,6 +301,9 @@ public class Robot {
             if (enemy.getCurrentHp() - damage <= 10) {
                 return enemy;
             }
+            if (enemy.hasAbility(Ability.REHABILITATION)) {
+                return enemy;
+            }
             if (unit.hasAbility(Ability.POISONER) || damage > 10) {
                 if (enemy.isCommander()) {
                     return enemy;
