@@ -162,7 +162,7 @@ public class Robot {
                     index = getCheapestUnitIndexWithAbility(Ability.HEALER);
                 } else if (getUnhealthyAllyCount() >= 5 && getAllyCountWithAbility(Ability.REFRESH_AURA) < 1) {
                     index = getCheapestUnitIndexWithAbility(Ability.REFRESH_AURA);
-                } else if (getEnemyCountWithAbility(Ability.AIR_FORCE) > 0 && getAllyCountWithAbility(Ability.MARKSMAN) < 2) {
+                } else if (getEnemyCountWithAbility(Ability.AIR_FORCE) > 0 && getAllyCountWithAbility(Ability.MARKSMAN) < 1) {
                     index = getCheapestUnitIndexWithAbility(Ability.MARKSMAN);
                 } else {
                     if (getEnemyAveragePhysicalDefence() > getEnemyAverageMagicDefence()) {
@@ -219,20 +219,16 @@ public class Robot {
         ObjectSet<Position> tombs = getTombPositionsWithinReach(selected_unit);
         ObjectSet<Position> movable_positions = getManager().getMovablePositions();
 
+        Unit ally;
         if (selected_unit.hasAbility(Ability.NECROMANCER) && tombs.size > 0) {
             Position target = getPreferredSummonTarget(selected_unit, tombs);
             Position summon_position = getPreferredSummonPosition(
                     selected_unit, target, getManager().getMovablePositions());
             submitAction(summon_position, target, Operation.SUMMON);
-        } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0) {
-            Unit ally = getPreferredHealTarget(selected_unit, allies);
-            if (UnitToolkit.isTheSameUnit(selected_unit, ally)) {
-                Position target = getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
-                submitAction(target, target, Operation.HEAL);
-            } else {
-                Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
-                submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
-            }
+        } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0
+                && (ally = getPreferredHealTarget(selected_unit, allies)) != null) {
+            Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
+            submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
         } else if (selected_unit.hasAbility(Ability.COMMANDER)
                 && (cp = getNearestEnemyCastlePositionWithinReach(selected_unit, movable_positions)) != null) {
             submitAction(cp, cp, Operation.OCCUPY);
@@ -244,9 +240,10 @@ public class Robot {
             submitAction(rp, rp, Operation.REPAIR);
         } else {
             Unit target_enemy;
-            if (enemies.size > 0 && (target_enemy = getPreferredAttackTarget(selected_unit, enemies)) != null) {
-                Position attack_position =
-                        getPreferredAttackPosition(selected_unit, target_enemy, getManager().getMovablePositions());
+            Position attack_position;
+            if (enemies.size > 0
+                    && (target_enemy = getPreferredAttackTarget(selected_unit, enemies)) != null
+                    && (attack_position = getPreferredAttackPosition(selected_unit, target_enemy, getManager().getMovablePositions())) != null) {
                 submitAction(attack_position, getGame().getMap().getPosition(target_enemy), Operation.ATTACK);
             } else {
                 ObjectSet<Unit> enemy_commanders = getEnemyCommanders();
@@ -278,7 +275,10 @@ public class Robot {
                                 selected_unit, getGame().getMap().getPosition(enemy_commanders.first()));
                         submitAction(move_position, move_position, Operation.STANDBY);
                     } else {
-                        Position move_position =
+                        ObjectSet<Unit> all_enemies = getEnemyUnits();
+                        Position move_position = all_enemies.size > 0 ?
+                                getManager().getPositionGenerator().getNextPositionToTarget(
+                                        selected_unit, getGame().getMap().getPosition(all_enemies.first())) :
                                 getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
                         submitAction(move_position, move_position, Operation.STANDBY);
                     }
@@ -295,22 +295,20 @@ public class Robot {
 
     private Unit getPreferredAttackTarget(Unit unit, ObjectSet<Unit> enemies) {
         Unit target = null;
-        int max_damage = Integer.MIN_VALUE;
+        int min_remaining_hp = Integer.MAX_VALUE;
         for (Unit enemy : enemies) {
             int damage = getManager().getUnitToolkit().getDamage(unit, enemy);
-            if (enemy.getCurrentHp() - damage <= 10) {
+            int remaining_hp = enemy.getCurrentHp() - damage;
+            if (enemy.getCurrentHp() - damage <= 0) {
                 return enemy;
             }
-            if (enemy.hasAbility(Ability.REHABILITATION) && damage >= 5) {
-                return enemy;
-            }
-            if (unit.hasAbility(Ability.POISONER) || damage > 10) {
-                if (enemy.isCommander()) {
+            if (unit.hasAbility(Ability.POISONER) || damage >= 10) {
+                if (enemy.isCommander() && damage >= 20) {
                     return enemy;
                 }
-                if (damage > max_damage) {
+                if (remaining_hp < min_remaining_hp) {
                     target = enemy;
-                    max_damage = damage;
+                    min_remaining_hp = remaining_hp;
                 }
             }
         }
@@ -328,11 +326,7 @@ public class Robot {
                 max_attack = ally.getAttack();
             }
         }
-        if (target == null) {
-            return unit;
-        } else {
-            return target;
-        }
+        return target;
     }
 
     private Position getPreferredSummonTarget(Unit unit, ObjectSet<Position> tomb_positions) {
@@ -740,6 +734,16 @@ public class Robot {
             }
         }
         return tomb_positions;
+    }
+
+    private ObjectSet<Unit> getEnemyUnits() {
+        ObjectSet<Unit> enemies = new ObjectSet<Unit>();
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (getGame().isEnemy(team, unit.getTeam())) {
+                enemies.add(unit);
+            }
+        }
+        return enemies;
     }
 
     private int getDistance(Position p1, Position p2) {

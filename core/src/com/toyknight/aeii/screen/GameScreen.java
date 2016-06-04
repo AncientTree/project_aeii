@@ -427,6 +427,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             }
             switch (getGameManager().getState()) {
                 case GameManager.STATE_BUY:
+                    if (keyCode == Input.Keys.A && action_button_bar.isButtonAvailable("attack")) {
+                        getGameManager().beginAttackPhase();
+                        update();
+                        return true;
+                    }
                     if (keyCode == Input.Keys.B) {
                         getGameManager().setState(GameManager.STATE_SELECT);
                         showDialog("store");
