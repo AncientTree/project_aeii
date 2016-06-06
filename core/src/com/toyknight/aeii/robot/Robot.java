@@ -319,7 +319,7 @@ public class Robot {
         Unit target = null;
         int max_attack = Integer.MIN_VALUE;
         for (Unit ally : allies) {
-            if (!ally.isStandby() && team == ally.getTeam()
+            if (!ally.isStandby() && team == ally.getTeam() && !ally.isSkeleton()
                     && !UnitToolkit.isTheSameUnit(unit, ally)
                     && canHeal(unit, ally) && ally.getAttack() > max_attack) {
                 target = ally;
