@@ -295,7 +295,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onDisconnect() {
-        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
+        showPrompt(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
                 getContext().gotoStatisticsScreen(getGame());
@@ -361,7 +361,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
+        super.show();
         MapAnimator.setCanvas(this);
 
         scale = 1.0f;

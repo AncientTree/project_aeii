@@ -5,11 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.toyknight.aeii.animation.AnimationManager;
@@ -18,7 +15,6 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameManagerListener;
-import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.renderer.BorderRenderer;
@@ -66,11 +62,6 @@ public class GameContext extends Game implements GameManagerListener {
     private GameScreen game_screen;
     private StatisticsScreen statistics_screen;
 
-    private Stage dialog_layer;
-    private Dialog dialog;
-    private Callable dialog_callback;
-    private TextButton btn_ok;
-
     public GameContext(Platform platform, int ts) {
         this.TILE_SIZE = ts;
         this.PLATFORM = platform;
@@ -108,7 +99,7 @@ public class GameContext extends Game implements GameManagerListener {
             test_screen = new TestScreen(this);
             game_screen = new GameScreen(this);
             statistics_screen = new StatisticsScreen(this);
-            createDialogLayer();
+            StageScreen.initializePrompt(getSkin(), TILE_SIZE);
 
             game_manager = new GameManager(this, new AnimationManager());
             game_manager.setListener(this);
@@ -150,19 +141,6 @@ public class GameContext extends Game implements GameManagerListener {
         } catch (IOException ex) {
             Gdx.app.log(TAG, ex.toString());
         }
-    }
-
-    private void createDialogLayer() {
-        dialog_layer = new Stage();
-
-        int dw = TILE_SIZE * 6;
-        int dh = TILE_SIZE / 2 * 5;
-        this.dialog = new Dialog("", getSkin());
-        this.dialog.setBounds((Gdx.graphics.getWidth() - dw) / 2, (Gdx.graphics.getHeight() - dh) / 2, dw, dh);
-        this.dialog.setVisible(false);
-        this.dialog_layer.addActor(dialog);
-
-        this.btn_ok = new TextButton(Language.getText("LB_OK"), getSkin());
     }
 
     public int getTileSize() {
@@ -208,10 +186,6 @@ public class GameContext extends Game implements GameManagerListener {
 
     public GameCore getGame() {
         return getGameManager().getGame();
-    }
-
-    public Dialog getDialog() {
-        return dialog;
     }
 
     public void gotoMainMenuScreen() {
@@ -271,48 +245,6 @@ public class GameContext extends Game implements GameManagerListener {
     public void gotoScreen(Screen screen) {
         this.previous_screen = getScreen();
         this.setScreen(screen);
-        if (screen instanceof StageScreen) {
-            NetworkManager.setNetworkListener((StageScreen) screen);
-            ((StageScreen) screen).onFocus();
-        }
-        if (dialog.isVisible()) {
-            Gdx.input.setInputProcessor(dialog_layer);
-        }
-    }
-
-    public void showMessage(String content, Callable callback) {
-        if (!dialog.isVisible()) {
-            dialog_callback = callback;
-
-            //set the message and title
-            dialog.getContentTable().reset();
-            dialog.getContentTable().add(new Label(content, getSkin()));
-            dialog.setWidth(Math.max(TILE_SIZE * 6, FontRenderer.getTextLayout(content).width + TILE_SIZE));
-
-            //set the button
-            dialog.getButtonTable().reset();
-            dialog.getButtonTable().add(btn_ok).size(TILE_SIZE / 2 * 5, TILE_SIZE / 2);
-            btn_ok.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    closeDialog();
-                }
-            });
-
-            dialog.setVisible(true);
-            Gdx.input.setInputProcessor(dialog_layer);
-        }
-    }
-
-    public void closeDialog() {
-        dialog.setVisible(false);
-        if (getScreen() instanceof StageScreen) {
-            ((StageScreen) getScreen()).onFocus();
-        }
-        if (dialog_callback != null) {
-            dialog_callback.call();
-            dialog_callback = null;
-        }
     }
 
     public void submitAsyncTask(AsyncTask task) {
@@ -340,10 +272,6 @@ public class GameContext extends Game implements GameManagerListener {
             Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             super.render();
-            if (getDialog().isVisible()) {
-                dialog_layer.act(Gdx.graphics.getDeltaTime());
-                dialog_layer.draw();
-            }
         }
     }
 

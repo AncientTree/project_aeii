@@ -53,7 +53,7 @@ public class MainMenu extends BasicDialog {
         this.btn_campaign.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().showMessage(Language.getText("MSG_INFO_NSY"), null);
+                getOwner().showPrompt(Language.getText("MSG_INFO_NSY"), null);
             }
         });
         this.add(btn_campaign).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -85,7 +85,7 @@ public class MainMenu extends BasicDialog {
         this.btn_online_contents.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().showMessage(Language.getText("MSG_INFO_NSY"), null);
+                getOwner().showPrompt(Language.getText("MSG_INFO_NSY"), null);
             }
         });
         this.add(btn_online_contents).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -93,7 +93,7 @@ public class MainMenu extends BasicDialog {
         this.btn_about.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().showMessage("toyknight - 2015", null);
+                getOwner().showPrompt("toyknight - 2015", null);
             }
         });
         this.add(btn_about).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();

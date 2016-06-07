@@ -106,8 +106,7 @@ public class MainMenuScreen extends StageScreen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
-        NetworkManager.setNetworkListener(this);
+        super.show();
         //AudioManager.loopMainTheme();
         closeAllDialogs();
     }

@@ -109,7 +109,7 @@ public class ServerListDialog extends BasicDialog {
                         btn_connect.setText(Language.getText("LB_CONNECT"));
                         getOwner().closeDialog("server");
                         NetworkManager.disconnect();
-                        getContext().showMessage(Language.getText("MSG_ERR_RBS"), null);
+                        getOwner().showPrompt(Language.getText("MSG_ERR_RBS"), null);
                     }
                 }
 
@@ -117,7 +117,7 @@ public class ServerListDialog extends BasicDialog {
                 public void onFail(String message) {
                     setEnabled(true);
                     btn_connect.setText(Language.getText("LB_CONNECT"));
-                    getContext().showMessage(Language.getText("MSG_ERR_CCS"), null);
+                    getOwner().showPrompt(Language.getText("MSG_ERR_CCS"), null);
                 }
             });
         }

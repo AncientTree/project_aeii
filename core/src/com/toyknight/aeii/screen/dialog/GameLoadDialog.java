@@ -104,7 +104,7 @@ public class GameLoadDialog extends BasicDialog {
                     tryStartRecord(save_file);
                     break;
                 default:
-                    getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
+                    getOwner().showPrompt(Language.getText("MSG_ERR_BSF"), null);
             }
         }
     }
@@ -112,7 +112,7 @@ public class GameLoadDialog extends BasicDialog {
     public void tryStartGame(FileHandle save_file) {
         GameSave game_save = GameToolkit.loadGame(save_file);
         if (game_save == null) {
-            getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
+            getOwner().showPrompt(Language.getText("MSG_ERR_BSF"), null);
         } else {
             getContext().getGameManager().getGameRecorder().setEnabled(false);
             GameCore game = game_save.getGame();
@@ -129,7 +129,7 @@ public class GameLoadDialog extends BasicDialog {
     public void tryStartRecord(FileHandle record_file) {
         GameRecord record = GameToolkit.loadRecord(record_file);
         if (record == null) {
-            getContext().showMessage(Language.getText("MSG_ERR_BSF"), null);
+            getOwner().showPrompt(Language.getText("MSG_ERR_BSF"), null);
         } else {
             if (getContext().getVerificationString().equals(record.getVerificationString())) {
                 getContext().getGameManager().getGameRecorder().setEnabled(false);
@@ -141,7 +141,7 @@ public class GameLoadDialog extends BasicDialog {
                 }
                 getContext().gotoGameScreen(record);
             } else {
-                getContext().showMessage(Language.getText("MSG_ERR_RVM"), null);
+                getOwner().showPrompt(Language.getText("MSG_ERR_RVM"), null);
             }
         }
     }

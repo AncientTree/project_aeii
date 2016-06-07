@@ -87,7 +87,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
             map = MapFactory.createMap(snapshot.file);
         } catch (AEIIException ex) {
             map = null;
-            getContext().showMessage(Language.getText("MSG_ERR_BMF"), null);
+            showPrompt(Language.getText("MSG_ERR_BMF"), null);
         }
     }
 
@@ -126,7 +126,7 @@ public class TestScreen extends StageScreen implements StringList.SelectionListe
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
+        super.show();
         Array<MapFactory.MapSnapshot> maps = MapFactory.getAllMapSnapshots();
         map_list.setItems(maps);
         onSelect(0, map_list.getSelected());

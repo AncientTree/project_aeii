@@ -117,7 +117,7 @@ public class StatisticsScreen extends StageScreen {
 
                 @Override
                 public void onFail(String message) {
-                    getContext().showMessage(message, null);
+                    showPrompt(message, null);
                 }
             });
         } else {

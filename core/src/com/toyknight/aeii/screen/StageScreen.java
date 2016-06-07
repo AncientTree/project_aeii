@@ -3,10 +3,18 @@ package com.toyknight.aeii.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.network.NetworkListener;
+import com.toyknight.aeii.network.NetworkManager;
+import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
 import org.json.JSONObject;
@@ -29,6 +37,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     private final HashMap<String, BasicDialog> dialogs;
     private final LinkedList<String> dialog_layer;
 
+    private static Stage prompt_layer;
+    private static Dialog prompt_dialog;
+    private static Callable prompt_callback;
+    private static TextButton prompt_btn_ok;
+
     public StageScreen(GameContext context) {
         this.context = context;
         this.ts = context.getTileSize();
@@ -45,16 +58,21 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         this.dialog_shown = false;
     }
 
-    public GameContext getContext() {
-        return context;
+    public static void initializePrompt(Skin skin, int ts) {
+        prompt_layer = new Stage();
+
+        int dw = ts * 6;
+        int dh = ts / 2 * 5;
+        prompt_dialog = new Dialog("", skin);
+        prompt_dialog.setBounds((Gdx.graphics.getWidth() - dw) / 2, (Gdx.graphics.getHeight() - dh) / 2, dw, dh);
+        prompt_dialog.setVisible(false);
+        prompt_layer.addActor(prompt_dialog);
+
+        prompt_btn_ok = new TextButton(Language.getText("LB_OK"), skin);
     }
 
-    public void onFocus() {
-        if (isDialogShown()) {
-            Gdx.input.setInputProcessor(dialog_stage);
-        } else {
-            Gdx.input.setInputProcessor(this);
-        }
+    public GameContext getContext() {
+        return context;
     }
 
     public void addDialog(String name, BasicDialog dialog) {
@@ -109,8 +127,55 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         return false;
     }
 
+    public void showPrompt(String content, Callable callback) {
+        if (!prompt_dialog.isVisible()) {
+            prompt_callback = callback;
+
+            //set the message and title
+            prompt_dialog.getContentTable().reset();
+            prompt_dialog.getContentTable().add(new Label(content, getContext().getSkin()));
+            prompt_dialog.setWidth(Math.max(ts * 6, FontRenderer.getTextLayout(content).width + ts));
+
+            //set the button
+            prompt_dialog.getButtonTable().reset();
+            prompt_dialog.getButtonTable().add(prompt_btn_ok).size(ts / 2 * 5, ts / 2);
+            prompt_btn_ok.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    closePrompt();
+                }
+            });
+
+            prompt_dialog.setVisible(true);
+            Gdx.input.setInputProcessor(prompt_layer);
+        }
+    }
+
+    public void closePrompt() {
+        prompt_dialog.setVisible(false);
+        if (prompt_callback != null) {
+            prompt_callback.call();
+            prompt_callback = null;
+        }
+        if (isDialogShown()) {
+            Gdx.input.setInputProcessor(dialog_stage);
+        } else {
+            Gdx.input.setInputProcessor(this);
+        }
+    }
+
     @Override
     public void show() {
+        NetworkManager.setNetworkListener(this);
+        if (prompt_dialog.isVisible()) {
+            Gdx.input.setInputProcessor(prompt_layer);
+        } else {
+            if (isDialogShown()) {
+                Gdx.input.setInputProcessor(dialog_stage);
+            } else {
+                Gdx.input.setInputProcessor(this);
+            }
+        }
     }
 
     @Override
@@ -120,6 +185,10 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         if (isDialogShown()) {
             this.dialog_stage.draw();
             this.dialog_stage.act(delta);
+        }
+        if (prompt_dialog.isVisible()) {
+            prompt_layer.draw();
+            prompt_layer.act();
         }
     }
 
@@ -141,7 +210,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onDisconnect() {
-        getContext().showMessage(Language.getText("MSG_ERR_DFS"), new Callable() {
+        showPrompt(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
                 getContext().gotoMainMenuScreen();

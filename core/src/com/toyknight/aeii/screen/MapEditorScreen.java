@@ -194,7 +194,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
 
     @Override
     public void onError(String message) {
-        getContext().showMessage(message, null);
+        showPrompt(message, null);
     }
 
     @Override
@@ -247,8 +247,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
 
     @Override
     public void show() {
+        super.show();
         MapAnimator.setCanvas(this);
-        Gdx.input.setInputProcessor(this);
         getEditor().initialize();
         this.scale = 1.0f;
         locateViewport(0, 0);

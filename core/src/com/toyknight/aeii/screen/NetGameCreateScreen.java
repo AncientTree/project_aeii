@@ -332,7 +332,7 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFail(String message) {
-                getContext().showMessage(message, null);
+                showPrompt(message, null);
             }
         });
     }
@@ -356,7 +356,7 @@ public class NetGameCreateScreen extends StageScreen {
             @Override
             public void onFail(String message) {
                 btn_leave.setText(Language.getText("LB_LEAVE"));
-                getContext().showMessage(message, null);
+                showPrompt(message, null);
             }
         });
     }
@@ -377,14 +377,14 @@ public class NetGameCreateScreen extends StageScreen {
                 if (success) {
                     createGame();
                 } else {
-                    getContext().showMessage(Language.getText("MSG_ERR_CNSG"), null);
+                    showPrompt(Language.getText("MSG_ERR_CNSG"), null);
                 }
             }
 
             @Override
             public void onFail(String message) {
                 btn_start.setText(Language.getText("LB_START"));
-                getContext().showMessage(message, null);
+                showPrompt(message, null);
             }
         });
     }
@@ -425,7 +425,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
+        super.show();
 
         record_on = false;
 
