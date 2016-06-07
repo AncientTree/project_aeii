@@ -3,6 +3,7 @@ package com.toyknight.aeii.screen.widgets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
@@ -29,8 +30,12 @@ public class PlayerList extends StringList<PlayerSnapshot> {
         this.unit_offset = (big_circle_height - ts) / 2;
     }
 
-    public boolean hasTeamAccess(int id, int team) {
+    private boolean hasTeamAccess(int id, int team) {
         return NetworkManager.getRoomSetting().allocation[team] == id;
+    }
+
+    private int getPlayerType(int team) {
+        return NetworkManager.getRoomSetting().game.getPlayer(team).getType();
     }
 
     @Override
@@ -49,7 +54,7 @@ public class PlayerList extends StringList<PlayerSnapshot> {
             float s_width = FontRenderer.getTextLayout(user_string).width;
             int ti = 0;
             for (int team = 0; team < 4; team++) {
-                if (hasTeamAccess(player.id, team)) {
+                if (hasTeamAccess(player.id, team) && getPlayerType(team) != Player.ROBOT) {
                     batch.draw(ResourceManager.getBigCircleTexture(0),
                             x + ts / 4 + s_width + bc_offset + ti * (bc_offset + big_circle_width),
                             y + itemY - item_height + bc_offset,

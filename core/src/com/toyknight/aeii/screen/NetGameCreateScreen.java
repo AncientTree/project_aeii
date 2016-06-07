@@ -150,7 +150,8 @@ public class NetGameCreateScreen extends StageScreen {
             spinner_alliance[team].setListener(allocation_listener);
             spinner_alliance[team].setItems(alliance);
 
-            String[] type = new String[]{Language.getText("LB_NONE"), Language.getText("LB_PLAYER")};
+            String[] type = new String[]{
+                    Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
             spinner_type[team] = new Spinner<String>(ts, getContext().getSkin());
             spinner_type[team].setListener(allocation_listener);
             spinner_type[team].setContentWidth(ts * 2);
@@ -248,8 +249,14 @@ public class NetGameCreateScreen extends StageScreen {
                     lb_username[team].setText("");
                     spinner_type[team].setSelectedIndex(0);
                 } else {
-                    lb_username[team].setText(getUsername(getRoomSetting().allocation[team]));
-                    spinner_type[team].setSelectedIndex(1);
+                    if (getRoomSetting().game.getPlayer(team).getType() == Player.LOCAL) {
+                        lb_username[team].setText(getUsername(getRoomSetting().allocation[team]));
+                        spinner_type[team].setSelectedIndex(1);
+                    }
+                    if (getRoomSetting().game.getPlayer(team).getType() == Player.ROBOT) {
+                        lb_username[team].setText("");
+                        spinner_type[team].setSelectedIndex(2);
+                    }
                 }
                 Player player = getRoomSetting().game.getPlayer(team);
                 spinner_alliance[team].setSelectedIndex(player.getAlliance() - 1);
@@ -263,12 +270,17 @@ public class NetGameCreateScreen extends StageScreen {
                 String selected = spinner_type[team].getSelectedItem();
                 if (selected.equals(Language.getText("LB_NONE"))) {
                     getRoomSetting().allocation[team] = -1;
+                    getRoomSetting().game.getPlayer(team).setType(Player.NONE);
                 }
                 if (selected.equals(Language.getText("LB_PLAYER"))) {
                     if (getRoomSetting().allocation[team] == -1) {
                         getRoomSetting().allocation[team] = NetworkManager.getServiceID();
                         getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);
                     }
+                }
+                if (selected.equals(Language.getText("LB_ROBOT"))) {
+                    getRoomSetting().allocation[team] = NetworkManager.getServiceID();
+                    getRoomSetting().game.getPlayer(team).setType(Player.ROBOT);
                 }
                 int alliance = spinner_alliance[team].getSelectedItem();
                 getRoomSetting().game.getPlayer(team).setAlliance(alliance);
@@ -361,11 +373,10 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFinish(Boolean success) {
+                btn_start.setText(Language.getText("LB_START"));
                 if (success) {
-                    btn_start.setText(Language.getText("LB_START"));
                     createGame();
                 } else {
-                    btn_start.setText(Language.getText("LB_START"));
                     getContext().showMessage(Language.getText("MSG_ERR_CNSG"), null);
                 }
             }
@@ -381,12 +392,8 @@ public class NetGameCreateScreen extends StageScreen {
     private void createGame() {
         getContext().getGameManager().getGameRecorder().setEnabled(record_on);
         for (int team = 0; team < 4; team++) {
-            if (hasTeamAccess(team)) {
-                getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);
-            } else {
-                if (getRoomSetting().game.getPlayer(team).getType() != Player.NONE) {
-                    getRoomSetting().game.getPlayer(team).setType(Player.REMOTE);
-                }
+            if (!hasTeamAccess(team) && getRoomSetting().game.getPlayer(team).getType() != Player.NONE) {
+                getRoomSetting().game.getPlayer(team).setType(Player.REMOTE);
             }
         }
         getRoomSetting().started = true;

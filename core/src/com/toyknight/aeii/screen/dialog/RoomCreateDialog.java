@@ -33,6 +33,7 @@ public class RoomCreateDialog extends BasicDialog {
     public static final int LOAD_GAME = 0x2;
 
     private final Integer[] gold_preset = new Integer[]{200, 250, 300, 450, 500, 550, 700, 850, 1000, 1500, 2000};
+    private final Integer[] population_preset = new Integer[]{15, 20, 25, 30};
 
     private int mode;
 
@@ -121,7 +122,7 @@ public class RoomCreateDialog extends BasicDialog {
         addActor(lb_max_population);
         spinner_population = new Spinner<Integer>(ts, getContext().getSkin());
         spinner_population.setPosition(ts * 6 + ts / 2 * 3, getHeight() - ts * 6 - ts / 2);
-        spinner_population.setItems(new Integer[]{10, 15, 20, 25});
+        spinner_population.setItems(population_preset);
         addActor(spinner_population);
     }
 
