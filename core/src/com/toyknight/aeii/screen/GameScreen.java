@@ -22,7 +22,6 @@ import com.toyknight.aeii.screen.widgets.CircleButton;
 import com.toyknight.aeii.screen.widgets.MessageBoard;
 import com.toyknight.aeii.screen.dialog.MessageBox;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
-import com.toyknight.aeii.network.entity.RoomSetting;
 import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.TileFactory;
 import org.json.JSONObject;
@@ -304,8 +303,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     @Override
-    public void onAllocationUpdate() {
-        int[] allocation = NetworkManager.getRoomSetting().allocation;
+    public void onAllocationUpdate(int[] alliance, int[] allocation, int[] types) {
+        super.onAllocationUpdate(alliance, allocation, types);
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
             if (player.getType() == Player.LOCAL && allocation[team] != NetworkManager.getServiceID()) {
@@ -324,13 +323,15 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onPlayerJoin(int id, String username) {
-        message_box.setPlayers(NetworkManager.getRoomSetting().players);
+        super.onPlayerJoin(id, username);
+        message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(Language.getText("MSG_INFO_PJ"), username));
     }
 
     @Override
-    public void onPlayerLeave(int id, String username) {
-        message_box.setPlayers(NetworkManager.getRoomSetting().players);
+    public void onPlayerLeave(int id, String username, int host) {
+        super.onPlayerLeave(id, username, host);
+        message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(Language.getText("MSG_INFO_PD"), username));
     }
 
@@ -373,8 +374,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         btn_message.setVisible(NetworkManager.isConnected());
 
         if (NetworkManager.isConnected()) {
-            RoomSetting setting = NetworkManager.getRoomSetting();
-            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(setting.players);
+            Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(getContext().getRoomManager().getPlayers());
             message_box.setPlayers(players);
         } else {
             message_box.setPlayers(new Array<PlayerSnapshot>());

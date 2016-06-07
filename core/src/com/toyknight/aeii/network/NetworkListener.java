@@ -11,9 +11,9 @@ public interface NetworkListener {
 
     void onPlayerJoin(int id, String username);
 
-    void onPlayerLeave(int id, String username);
+    void onPlayerLeave(int id, String username, int host);
 
-    void onAllocationUpdate();
+    void onAllocationUpdate(int[] alliance, int[] allocation, int[] types);
 
     void onGameStart();
 

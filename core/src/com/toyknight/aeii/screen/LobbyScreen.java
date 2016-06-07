@@ -13,9 +13,7 @@ import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.network.NetworkListener;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.network.NetworkManager;
@@ -190,30 +188,24 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         if (getSelectedRoom() != null) {
             Gdx.input.setInputProcessor(null);
             btn_join.setText(Language.getText("LB_JOINING"));
-            getContext().submitAsyncTask(new AsyncTask<Boolean>() {
+            getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
                 @Override
-                public Boolean doTask() {
+                public RoomSetting doTask() {
                     return NetworkManager.requestJoinRoom(getSelectedRoom().room_number);
                 }
 
                 @Override
-                public void onFinish(Boolean success) {
+                public void onFinish(RoomSetting setting) {
                     btn_join.setText(Language.getText("LB_JOIN"));
-                    if (success) {
-                        RoomSetting setting = NetworkManager.getRoomSetting();
+                    if (setting == null) {
+                        showPrompt(Language.getText("MSG_ERR_CNJR"), null);
+                    } else {
+                        getContext().getRoomManager().initialize(setting);
                         if (setting.started) {
-                            GameCore game = setting.game;
-                            for (int team = 0; team < 4; team++) {
-                                if (game.getPlayer(team).getType() != Player.NONE) {
-                                    game.getPlayer(team).setType(Player.REMOTE);
-                                }
-                            }
-                            getContext().gotoGameScreen(game);
+                            getContext().gotoGameScreen(getContext().getRoomManager().getArrangedGame());
                         } else {
                             getContext().gotoNetGameCreateScreen();
                         }
-                    } else {
-                        showPrompt(Language.getText("MSG_ERR_CNJR"), null);
                     }
                 }
 

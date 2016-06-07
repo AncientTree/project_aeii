@@ -220,14 +220,17 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onPlayerJoin(int id, String username) {
+        getContext().getRoomManager().onPlayerJoin(id, username);
     }
 
     @Override
-    public void onPlayerLeave(int id, String username) {
+    public void onPlayerLeave(int id, String username, int host) {
+        getContext().getRoomManager().onPlayerLeave(id, host);
     }
 
     @Override
-    public void onAllocationUpdate() {
+    public void onAllocationUpdate(int[] alliance, int[] allocation, int[] types) {
+        getContext().getRoomManager().onAllocationUpdate(alliance, allocation, types);
     }
 
     @Override

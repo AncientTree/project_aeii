@@ -7,11 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.concurrent.AsyncTask;
+import com.toyknight.aeii.manager.RoomManager;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
@@ -20,7 +21,6 @@ import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.screen.widgets.StringList;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
-import com.toyknight.aeii.network.entity.RoomSetting;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -147,13 +147,13 @@ public class NetGameCreateScreen extends StageScreen {
 
             Integer[] alliance = new Integer[]{1, 2, 3, 4};
             spinner_alliance[team] = new Spinner<Integer>(ts, getContext().getSkin());
-            spinner_alliance[team].setListener(allocation_listener);
+            spinner_alliance[team].setListener(state_change_listener);
             spinner_alliance[team].setItems(alliance);
 
             String[] type = new String[]{
                     Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
             spinner_type[team] = new Spinner<String>(ts, getContext().getSkin());
-            spinner_type[team].setListener(allocation_listener);
+            spinner_type[team].setListener(state_change_listener);
             spinner_type[team].setContentWidth(ts * 2);
             spinner_type[team].setItems(type);
 
@@ -202,127 +202,70 @@ public class NetGameCreateScreen extends StageScreen {
         addActor(info_group);
     }
 
-    public RoomSetting getRoomSetting() {
-        return NetworkManager.getRoomSetting();
+    public RoomManager getRoomManager() {
+        return getContext().getRoomManager();
     }
 
-    public Array<PlayerSnapshot> getPlayers() {
-        return getRoomSetting().players;
+    public GameCore getGame() {
+        return getRoomManager().getGame();
     }
 
-    public String getUsername(int id) {
-        for (PlayerSnapshot player : getPlayers()) {
-            if (player.id == id) {
-                return player.username;
-            }
-        }
-        return "";
-    }
-
-    public int[] getPlayerTypes() {
-        int[] player_type = new int[4];
+    public void updateView() {
         for (int team = 0; team < 4; team++) {
-            Player player = getRoomSetting().game.getPlayer(team);
-            player_type[team] = player.getType();
-        }
-        return player_type;
-    }
-
-    public int[] getAllianceState() {
-        int[] alliance = new int[4];
-        for (int team = 0; team < 4; team++) {
-            alliance[team] = getRoomSetting().game.getPlayer(team).getAlliance();
-        }
-        return alliance;
-    }
-
-    public boolean hasTeamAccess(int team) {
-        return getRoomSetting().game.getMap().hasTeamAccess(team)
-                && NetworkManager.getServiceID() == getRoomSetting().allocation[team];
-    }
-
-    public void updateAllocation() {
-        for (int team = 0; team < 4; team++) {
-            int player_id = getRoomSetting().allocation[team];
-            if (getRoomSetting().game.getMap().hasTeamAccess(team)) {
+            int player_id = getRoomManager().getAllocation(team);
+            if (getGame().getMap().hasTeamAccess(team)) {
                 if (player_id == -1) {
                     lb_username[team].setText("");
                     spinner_type[team].setSelectedIndex(0);
                 } else {
-                    if (getRoomSetting().game.getPlayer(team).getType() == Player.LOCAL) {
-                        lb_username[team].setText(getUsername(getRoomSetting().allocation[team]));
+                    if (getGame().getPlayer(team).getType() == Player.LOCAL) {
+
+                        lb_username[team].setText(getRoomManager().getUsername(player_id));
                         spinner_type[team].setSelectedIndex(1);
                     }
-                    if (getRoomSetting().game.getPlayer(team).getType() == Player.ROBOT) {
+                    if (getGame().getPlayer(team).getType() == Player.ROBOT) {
                         lb_username[team].setText("");
                         spinner_type[team].setSelectedIndex(2);
                     }
                 }
-                Player player = getRoomSetting().game.getPlayer(team);
-                spinner_alliance[team].setSelectedIndex(player.getAlliance() - 1);
+                spinner_alliance[team].setSelectedIndex(getGame().getPlayer(team).getAlliance() - 1);
             }
         }
     }
 
-    public void onAllocationChange() {
+    public void onStateChange() {
         for (int team = 0; team < 4; team++) {
-            if (getRoomSetting().game.getMap().hasTeamAccess(team)) {
+            if (getGame().getMap().hasTeamAccess(team)) {
                 String selected = spinner_type[team].getSelectedItem();
                 if (selected.equals(Language.getText("LB_NONE"))) {
-                    getRoomSetting().allocation[team] = -1;
-                    getRoomSetting().game.getPlayer(team).setType(Player.NONE);
+                    getRoomManager().updatePlayerType(team, Player.NONE);
                 }
                 if (selected.equals(Language.getText("LB_PLAYER"))) {
-                    if (getRoomSetting().allocation[team] == -1) {
-                        getRoomSetting().allocation[team] = NetworkManager.getServiceID();
-                        getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);
-                    }
+                    getRoomManager().updatePlayerType(team, Player.LOCAL);
                 }
                 if (selected.equals(Language.getText("LB_ROBOT"))) {
-                    getRoomSetting().allocation[team] = NetworkManager.getServiceID();
-                    getRoomSetting().game.getPlayer(team).setType(Player.ROBOT);
+                    getRoomManager().updatePlayerType(team, Player.ROBOT);
                 }
                 int alliance = spinner_alliance[team].getSelectedItem();
-                getRoomSetting().game.getPlayer(team).setAlliance(alliance);
+                getRoomManager().updateAlliance(team, alliance);
             }
         }
-        updateAllocation();
-        tryUpdateAllocation();
+        trySubmitUpdates();
+        updateView();
     }
 
     public void allocateSelectedPlayer(int team) {
-        int id = player_list.getSelected().id;
-        getRoomSetting().allocation[team] = id;
-        getRoomSetting().game.getPlayer(team).setType(Player.LOCAL);
-        updateAllocation();
-        tryUpdateAllocation();
+        int player_id = player_list.getSelected().id;
+        getRoomManager().updateAllocation(team, player_id);
+        trySubmitUpdates();
+        updateView();
     }
 
-    public void updatePlayers() {
-        player_list.setItems(getPlayers());
-    }
-
-    public void updateButtons() {
-        for (int team = 0; team < 4; team++) {
-            if (getRoomSetting().game.getMap().hasTeamAccess(team)) {
-                GameContext.setButtonEnabled(btn_allocate[team], isHost());
-                spinner_alliance[team].setEnabled(isHost());
-                spinner_type[team].setEnabled(isHost());
-            }
-        }
-        if (record_on) {
-            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_ON"));
-        } else {
-            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_OFF"));
-        }
-    }
-
-    private void tryUpdateAllocation() {
+    public void trySubmitUpdates() {
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
-            public Void doTask() {
-                NetworkManager.notifyAllocationUpdate(
-                        getAllianceState(), getRoomSetting().allocation, getPlayerTypes());
+            public Void doTask() throws Exception {
+                getRoomManager().trySubmitUpdates();
                 return null;
             }
 
@@ -335,6 +278,25 @@ public class NetGameCreateScreen extends StageScreen {
                 showPrompt(message, null);
             }
         });
+    }
+
+    public void updatePlayers() {
+        player_list.setItems(getRoomManager().getPlayers());
+    }
+
+    public void updateButtons() {
+        for (int team = 0; team < 4; team++) {
+            if (getGame().getMap().hasTeamAccess(team)) {
+                GameContext.setButtonEnabled(btn_allocate[team], getRoomManager().isHost());
+                spinner_alliance[team].setEnabled(getRoomManager().isHost());
+                spinner_type[team].setEnabled(getRoomManager().isHost());
+            }
+        }
+        if (record_on) {
+            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_ON"));
+        } else {
+            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_OFF"));
+        }
     }
 
     private void tryLeaveRoom() {
@@ -391,17 +353,8 @@ public class NetGameCreateScreen extends StageScreen {
 
     private void createGame() {
         getContext().getGameManager().getGameRecorder().setEnabled(record_on);
-        for (int team = 0; team < 4; team++) {
-            if (!hasTeamAccess(team) && getRoomSetting().game.getPlayer(team).getType() != Player.NONE) {
-                getRoomSetting().game.getPlayer(team).setType(Player.REMOTE);
-            }
-        }
-        getRoomSetting().started = true;
-        getContext().gotoGameScreen(getRoomSetting().game);
-    }
-
-    private boolean isHost() {
-        return NetworkManager.getServiceID() == getRoomSetting().host;
+        getContext().gotoGameScreen(getRoomManager().getArrangedGame());
+        getRoomManager().setStarted(true);
     }
 
     @Override
@@ -429,20 +382,19 @@ public class NetGameCreateScreen extends StageScreen {
 
         record_on = false;
 
-        RoomSetting setting = NetworkManager.getRoomSetting();
-        map_preview.setMap(setting.game.getMap());
+        map_preview.setMap(getGame().getMap());
         map_preview.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        lb_population.setText(" " + setting.max_population + " ");
-        if (setting.start_gold >= 0) {
-            lb_gold.setText(" " + setting.start_gold + " ");
+        lb_population.setText(" " + getRoomManager().getMaxPopulation() + " ");
+        if (getRoomManager().getStartGold() >= 0) {
+            lb_gold.setText(" " + getRoomManager().getStartGold() + " ");
         } else {
             lb_gold.setText(" - ");
         }
 
         team_setting_pane.clear();
         for (int team = 0; team < 4; team++) {
-            if (setting.game.getMap().hasTeamAccess(team)) {
+            if (getGame().getMap().hasTeamAccess(team)) {
                 team_setting_pane.add(btn_allocate[team])
                         .size(ts, ts)
                         .padTop(ts / 2);
@@ -466,28 +418,31 @@ public class NetGameCreateScreen extends StageScreen {
             }
             spinner_type[team].setSelectedIndex(0);
         }
-        player_list.setItems(getPlayers());
+        player_list.setItems(getRoomManager().getPlayers());
         player_list.setSelectedIndex(0);
-        updateAllocation();
+        updateView();
         updateButtons();
     }
 
     @Override
     public void onPlayerJoin(int id, String username) {
+        super.onPlayerJoin(id, username);
         updatePlayers();
         //show in message box
     }
 
     @Override
-    public void onPlayerLeave(int id, String username) {
+    public void onPlayerLeave(int id, String username, int host) {
+        super.onPlayerLeave(id, username, host);
         updatePlayers();
         updateButtons();
         //show in message box
     }
 
     @Override
-    public void onAllocationUpdate() {
-        updateAllocation();
+    public void onAllocationUpdate(int[] alliance, int[] allocation, int[] types) {
+        super.onAllocationUpdate(alliance, allocation, types);
+        updateView();
     }
 
     @Override
@@ -495,10 +450,10 @@ public class NetGameCreateScreen extends StageScreen {
         createGame();
     }
 
-    private final SpinnerListener allocation_listener = new SpinnerListener() {
+    private final SpinnerListener state_change_listener = new SpinnerListener() {
         @Override
         public void onValueChanged(Spinner spinner) {
-            onAllocationChange();
+            onStateChange();
         }
     };
 

@@ -24,7 +24,7 @@ public class CommandExecutor {
     }
 
     public void execute(String command, int selected_id) {
-        if (NetworkManager.isConnected() && isHost()) {
+        if (NetworkManager.isConnected() && getContext().getRoomManager().isHost()) {
             Scanner scanner = new Scanner(command);
             try {
                 String entry = scanner.next();
@@ -41,13 +41,11 @@ public class CommandExecutor {
 
     private void assign(int id, int team) {
         getAllocation()[team] = id;
-        NetworkManager.getListener().onAllocationUpdate();
+        NetworkManager.getListener().onAllocationUpdate(new int[4], getAllocation(), new int[4]);
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
-                int[] temp = new int[4];
-                Arrays.fill(temp, 0);
-                NetworkManager.notifyAllocationUpdate(temp, getAllocation(), temp);
+                NetworkManager.notifyAllocationUpdate(new int[4], getAllocation(), new int[4]);
                 return null;
             }
 
@@ -62,15 +60,11 @@ public class CommandExecutor {
     }
 
     private GameCore getGame() {
-        return NetworkManager.getRoomSetting().game;
+        return getContext().getRoomManager().getGame();
     }
 
     private int[] getAllocation() {
-        return NetworkManager.getRoomSetting().allocation;
-    }
-
-    private boolean isHost() {
-        return NetworkManager.getServiceID() == NetworkManager.getRoomSetting().host;
+        return getContext().getRoomManager().getAllocations();
     }
 
 }

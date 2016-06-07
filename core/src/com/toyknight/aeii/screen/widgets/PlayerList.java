@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.entity.Player;
-import com.toyknight.aeii.network.NetworkManager;
+import com.toyknight.aeii.manager.RoomManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.utils.UnitFactory;
@@ -16,26 +16,33 @@ public class PlayerList extends StringList<PlayerSnapshot> {
 
     private final int ts;
 
+    private final RoomManager room_manager;
+
     private final int big_circle_width;
     private final int big_circle_height;
     private final int bc_offset;
     private final int unit_offset;
 
-    public PlayerList(int item_height, int ts) {
+    public PlayerList(RoomManager room_manager, int item_height, int ts) {
         super(item_height);
         this.ts = ts;
+        this.room_manager = room_manager;
         this.big_circle_width = ts * 32 / 24;
         this.big_circle_height = ts * 33 / 24;
         this.bc_offset = (item_height - big_circle_height) / 2;
         this.unit_offset = (big_circle_height - ts) / 2;
     }
 
+    private RoomManager getRoomManager() {
+        return room_manager;
+    }
+
     private boolean hasTeamAccess(int id, int team) {
-        return NetworkManager.getRoomSetting().allocation[team] == id;
+        return getRoomManager().getAllocation(team) == id;
     }
 
     private int getPlayerType(int team) {
-        return NetworkManager.getRoomSetting().game.getPlayer(team).getType();
+        return getRoomManager().getGame().getPlayer(team).getType();
     }
 
     @Override

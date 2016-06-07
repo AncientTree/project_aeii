@@ -15,6 +15,7 @@ import com.toyknight.aeii.*;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.network.NetworkManager;
+import com.toyknight.aeii.network.entity.RoomSetting;
 import com.toyknight.aeii.screen.LobbyScreen;
 import com.toyknight.aeii.screen.widgets.Spinner;
 import com.toyknight.aeii.screen.widgets.StringList;
@@ -170,20 +171,21 @@ public class RoomCreateDialog extends BasicDialog {
         if (object_list.getSelected() != null) {
             setEnabled(false);
             btn_create.setText(Language.getText("LB_CREATING"));
-            getContext().submitAsyncTask(new AsyncTask<Boolean>() {
+            getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
                 @Override
-                public Boolean doTask() throws AEIIException {
+                public RoomSetting doTask() throws AEIIException {
                     return tryCreateRoom();
                 }
 
                 @Override
-                public void onFinish(Boolean success) {
+                public void onFinish(RoomSetting setting) {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
-                    if (success) {
-                        getContext().gotoNetGameCreateScreen();
-                    } else {
+                    if (setting == null) {
                         getOwner().showPrompt(Language.getText("MSG_ERR_CNCR"), null);
+                    } else {
+                        getContext().getRoomManager().initialize(setting);
+                        getContext().gotoNetGameCreateScreen();
                     }
                 }
 
@@ -197,7 +199,7 @@ public class RoomCreateDialog extends BasicDialog {
         }
     }
 
-    private boolean tryCreateRoom() throws AEIIException {
+    private RoomSetting tryCreateRoom() throws AEIIException {
         switch (getMode()) {
             case NEW_GAME:
                 String map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
@@ -210,13 +212,13 @@ public class RoomCreateDialog extends BasicDialog {
                 FileHandle save_file = (FileHandle) object_list.getSelected();
                 GameSave game_save = GameToolkit.loadGame(save_file);
                 if (game_save == null) {
-                    return false;
+                    return null;
                 } else {
                     capacity = spinner_capacity.getSelectedItem();
                     return NetworkManager.requestCreateRoom(save_file.name(), game_save.getGame(), capacity);
                 }
             default:
-                return false;
+                return null;
         }
     }
 

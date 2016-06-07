@@ -15,6 +15,7 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.manager.GameManagerListener;
+import com.toyknight.aeii.manager.RoomManager;
 import com.toyknight.aeii.record.GameRecord;
 import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.renderer.BorderRenderer;
@@ -51,6 +52,8 @@ public class GameContext extends Game implements GameManagerListener {
     private GameManager game_manager;
 
     private GameRecordPlayer record_player;
+
+    private RoomManager room_manager;
 
     private Screen previous_screen;
 
@@ -91,6 +94,11 @@ public class GameContext extends Game implements GameManagerListener {
             skin.get(Dialog.WindowStyle.class).titleFont = FontRenderer.getTextFont();
             skin.get(List.ListStyle.class).font = FontRenderer.getTextFont();
 
+            game_manager = new GameManager(this, new AnimationManager());
+            game_manager.setListener(this);
+
+            room_manager = new RoomManager();
+
             LogoScreen logo_screen = new LogoScreen(this);
             main_menu_screen = new MainMenuScreen(this);
             map_editor_screen = new MapEditorScreen(this);
@@ -100,9 +108,6 @@ public class GameContext extends Game implements GameManagerListener {
             game_screen = new GameScreen(this);
             statistics_screen = new StatisticsScreen(this);
             StageScreen.initializePrompt(getSkin(), TILE_SIZE);
-
-            game_manager = new GameManager(this, new AnimationManager());
-            game_manager.setListener(this);
 
             record_player = new GameRecordPlayer(this);
             record_player.setListener(game_screen);
@@ -182,6 +187,10 @@ public class GameContext extends Game implements GameManagerListener {
 
     public GameRecordPlayer getRecordPlayer() {
         return record_player;
+    }
+
+    public RoomManager getRoomManager() {
+        return room_manager;
     }
 
     public GameCore getGame() {

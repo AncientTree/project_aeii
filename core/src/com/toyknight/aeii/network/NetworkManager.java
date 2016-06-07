@@ -34,8 +34,6 @@ public class NetworkManager {
 
     private static int service_id;
 
-    private static RoomSetting room_setting;
-
     private NetworkManager() {
     }
 
@@ -49,10 +47,6 @@ public class NetworkManager {
 
     public static int getServiceID() {
         return service_id;
-    }
-
-    public static RoomSetting getRoomSetting() {
-        return room_setting;
     }
 
     public static boolean connect(ServerConfiguration server, String username, String v_string)
@@ -94,51 +88,6 @@ public class NetworkManager {
         return client != null && client.isConnected();
     }
 
-    private static void onPlayerJoin(int id, String username) {
-        PlayerSnapshot snapshot = new PlayerSnapshot(id, username, false);
-        getRoomSetting().players.add(snapshot);
-        if (listener != null) {
-            synchronized (GameContext.RENDER_LOCK) {
-                listener.onPlayerJoin(id, username);
-            }
-        }
-    }
-
-    private static void onPlayerLeave(int id, String username, int host) {
-        int index = -1;
-        for (int i = 0; i < getRoomSetting().players.size; i++) {
-            PlayerSnapshot player = getRoomSetting().players.get(i);
-            player.is_host = (player.id == host);
-            if (id == player.id && index < 0) {
-                index = i;
-            }
-        }
-        if (index >= 0) {
-            getRoomSetting().players.removeIndex(index);
-        }
-        getRoomSetting().host = host;
-        if (listener != null) {
-            synchronized (GameContext.RENDER_LOCK) {
-                listener.onPlayerLeave(id, username);
-            }
-        }
-    }
-
-    private static void onAllocationUpdate(int[] alliance, int[] allocation, int[] types) {
-        getRoomSetting().allocation = allocation;
-        if (!getRoomSetting().started) {
-            for (int team = 0; team < 4; team++) {
-                getRoomSetting().game.getPlayer(team).setAlliance(alliance[team]);
-                getRoomSetting().game.getPlayer(team).setType(types[team]);
-            }
-        }
-        if (listener != null) {
-            synchronized (GameContext.RENDER_LOCK) {
-                listener.onAllocationUpdate();
-            }
-        }
-    }
-
     public static void onReceive(Object object) {
         try {
             if (object instanceof String) {
@@ -165,13 +114,21 @@ public class NetworkManager {
             case NetworkConstants.PLAYER_JOINING:
                 int id = notification.getInt("player_id");
                 String username = notification.getString("username");
-                onPlayerJoin(id, username);
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onPlayerJoin(id, username);
+                    }
+                }
                 break;
             case NetworkConstants.PLAYER_LEAVING:
                 id = notification.getInt("player_id");
                 username = notification.getString("username");
                 int host = notification.getInt("host_id");
-                onPlayerLeave(id, username, host);
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onPlayerLeave(id, username, host);
+                    }
+                }
                 break;
             case NetworkConstants.UPDATE_ALLOCATION:
                 int[] types = new int[4];
@@ -182,7 +139,11 @@ public class NetworkManager {
                     alliance[team] = notification.getJSONArray("alliance").getInt(team);
                     allocation[team] = notification.getJSONArray("allocation").getInt(team);
                 }
-                onAllocationUpdate(alliance, allocation, types);
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onAllocationUpdate(alliance, allocation, types);
+                    }
+                }
                 break;
             case NetworkConstants.GAME_START:
                 if (listener != null) {
@@ -263,8 +224,8 @@ public class NetworkManager {
         }
     }
 
-    public static boolean requestCreateRoom(String map_name, Map map, int capacity, int start_gold, int max_population)
-            throws JSONException {
+    public static RoomSetting requestCreateRoom(
+            String map_name, Map map, int capacity, int start_gold, int max_population) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.CREATE_ROOM);
         request.put("map_name", map_name);
         request.put("map", map.toJson());
@@ -273,47 +234,44 @@ public class NetworkManager {
         request.put("max_population", max_population);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            return false;
+            return null;
         } else {
             if (response.getBoolean("approved")) {
-                room_setting = new RoomSetting(response.getJSONObject("room_setting"));
-                return true;
+                return new RoomSetting(response.getJSONObject("room_setting"));
             } else {
-                return false;
+                return null;
             }
         }
     }
 
-    public static boolean requestCreateRoom(String save_name, GameCore game, int capacity) throws JSONException {
+    public static RoomSetting requestCreateRoom(String save_name, GameCore game, int capacity) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.CREATE_ROOM_SAVED);
         request.put("save_name", save_name);
         request.put("game", game.toJson());
         request.put("capacity", capacity);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            return false;
+            return null;
         } else {
             if (response.getBoolean("approved")) {
-                room_setting = new RoomSetting(response.getJSONObject("room_setting"));
-                return true;
+                return new RoomSetting(response.getJSONObject("room_setting"));
             } else {
-                return false;
+                return null;
             }
         }
     }
 
-    public static boolean requestJoinRoom(long room_number) throws JSONException {
+    public static RoomSetting requestJoinRoom(long room_number) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.JOIN_ROOM);
         request.put("room_number", room_number);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            return false;
+            return null;
         } else {
             if (response.getBoolean("approved")) {
-                room_setting = new RoomSetting(response.getJSONObject("room_setting"));
-                return true;
+                return new RoomSetting(response.getJSONObject("room_setting"));
             } else {
-                return false;
+                return null;
             }
         }
     }
@@ -329,8 +287,7 @@ public class NetworkManager {
         sendNotification(notification);
     }
 
-    public static void notifyAllocationUpdate(int[] alliance, int[] allocation, int[] types)
-            throws JSONException {
+    public static void notifyAllocationUpdate(int[] alliance, int[] allocation, int[] types) throws JSONException {
         JSONObject notification = createNotification(NetworkConstants.UPDATE_ALLOCATION);
         JSONArray types_json = new JSONArray();
         JSONArray alliance_json = new JSONArray();

@@ -35,7 +35,7 @@ public class MessageBox extends BasicDialog {
     }
 
     private void initComponents() {
-        player_list = new PlayerList(ts * 3 / 2, ts);
+        player_list = new PlayerList(getContext().getRoomManager(), ts * 3 / 2, ts);
         ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
