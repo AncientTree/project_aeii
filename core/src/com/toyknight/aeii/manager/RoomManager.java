@@ -3,6 +3,7 @@ package com.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;
+import com.toyknight.aeii.entity.Rule;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.network.entity.RoomSetting;
@@ -48,9 +49,19 @@ public class RoomManager {
         this.game = game;
         for (int team = 0; team < 4; team++) {
             allocation[team] = -1;
-            game.getPlayer(team).setAlliance(team);
+            game.getPlayer(team).setAlliance(team + 1);
             game.getPlayer(team).setType(Player.NONE);
         }
+        started = false;
+        host = -1;
+        players = new Array<PlayerSnapshot>();
+        allocation = new int[4];
+        start_gold = Rule.GOLD_PRESET[0];
+        max_population = Rule.POPULATION_PRESET[0];
+    }
+
+    public long getRoomNumber() {
+        return room_number;
     }
 
     public GameCore getGame() {
@@ -134,6 +145,17 @@ public class RoomManager {
 
     public void updateAlliance(int team, int alliance) {
         getGame().getPlayer(team).setAlliance(alliance);
+    }
+
+    public void updateStartGold(int start_gold) {
+        this.start_gold = start_gold;
+        for (int team = 0; team < 4; team++) {
+            getGame().getPlayer(team).setGold(start_gold);
+        }
+    }
+
+    public void updateMaxPopulation(int max_population) {
+        getGame().getRule().setValue(Rule.Entry.MAX_POPULATION, max_population);
     }
 
     public void trySubmitUpdates() throws JSONException {

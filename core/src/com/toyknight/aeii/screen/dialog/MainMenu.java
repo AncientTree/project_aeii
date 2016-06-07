@@ -41,11 +41,11 @@ public class MainMenu extends BasicDialog {
     }
 
     private void initComponents() {
-        this.btn_test = new TextButton("Map Test!", getContext().getSkin());
+        this.btn_test = new TextButton(Language.getText("LB_SKIRMISH"), getContext().getSkin());
         this.btn_test.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().gotoTestScreen();
+                getContext().gotoSkirmishGameCreateScreen();
             }
         });
         this.add(btn_test).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();

@@ -16,6 +16,9 @@ import static com.toyknight.aeii.entity.Rule.Entry.CASTLE_CLEAR;
  */
 public class Rule implements Serializable {
 
+    public static final Integer[] GOLD_PRESET = new Integer[]{200, 250, 300, 450, 500, 550, 700, 850, 1000, 1500, 2000};
+    public static final Integer[] POPULATION_PRESET = new Integer[]{15, 20, 25, 30};
+
     public static final int POISON_DAMAGE = 10;
     public static final int HEALER_BASE_HEAL = 40;
     public static final int REFRESH_BASE_HEAL = 10;
@@ -122,7 +125,7 @@ public class Rule implements Serializable {
         rule.setValue(Entry.ATTACK_EXPERIENCE, 30);
         rule.setValue(Entry.COUNTER_EXPERIENCE, 10);
         rule.setValue(Entry.COMMANDER_PRICE_STEP, 100);
-        rule.setValue(Entry.MAX_POPULATION, 20);
+        rule.setValue(Entry.MAX_POPULATION, POPULATION_PRESET[0]);
         rule.setValue(Entry.ENEMY_CLEAR, true);
         rule.setValue(Entry.CASTLE_CLEAR, true);
 

@@ -49,6 +49,7 @@ public class GameMenu extends BasicDialog {
         this.btn_mini_map.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("menu");
                 getOwner().showDialog("map");
             }
         });

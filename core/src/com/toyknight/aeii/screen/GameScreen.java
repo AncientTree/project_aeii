@@ -382,7 +382,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
         message_board.clearMessages();
         mini_map.setMap(getGame().getMap());
-        mini_map.updateBounds(0, ts, viewport.width, viewport.height);
+        mini_map.updateBounds(0, 0, viewport.width, viewport.height + ts);
         closeAllDialogs();
 
         appendMessage(null, Language.getText("MSG_INFO_GS"));
