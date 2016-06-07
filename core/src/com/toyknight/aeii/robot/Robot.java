@@ -288,6 +288,11 @@ public class Robot {
     }
 
     private void submitAction(Position move_position, Position action_target, int action_type) {
+        Unit selected_unit = getManager().getSelectedUnit();
+        if (selected_unit.hasAbility(Ability.HEAVY_MACHINE) &&
+                !move_position.equals(getGame().getMap().getPosition(selected_unit))) {
+            action_type = Operation.STANDBY;
+        }
         this.action_type = action_type;
         this.action_target = action_target;
         getManager().doMove(move_position.x, move_position.y);
