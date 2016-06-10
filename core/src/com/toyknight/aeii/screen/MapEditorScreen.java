@@ -288,10 +288,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
                     cursor_map_y = createCursorMapY(pointer_y);
                     switch (getEditor().getMode()) {
                         case MODE_ERASER:
-                            doErase(cursor_map_x, cursor_map_y);
+                            getEditor().doErase(cursor_map_x, cursor_map_y);
                             break;
                         case MODE_BRUSH:
-                            doBrush(cursor_map_x, cursor_map_y);
+                            getEditor().doBrush(cursor_map_x, cursor_map_y);
                             break;
                         default:
                             //do nothing
@@ -317,10 +317,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
             cursor_map_y = createCursorMapY(pointer_y);
             switch (getEditor().getMode()) {
                 case MODE_ERASER:
-                    doErase(cursor_map_x, cursor_map_y);
+                    getEditor().doErase(cursor_map_x, cursor_map_y);
                     break;
                 case MODE_BRUSH:
-                    doBrush(cursor_map_x, cursor_map_y);
+                    getEditor().doBrush(cursor_map_x, cursor_map_y);
                     break;
                 default:
                     //do nothing
@@ -340,49 +340,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
 //        }
 //        return true;
 //    }
-
-    private void doErase(int map_x, int map_y) {
-        if (getMap().getUnit(map_x, map_y) == null) {
-            getMap().setTile((short) 0, map_x, map_y);
-            for (int dy = -1; dy <= 1; dy++) {
-                for (int dx = -1; dx <= 1; dx++) {
-                    if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
-                        TileValidator.validate(getMap(), map_x + dx, map_y + dy);
-                    }
-                }
-            }
-        } else {
-            getMap().removeUnit(map_x, map_y);
-        }
-    }
-
-    private void doBrush(int map_x, int map_y) {
-        if (getEditor().getMode() == MODE_BRUSH) {
-            switch (getEditor().getBrushType()) {
-                case TYPE_TILE:
-                    getMap().setTile(getEditor().getSelectedTileIndex(), map_x, map_y);
-                    for (int dy = -1; dy <= 1; dy++) {
-                        for (int dx = -1; dx <= 1; dx++) {
-                            if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
-                                TileValidator.validate(getMap(), map_x + dx, map_y + dy);
-                            }
-                        }
-                    }
-                    break;
-                case TYPE_UNIT:
-                    if (getMap().getUnit(map_x, map_y) == null) {
-                        Unit unit = UnitFactory.cloneUnit(getEditor().getSelectedUnit());
-                        unit.setX(map_x);
-                        unit.setY(map_y);
-                        unit.setTeam(getEditor().getSelectedTeam());
-                        getMap().addUnit(unit);
-                    }
-                    break;
-                default:
-                    //do nothing
-            }
-        }
-    }
 
     public void locateViewport(int map_x, int map_y) {
         int center_sx = map_x * ts;

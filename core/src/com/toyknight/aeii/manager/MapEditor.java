@@ -140,6 +140,49 @@ public class MapEditor {
         return map;
     }
 
+    public void doErase(int map_x, int map_y) {
+        if (getMap().getUnit(map_x, map_y) == null) {
+            getMap().setTile((short) 0, map_x, map_y);
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
+                        TileValidator.validate(getMap(), map_x + dx, map_y + dy);
+                    }
+                }
+            }
+        } else {
+            getMap().removeUnit(map_x, map_y);
+        }
+    }
+
+    public void doBrush(int map_x, int map_y) {
+        if (getMode() == MODE_BRUSH) {
+            switch (getBrushType()) {
+                case TYPE_TILE:
+                    getMap().setTile(getSelectedTileIndex(), map_x, map_y);
+                    for (int dy = -1; dy <= 1; dy++) {
+                        for (int dx = -1; dx <= 1; dx++) {
+                            if (getMap().isWithinMap(map_x + dx, map_y + dy)) {
+                                TileValidator.validate(getMap(), map_x + dx, map_y + dy);
+                            }
+                        }
+                    }
+                    break;
+                case TYPE_UNIT:
+                    if (getMap().getUnit(map_x, map_y) == null) {
+                        Unit unit = UnitFactory.cloneUnit(getSelectedUnit());
+                        unit.setX(map_x);
+                        unit.setY(map_y);
+                        unit.setTeam(getSelectedTeam());
+                        getMap().addUnit(unit);
+                    }
+                    break;
+                default:
+                    //do nothing
+            }
+        }
+    }
+
     public void saveMap(String filename, String author) {
         this.filename = filename;
         getMap().setAuthor(author);
