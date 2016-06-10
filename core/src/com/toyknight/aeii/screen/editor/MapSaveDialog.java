@@ -1,6 +1,7 @@
 package com.toyknight.aeii.screen.editor;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -32,11 +33,13 @@ public class MapSaveDialog extends BasicDialog {
         Label lb_filename = new Label(Language.getText("LB_FILENAME"), getContext().getSkin());
         this.add(lb_filename).width(ts * 5).align(Align.left).row();
         this.tf_filename = new TextField("", getContext().getSkin());
+        this.tf_filename.setMaxLength(15);
         this.add(tf_filename).width(ts * 5).row();
 
         Label lb_author = new Label(Language.getText("LB_AUTHOR"), getContext().getSkin());
         this.add(lb_author).width(ts * 5).align(Align.left).padTop(ts / 4).row();
         this.tf_author = new TextField("", getContext().getSkin());
+        this.tf_author.setMaxLength(10);
         this.add(tf_author).width(ts * 5).row();
 
         Table button_bar = new Table();
@@ -67,6 +70,7 @@ public class MapSaveDialog extends BasicDialog {
     public void display() {
         this.tf_filename.setText(getEditor().getFilename());
         this.tf_author.setText(getEditor().getMap().getAuthor());
+        this.tf_author.setTouchable(tf_author.getText().equals("default") ? Touchable.enabled : Touchable.disabled);
     }
 
 }
