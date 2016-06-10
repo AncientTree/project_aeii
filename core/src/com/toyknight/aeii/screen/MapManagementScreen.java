@@ -2,7 +2,6 @@ package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -38,8 +37,8 @@ import java.io.IOException;
 public class MapManagementScreen extends StageScreen {
 
     private final ServerConfiguration map_server_configuration =
-            new ServerConfiguration("127.0.0.1", 5438, "aeii server - NA");
-//            new ServerConfiguration("45.56.93.69", 5438, "aeii server - NA");
+//            new ServerConfiguration("127.0.0.1", 5438, "aeii server - NA");
+            new ServerConfiguration("45.56.93.69", 5438, "aeii server - NA");
 
     private final MessageDialog message_dialog;
     private final MiniMapDialog map_preview_dialog;
