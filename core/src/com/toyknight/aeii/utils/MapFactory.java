@@ -4,10 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.toyknight.aeii.AEIIException;
-import com.toyknight.aeii.entity.Map;
-import com.toyknight.aeii.entity.Position;
-import com.toyknight.aeii.entity.Tile;
-import com.toyknight.aeii.entity.Unit;
+import com.toyknight.aeii.entity.*;
 
 import java.io.*;
 import java.util.Scanner;
@@ -34,35 +31,43 @@ public class MapFactory {
             }
             int width = dis.readInt();
             int height = dis.readInt();
-            Map map = new Map(width, height);
-            map.setTeamAccess(team_access);
-            map.setAuthor(author_name);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    short tile_index = dis.readShort();
-                    map.setTile(tile_index, x, y);
+            if (5 <= width && width <= 21 && 5 <= height && height <= 21) {
+                Map map = new Map(width, height);
+                map.setTeamAccess(team_access);
+                map.setAuthor(author_name);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        short tile_index = dis.readShort();
+                        map.setTile(tile_index, x, y);
+                    }
                 }
+                int unit_count = dis.readInt();
+                for (int i = 0; i < unit_count; i++) {
+                    int team = dis.readInt();
+                    int index = dis.readInt();
+                    int x = dis.readInt();
+                    int y = dis.readInt();
+                    Unit unit = UnitFactory.createUnit(index, team);
+                    unit.setX(x);
+                    unit.setY(y);
+                    map.addUnit(unit);
+                }
+                dis.close();
+                return map;
+            } else {
+                dis.close();
+                throw new AEIIException("Invalid map size!");
             }
-            int unit_count = dis.readInt();
-            for (int i = 0; i < unit_count; i++) {
-                int team = dis.readInt();
-                int index = dis.readInt();
-                int x = dis.readInt();
-                int y = dis.readInt();
-                Unit unit = UnitFactory.createUnit(index, team);
-                unit.setX(x);
-                unit.setY(y);
-                map.addUnit(unit);
-            }
-            dis.close();
-            return map;
         } catch (IOException ex) {
             throw new AEIIException("broken map file!");
         }
     }
 
     public static void writeMap(Map map, FileHandle map_file) throws IOException {
-        DataOutputStream fos = new DataOutputStream(map_file.write(false));
+        writeMap(map, new DataOutputStream(map_file.write(false)));
+    }
+
+    public static void writeMap(Map map, DataOutputStream fos) throws IOException {
         fos.writeUTF(map.getAuthor());
         for (int team = 0; team < 4; team++) {
             fos.writeBoolean(map.hasTeamAccess(team));
@@ -86,24 +91,6 @@ public class MapFactory {
         fos.close();
     }
 
-    public static int getPlayerCount(FileHandle map_file) throws IOException {
-        DataInputStream dis = new DataInputStream(map_file.read());
-        return getPlayerCount(dis);
-    }
-
-    public static int getPlayerCount(DataInputStream dis) throws IOException {
-        int count = 0;
-        dis.readUTF();
-        for (int team = 0; team < 4; team++) {
-            boolean has_access = dis.readBoolean();
-            if (has_access) {
-                count++;
-            }
-        }
-        dis.close();
-        return count;
-    }
-
     public static void createTeamAccess(Map map) {
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
@@ -124,9 +111,19 @@ public class MapFactory {
 
     public static MapSnapshot createMapSnapshot(FileHandle map_file) {
         try {
+            DataInputStream dis = new DataInputStream(map_file.read());
+            int count = 0;
+            dis.readUTF();
+            for (int team = 0; team < 4; team++) {
+                boolean has_access = dis.readBoolean();
+                if (has_access) {
+                    count++;
+                }
+            }
+            dis.close();
             MapSnapshot snapshot = new MapSnapshot();
             snapshot.file = map_file;
-            snapshot.capacity = getPlayerCount(map_file);
+            snapshot.capacity = count;
             return snapshot;
         } catch (IOException ex) {
             return null;
@@ -167,6 +164,32 @@ public class MapFactory {
         Array<MapSnapshot> user_maps = getUserMapSnapshots();
         system_maps.addAll(user_maps);
         return system_maps;
+    }
+
+    public static boolean isSameMap(Map map_a, Map map_b) {
+        if (map_a.getWidth() == map_b.getWidth() && map_a.getHeight() == map_b.getHeight()) {
+            for (int x = 0; x < map_a.getWidth(); x++) {
+                for (int y = 0; y < map_a.getHeight(); y++) {
+                    if (map_a.getTileIndex(x, y) != map_b.getTileIndex(x, y)) {
+                        return false;
+                    }
+                }
+            }
+            for (Unit unit : map_a.getUnits()) {
+                Unit unit_b = map_b.getUnit(unit.getX(), unit.getY());
+                if (!UnitToolkit.isTheSameUnit(unit, unit_b)) {
+                    return false;
+                }
+            }
+            for (Tomb tomb : map_a.getTombs()) {
+                if (!map_b.isTomb(tomb.x, tomb.y)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static class MapSnapshot {

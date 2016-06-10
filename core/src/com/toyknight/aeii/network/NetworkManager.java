@@ -282,6 +282,45 @@ public class NetworkManager {
         return response != null && response.getBoolean("approved");
     }
 
+    public static Array<MapSnapshot> requestMapList() throws JSONException {
+        JSONObject request = createRequest(NetworkConstants.LIST_MAPS);
+        JSONObject response = sendRequest(request);
+        if (response == null) {
+            return null;
+        } else {
+            JSONArray json_list = response.getJSONArray("maps");
+            Array<MapSnapshot> map_list = new Array<MapSnapshot>();
+            for (int i = 0; i < json_list.length(); i++) {
+                MapSnapshot snapshot = new MapSnapshot(json_list.getJSONObject(i));
+                map_list.add(snapshot);
+            }
+            return map_list;
+        }
+    }
+
+    public static Map requestDownloadMap(String filename) throws JSONException {
+        JSONObject request = createRequest(NetworkConstants.DOWNLOAD_MAP);
+        request.put("filename", filename);
+        JSONObject response = sendRequest(request);
+        if (response == null) {
+            return null;
+        } else {
+            if (response.getBoolean("approved")) {
+                return new Map(response.getJSONObject("map"));
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public static boolean requestUploadMap(Map map, String map_name) throws JSONException {
+        JSONObject request = createRequest(NetworkConstants.UPLOAD_MAP);
+        request.put("map", map.toJson());
+        request.put("map_name", map_name);
+        JSONObject response = sendRequest(request);
+        return response != null && response.getBoolean("approved");
+    }
+
     public static void notifyLeaveRoom() throws JSONException {
         JSONObject notification = createNotification(NetworkConstants.PLAYER_LEAVING);
         sendNotification(notification);

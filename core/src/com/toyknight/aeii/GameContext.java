@@ -64,6 +64,7 @@ public class GameContext extends Game implements GameManagerListener {
     private SkirmishGameCreateScreen skirmish_game_create_screen;
     private GameScreen game_screen;
     private StatisticsScreen statistics_screen;
+    private MapManagementScreen map_management_screen;
 
     public GameContext(Platform platform, int ts) {
         this.TILE_SIZE = ts;
@@ -107,6 +108,7 @@ public class GameContext extends Game implements GameManagerListener {
             skirmish_game_create_screen = new SkirmishGameCreateScreen(this);
             game_screen = new GameScreen(this);
             statistics_screen = new StatisticsScreen(this);
+            map_management_screen = new MapManagementScreen(this);
             StageScreen.initializePrompt(getSkin(), TILE_SIZE);
 
             record_player = new GameRecordPlayer(this);
@@ -245,6 +247,10 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void gotoSkirmishGameCreateScreen() {
         gotoScreen(skirmish_game_create_screen);
+    }
+
+    public void gotoMapManagementScreen() {
+        gotoScreen(map_management_screen);
     }
 
     public void gotoPreviousScreen() {

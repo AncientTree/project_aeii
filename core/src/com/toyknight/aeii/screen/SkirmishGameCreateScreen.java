@@ -152,12 +152,13 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
     @Override
     public void onSelect(int index, Object value) {
         try {
+            team_setting_pane.clear();
+
             MapFactory.MapSnapshot snapshot = map_list.getSelected();
             selected_map = MapFactory.createMap(snapshot.file);
             map_preview.setMap(selected_map);
             map_preview.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-            team_setting_pane.clear();
             for (int team = 0; team < 4; team++) {
                 if (selected_map.hasTeamAccess(team)) {
                     team_setting_pane.add(team_image[team])

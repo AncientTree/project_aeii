@@ -17,6 +17,9 @@ public class NetworkConstants {
     public static final int START_GAME = 0x7;
     public static final int CREATE_ROOM = 0x8;
     public static final int CREATE_ROOM_SAVED = 0x9;
+    public static final int LIST_MAPS = 0x91;
+    public static final int UPLOAD_MAP = 0x92;
+    public static final int DOWNLOAD_MAP = 0x93;
 
     //Notifications
     public static final int PLAYER_JOINING = 0x10;

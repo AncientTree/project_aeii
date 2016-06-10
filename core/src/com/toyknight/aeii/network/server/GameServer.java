@@ -39,11 +39,17 @@ public class GameServer {
 
     private ExecutorService executor;
 
+    private MapManager map_manager;
+
     private final Object PLAYER_LOCK = new Object();
     private ObjectMap<Integer, PlayerService> players;
 
     private final Object ROOM_LOCK = new Object();
     private ObjectMap<Long, Room> rooms;
+
+    public MapManager getMapManager() {
+        return map_manager;
+    }
 
     public PlayerService getPlayer(int id) {
         synchronized (PLAYER_LOCK) {
@@ -160,6 +166,15 @@ public class GameServer {
                 break;
             case NetworkConstants.CREATE_ROOM_SAVED:
                 doRespondCreateRoomSaved(player, request);
+                break;
+            case NetworkConstants.LIST_MAPS:
+                doRespondListMaps(player, request);
+                break;
+            case NetworkConstants.UPLOAD_MAP:
+                doRespondUploadMap(player, request);
+                break;
+            case NetworkConstants.DOWNLOAD_MAP:
+                doRespondDownloadMap(player, request);
                 break;
             default:
                 //do nothing
@@ -331,6 +346,68 @@ public class GameServer {
         } catch (JSONException ex) {
             String message = String.format(
                     "Bad game starting request from %s@%s", player.getUsername(), player.getAddress());
+            Log.error(TAG, message, ex);
+        }
+    }
+
+    public void doRespondListMaps(PlayerService player, JSONObject request) {
+        try {
+            if (player.isAuthenticated()) {
+                JSONObject response = createResponse(request);
+                response.put("maps", getMapManager().getSerializedMapList());
+                player.getConnection().sendTCP(response.toString());
+            }
+        } catch (JSONException ex) {
+            String message = String.format(
+                    "Bad map listing request from %s@%s", player.getUsername(), player.getAddress());
+            Log.error(TAG, message, ex);
+        }
+    }
+
+    public void doRespondUploadMap(PlayerService player, JSONObject request) {
+        try {
+            if (player.isAuthenticated()) {
+                JSONObject response = createResponse(request);
+                Map map = new Map(request.getJSONObject("map"));
+                String map_name = request.getString("map_name");
+                boolean approved;
+                try {
+                    getMapManager().addMap(map, map_name);
+                    approved = true;
+                } catch (IOException ex) {
+                    approved = false;
+                }
+                response.put("approved", approved);
+                player.getConnection().sendTCP(response.toString());
+            }
+        } catch (JSONException ex) {
+            String message = String.format(
+                    "Bad map uploading request from %s@%s", player.getUsername(), player.getAddress());
+            Log.error(TAG, message, ex);
+        }
+    }
+
+    public void doRespondDownloadMap(PlayerService player, JSONObject request) {
+        try {
+            if (player.isAuthenticated()) {
+                JSONObject response = createResponse(request);
+                String filename = request.getString("filename");
+                boolean approved;
+                try {
+                    Map map = getMapManager().getMap(filename);
+                    response.put("map", map.toJson());
+                    approved = true;
+                } catch (IOException ex) {
+                    approved = false;
+                } catch (AEIIException ex) {
+                    approved = false;
+                }
+                response.put("approved", approved);
+                player.getConnection().sendTCP(response.toString());
+            }
+        } catch (JSONException ex) {
+            String message = String.format(
+                    "Bad map downloading request from %s@%s", player.getUsername(), player.getAddress());
             Log.error(TAG, message, ex);
         }
     }
@@ -524,7 +601,19 @@ public class GameServer {
     }
 
     private void create() throws AEIIException {
+        players = new ObjectMap<Integer, PlayerService>();
+        rooms = new ObjectMap<Long, Room>();
+
+        UnitFactory.loadUnitData();
+        TileFactory.loadTileData();
+
+        V_STRING = getVerificationString();
+
+        map_manager = new MapManager();
+        map_manager.initialize();
+
         executor = Executors.newFixedThreadPool(64);
+
         server = new Server(65536, 65536);
         server.addListener(new Listener() {
             @Override
@@ -542,11 +631,6 @@ public class GameServer {
                 onReceive(connection, object);
             }
         });
-        UnitFactory.loadUnitData();
-        TileFactory.loadTileData();
-        V_STRING = getVerificationString();
-        players = new ObjectMap<Integer, PlayerService>();
-        rooms = new ObjectMap<Long, Room>();
     }
 
     public void start() {

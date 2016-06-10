@@ -22,7 +22,7 @@ public class MainMenu extends BasicDialog {
     private TextButton btn_multiplayer;
     private TextButton btn_map_editor;
     private TextButton btn_load;
-    private TextButton btn_online_contents;
+    private TextButton btn_map_management;
     private TextButton btn_about;
     private TextButton btn_exit;
 
@@ -80,15 +80,15 @@ public class MainMenu extends BasicDialog {
                 getOwner().showDialog("load");
             }
         });
-        this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        this.btn_online_contents = new TextButton(Language.getText("LB_ONLINE_CONTENTS"), getContext().getSkin());
-        this.btn_online_contents.addListener(new ClickListener() {
+        this.btn_map_management = new TextButton(Language.getText("LB_MANAGE_MAPS"), getContext().getSkin());
+        this.btn_map_management.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().showPrompt(Language.getText("MSG_INFO_NSY"), null);
+                getContext().gotoMapManagementScreen();
             }
         });
-        this.add(btn_online_contents).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
+        this.add(btn_map_management).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
+        this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_about = new TextButton(Language.getText("LB_ABOUT"), getContext().getSkin());
         this.btn_about.addListener(new ClickListener() {
             @Override

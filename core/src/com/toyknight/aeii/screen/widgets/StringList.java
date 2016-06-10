@@ -86,7 +86,14 @@ public class StringList<T> extends Widget {
     }
 
     public void updateList() {
-        this.prefWidth = getWidth();
+        float max_width = 0;
+        for (T item : items) {
+            float width = text_offset * 2 + FontRenderer.getTextLayout(item.toString()).width;
+            if (width > max_width) {
+                max_width = width;
+            }
+        }
+        this.prefWidth = max_width;
         this.prefHeight = items.size * item_height;
         if (items.size > 0) {
             setSelectedIndex(0);
