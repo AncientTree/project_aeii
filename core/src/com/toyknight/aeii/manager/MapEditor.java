@@ -2,11 +2,9 @@ package com.toyknight.aeii.manager;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.entity.Map;
+import com.toyknight.aeii.entity.Tile;
 import com.toyknight.aeii.entity.Unit;
-import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.Language;
-import com.toyknight.aeii.utils.MapFactory;
-import com.toyknight.aeii.utils.UnitFactory;
+import com.toyknight.aeii.utils.*;
 
 import java.io.IOException;
 
@@ -57,6 +55,31 @@ public class MapEditor {
         setMode(MODE_HAND);
         setBrushType(TYPE_TILE);
         getListener().onMapChange(map);
+    }
+
+    public void resizeMap(int width, int height) {
+        Map old_map = getMap();
+        Map new_map = createEmptyMap(width, height);
+        for (int x = 0; x < old_map.getWidth(); x++) {
+            for (int y = 0; y < old_map.getHeight(); y++) {
+                if (new_map.isWithinMap(x, y)) {
+                    new_map.setTile(old_map.getTileIndex(x, y), x, y);
+                }
+            }
+        }
+        for (int x = 0; x < new_map.getWidth(); x++) {
+            for (int y = 0; y < new_map.getHeight(); y++) {
+                if (new_map.getTile(x, y).getType() == Tile.TYPE_WATER) {
+                    TileValidator.validate(new_map, x, y);
+                }
+            }
+        }
+        for (Unit unit : old_map.getUnits()) {
+            if (new_map.isWithinMap(unit.getX(), unit.getY())) {
+                new_map.addUnit(unit, true);
+            }
+        }
+        setMap(new_map, getFilename());
     }
 
     public Map getMap() {

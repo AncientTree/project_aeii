@@ -273,12 +273,12 @@ public class Map implements Serializable {
         if (replace) {
             units.put(position, unit);
         } else {
-            if (!units.containsKey(position)) {
-                units.put(position, unit);
-            } else {
+            if (units.containsKey(position)) {
                 if (upper_unit_layer[position.x][position.y] == null) {
                     upper_unit_layer[position.x][position.y] = unit;
                 }
+            } else {
+                units.put(position, unit);
             }
         }
     }

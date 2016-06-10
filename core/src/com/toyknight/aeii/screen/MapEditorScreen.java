@@ -180,7 +180,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
 
     @Override
     public void onMapChange(Map map) {
-        this.scale = 1.0f;
         int map_width = map.getWidth() * ts();
         int map_height = map.getHeight() * ts();
         viewport.x = (map_width - viewport.width) / 2;

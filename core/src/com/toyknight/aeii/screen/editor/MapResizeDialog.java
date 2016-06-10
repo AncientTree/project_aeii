@@ -5,10 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.manager.MapEditor;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
+import com.toyknight.aeii.screen.widgets.NumberSpinner;
+import com.toyknight.aeii.screen.widgets.Spinner;
+import com.toyknight.aeii.screen.widgets.SpinnerListener;
 import com.toyknight.aeii.utils.Language;
 
 /**
@@ -18,10 +22,8 @@ public class MapResizeDialog extends BasicDialog {
 
     private final MapEditor editor;
 
-    private Label lb_width;
-    private Slider slider_width;
-    private Label lb_height;
-    private Slider slider_height;
+    private NumberSpinner spinner_width;
+    private NumberSpinner spinner_height;
 
     public MapResizeDialog(StageScreen owner, MapEditor editor) {
         super(owner);
@@ -30,39 +32,27 @@ public class MapResizeDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        this.lb_width = new Label(Language.getText("LB_WIDTH"), getContext().getSkin());
-        this.add(lb_width).row();
-        this.slider_width = new Slider(5, 25, 1, false, getContext().getSkin());
-        this.slider_width.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                onSizeChanged();
-            }
-        });
-        this.add(slider_width).size(ts * 7, ts).row();
+        Label lb_width = new Label(Language.getText("LB_WIDTH"), getContext().getSkin());
+        lb_width.setAlignment(Align.center);
+        this.add(lb_width).size(ts * 3, ts);
+        this.spinner_width = new NumberSpinner(5, 25, ts, getContext().getSkin());
+        this.add(spinner_width).size(ts * 3, ts).padLeft(ts / 2).row();
 
-        this.lb_height = new Label(Language.getText("LB_HEIGHT"), getContext().getSkin());
-        this.add(lb_height).row();
-        this.slider_height = new Slider(5, 25, 1, false, getContext().getSkin());
-        this.slider_height.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                onSizeChanged();
-            }
-        });
-        this.add(slider_height).size(ts * 7, ts).row();
+        Label lb_height = new Label(Language.getText("LB_HEIGHT"), getContext().getSkin());
+        lb_height.setAlignment(Align.center);
+        this.add(lb_height).size(ts * 3, ts).padTop(ts / 4);
+        this.spinner_height = new NumberSpinner(5, 25, ts, getContext().getSkin());
+        this.add(spinner_height).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 4).row();
 
-        Table button_bar = new Table();
         TextButton btn_confirm = new TextButton(Language.getText("LB_CONFIRM"), getContext().getSkin());
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Map map = getEditor().createEmptyMap((int) slider_width.getValue(), (int) slider_height.getValue());
-                getEditor().setMap(map, "not defined");
+                getEditor().resizeMap(spinner_width.getSelectedItem(), spinner_height.getSelectedItem());
                 getOwner().closeDialog("resize");
             }
         });
-        button_bar.add(btn_confirm).size(ts * 3, ts);
+        this.add(btn_confirm).size(ts * 3, ts).padTop(ts / 4);
         TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             @Override
@@ -70,14 +60,7 @@ public class MapResizeDialog extends BasicDialog {
                 getOwner().closeDialog("resize");
             }
         });
-        button_bar.add(btn_cancel).size(ts * 3, ts).padLeft(ts / 2);
-        add(button_bar).size(ts * 7, ts);
-    }
-
-    private void onSizeChanged() {
-        lb_width.setText(Language.getText("LB_WIDTH") + ": " + (int) slider_width.getValue());
-        lb_height.setText(Language.getText("LB_HEIGHT") + ": " + (int) slider_height.getValue());
-        this.layout();
+        this.add(btn_cancel).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 4);
     }
 
     public MapEditor getEditor() {
@@ -86,8 +69,8 @@ public class MapResizeDialog extends BasicDialog {
 
     @Override
     public void display() {
-        slider_width.setValue(getEditor().getMap().getWidth());
-        slider_height.setValue(getEditor().getMap().getHeight());
+        spinner_width.setSelectedIndex(getEditor().getMap().getWidth() - 5);
+        spinner_height.setSelectedIndex(getEditor().getMap().getHeight() - 5);
     }
 
 }

@@ -11,7 +11,7 @@ import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 
 /**
- * Created by toyknight on 8/31/2015.
+ * @author toyknight 8/31/2015.
  */
 public class Spinner<T> extends Table {
 
