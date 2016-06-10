@@ -383,7 +383,7 @@ public class MapManagementScreen extends StageScreen {
                     showPrompt(Language.getText("MSG_ERR_CCS"), new Callable() {
                         @Override
                         public void call() {
-                            refresh();
+                            refreshLocalMaps();
                         }
                     });
                 }
@@ -396,7 +396,7 @@ public class MapManagementScreen extends StageScreen {
                 showPrompt(Language.getText("MSG_ERR_CCS"), new Callable() {
                     @Override
                     public void call() {
-                        refresh();
+                        refreshLocalMaps();
                     }
                 });
             }
