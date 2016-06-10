@@ -363,6 +363,7 @@ public class MapManagementScreen extends StageScreen {
     @Override
     public void show() {
         super.show();
+        setNetworkRelatedButtonsEnabled(true);
         message_dialog.setMessage(Language.getText("LB_CONNECTING"));
         showDialog("message");
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
@@ -378,6 +379,7 @@ public class MapManagementScreen extends StageScreen {
                 if (success) {
                     refresh();
                 } else {
+                    setNetworkRelatedButtonsEnabled(false);
                     showPrompt(Language.getText("MSG_ERR_CCS"), new Callable() {
                         @Override
                         public void call() {
@@ -390,6 +392,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFail(String message) {
                 closeDialog("message");
+                setNetworkRelatedButtonsEnabled(false);
                 showPrompt(Language.getText("MSG_ERR_CCS"), new Callable() {
                     @Override
                     public void call() {
@@ -398,6 +401,13 @@ public class MapManagementScreen extends StageScreen {
                 });
             }
         });
+    }
+
+    private void setNetworkRelatedButtonsEnabled(boolean enabled) {
+        GameContext.setButtonEnabled(btn_upload, enabled);
+        GameContext.setButtonEnabled(btn_download, enabled);
+        GameContext.setButtonEnabled(btn_preview_server, enabled);
+        GameContext.setButtonEnabled(btn_refresh, enabled);
     }
 
 }
