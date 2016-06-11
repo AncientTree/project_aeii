@@ -139,6 +139,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
             //set the button
             prompt_dialog.getButtonTable().reset();
             prompt_dialog.getButtonTable().add(prompt_btn_ok).size(ts / 2 * 5, ts / 2);
+            prompt_btn_ok.clearListeners();
             prompt_btn_ok.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -153,14 +154,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public void closePrompt() {
         prompt_dialog.setVisible(false);
-        if (prompt_callback != null) {
-            prompt_callback.call();
-            prompt_callback = null;
-        }
         if (isDialogShown()) {
             Gdx.input.setInputProcessor(dialog_stage);
         } else {
             Gdx.input.setInputProcessor(this);
+        }
+        if (prompt_callback != null) {
+            prompt_callback.call();
+            prompt_callback = null;
         }
     }
 
