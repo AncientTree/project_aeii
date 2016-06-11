@@ -112,8 +112,8 @@ public class MapFactory {
     public static MapSnapshot createMapSnapshot(FileHandle map_file) {
         try {
             DataInputStream dis = new DataInputStream(map_file.read());
-            int count = 0;
             dis.readUTF();
+            int count = 0;
             for (int team = 0; team < 4; team++) {
                 boolean has_access = dis.readBoolean();
                 if (has_access) {
@@ -164,32 +164,6 @@ public class MapFactory {
         Array<MapSnapshot> user_maps = getUserMapSnapshots();
         system_maps.addAll(user_maps);
         return system_maps;
-    }
-
-    public static boolean isSameMap(Map map_a, Map map_b) {
-        if (map_a.getWidth() == map_b.getWidth() && map_a.getHeight() == map_b.getHeight()) {
-            for (int x = 0; x < map_a.getWidth(); x++) {
-                for (int y = 0; y < map_a.getHeight(); y++) {
-                    if (map_a.getTileIndex(x, y) != map_b.getTileIndex(x, y)) {
-                        return false;
-                    }
-                }
-            }
-            for (Unit unit : map_a.getUnits()) {
-                Unit unit_b = map_b.getUnit(unit.getX(), unit.getY());
-                if (!UnitToolkit.isTheSameUnit(unit, unit_b)) {
-                    return false;
-                }
-            }
-            for (Tomb tomb : map_a.getTombs()) {
-                if (!map_b.isTomb(tomb.x, tomb.y)) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public static class MapSnapshot {
