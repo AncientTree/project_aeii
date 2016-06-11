@@ -314,22 +314,24 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void delete() {
-        confirm_dialog.setMessage(Language.getText("MSG_INFO_DSM"));
-        confirm_dialog.setYesCallback(new Callable() {
-            @Override
-            public void call() {
-                closeDialog("confirm");
-                deleteSelectedMap();
-                refreshLocalMaps();
-            }
-        });
-        confirm_dialog.setNoCallable(new Callable() {
-            @Override
-            public void call() {
-                closeDialog("confirm");
-            }
-        });
-        showDialog("confirm");
+        if (local_map_list.getSelected() != null) {
+            confirm_dialog.setMessage(Language.getText("MSG_INFO_DSM"));
+            confirm_dialog.setYesCallback(new Callable() {
+                @Override
+                public void call() {
+                    closeDialog("confirm");
+                    deleteSelectedMap();
+                    refreshLocalMaps();
+                }
+            });
+            confirm_dialog.setNoCallable(new Callable() {
+                @Override
+                public void call() {
+                    closeDialog("confirm");
+                }
+            });
+            showDialog("confirm");
+        }
     }
 
     private void deleteSelectedMap() {
