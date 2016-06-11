@@ -301,6 +301,7 @@ public class Unit implements Serializable, Verifiable {
             setTotalExperience(total_experience + experience);
             int level_advance = getLevel() - old_level;
             current_hp += getHpGrowth() * level_advance;
+            current_movement_point += movement_growth * level_advance;
             return level_advance > 0;
         } else {
             return false;
