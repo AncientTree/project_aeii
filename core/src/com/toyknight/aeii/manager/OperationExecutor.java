@@ -287,7 +287,13 @@ public class OperationExecutor {
         Unit target = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canHeal(healer, target)) {
             int heal = UnitToolkit.getHeal(healer, target);
-            submitGameEvent(GameEvent.HEAL, healer_x, healer_y, target_x, target_y, heal);
+            if (target.getCurrentHp() + heal <= 0) {
+                submitGameEvent(GameEvent.HEAL,
+                        healer_x, healer_y, target_x, target_y, UnitToolkit.validateHpChange(target, heal));
+                submitGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y);
+            } else {
+                submitGameEvent(GameEvent.HEAL, healer_x, healer_y, target_x, target_y, heal);
+            }
             int experience = heal + target.getCurrentHp() > 0 ?
                     getGame().getRule().getInteger(ATTACK_EXPERIENCE) :
                     getGame().getRule().getInteger(KILL_EXPERIENCE);
