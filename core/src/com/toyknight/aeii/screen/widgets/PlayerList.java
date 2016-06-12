@@ -56,7 +56,7 @@ public class PlayerList extends StringList<PlayerSnapshot> {
             }
             FontRenderer.setTextColor(Color.WHITE);
             String user_string = player.toString();
-            FontRenderer.drawText(batch, user_string, x + ts / 4, y + itemY - item_height + text_offset + FontRenderer.getTextFont().getCapHeight());
+            FontRenderer.drawText(batch, user_string, x + ts / 4, y + itemY - item_height + text_offset + ResourceManager.getTextFont().getCapHeight());
 
             float s_width = FontRenderer.getTextLayout(user_string).width;
             int ti = 0;

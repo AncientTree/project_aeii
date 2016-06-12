@@ -14,7 +14,7 @@ public class CursorAnimator extends MapAnimator {
     private final Animation cursor_animation;
 
     public CursorAnimator() {
-        Texture cursor_texture = ResourceManager.getCursorTexture();
+        Texture cursor_texture = ResourceManager.getNormalCursorTexture();
         this.cursor_animation = ResourceManager.createAnimation(cursor_texture, 2, 1, 0.3f);
     }
 

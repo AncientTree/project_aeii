@@ -1,11 +1,13 @@
 package com.toyknight.aeii.animation;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.utils.FileProvider;
 
 /**
  * @author toyknight 4/2/2015.
@@ -21,7 +23,8 @@ public class MSLogoAnimator extends Animator {
     private float time_waited = 0f;
 
     public MSLogoAnimator() {
-        animation = ResourceManager.createAnimation(ResourceManager.getMSLogoTexture(), 8, 5, 0.065f);
+        Texture texture_ms_logo = new Texture(FileProvider.getAssetsFile("images/ms_logo.png"));
+        animation = ResourceManager.createAnimation(texture_ms_logo, 8, 5, 0.065f);
         shape_renderer = new ShapeRenderer();
         shape_renderer.setAutoShapeType(true);
     }
@@ -44,7 +47,7 @@ public class MSLogoAnimator extends Animator {
 
     @Override
     public void update(float delta_time) {
-        if (time_waited < 1.7f) {
+        if (time_waited < 0.5f) {
             time_waited += delta_time;
         } else {
             addStateTime(delta_time);

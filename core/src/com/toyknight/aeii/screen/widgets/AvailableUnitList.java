@@ -12,8 +12,6 @@ import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.utils.Language;
 
-import java.util.ArrayList;
-
 /**
  * @author toyknight 5/29/2015.
  */

@@ -13,7 +13,7 @@ public class BorderRenderer {
     private static int border_size;
     private static TextureRegion[] borders;
 
-    public static void init() {
+    public static void initialize() {
         borders = new TextureRegion[8];
         Texture border_texture_sheet = ResourceManager.getBorderTexture();
         int border_size = border_texture_sheet.getHeight();

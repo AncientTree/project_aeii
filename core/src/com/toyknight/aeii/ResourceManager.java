@@ -1,17 +1,23 @@
 package com.toyknight.aeii;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.toyknight.aeii.utils.FileProvider;
+import com.toyknight.aeii.utils.Language;
 import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitFactory;
 
@@ -19,224 +25,144 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * @author toyknight 4/2/2015.
+ * @author toyknight 6/11/2016.
  */
 public class ResourceManager {
 
-    private static final String TAG = "RES";
+    private final AssetManager asset_manager = new AssetManager();
 
-    private static Texture ms_logo_texture;
     private static Texture ae_logo_texture;
     private static Texture ae_logo_mask_texture;
     private static Texture ae_logo_glow_texture;
 
-    private static Texture tomb_texture;
-    private static Texture[] tile_textures;
-    private static Texture[] top_tile_textures;
-    private static Texture[] stile_textures;
+    private static Texture[] texture_tiles;
+    private static Texture[] texture_top_tiles;
+    private static Texture[] texture_small_tiles;
+    private static Texture texture_tomb;
+    private static Texture texture_alpha;
+    private static Texture texture_normal_cursor;
+    private static Texture texture_attack_cursor;
+    private static Texture texture_move_target_cursor;
+    private static TextureRegion[] icons_unit_preview;
 
-    private static TextureRegion[] mini_icon_textures;
-    private static TextureRegion[][][][] unit_textures;
-    private static TextureRegion[] status_textures;
+    private static TextureRegion[][][][] texture_units;
+    private static TextureRegion[] texture_status;
 
-    private static Texture cursor_texture;
-    private static Texture attack_cursor_texture;
-    private static Texture move_target_cursor_texture;
-    private static Texture border_texture;
-    private static Texture alpha_texture;
+    private static HashMap<String, Texture> texture_map_editor_icons;
 
-    private static TextureRegion[] big_circle_texture;
-    private static TextureRegion[] small_circle_texture;
+    private static Texture texture_border;
 
-    private static TextureRegion up_arrow;
-    private static TextureRegion down_arrow;
-    private static TextureRegion left_arrow;
-    private static TextureRegion right_arrow;
+    private static TextureRegion[] texture_big_circle;
+    private static TextureRegion[] texture_small_circle;
 
-    private static TextureRegion[] action_icons;
-    private static TextureRegion[] hud_icons_battle;
-    private static TextureRegion[] hud_icons_status;
-    private static TextureRegion[] arrow_icons;
+    private static TextureRegion[] icons_arrow;
+    private static TextureRegion[] icons_action;
+    private static TextureRegion[] icons_hud_status;
+    private static TextureRegion[] icons_hud_battle;
+    private static TextureRegion[] icons_main_menu;
 
-    private static HashMap<String, Texture> editor_textures;
+    private static Texture texture_dust;
+    private static Texture texture_spark_attack;
+    private static Texture texture_spark_white;
 
-    private static TextureRegion[] menu_icon_textures;
+    private static Texture bg_list_selected;
+    private static Texture bg_list_unselected;
+    private static Texture bg_panel;
+    private static Texture[] bg_team;
+    private static Texture bg_text;
+    private static Texture color_move_path;
+    private static Texture color_white;
+    private static Texture color_border_dark;
+    private static Texture color_border_light;
 
-    private static TextureRegion[] dust_frames;
-    private static TextureRegion[] attack_spark_frames;
-    private static TextureRegion[] white_spark_frames;
-
-    private static Texture list_selected_bg;
-    private static Texture list_unselected_bg;
-    private static Texture aeii_panel_bg;
-    private static Texture[] team_bg;
-    private static Texture move_path_color;
-    private static Texture white_color;
-    private static Texture text_background;
-    private static Texture border_dark_color;
-    private static Texture border_light_color;
-    private static Color p_attack_color;
-    private static Color m_attack_color;
+    private static Color color_physical_attack;
+    private static Color color_magic_attack;
 
     private static ShaderProgram grayscale_shader;
     private static ShaderProgram color_filter_shader;
 
-    private ResourceManager() {
-    }
+    private static BitmapFont font_title;
+    private static BitmapFont font_text;
+    private static Texture texture_chars_large;
+    private static Texture texture_chars_small;
 
-    public static void loadResources() throws AEIIException {
-        try {
-            ms_logo_texture = new Texture(FileProvider.getAssetsFile("images/ms_logo.png"));
-            ae_logo_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo.png"));
-            ae_logo_mask_texture = new Texture(FileProvider.getAssetsFile("images/ae_logo_mask.png"));
-            ae_logo_glow_texture = new Texture(FileProvider.getAssetsFile("images/ae_glow.png"));
-            tomb_texture = new Texture(FileProvider.getAssetsFile("images/tombstone.png"));
-            loadTileTextures();
-            loadUnitTextures();
-            loadStatusTextures();
-            cursor_texture = new Texture(FileProvider.getAssetsFile("images/cursor.png"));
-            attack_cursor_texture = new Texture(FileProvider.getAssetsFile("images/attack_cursor.png"));
-            move_target_cursor_texture = new Texture(FileProvider.getAssetsFile("images/move_target_cursor.png"));
-            border_texture = new Texture(FileProvider.getAssetsFile("images/border.png"));
-            alpha_texture = new Texture(FileProvider.getAssetsFile("images/alpha.png"));
-            loadEditorTextures();
-            loadCircles();
-            loadArrows();
-            loadIcons();
-            createMenuIconTextures();
-            createAnimationFrames();
-            createShaders();
-            createColors();
-        } catch (GdxRuntimeException ex) {
-            Gdx.app.log(TAG, ex.toString());
+    public void prepare(int ts) {
+        //logo textures
+        asset_manager.load("images/ae_logo.png", Texture.class);
+        asset_manager.load("images/ae_logo_mask.png", Texture.class);
+        asset_manager.load("images/ae_logo_glow.png", Texture.class);
+        //map related textures
+        texture_tiles = new Texture[TileFactory.getTileCount()];
+        for (int i = 0; i < texture_tiles.length; i++) {
+            asset_manager.load("images/tiles/tile_" + i + ".png", Texture.class);
         }
-    }
-
-    private static void loadTileTextures() throws GdxRuntimeException {
-        Scanner din;
-        int tile_count = TileFactory.getTileCount();
-        tile_textures = new Texture[tile_count];
-        for (int i = 0; i < tile_count; i++) {
-            tile_textures[i] = new Texture(FileProvider.getAssetsFile("images/tiles/tile_" + i + ".png"));
+        texture_top_tiles = new Texture[getTopTileCount()];
+        for (int i = 0; i < texture_top_tiles.length; i++) {
+            asset_manager.load("images/tiles/top_tiles/top_tile_" + i + ".png", Texture.class);
         }
-        FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat");
-        din = new Scanner(top_tile_config.read());
-        top_tile_textures = new Texture[din.nextInt()];
-        for (int i = 0; i < top_tile_textures.length; i++) {
-            top_tile_textures[i] = new Texture(FileProvider.getAssetsFile("images/tiles/top_tiles/top_tile_" + i + ".png"));
+        texture_small_tiles = new Texture[getSmallTileCount()];
+        for (int i = 0; i < texture_small_tiles.length; i++) {
+            asset_manager.load("images/stiles/stiles" + i + ".png", Texture.class);
         }
-        FileHandle stile_config = FileProvider.getAssetsFile("images/stiles/config.dat");
-        din = new Scanner(stile_config.read());
-        stile_textures = new Texture[din.nextInt()];
-        for (int i = 0; i < stile_textures.length; i++) {
-            stile_textures[i] = new Texture(FileProvider.getAssetsFile("images/stiles/stiles" + i + ".png"));
-        }
-        din.close();
-    }
-
-    private static void loadUnitTextures() {
-        //load default units
-        Texture[] unit_texture_sheets = new Texture[4];
+        asset_manager.load("images/tombstone.png", Texture.class);
+        asset_manager.load("images/alpha.png", Texture.class);
+        asset_manager.load("images/cursor_normal.png", Texture.class);
+        asset_manager.load("images/cursor_attack.png", Texture.class);
+        asset_manager.load("images/cursor_move_target.png", Texture.class);
+        asset_manager.load("images/icons_unit_preview.png", Texture.class);
+        //unit textures
+        texture_units = new TextureRegion[4][UnitFactory.getUnitCount()][4][2];
         for (int team = 0; team < 4; team++) {
-            FileHandle sheet = FileProvider.getAssetsFile("images/units/unit_sheet_" + team + ".png");
-            unit_texture_sheets[team] = new Texture(sheet);
+            asset_manager.load("images/units/unit_sheet_" + team + ".png", Texture.class);
         }
-        int unit_count = UnitFactory.getUnitCount();
-        unit_textures = new TextureRegion[4][unit_count][4][2];
-        for (int team = 0; team < 4; team++) {
-            Texture unit_texture_sheet = unit_texture_sheets[team];
-            int texture_size = unit_texture_sheet.getWidth() / unit_count;
-            for (int index = 0; index < unit_count; index++) {
-                for (int level = 0; level < 4; level++) {
-                    unit_textures[team][index][level][0] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2, texture_size, texture_size);
-                    unit_textures[team][index][level][1] = new TextureRegion(unit_texture_sheet, index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
-                }
-            }
-        }
-        Texture mini_icon_sheet = new Texture(FileProvider.getAssetsFile("images/mini_icons.png"));
-        mini_icon_textures = createFrames(mini_icon_sheet, 4, 1);
-    }
+        asset_manager.load("images/status.png", Texture.class);
+        //map editor icons
+        asset_manager.load("images/editor/icon_brush.png", Texture.class);
+        asset_manager.load("images/editor/icon_hand.png", Texture.class);
+        asset_manager.load("images/editor/icon_eraser.png", Texture.class);
+        asset_manager.load("images/editor/icon_load.png", Texture.class);
+        asset_manager.load("images/editor/icon_save.png", Texture.class);
+        asset_manager.load("images/editor/icon_resize.png", Texture.class);
+        asset_manager.load("images/editor/icon_exit.png", Texture.class);
+        //misc. textures
+        asset_manager.load("images/border.png", Texture.class);
+        asset_manager.load("images/circle_big.png", Texture.class);
+        asset_manager.load("images/circle_small.png", Texture.class);
+        asset_manager.load("images/icons_arrow.png", Texture.class);
+        asset_manager.load("images/icons_action.png", Texture.class);
+        asset_manager.load("images/icons_hud_status.png", Texture.class);
+        asset_manager.load("images/icons_hud_battle.png", Texture.class);
+        asset_manager.load("images/icons_main_menu.png", Texture.class);
+        asset_manager.load("images/dust.png", Texture.class);
+        asset_manager.load("images/spark_attack.png", Texture.class);
+        asset_manager.load("images/spark_white.png", Texture.class);
+        //fonts
+        FileHandleResolver resolver = new InternalFileHandleResolver();
+        asset_manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        asset_manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 
-    private static void loadStatusTextures() {
-        Texture status_sheet = new Texture(FileProvider.getAssetsFile("images/status.png"));
-        status_textures = createFrames(status_sheet, 4, 1);
-    }
+        FreetypeFontLoader.FreeTypeFontLoaderParameter text_param = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        text_param.fontFileName = FileProvider.getUIDefaultFont().path();
+        text_param.fontParameters.size = ts / 3;
+        text_param.fontParameters.color = Color.WHITE;
+        text_param.fontParameters.borderColor = Color.BLACK;
+        text_param.fontParameters.borderWidth = ts / 24;
+        text_param.fontParameters.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, true);
+        asset_manager.load("text.ttf", BitmapFont.class, text_param);
 
-    private static void loadCircles() {
-        Texture big_circle_sheet = new Texture(FileProvider.getAssetsFile("images/big_circle.png"));
-        big_circle_texture = createFrames(big_circle_sheet, 2, 1);
-        Texture small_circle_sheet = new Texture(FileProvider.getAssetsFile("images/small_circle.png"));
-        small_circle_texture = createFrames(small_circle_sheet, 2, 1);
-    }
+        FreetypeFontLoader.FreeTypeFontLoaderParameter title_param = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        title_param.fontFileName = FileProvider.getUIDefaultFont().path();
+        title_param.fontParameters.size = ts / 2;
+        title_param.fontParameters.color = Color.WHITE;
+        title_param.fontParameters.shadowColor = Color.DARK_GRAY;
+        title_param.fontParameters.shadowOffsetX = ts / 24;
+        title_param.fontParameters.shadowOffsetY = ts / 24;
+        title_param.fontParameters.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, false);
+        asset_manager.load("title.ttf", BitmapFont.class, title_param);
 
-    private static void loadArrows() {
-        TextureRegion[] up_down_arrows = createFrames(new Texture(FileProvider.getAssetsFile("images/arrow_updown.png")), 2, 1);
-        up_arrow = up_down_arrows[0];
-        down_arrow = up_down_arrows[1];
-        TextureRegion[] left_right_arrows = createFrames(new Texture(FileProvider.getAssetsFile("images/arrow_leftright.png")), 1, 2);
-        right_arrow = left_right_arrows[0];
-        left_arrow = left_right_arrows[1];
-    }
-
-    private static void loadIcons() {
-        Texture action_icon_sheet = new Texture(FileProvider.getAssetsFile("images/action_icons.png"));
-        action_icons = createFrames(action_icon_sheet, 8, 1);
-        Texture hud_icon_status_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_status.png"));
-        hud_icons_status = createFrames(hud_icon_status_sheet, 2, 1);
-        Texture hud_icon_battle_sheet = new Texture(FileProvider.getAssetsFile("images/hud_icons_battle.png"));
-        hud_icons_battle = createFrames(hud_icon_battle_sheet, 4, 1);
-        Texture arrow_icon_sheet = new Texture(FileProvider.getAssetsFile("images/arrow_icons.png"));
-        arrow_icons = createFrames(arrow_icon_sheet, 3, 1);
-    }
-
-    private static void loadEditorTextures() {
-        editor_textures = new HashMap<String, Texture>();
-        editor_textures.put("icon_brush", new Texture(FileProvider.getAssetsFile("images/editor/icon_brush.png")));
-        editor_textures.put("icon_hand", new Texture(FileProvider.getAssetsFile("images/editor/icon_hand.png")));
-        editor_textures.put("icon_eraser", new Texture(FileProvider.getAssetsFile("images/editor/icon_eraser.png")));
-        editor_textures.put("icon_load", new Texture(FileProvider.getAssetsFile("images/editor/icon_load.png")));
-        editor_textures.put("icon_save", new Texture(FileProvider.getAssetsFile("images/editor/icon_save.png")));
-        editor_textures.put("icon_resize", new Texture(FileProvider.getAssetsFile("images/editor/icon_resize.png")));
-        editor_textures.put("icon_exit", new Texture(FileProvider.getAssetsFile("images/editor/icon_exit.png")));
-    }
-
-    private static void createMenuIconTextures() {
-        Texture menu_icon_texture = new Texture(FileProvider.getAssetsFile("images/menu_icons.png"));
-        int size = menu_icon_texture.getHeight();
-        menu_icon_textures = new TextureRegion[menu_icon_texture.getWidth() / size];
-        for (int i = 0; i < menu_icon_textures.length; i++) {
-            menu_icon_textures[i] = new TextureRegion(menu_icon_texture, i * size, 0, size, size);
-        }
-    }
-
-    private static void createAnimationFrames() {
-        Texture dust_texture = new Texture(FileProvider.getAssetsFile("images/dust.png"));
-        dust_frames = createFrames(dust_texture, 4, 1);
-        Texture attack_spark_sheet = new Texture(FileProvider.getAssetsFile("images/attack_spark.png"));
-        attack_spark_frames = createFrames(attack_spark_sheet, 6, 1);
-        Texture white_spark_sheet = new Texture(FileProvider.getAssetsFile("images/white_spark.png"));
-        white_spark_frames = createFrames(white_spark_sheet, 6, 1);
-    }
-
-    private static void createColors() {
-        list_selected_bg = new Texture(createColoredPixmap(Color.GRAY));
-        list_unselected_bg = new Texture(createColoredPixmap(Color.DARK_GRAY));
-        aeii_panel_bg = new Texture(createColoredPixmap(new Color(36 / 256f, 42 / 256f, 69 / 256f, 1f)));
-        team_bg = new Texture[4];
-        team_bg[0] = new Texture(createColoredPixmap(new Color(0f, 100 / 256f, 198 / 256f, 1f)));
-        team_bg[1] = new Texture(createColoredPixmap(new Color(161 / 256f, 0f, 112 / 256f, 1f)));
-        team_bg[2] = new Texture(createColoredPixmap(new Color(0f, 153 / 256f, 55 / 256f, 1f)));
-        team_bg[3] = new Texture(createColoredPixmap(new Color(0f, 65 / 256f, 114 / 256f, 1f)));
-        move_path_color = new Texture(createColoredPixmap(new Color(225 / 256f, 0f, 82 / 256f, 1f)));
-        white_color = new Texture(createColoredPixmap(Color.WHITE));
-        text_background = new Texture(createColoredPixmap(new Color(206 / 256f, 206 / 256f, 206 / 256f, 1f)));
-        border_dark_color = new Texture(createColoredPixmap(new Color(66 / 256f, 73 / 256f, 99 / 256f, 1f)));
-        border_light_color = new Texture(createColoredPixmap(new Color(173 / 256f, 182 / 256f, 173 / 256f, 1f)));
-        p_attack_color = new Color(227 / 256f, 0, 117 / 256f, 1f);
-        m_attack_color = new Color(0, 0, 255 / 256f, 1f);
-    }
-
-    private static void createShaders() {
+        asset_manager.load("images/chars_large.png", Texture.class);
+        asset_manager.load("images/chars_small.png", Texture.class);
+        //shader
         grayscale_shader = new ShaderProgram(
                 FileProvider.getAssetsFile("shaders/Shader.VERT").readString(),
                 FileProvider.getAssetsFile("shaders/Grayscale.FRAG").readString());
@@ -245,8 +171,96 @@ public class ResourceManager {
                 FileProvider.getAssetsFile("shaders/WhiteMask.FRAG").readString());
     }
 
-    public static Texture getMSLogoTexture() {
-        return ms_logo_texture;
+    public void initialize() {
+        ae_logo_texture = asset_manager.get("images/ae_logo.png", Texture.class);
+        ae_logo_mask_texture = asset_manager.get("images/ae_logo_mask.png", Texture.class);
+        ae_logo_glow_texture = asset_manager.get("images/ae_logo_glow.png", Texture.class);
+
+        for (int i = 0; i < texture_tiles.length; i++) {
+            texture_tiles[i] = asset_manager.get("images/tiles/tile_" + i + ".png", Texture.class);
+        }
+        for (int i = 0; i < texture_top_tiles.length; i++) {
+            texture_top_tiles[i] = asset_manager.get("images/tiles/top_tiles/top_tile_" + i + ".png", Texture.class);
+        }
+        for (int i = 0; i < texture_small_tiles.length; i++) {
+            texture_small_tiles[i] = asset_manager.get("images/stiles/stiles" + i + ".png", Texture.class);
+        }
+        texture_tomb = asset_manager.get("images/tombstone.png", Texture.class);
+        texture_alpha = asset_manager.get("images/alpha.png", Texture.class);
+        texture_normal_cursor = asset_manager.get("images/cursor_normal.png", Texture.class);
+        texture_attack_cursor = asset_manager.get("images/cursor_attack.png", Texture.class);
+        texture_move_target_cursor = asset_manager.get("images/cursor_move_target.png", Texture.class);
+        Texture sheet_unit_preview = asset_manager.get("images/icons_unit_preview.png", Texture.class);
+        icons_unit_preview = createFrames(sheet_unit_preview, 4, 1);
+
+        for (int team = 0; team < 4; team++) {
+            Texture sheet_units = asset_manager.get("images/units/unit_sheet_" + team + ".png", Texture.class);
+            int texture_size = sheet_units.getWidth() / UnitFactory.getUnitCount();
+            for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
+                for (int level = 0; level < 4; level++) {
+                    texture_units[team][index][level][0] = new TextureRegion(sheet_units,
+                            index * texture_size, level * texture_size * 2, texture_size, texture_size);
+                    texture_units[team][index][level][1] = new TextureRegion(sheet_units,
+                            index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
+                }
+            }
+        }
+        Texture sheet_status = asset_manager.get("images/status.png", Texture.class);
+        texture_status = createFrames(sheet_status, 4, 1);
+
+        texture_map_editor_icons = new HashMap<String, Texture>();
+        texture_map_editor_icons.put("icon_brush", asset_manager.get("images/editor/icon_brush.png", Texture.class));
+        texture_map_editor_icons.put("icon_hand", asset_manager.get("images/editor/icon_hand.png", Texture.class));
+        texture_map_editor_icons.put("icon_eraser", asset_manager.get("images/editor/icon_eraser.png", Texture.class));
+        texture_map_editor_icons.put("icon_load", asset_manager.get("images/editor/icon_load.png", Texture.class));
+        texture_map_editor_icons.put("icon_save", asset_manager.get("images/editor/icon_save.png", Texture.class));
+        texture_map_editor_icons.put("icon_resize", asset_manager.get("images/editor/icon_resize.png", Texture.class));
+        texture_map_editor_icons.put("icon_exit", asset_manager.get("images/editor/icon_exit.png", Texture.class));
+
+        texture_border = asset_manager.get("images/border.png", Texture.class);
+        Texture sheet_big_circle = asset_manager.get("images/circle_big.png", Texture.class);
+        texture_big_circle = createFrames(sheet_big_circle, 2, 1);
+        Texture sheet_small_circle = asset_manager.get("images/circle_small.png", Texture.class);
+        texture_small_circle = createFrames(sheet_small_circle, 2, 1);
+        Texture sheet_icons_arrow = asset_manager.get("images/icons_arrow.png", Texture.class);
+        icons_arrow = createFrames(sheet_icons_arrow, 3, 1);
+        Texture sheet_icons_action = asset_manager.get("images/icons_action.png", Texture.class);
+        icons_action = createFrames(sheet_icons_action, 8, 1);
+        Texture sheet_icons_hud_status = asset_manager.get("images/icons_hud_status.png", Texture.class);
+        icons_hud_status = createFrames(sheet_icons_hud_status, 2, 1);
+        Texture sheet_icons_hud_battle = asset_manager.get("images/icons_hud_battle.png", Texture.class);
+        icons_hud_battle = createFrames(sheet_icons_hud_battle, 4, 1);
+        Texture sheet_icons_main_menu = asset_manager.get("images/icons_main_menu.png", Texture.class);
+        icons_main_menu = createFrames(sheet_icons_main_menu, 10, 1);
+        texture_dust = asset_manager.get("images/dust.png", Texture.class);
+        texture_spark_attack = asset_manager.get("images/spark_attack.png", Texture.class);
+        texture_spark_white = asset_manager.get("images/spark_white.png", Texture.class);
+
+        bg_list_selected = new Texture(createColoredPixmap(Color.GRAY));
+        bg_list_unselected = new Texture(createColoredPixmap(Color.DARK_GRAY));
+        bg_panel = new Texture(createColoredPixmap(new Color(36 / 256f, 42 / 256f, 69 / 256f, 1f)));
+        bg_team = new Texture[4];
+        bg_team[0] = new Texture(createColoredPixmap(new Color(0f, 100 / 256f, 198 / 256f, 1f)));
+        bg_team[1] = new Texture(createColoredPixmap(new Color(161 / 256f, 0f, 112 / 256f, 1f)));
+        bg_team[2] = new Texture(createColoredPixmap(new Color(0f, 153 / 256f, 55 / 256f, 1f)));
+        bg_team[3] = new Texture(createColoredPixmap(new Color(0f, 65 / 256f, 114 / 256f, 1f)));
+        bg_text = new Texture(createColoredPixmap(new Color(206 / 256f, 206 / 256f, 206 / 256f, 1f)));
+        color_border_dark = new Texture(createColoredPixmap(new Color(66 / 256f, 73 / 256f, 99 / 256f, 1f)));
+        color_border_light = new Texture(createColoredPixmap(new Color(173 / 256f, 182 / 256f, 173 / 256f, 1f)));
+        color_move_path = new Texture(createColoredPixmap(new Color(225 / 256f, 0f, 82 / 256f, 1f)));
+        color_white = new Texture(createColoredPixmap(Color.WHITE));
+
+        color_physical_attack = new Color(227 / 256f, 0, 117 / 256f, 1f);
+        color_magic_attack = new Color(0, 0, 255 / 256f, 1f);
+
+        font_title = asset_manager.get("title.ttf", BitmapFont.class);
+        font_text = asset_manager.get("text.ttf", BitmapFont.class);
+        texture_chars_large = asset_manager.get("images/chars_large.png", Texture.class);
+        texture_chars_small = asset_manager.get("images/chars_small.png", Texture.class);
+    }
+
+    public boolean update() {
+        return asset_manager.update();
     }
 
     public static Texture getAELogoTexture() {
@@ -257,160 +271,144 @@ public class ResourceManager {
         return ae_logo_mask_texture;
     }
 
-    public static Texture getTombTexture() {
-        return tomb_texture;
-    }
-
     public static Texture getAELogoGlowTexture() {
         return ae_logo_glow_texture;
     }
 
     public static Texture getTileTexture(int index) {
-        return tile_textures[index];
+        return texture_tiles[index];
     }
 
     public static Texture getTopTileTexture(int index) {
-        return top_tile_textures[index];
+        return texture_top_tiles[index];
     }
 
-    public static Texture getSTileTexture(int index) {
-        return stile_textures[index];
+    public static Texture getSmallTileTexture(int index) {
+        return texture_small_tiles[index];
     }
 
-    public static TextureRegion getMiniIcon(int team) {
-        return mini_icon_textures[team];
-    }
-
-    public static TextureRegion getUnitTexture(int team, int index, int level, int frame) {
-        return unit_textures[team][index][level][frame];
-    }
-
-    public static TextureRegion getStatusTexture(int index) {
-        return status_textures[index];
-    }
-
-    public static Texture getCursorTexture() {
-        return cursor_texture;
-    }
-
-    public static Texture getAttackCursorTexture() {
-        return attack_cursor_texture;
-    }
-
-    public static Texture getMoveTargetCursorTexture() {
-        return move_target_cursor_texture;
-    }
-
-    public static Texture getBorderTexture() {
-        return border_texture;
+    public static Texture getTombTexture() {
+        return texture_tomb;
     }
 
     public static Texture getAlphaTexture() {
-        return alpha_texture;
+        return texture_alpha;
+    }
+
+    public static Texture getNormalCursorTexture() {
+        return texture_normal_cursor;
+    }
+
+    public static Texture getAttackCursorTexture() {
+        return texture_attack_cursor;
+    }
+
+    public static Texture getMoveTargetCursorTexture() {
+        return texture_move_target_cursor;
+    }
+
+    public static TextureRegion getUnitPreviewTexture(int team) {
+        return icons_unit_preview[team];
+    }
+
+    public static TextureRegion getUnitTexture(int team, int index, int level, int frame) {
+        return texture_units[team][index][level][frame];
+    }
+
+    public static TextureRegion getStatusTexture(int index) {
+        return texture_status[index];
+    }
+
+    public static Texture getBorderTexture() {
+        return texture_border;
     }
 
     public static TextureRegion getBigCircleTexture(int index) {
-        return big_circle_texture[index];
+        return texture_big_circle[index];
     }
 
     public static TextureRegion getSmallCircleTexture(int index) {
-        return small_circle_texture[index];
-    }
-
-    public static TextureRegion getUpArrow() {
-        return up_arrow;
-    }
-
-    public static TextureRegion getDownArrow() {
-        return down_arrow;
-    }
-
-    public static TextureRegion getLeftArrow() {
-        return left_arrow;
-    }
-
-    public static TextureRegion getRightArrow() {
-        return right_arrow;
-    }
-
-    public static TextureRegion getActionIcon(int index) {
-        return action_icons[index];
-    }
-
-    public static TextureRegion getStatusHudIcon(int index) {
-        return hud_icons_status[index];
-    }
-
-    public static TextureRegion getBattleHudIcon(int index) {
-        return hud_icons_battle[index];
+        return texture_small_circle[index];
     }
 
     public static TextureRegion getArrowIcon(int index) {
-        return arrow_icons[index];
+        return icons_arrow[index];
+    }
+
+    public static TextureRegion getActionIcon(int index) {
+        return icons_action[index];
+    }
+
+    public static TextureRegion getStatusHudIcon(int index) {
+        return icons_hud_status[index];
+    }
+
+    public static TextureRegion getBattleHudIcon(int index) {
+        return icons_hud_battle[index];
     }
 
     public static TextureRegion getMenuIcon(int index) {
-        return menu_icon_textures[index];
+        return icons_main_menu[index];
+    }
+
+    public static Texture getDustTexture() {
+        return texture_dust;
+    }
+
+    public static Texture getAttackSparkTexture() {
+        return texture_spark_attack;
+    }
+
+    public static Texture getWhiteSparkTexture() {
+        return texture_spark_white;
     }
 
     public static Texture getEditorTexture(String key) {
-        return editor_textures.get(key);
-    }
-
-    public static TextureRegion[] getAttackSparkFrames() {
-        return attack_spark_frames;
-    }
-
-    public static TextureRegion[] getWhiteSparkFrames() {
-        return white_spark_frames;
-    }
-
-    public static TextureRegion[] getDustFrames() {
-        return dust_frames;
+        return texture_map_editor_icons.get(key);
     }
 
     public static Texture getListSelectedBackground() {
-        return list_selected_bg;
+        return bg_list_selected;
     }
 
     public static Texture getListBackground() {
-        return list_unselected_bg;
+        return bg_list_unselected;
     }
 
     public static Texture getPanelBackground() {
-        return aeii_panel_bg;
+        return bg_panel;
     }
 
     public static Texture getTeamBackground(int team) {
-        return team_bg[team];
+        return bg_team[team];
     }
 
     public static Texture getMovePathColor() {
-        return move_path_color;
+        return color_move_path;
     }
 
     public static Texture getWhiteColor() {
-        return white_color;
+        return color_white;
     }
 
     public static Texture getTextBackground() {
-        return text_background;
+        return bg_text;
     }
 
     public static Texture getBorderDarkColor() {
-        return border_dark_color;
+        return color_border_dark;
     }
 
     public static Texture getBorderLightColor() {
-        return border_light_color;
+        return color_border_light;
     }
 
     public static Color getPhysicalAttackColor() {
-        return p_attack_color;
+        return color_physical_attack;
     }
 
     public static Color getMagicalAttackColor() {
-        return m_attack_color;
+        return color_magic_attack;
     }
 
     public static ShaderProgram getGrayscaleShader(float scale) {
@@ -425,6 +423,22 @@ public class ResourceManager {
         grayscale_shader.setUniformf("grayscale", scale);
         color_filter_shader.end();
         return color_filter_shader;
+    }
+
+    public static BitmapFont getTextFont() {
+        return font_text;
+    }
+
+    public static BitmapFont getTitleFont() {
+        return font_title;
+    }
+
+    public static Texture getLargeCharacterTexture() {
+        return texture_chars_large;
+    }
+
+    public static Texture getSmallCharacterTexture() {
+        return texture_chars_small;
     }
 
     public static TextureRegion[] createFrames(Texture sheet, int cols, int rows) {
@@ -447,10 +461,14 @@ public class ResourceManager {
         return new Animation(frame_duration, frames);
     }
 
-    public static TextureRegionDrawable createDrawable(TextureRegion texture, int preferred_width, int preferred_height) {
+    public static TextureRegionDrawable createDrawable(Texture texture, int width, int height) {
+        return createDrawable(new TextureRegion(texture), width, height);
+    }
+
+    public static TextureRegionDrawable createDrawable(TextureRegion texture, int width, int height) {
         TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
-        drawable.setMinWidth(preferred_width);
-        drawable.setMinHeight(preferred_height);
+        drawable.setMinWidth(width);
+        drawable.setMinHeight(height);
         return drawable;
     }
 
@@ -464,6 +482,22 @@ public class ResourceManager {
         pixmap.setColor(color);
         pixmap.fill();
         return pixmap;
+    }
+
+    private int getTopTileCount() {
+        FileHandle top_tile_config = FileProvider.getAssetsFile("images/tiles/top_tiles/config.dat");
+        Scanner din = new Scanner(top_tile_config.read());
+        int count = din.nextInt();
+        din.close();
+        return count;
+    }
+
+    private int getSmallTileCount() {
+        FileHandle top_tile_config = FileProvider.getAssetsFile("images/stiles/config.dat");
+        Scanner din = new Scanner(top_tile_config.read());
+        int count = din.nextInt();
+        din.close();
+        return count;
     }
 
 }

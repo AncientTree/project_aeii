@@ -51,7 +51,7 @@ public class AttackInformationRenderer {
         int hw = ts * 13 / 24; //hud icon width
         int hh = ts * 16 / 24; //hud icon height
         int tfw = ts * 2; //text field width
-        float lbh = FontRenderer.getTextFont().getCapHeight(); //label height
+        float lbh = ResourceManager.getTextFont().getCapHeight(); //label height
         int tfh = FontRenderer.getSCharHeight() + ts / 12; //text field height
         int lmargin = (screen.getViewportWidth() - hw * 4 - tfw * 4 - ts * 7 / 24) / 2; //margin left
         int infoh = tfh * 2 + ts * 3 / 24; //information panel height

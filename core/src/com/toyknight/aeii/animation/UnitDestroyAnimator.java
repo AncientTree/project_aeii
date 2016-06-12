@@ -1,5 +1,6 @@
 package com.toyknight.aeii.animation;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
@@ -14,7 +15,8 @@ public class UnitDestroyAnimator extends UnitAnimator {
 
     public UnitDestroyAnimator(Unit unit) {
         this.addUnit(unit, "target");
-        this.spark_animation = new Animation(1f / 15, ResourceManager.getWhiteSparkFrames());
+        Texture texture_white_spark = ResourceManager.getWhiteSparkTexture();
+        this.spark_animation = new Animation(1f / 15, ResourceManager.createFrames(texture_white_spark, 6, 1));
     }
 
     @Override

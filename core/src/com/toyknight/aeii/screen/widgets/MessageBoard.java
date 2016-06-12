@@ -3,6 +3,7 @@ package com.toyknight.aeii.screen.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.FontRenderer;
 
 /**
@@ -67,7 +68,7 @@ public class MessageBoard extends Table {
         FontRenderer.setTextAlpha(getAlpha());
         for (int i = 0; i < messages.size; i++) {
             Message message = messages.get(messages.size - i - 1);
-            float font_height = FontRenderer.getTextFont().getCapHeight();
+            float font_height = ResourceManager.getTextFont().getCapHeight();
             float draw_y = (i * font_height * 2) + font_height;
             float cap_height = fading ? font_height * 8 : getHeight() - font_height * 2;
             if (draw_y <= cap_height) {

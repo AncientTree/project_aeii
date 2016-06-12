@@ -61,7 +61,7 @@ public class RightPanelRenderer {
     private void drawInformation(Batch batch) {
         int hw = ts * 13 / 24;
         int hh = ts * 16 / 24;
-        float lbh = FontRenderer.getTextFont().getCapHeight();
+        float lbh = ResourceManager.getTextFont().getCapHeight();
         batch.draw(ResourceManager.getBorderLightColor(),
                 screen.getViewportWidth() + pad, screen.getViewportHeight() - pad - f_size, f_size, f_size);
         batch.draw(ResourceManager.getListBackground(),

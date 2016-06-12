@@ -70,7 +70,7 @@ public class MiniMapDialog extends BasicDialog {
             for (int map_y = 0; map_y < getMap().getHeight(); map_y++) {
                 Tile tile = getMap().getTile(map_x, map_y);
                 batch.draw(
-                        ResourceManager.getSTileTexture(tile.getMiniMapIndex()),
+                        ResourceManager.getSmallTileTexture(tile.getMiniMapIndex()),
                         x + map_x * sts + 5, y + height - 5 - map_y * sts - sts, sts, sts);
             }
         }
@@ -80,7 +80,7 @@ public class MiniMapDialog extends BasicDialog {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (((int) (state_time / 0.3f)) % 2 != 0) {
                 batch.draw(
-                        ResourceManager.getMiniIcon(unit.getTeam()),
+                        ResourceManager.getUnitPreviewTexture(unit.getTeam()),
                         x + unit.getX() * sts + 5, y + height - 5 - unit.getY() * sts - sts, sts, sts);
             }
         }

@@ -28,7 +28,7 @@ public class StringList<T> extends Widget {
 
     public StringList(int item_height) {
         this.item_height = item_height;
-        this.text_offset = (item_height - FontRenderer.getTextFont().getCapHeight()) / 2;
+        this.text_offset = (item_height - ResourceManager.getTextFont().getCapHeight()) / 2;
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -129,7 +129,7 @@ public class StringList<T> extends Widget {
             }
             FontRenderer.setTextColor(Color.WHITE);
             FontRenderer.drawText(batch, toString(item),
-                    x + text_offset, y + itemY - item_height + text_offset + FontRenderer.getTextFont().getCapHeight());
+                    x + text_offset, y + itemY - item_height + text_offset + ResourceManager.getTextFont().getCapHeight());
             itemY -= item_height;
         }
         super.draw(batch, parentAlpha);

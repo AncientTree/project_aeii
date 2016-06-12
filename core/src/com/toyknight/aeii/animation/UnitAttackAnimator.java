@@ -1,5 +1,6 @@
 package com.toyknight.aeii.animation;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.toyknight.aeii.ResourceManager;
@@ -29,7 +30,8 @@ public class UnitAttackAnimator extends UnitAnimator {
     private final Animation attack_spark_animation;
 
     public UnitAttackAnimator(Unit attacker, Unit target, int damage) {
-        this.attack_spark_animation = new Animation(1f / 30, ResourceManager.getAttackSparkFrames());
+        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+        this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(attacker, ATTACKER_KEY);
         this.addUnit(target, TARGET_KEY);
         this.target_x = target.getX();
@@ -38,7 +40,8 @@ public class UnitAttackAnimator extends UnitAnimator {
     }
 
     public UnitAttackAnimator(Unit attacker, int target_x, int target_y) {
-        this.attack_spark_animation = new Animation(1f / 30, ResourceManager.getAttackSparkFrames());
+        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+        this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(attacker, ATTACKER_KEY);
         this.damage = -1;
         this.target_x = target_x;

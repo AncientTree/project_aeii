@@ -31,6 +31,10 @@ public class LogoScreen implements Screen {
         logo_animator_queue.add(bg_fade_animator);
     }
 
+    public GameContext getContext() {
+        return context;
+    }
+
     @Override
     public void show() {
         current_animator = logo_animator_queue.poll();
@@ -40,8 +44,13 @@ public class LogoScreen implements Screen {
     public void render(float delta) {
         if (current_animator != null) {
             current_animator.render(batch);
-            current_animator.update(delta);
-            if(current_animator.isAnimationFinished()) {
+            if (getContext().getResourceManager().update()) {
+                if (!getContext().initialized()) {
+                    getContext().initialize();
+                }
+                current_animator.update(delta);
+            }
+            if (current_animator.isAnimationFinished()) {
                 current_animator = logo_animator_queue.poll();
             }
         } else {

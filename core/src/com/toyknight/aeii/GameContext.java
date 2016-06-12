@@ -41,6 +41,8 @@ public class GameContext extends Game implements GameManagerListener {
     private final int TILE_SIZE;
     private final Platform PLATFORM;
 
+    private boolean initialized = false;
+
     private ExecutorService executor;
 
     private JavaScriptEngine script_engine;
@@ -48,6 +50,8 @@ public class GameContext extends Game implements GameManagerListener {
     private Skin skin;
 
     private ObjectMap<String, String> configuration;
+
+    private ResourceManager resource_manager;
 
     private GameManager game_manager;
 
@@ -75,51 +79,72 @@ public class GameContext extends Game implements GameManagerListener {
     public void create() {
         try {
             executor = Executors.newSingleThreadExecutor();
-
             FileProvider.setPlatform(PLATFORM);
             Language.init();
-            loadConfiguration();
             TileFactory.loadTileData();
             UnitFactory.loadUnitData();
-            ResourceManager.loadResources();
-            FontRenderer.loadFonts(TILE_SIZE);
-            BorderRenderer.init();
-            Animator.setTileSize(getTileSize());
-            TileValidator.initialize();
-            Gdx.input.setCatchBackKey(true);
-
-            skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
-            skin.get(TextButton.TextButtonStyle.class).font = FontRenderer.getTextFont();
-            skin.get(TextField.TextFieldStyle.class).font = FontRenderer.getTextFont();
-            skin.get(Label.LabelStyle.class).font = FontRenderer.getTextFont();
-            skin.get(Dialog.WindowStyle.class).titleFont = FontRenderer.getTextFont();
-            skin.get(List.ListStyle.class).font = FontRenderer.getTextFont();
-
-            game_manager = new GameManager(this, new AnimationManager());
-            game_manager.setListener(this);
-
-            room_manager = new RoomManager();
+            resource_manager = new ResourceManager();
+            resource_manager.prepare(TILE_SIZE);
+            Animator.setTileSize(TILE_SIZE);
 
             LogoScreen logo_screen = new LogoScreen(this);
-            main_menu_screen = new MainMenuScreen(this);
-            map_editor_screen = new MapEditorScreen(this);
-            lobby_screen = new LobbyScreen(this);
-            net_game_create_screen = new NetGameCreateScreen(this);
-            skirmish_game_create_screen = new SkirmishGameCreateScreen(this);
-            game_screen = new GameScreen(this);
-            statistics_screen = new StatisticsScreen(this);
-            map_management_screen = new MapManagementScreen(this);
-            StageScreen.initializePrompt(getSkin(), TILE_SIZE);
-
-            record_player = new GameRecordPlayer(this);
-            record_player.setListener(game_screen);
-
-            script_engine = new JavaScriptEngine();
-
+            Gdx.input.setCatchBackKey(true);
             setScreen(logo_screen);
         } catch (AEIIException ex) {
             Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
         }
+    }
+
+    public void initialize() {
+        if (!initialized) {
+            try {
+                loadConfiguration();
+                resource_manager.initialize();
+                FontRenderer.initialize(TILE_SIZE);
+                TileValidator.initialize();
+                BorderRenderer.initialize();
+
+                skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
+                skin.get(TextButton.TextButtonStyle.class).font = ResourceManager.getTextFont();
+                skin.get(TextField.TextFieldStyle.class).font = ResourceManager.getTextFont();
+                skin.get(Label.LabelStyle.class).font = ResourceManager.getTextFont();
+                skin.get(Dialog.WindowStyle.class).titleFont = ResourceManager.getTextFont();
+                skin.get(List.ListStyle.class).font = ResourceManager.getTextFont();
+
+                game_manager = new GameManager(this, new AnimationManager());
+                game_manager.setListener(this);
+
+                room_manager = new RoomManager();
+
+                main_menu_screen = new MainMenuScreen(this);
+                map_editor_screen = new MapEditorScreen(this);
+                lobby_screen = new LobbyScreen(this);
+                net_game_create_screen = new NetGameCreateScreen(this);
+                skirmish_game_create_screen = new SkirmishGameCreateScreen(this);
+                game_screen = new GameScreen(this);
+                statistics_screen = new StatisticsScreen(this);
+                map_management_screen = new MapManagementScreen(this);
+                StageScreen.initializePrompt(getSkin(), TILE_SIZE);
+
+                record_player = new GameRecordPlayer(this);
+                record_player.setListener(game_screen);
+
+                script_engine = new JavaScriptEngine();
+
+                initialized = true;
+            } catch (AEIIException ex) {
+                Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
+            }
+        }
+    }
+
+
+    public boolean initialized() {
+        return initialized;
+    }
+
+    public ResourceManager getResourceManager() {
+        return resource_manager;
     }
 
     private void loadConfiguration() throws AEIIException {

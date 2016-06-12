@@ -6,11 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 4/2/2015.
@@ -21,8 +17,8 @@ public class FontRenderer {
 
     private static GlyphLayout font_layout = new GlyphLayout();
 
-    private static BitmapFont ui_font_title;
-    private static BitmapFont ui_font_text;
+    private static BitmapFont font_title;
+    private static BitmapFont font_text;
 
     private static TextureRegion[] small_chars;
     private static TextureRegion[] large_chars;
@@ -34,93 +30,66 @@ public class FontRenderer {
     private FontRenderer() {
     }
 
-    public static void loadFonts(int ts) {
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(FileProvider.getUIDefaultFont());
-
-        FreeTypeFontParameter title_parameter = new FreeTypeFontParameter();
-        title_parameter.size = ts / 2;
-        title_parameter.color = Color.WHITE;
-        title_parameter.shadowColor = Color.DARK_GRAY;
-        title_parameter.shadowOffsetX = ts / 24;
-        title_parameter.shadowOffsetY = ts / 24;
-        title_parameter.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, false);
-        ui_font_title = generator.generateFont(title_parameter);
-
-        FreeTypeFontParameter text_parameter = new FreeTypeFontParameter();
-        text_parameter.size = ts / 3;
-        text_parameter.color = Color.WHITE;
-        text_parameter.borderColor = Color.BLACK;
-        text_parameter.borderWidth = ts / 24;
-        text_parameter.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, true);
-        ui_font_text = generator.generateFont(text_parameter);
-        generator.dispose();
-
-        Texture small_char_sheet = new Texture(FileProvider.getAssetsFile("images/small_chars.png"));
-        small_chars = ResourceManager.createFrames(small_char_sheet, 12, 1);
-        Texture large_char_sheet = new Texture(FileProvider.getAssetsFile("images/large_chars.png"));
-        large_chars = ResourceManager.createFrames(large_char_sheet, 13, 1);
+    public static void initialize(int ts) {
+        font_title = ResourceManager.getTitleFont();
+        font_text = ResourceManager.getTextFont();
+        Texture sheet_small_chars = ResourceManager.getSmallCharacterTexture();
+        small_chars = ResourceManager.createFrames(sheet_small_chars, 12, 1);
+        Texture sheet_large_chars = ResourceManager.getLargeCharacterTexture();
+        large_chars = ResourceManager.createFrames(sheet_large_chars, 13, 1);
         schar_width = ts * 6 / 24;
         schar_height = ts * 7 / 24;
         lchar_width = ts * 8 / 24;
         lchar_height = ts * 11 / 24;
     }
 
-    public static BitmapFont getTitleFont() {
-        return ui_font_title;
-    }
-
     public static void setTitleAlpha(float alpha) {
-        Color color = ui_font_title.getColor();
-        ui_font_title.setColor(color.r, color.g, color.b, alpha);
+        Color color = font_title.getColor();
+        font_title.setColor(color.r, color.g, color.b, alpha);
     }
 
     public static void setTitleColor(Color color) {
-        float alpha = ui_font_title.getColor().a;
-        ui_font_title.setColor(color.r, color.g, color.b, alpha);
+        float alpha = font_title.getColor().a;
+        font_title.setColor(color.r, color.g, color.b, alpha);
     }
 
     public static GlyphLayout getTitleLayout(String str) {
-        font_layout.setText(ui_font_title, str);
+        font_layout.setText(font_title, str);
         return font_layout;
     }
 
     public static void drawTitle(Batch batch, String str, float x, float y) {
-        ui_font_title.draw(batch, str, x, y);
+        font_title.draw(batch, str, x, y);
     }
 
     public static void drawTitleCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
-        font_layout.setText(ui_font_title, str);
+        font_layout.setText(font_title, str);
         float x = target_x + (target_width - font_layout.width) / 2;
         float y = target_y + (target_height - font_layout.height) / 2 + font_layout.height;
         drawTitle(batch, str, x, y);
     }
 
-    public static BitmapFont getTextFont() {
-        return ui_font_text;
-    }
-
     public static void setTextAlpha(float alpha) {
-        Color color = ui_font_text.getColor();
-        ui_font_text.setColor(color.r, color.g, color.b, alpha);
+        Color color = font_text.getColor();
+        font_text.setColor(color.r, color.g, color.b, alpha);
     }
 
     public static void setTextColor(Color color) {
-        float alpha = ui_font_text.getColor().a;
-        ui_font_text.setColor(color.r, color.g, color.b, alpha);
+        float alpha = font_text.getColor().a;
+        font_text.setColor(color.r, color.g, color.b, alpha);
     }
 
     public static GlyphLayout getTextLayout(String str) {
-        font_layout.setText(ui_font_text, str);
+        font_layout.setText(font_text, str);
         return font_layout;
     }
 
     public static void drawText(Batch batch, String str, float x, float y) {
-        ui_font_text.draw(batch, str, x, y);
+        font_text.draw(batch, str, x, y);
     }
 
     public static void drawTextCenter(Batch batch, String str, float target_x, float target_y, float target_width, float target_height) {
-        font_layout.setText(ui_font_text, str);
+        font_layout.setText(font_text, str);
         float x = target_x + (target_width - font_layout.width) / 2;
         float y = target_y + (target_height - font_layout.height) / 2 + font_layout.height;
         drawText(batch, str, x, y);

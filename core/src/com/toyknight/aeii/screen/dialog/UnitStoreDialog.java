@@ -173,7 +173,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         int hh = ts * 16 / 24;
         int item_h = sch + ts / 6;
         int tfh = sch - ts / 4;
-        float lbh = FontRenderer.getTextFont().getCapHeight();
+        float lbh = ResourceManager.getTextFont().getCapHeight();
         //attack
         batch.draw(ResourceManager.getTextBackground(),
                 x + ts * 6 + scw / 2,

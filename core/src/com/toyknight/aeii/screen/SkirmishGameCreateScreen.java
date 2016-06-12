@@ -114,9 +114,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
                 Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
         for (int team = 0; team < 4; team++) {
             TextureRegionDrawable team_color =
-                    new TextureRegionDrawable(new TextureRegion(ResourceManager.getTeamBackground(team)));
-            team_color.setMinWidth(ts);
-            team_color.setMinHeight(ts);
+                    ResourceManager.createDrawable(ResourceManager.getTeamBackground(team), ts, ts);
             team_image[team] = new Image(team_color);
 
             spinner_alliance[team] = new Spinner<Integer>(ts, getContext().getSkin());
