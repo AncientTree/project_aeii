@@ -63,6 +63,16 @@ public class Wiki extends BasicDialog {
                 onNodeSelected(content_list.getSelection().first());
             }
         });
+        content_list.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tree.Node node = content_list.getNodeAt(y);
+                if (node == null) return;
+                if (node != content_list.getNodeAt(getTouchDownY())) return;
+                if (node.getChildren().size > 0) {
+                    node.setExpanded(!node.isExpanded());
+                }
+            }
+        });
         content_list.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
         content_list.getStyle().selection = ResourceManager.createDrawable(ResourceManager.getListSelectedBackground());
 
@@ -182,9 +192,6 @@ public class Wiki extends BasicDialog {
 
     private void onNodeSelected(Tree.Node node) {
         node.expandTo();
-        if (!node.isExpanded() && node.getChildren().size > 0) {
-            node.setExpanded(true);
-        }
         if (clicking && current_node != null) {
             redo_queue.clear();
             undo_queue.addFirst(current_node);

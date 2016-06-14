@@ -2,9 +2,16 @@ apply plugin: "java"
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ "resources/" ]
 
 project.ext.mainClassName = "com.toyknight.aeii.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
+
+processResources {
+    from ('resources/') {
+        include '**/*.dat'
+    }
+}
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
