@@ -72,7 +72,7 @@ public class MainMenuScreen extends StageScreen {
         this.lb_version = new Label(getContext().getVersion(), getContext().getSkin());
         this.lb_version.setPosition(Gdx.graphics.getWidth() - lb_version.getPrefWidth(), 0);
         this.lb_version.setVisible(false);
-        addActor(lb_version);
+        this.addActor(lb_version);
 
         this.logo_shown = false;
     }

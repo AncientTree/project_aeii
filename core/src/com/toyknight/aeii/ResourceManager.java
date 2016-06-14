@@ -227,7 +227,7 @@ public class ResourceManager {
         Texture sheet_icons_action = asset_manager.get("images/icons_action.png", Texture.class);
         icons_action = createFrames(sheet_icons_action, 8, 1);
         Texture sheet_icons_hud_status = asset_manager.get("images/icons_hud_status.png", Texture.class);
-        icons_hud_status = createFrames(sheet_icons_hud_status, 2, 1);
+        icons_hud_status = createFrames(sheet_icons_hud_status, 3, 1);
         Texture sheet_icons_hud_battle = asset_manager.get("images/icons_hud_battle.png", Texture.class);
         icons_hud_battle = createFrames(sheet_icons_hud_battle, 4, 1);
         Texture sheet_icons_main_menu = asset_manager.get("images/icons_main_menu.png", Texture.class);
@@ -244,7 +244,7 @@ public class ResourceManager {
         bg_team[1] = new Texture(createColoredPixmap(new Color(161 / 256f, 0f, 112 / 256f, 1f)));
         bg_team[2] = new Texture(createColoredPixmap(new Color(0f, 153 / 256f, 55 / 256f, 1f)));
         bg_team[3] = new Texture(createColoredPixmap(new Color(0f, 65 / 256f, 114 / 256f, 1f)));
-        bg_text = new Texture(createColoredPixmap(new Color(206 / 256f, 206 / 256f, 206 / 256f, 1f)));
+        bg_text = new Texture(createColoredPixmap(new Color(192 / 256f, 192 / 256f, 192 / 256f, 0.8f)));
         color_border_dark = new Texture(createColoredPixmap(new Color(66 / 256f, 73 / 256f, 99 / 256f, 1f)));
         color_border_light = new Texture(createColoredPixmap(new Color(173 / 256f, 182 / 256f, 173 / 256f, 1f)));
         color_move_path = new Texture(createColoredPixmap(new Color(225 / 256f, 0f, 82 / 256f, 1f)));
@@ -459,6 +459,10 @@ public class ResourceManager {
     public static Animation createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
         TextureRegion[] frames = createFrames(sheet, cols, rows);
         return new Animation(frame_duration, frames);
+    }
+
+    public static TextureRegionDrawable createDrawable(Texture texture) {
+        return createDrawable(texture, texture.getWidth(), texture.getHeight());
     }
 
     public static TextureRegionDrawable createDrawable(Texture texture, int width, int height) {

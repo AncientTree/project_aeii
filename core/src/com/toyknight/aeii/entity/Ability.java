@@ -1,5 +1,7 @@
 package com.toyknight.aeii.entity;
 
+import com.badlogic.gdx.utils.Array;
+
 /**
  * @author toyknight 4/3/2015.
  */
@@ -34,5 +36,13 @@ public class Ability {
     public static final int BLINDER = 26;
     public static final int REHABILITATION = 27;
     public static final int AMBUSH = 28;
+
+    public static Array<Integer> getAllAbilities() {
+        Array<Integer> abilities = new Array<Integer>();
+        for (int i = 0; i < 29; i++) {
+            abilities.add(i);
+        }
+        return abilities;
+    }
 
 }

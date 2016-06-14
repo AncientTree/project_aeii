@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 /**
- * Created by toyknight on 9/2/2015.
+ * @author toyknight 9/2/2015.
  */
 public class PlayerAllocationButton extends TextButton {
 

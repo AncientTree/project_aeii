@@ -15,7 +15,7 @@ public class Language {
 
     private static ObjectMap<String, String> languageMap = new ObjectMap<String, String>();
 
-    public static void init() throws AEIIException {
+    public static void initialize() throws AEIIException {
         try {
             FileHandle languageFile = FileProvider.getLanguageFile();
             InputStreamReader reader = new InputStreamReader(languageFile.read(), "UTF8");
@@ -31,6 +31,14 @@ public class Language {
 
     public static String getUnitName(int index) {
         return languageMap.get("UNIT_NAME_" + index);
+    }
+
+    public static String getUnitGuide(int index) {
+        return languageMap.get("UNIT_GUIDE_" + index);
+    }
+
+    public static String getUnitDescription(int index) {
+        return languageMap.get("UNIT_DESCRIPTION_" + index);
     }
 
     public static String getText(String key) {

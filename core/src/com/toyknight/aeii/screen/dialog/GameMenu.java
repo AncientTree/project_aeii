@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.entity.GameCore;
+import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.manager.GameManager;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.screen.GameScreen;
@@ -25,7 +26,7 @@ public class GameMenu extends BasicDialog {
 
     private TextButton btn_mini_map;
     private TextButton btn_objective;
-    private TextButton btn_load;
+    private TextButton btn_help;
     private TextButton btn_save;
     private TextButton btn_exit;
     private TextButton btn_resume;
@@ -56,14 +57,6 @@ public class GameMenu extends BasicDialog {
         this.add(btn_mini_map).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_objective = new TextButton(Language.getText("LB_OBJECTIVE"), getContext().getSkin());
         this.add(btn_objective).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        this.btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
-        this.btn_load.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                //screen.showLoadDialog();
-            }
-        });
-        this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
         this.btn_save.addListener(new ClickListener() {
             @Override
@@ -72,6 +65,15 @@ public class GameMenu extends BasicDialog {
             }
         });
         this.add(btn_save).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
+        this.btn_help = new TextButton(Language.getText("LB_HELP"), getContext().getSkin());
+        this.btn_help.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("menu");
+                getOwner().showWiki();
+            }
+        });
+        this.add(btn_help).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_exit = new TextButton(Language.getText("LB_EXIT_GAME"), getContext().getSkin());
         this.btn_exit.addListener(new ClickListener() {
             @Override
@@ -125,16 +127,11 @@ public class GameMenu extends BasicDialog {
 
     public void display() {
         btn_save.setVisible(canSave());
-        btn_load.setVisible(canLoad());
     }
 
     private boolean canSave() {
-        return getOwner().getGame().getCurrentPlayer().isLocalPlayer()
+        return getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
-    }
-
-    private boolean canLoad() {
-        return !NetworkManager.isConnected() && getOwner().getGame().getCurrentPlayer().isLocalPlayer();
     }
 
 }

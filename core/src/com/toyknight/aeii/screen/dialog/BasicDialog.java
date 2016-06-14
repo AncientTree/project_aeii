@@ -13,7 +13,7 @@ import com.toyknight.aeii.screen.StageScreen;
 public class BasicDialog extends Table {
 
     protected final int ts;
-    private final StageScreen owner;
+    private StageScreen owner;
 
     public BasicDialog(StageScreen owner) {
         this.owner = owner;
@@ -26,6 +26,10 @@ public class BasicDialog extends Table {
 
     public StageScreen getOwner() {
         return owner;
+    }
+
+    public void setOwner(StageScreen owner) {
+        this.owner = owner;
     }
 
     public void display() {

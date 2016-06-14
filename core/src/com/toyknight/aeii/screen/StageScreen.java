@@ -81,6 +81,18 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         dialog.setVisible(false);
     }
 
+    public void showWiki() {
+        if (!dialogs.containsKey("wiki")) {
+            addDialog("wiki", getContext().getWiki());
+        }
+        getContext().getWiki().setOwner(this);
+        showDialog("wiki");
+    }
+
+    public void closeWiki() {
+        closeDialog("wiki");
+    }
+
     public void showDialog(String name) {
         if (dialog_layer.size() > 0) {
             dialogs.get(dialog_layer.peekFirst()).setVisible(false);

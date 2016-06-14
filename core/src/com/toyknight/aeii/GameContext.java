@@ -21,6 +21,7 @@ import com.toyknight.aeii.record.GameRecordPlayer;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.*;
+import com.toyknight.aeii.screen.wiki.Wiki;
 import com.toyknight.aeii.script.JavaScriptEngine;
 import com.toyknight.aeii.entity.GameSave;
 import com.toyknight.aeii.utils.*;
@@ -61,6 +62,8 @@ public class GameContext extends Game implements GameManagerListener {
 
     private Screen previous_screen;
 
+    private Wiki wiki;
+
     private MainMenuScreen main_menu_screen;
     private MapEditorScreen map_editor_screen;
     private LobbyScreen lobby_screen;
@@ -80,7 +83,7 @@ public class GameContext extends Game implements GameManagerListener {
         try {
             executor = Executors.newSingleThreadExecutor();
             FileProvider.setPlatform(PLATFORM);
-            Language.init();
+            Language.initialize();
             TileFactory.loadTileData();
             UnitFactory.loadUnitData();
             resource_manager = new ResourceManager();
@@ -116,6 +119,7 @@ public class GameContext extends Game implements GameManagerListener {
 
                 room_manager = new RoomManager();
 
+                StageScreen.initializePrompt(getSkin(), TILE_SIZE);
                 main_menu_screen = new MainMenuScreen(this);
                 map_editor_screen = new MapEditorScreen(this);
                 lobby_screen = new LobbyScreen(this);
@@ -124,7 +128,7 @@ public class GameContext extends Game implements GameManagerListener {
                 game_screen = new GameScreen(this);
                 statistics_screen = new StatisticsScreen(this);
                 map_management_screen = new MapManagementScreen(this);
-                StageScreen.initializePrompt(getSkin(), TILE_SIZE);
+                wiki = new Wiki(main_menu_screen);
 
                 record_player = new GameRecordPlayer(this);
                 record_player.setListener(game_screen);
@@ -145,6 +149,10 @@ public class GameContext extends Game implements GameManagerListener {
 
     public ResourceManager getResourceManager() {
         return resource_manager;
+    }
+
+    public Wiki getWiki() {
+        return wiki;
     }
 
     private void loadConfiguration() throws AEIIException {
