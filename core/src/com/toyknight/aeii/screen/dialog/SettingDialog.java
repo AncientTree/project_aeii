@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.screen.MainMenuScreen;
 import com.toyknight.aeii.utils.Language;
@@ -14,7 +15,7 @@ import com.toyknight.aeii.utils.Language;
  */
 public class SettingDialog extends BasicDialog {
 
-    private Label value_username;
+    private TextField text_username;
 
     public SettingDialog(MainMenuScreen screen) {
         super(screen);
@@ -54,28 +55,22 @@ public class SettingDialog extends BasicDialog {
         lb_username.setBounds(ts / 2, getHeight() - ts, lb_username.getPrefWidth(), ts / 2);
         addActor(lb_username);
 
-        value_username = new Label("", getContext().getSkin());
-        value_username.setBounds(
-                ts / 2 + lb_username.getPrefWidth(), getHeight() - ts,
-                ts * 7 - lb_username.getPrefWidth(), ts / 2);
-        addActor(value_username);
-
-        TextButton btn_set_username = new TextButton(Language.getText("LB_SET"), getContext().getSkin());
-        btn_set_username.setBounds(ts * 8 - ts / 2, getHeight() - ts, ts * 2, ts / 2);
-        btn_set_username.addListener(new ClickListener() {
+        text_username = new TextField("", getContext().getSkin());
+        text_username.setBounds(
+                lb_username.getPrefWidth() + ts, getHeight() - ts,
+                ts * 9 - lb_username.getPrefWidth() - ts / 2, ts / 2);
+        text_username.setTextFieldFilter(new TextField.TextFieldFilter() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.input.getTextInput(input_listener,
-                        Language.getText("MSG_INFO_IYUN"),
-                        value_username.getText().toString(),
-                        "");
+            public boolean acceptChar(TextField textField, char c) {
+                return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
             }
         });
-        addActor(btn_set_username);
+        text_username.setMaxLength(10);
+        addActor(text_username);
     }
 
     private void save() {
-        String username = value_username.getText().toString();
+        String username = text_username.getText();
         if (username.length() > 0) {
             getContext().updateConfiguration("username", username);
         } else {
@@ -90,20 +85,8 @@ public class SettingDialog extends BasicDialog {
 
     @Override
     public void display() {
-        value_username.setText(getContext().getUsername());
+        text_username.setText(getContext().getUsername());
         setVisible(true);
     }
-
-    private Input.TextInputListener input_listener = new Input.TextInputListener() {
-        @Override
-        public void input(String username) {
-            value_username.setText(username);
-        }
-
-        @Override
-        public void canceled() {
-            //do nothing
-        }
-    };
 
 }
