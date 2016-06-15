@@ -165,7 +165,7 @@ public class GameContext extends Game implements GameManagerListener {
             } else {
                 configuration.put("username", "nobody");
                 OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
-                PropertiesUtils.store(configuration, writer, "aeii user configure file");
+                PropertiesUtils.store(configuration, writer, "aeii user configuration file");
             }
         } catch (IOException ex) {
             throw new AEIIException(ex.getMessage());
