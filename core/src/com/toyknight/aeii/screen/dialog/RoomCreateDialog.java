@@ -5,9 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -47,11 +45,12 @@ public class RoomCreateDialog extends BasicDialog {
     private Spinner<Integer> spinner_gold;
     private Spinner<Integer> spinner_population;
     private StringList<Object> object_list;
+    private TextField input_password;
 
     public RoomCreateDialog(LobbyScreen lobby_screen) {
         super(lobby_screen);
         int width = ts * 11;
-        this.setBounds((Gdx.graphics.getWidth() - width) / 2, ts / 2, width, Gdx.graphics.getHeight() - ts);
+        this.setBounds((Gdx.graphics.getWidth() - width) / 2, ts / 4, width, Gdx.graphics.getHeight() - ts / 2);
         this.initComponents();
     }
 
@@ -100,29 +99,33 @@ public class RoomCreateDialog extends BasicDialog {
         btn_preview.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
         addActor(btn_preview);
 
+        Table setting_pane = new Table();
+        setting_pane.setBounds(ts * 7 + ts / 2, ts * 2, ts * 3, getHeight() - ts * 2 - ts / 2);
+        addActor(setting_pane);
+
         Label lb_capacity = new Label(Language.getText("LB_CAPACITY"), getContext().getSkin());
-        lb_capacity.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts - ts / 2, ts * 3, ts);
-        addActor(lb_capacity);
+        setting_pane.add(lb_capacity).width(ts * 3).padBottom(ts / 4).row();
         spinner_capacity = new Spinner<Integer>(ts, getContext().getSkin());
-        spinner_capacity.setPosition(ts * 6 + ts / 2 * 3, getHeight() - ts * 2 - ts / 2);
         spinner_capacity.setItems(new Integer[]{2, 3, 4, 5, 6, 7, 8});
-        addActor(spinner_capacity);
+        setting_pane.add(spinner_capacity).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_initial_gold = new Label(Language.getText("LB_START_GOLD"), getContext().getSkin());
-        lb_initial_gold.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 3 - ts / 2, ts * 3, ts);
-        addActor(lb_initial_gold);
+        setting_pane.add(lb_initial_gold).width(ts * 3).padBottom(ts / 4).row();
         spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());
-        spinner_gold.setPosition(ts * 6 + ts / 2 * 3, getHeight() - ts * 4 - ts / 2);
         spinner_gold.setItems(Rule.GOLD_PRESET);
-        addActor(spinner_gold);
+        setting_pane.add(spinner_gold).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
-        lb_max_population.setBounds(ts * 6 + ts / 2 * 3, getHeight() - ts * 5 - ts / 2, ts * 3, ts);
-        addActor(lb_max_population);
+        setting_pane.add(lb_max_population).width(ts * 3).padBottom(ts / 4).row();
         spinner_population = new Spinner<Integer>(ts, getContext().getSkin());
-        spinner_population.setPosition(ts * 6 + ts / 2 * 3, getHeight() - ts * 6 - ts / 2);
         spinner_population.setItems(Rule.POPULATION_PRESET);
-        addActor(spinner_population);
+        setting_pane.add(spinner_population).size(ts * 3, ts).padBottom(ts / 4).row();
+
+        Label lb_password = new Label(Language.getText("LB_PASSWORD"), getContext().getSkin());
+        setting_pane.add(lb_password).width(ts * 3).padBottom(ts / 4).row();
+        input_password = new TextField("", getContext().getSkin());
+        input_password.setMaxLength(8);
+        setting_pane.add(input_password).size(ts * 3, ts / 2);
     }
 
     @Override
@@ -198,14 +201,15 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     private RoomSetting tryCreateRoom() throws AEIIException {
+        String password = input_password.getText();
         switch (getMode()) {
             case NEW_GAME:
-                String map_name = ((MapFactory.MapSnapshot) object_list.getSelected()).file.name();
+                String map_name = object_list.getSelected().toString();
                 Map map = MapFactory.createMap(((MapFactory.MapSnapshot) object_list.getSelected()).file);
                 int capacity = spinner_capacity.getSelectedItem();
                 int gold = spinner_gold.getSelectedItem();
                 int population = spinner_population.getSelectedItem();
-                return NetworkManager.requestCreateRoom(map_name, map, capacity, gold, population);
+                return NetworkManager.requestCreateRoom(map_name, map, capacity, gold, population, password);
             case LOAD_GAME:
                 FileHandle save_file = (FileHandle) object_list.getSelected();
                 GameSave game_save = GameToolkit.loadGame(save_file);
@@ -213,7 +217,7 @@ public class RoomCreateDialog extends BasicDialog {
                     return null;
                 } else {
                     capacity = spinner_capacity.getSelectedItem();
-                    return NetworkManager.requestCreateRoom(save_file.name(), game_save.getGame(), capacity);
+                    return NetworkManager.requestCreateRoom(game_save.getGame(), capacity, password);
                 }
             default:
                 return null;

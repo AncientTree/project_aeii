@@ -3,11 +3,13 @@ package com.toyknight.aeii.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.AEIIException;
@@ -18,6 +20,7 @@ import com.toyknight.aeii.network.NetworkListener;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
+import com.toyknight.aeii.screen.dialog.InputDialog;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
 import com.toyknight.aeii.screen.dialog.RoomCreateDialog;
 import com.toyknight.aeii.network.entity.RoomSetting;
@@ -34,12 +37,16 @@ import com.toyknight.aeii.utils.MapFactory;
 public class LobbyScreen extends StageScreen implements NetworkListener {
 
     private StringList<RoomSnapshot> room_list;
+    private Array<RoomSnapshot> all_rooms;
 
     private RoomCreateDialog room_create_dialog;
     private MiniMapDialog map_preview_dialog;
+    private InputDialog password_input;
 
     private TextButton btn_refresh;
     private TextButton btn_join;
+
+    private TextField input_search;
 
     public LobbyScreen(GameContext context) {
         super(context);
@@ -93,7 +100,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_join.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                tryJoinRoom();
+                doJoinRoom();
             }
         });
         addActor(btn_join);
@@ -122,6 +129,40 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             }
         });
         addDialog("preview", map_preview_dialog);
+
+        password_input = new InputDialog(this);
+        password_input.setMessage(Language.getText("MSG_INFO_PIP"));
+        password_input.setOkCallable(new Callable() {
+            @Override
+            public void call() {
+                closeDialog("password");
+                tryJoinRoom(getSelectedRoom().room_number, password_input.getInput());
+            }
+        });
+        password_input.setCancelCallable(new Callable() {
+            @Override
+            public void call() {
+                closeDialog("password");
+            }
+        });
+        addDialog("password", password_input);
+
+        Table search_bar = new Table();
+        search_bar.setBounds(Gdx.graphics.getWidth() - ts * 7, Gdx.graphics.getHeight() - ts, ts * 6, ts);
+        addActor(search_bar);
+
+        Label label_search = new Label(Language.getText("LB_SEARCH"), getContext().getSkin());
+        label_search.setAlignment(Align.right);
+        search_bar.add(label_search).width(ts * 2);
+
+        input_search = new TextField("", getContext().getSkin());
+        input_search.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                applySearch();
+            }
+        });
+        search_bar.add(input_search).width(ts * 4).padLeft(ts / 8);
     }
 
     @Override
@@ -169,8 +210,9 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                 if (result == null) {
                     showPrompt(Language.getText("MSG_ERR_AEA"), null);
                 } else {
-                    room_list.setItems(result);
                     Gdx.input.setInputProcessor(LobbyScreen.this);
+                    all_rooms = result;
+                    applySearch();
                 }
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
 
@@ -184,14 +226,39 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         });
     }
 
-    private void tryJoinRoom() {
+    private void applySearch() {
+        if (input_search.getText().length() > 0) {
+            Array<RoomSnapshot> matched_rooms = new Array<RoomSnapshot>();
+            for (RoomSnapshot snapshot : all_rooms) {
+                if (snapshot.toString().contains(input_search.getText())) {
+                    matched_rooms.add(snapshot);
+                }
+            }
+            room_list.setItems(matched_rooms);
+        } else {
+            room_list.setItems(all_rooms);
+        }
+    }
+
+    private void doJoinRoom() {
+        RoomSnapshot room = getSelectedRoom();
+        if (room != null) {
+            if (room.requires_password) {
+                showDialog("password");
+            } else {
+                tryJoinRoom(room.room_number, "");
+            }
+        }
+    }
+
+    private void tryJoinRoom(final long room_number, final String password) {
         if (getSelectedRoom() != null) {
             Gdx.input.setInputProcessor(null);
             btn_join.setText(Language.getText("LB_JOINING"));
             getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
                 @Override
                 public RoomSetting doTask() {
-                    return NetworkManager.requestJoinRoom(getSelectedRoom().room_number);
+                    return NetworkManager.requestJoinRoom(room_number, password);
                 }
 
                 @Override
@@ -233,7 +300,8 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         batch.begin();
         batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        FontRenderer.drawTitleCenter(batch, Language.getText("LB_GAMES"), 0, Gdx.graphics.getHeight() - ts, Gdx.graphics.getWidth(), ts);
+        FontRenderer.drawTitleCenter(
+                batch, Language.getText("LB_GAMES"), ts, Gdx.graphics.getHeight() - ts, ts * 3, ts);
         batch.end();
         super.draw();
     }
@@ -241,6 +309,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
     @Override
     public void show() {
         super.show();
+        input_search.setText("");
         closeAllDialogs();
         refreshGameList();
     }

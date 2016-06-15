@@ -38,6 +38,8 @@ public class Room {
     private String map_name;
     private int start_gold = 1000;
 
+    private String password = null;
+
     public Room(long room_number, String room_name, GameCore game) {
         this(room_number, room_name);
         manager = new GameManager();
@@ -66,6 +68,14 @@ public class Room {
             manager = new GameManager();
             manager.setGame(game);
         }
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean checkPassword(String password) {
+        return password == null || this.password.equals(password);
     }
 
     public GameManager getManager() {
@@ -271,6 +281,7 @@ public class Room {
         RoomSnapshot snapshot = new RoomSnapshot();
         snapshot.room_number = getRoomNumber();
         snapshot.open = isOpen();
+        snapshot.requires_password = password != null;
         snapshot.room_name = getRoomName();
         snapshot.map_name = getMapName();
         snapshot.capacity = getCapacity();

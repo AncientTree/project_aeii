@@ -156,7 +156,7 @@ public class GameServer {
                 doRespondRoomList(player, request);
                 break;
             case NetworkConstants.CREATE_ROOM:
-                doRespondCreateRoom(player, request);
+                doRespondCreateRoomNewGame(player, request);
                 break;
             case NetworkConstants.JOIN_ROOM:
                 doRespondJoinRoom(player, request);
@@ -165,7 +165,7 @@ public class GameServer {
                 doRespondStartGame(player, request);
                 break;
             case NetworkConstants.CREATE_ROOM_SAVED:
-                doRespondCreateRoomSaved(player, request);
+                doRespondCreateRoomSavedGame(player, request);
                 break;
             case NetworkConstants.LIST_MAPS:
                 doRespondListMaps(player, request);
@@ -243,12 +243,15 @@ public class GameServer {
         }
     }
 
-    public void doRespondCreateRoom(PlayerService player, JSONObject request) {
+    public void doRespondCreateRoomNewGame(PlayerService player, JSONObject request) {
         try {
             if (player.isAuthenticated()) {
                 JSONObject response = createResponse(request);
                 Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game");
                 room.initialize(new Map(request.getJSONObject("map")));
+                if (request.has("password")) {
+                    room.setPassword(request.getString("password"));
+                }
                 room.setMapName(request.getString("map_name"));
                 room.setCapacity(request.getInt("capacity"));
                 room.setStartGold(request.getInt("start_gold"));
@@ -274,12 +277,15 @@ public class GameServer {
         }
     }
 
-    public void doRespondCreateRoomSaved(PlayerService player, JSONObject request) {
+    public void doRespondCreateRoomSavedGame(PlayerService player, JSONObject request) {
         try {
             if (player.isAuthenticated()) {
                 JSONObject response = createResponse(request);
                 GameCore game = new GameCore(request.getJSONObject("game"));
                 Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game", game);
+                if (request.has("password")) {
+                    room.setPassword(request.getString("password"));
+                }
                 room.setMapName(request.getString("map_name"));
                 room.setCapacity(request.getInt("capacity"));
                 room.setHostPlayer(player.getID());
@@ -309,7 +315,9 @@ public class GameServer {
                 JSONObject response = createResponse(request);
                 long room_number = request.getLong("room_number");
                 Room room = getRoom(room_number);
-                if (isRoomAvailable(room) && player.getRoomNumber() == -1) {
+                if (isRoomAvailable(room)
+                        && player.getRoomNumber() == -1
+                        && room.checkPassword(request.getString("password"))) {
                     room.addPlayer(player.getID());
                     player.setRoomNumber(room_number);
                     RoomSetting room_setting = createRoomSetting(room);

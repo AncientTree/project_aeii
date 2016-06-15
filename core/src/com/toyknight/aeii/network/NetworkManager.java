@@ -225,13 +225,17 @@ public class NetworkManager {
     }
 
     public static RoomSetting requestCreateRoom(
-            String map_name, Map map, int capacity, int start_gold, int max_population) throws JSONException {
+            String map_name, Map map, int capacity, int start_gold, int max_population, String password)
+            throws JSONException {
         JSONObject request = createRequest(NetworkConstants.CREATE_ROOM);
         request.put("map_name", map_name);
         request.put("map", map.toJson());
         request.put("capacity", capacity);
         request.put("start_gold", start_gold);
         request.put("max_population", max_population);
+        if (password.length() > 0) {
+            request.put("password", password);
+        }
         JSONObject response = sendRequest(request);
         if (response == null) {
             return null;
@@ -244,11 +248,16 @@ public class NetworkManager {
         }
     }
 
-    public static RoomSetting requestCreateRoom(String save_name, GameCore game, int capacity) throws JSONException {
+    public static RoomSetting requestCreateRoom(GameCore game, int capacity, String password) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.CREATE_ROOM_SAVED);
+        int player_count = game.getMap().getPlayerCount();
+        String save_name = String.format("(%d) saved game", player_count);
         request.put("save_name", save_name);
         request.put("game", game.toJson());
         request.put("capacity", capacity);
+        if (password.length() > 0) {
+            request.put("password", password);
+        }
         JSONObject response = sendRequest(request);
         if (response == null) {
             return null;
@@ -261,9 +270,10 @@ public class NetworkManager {
         }
     }
 
-    public static RoomSetting requestJoinRoom(long room_number) throws JSONException {
+    public static RoomSetting requestJoinRoom(long room_number, String password) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.JOIN_ROOM);
         request.put("room_number", room_number);
+        request.put("password", password);
         JSONObject response = sendRequest(request);
         if (response == null) {
             return null;

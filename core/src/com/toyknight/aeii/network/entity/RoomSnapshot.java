@@ -13,6 +13,8 @@ public class RoomSnapshot implements Serializable {
 
     public boolean open;
 
+    public boolean requires_password;
+
     public String room_name;
 
     public String map_name;
@@ -27,6 +29,7 @@ public class RoomSnapshot implements Serializable {
     public RoomSnapshot(JSONObject json) throws JSONException {
         room_number = json.getLong("room_number");
         open = json.getBoolean("open");
+        requires_password = json.getBoolean("requires_password");
         room_name = json.getString("room_name");
         map_name = json.getString("map_name");
         capacity = json.getInt("capacity");
@@ -38,6 +41,7 @@ public class RoomSnapshot implements Serializable {
         JSONObject json = new JSONObject();
         json.put("room_number", room_number);
         json.put("open", open);
+        json.put("requires_password", requires_password);
         json.put("room_name", room_name);
         json.put("map_name", map_name);
         json.put("capacity", capacity);
@@ -47,7 +51,8 @@ public class RoomSnapshot implements Serializable {
 
     @Override
     public String toString() {
-        String str = room_name + " | Map: " + map_name + " | (" + (capacity - remaining) + "/" + capacity + ")";
+        String name = requires_password ? room_name + "[*]" : room_name;
+        String str = name + " | Map: " + map_name + " | (" + (capacity - remaining) + "/" + capacity + ")";
         if (!open) {
             str += " - Started";
         }
