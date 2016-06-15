@@ -147,7 +147,9 @@ public class NetGameCreateScreen extends StageScreen {
         Label label_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
         label_type.setAlignment(Align.center);
         team_setting_header.add(label_type).width(ts * 4).padLeft(ts / 2);
-        team_setting_header.add(label_space).width(Gdx.graphics.getWidth() - ts * 14 - ts / 2);
+        Label label_username = new Label(Language.getText("LB_USERNAME"), getContext().getSkin());
+        label_username.setAlignment(Align.center);
+        team_setting_header.add(label_username).width(Gdx.graphics.getWidth() - ts * 14 - ts / 2);
 
         team_setting_pane.add(team_setting_header).width(Gdx.graphics.getWidth() - ts * 4).padBottom(ts / 8).row();
 
