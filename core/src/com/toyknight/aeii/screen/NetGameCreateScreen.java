@@ -1,14 +1,17 @@
 package com.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
+import com.toyknight.aeii.concurrent.MessageSendingTask;
 import com.toyknight.aeii.entity.GameCore;
 import com.toyknight.aeii.entity.Player;
 import com.toyknight.aeii.concurrent.AsyncTask;
@@ -16,10 +19,7 @@ import com.toyknight.aeii.manager.RoomManager;
 import com.toyknight.aeii.network.NetworkManager;
 import com.toyknight.aeii.renderer.BorderRenderer;
 import com.toyknight.aeii.screen.dialog.MiniMapDialog;
-import com.toyknight.aeii.screen.widgets.PlayerAllocationButton;
-import com.toyknight.aeii.screen.widgets.Spinner;
-import com.toyknight.aeii.screen.widgets.SpinnerListener;
-import com.toyknight.aeii.screen.widgets.StringList;
+import com.toyknight.aeii.screen.widgets.*;
 import com.toyknight.aeii.network.entity.PlayerSnapshot;
 import com.toyknight.aeii.utils.Language;
 
@@ -39,12 +39,14 @@ public class NetGameCreateScreen extends StageScreen {
     private Spinner<Integer>[] spinner_alliance;
     private Spinner<String>[] spinner_type;
     private Label[] lb_username;
-    private ScrollPane[] sp_username;
 
     private Label lb_population;
     private Label lb_gold;
 
-    private Table team_setting_pane;
+    private Table team_setting_content;
+
+    private Table message_pane;
+    private ScrollPane sp_message;
 
     private StringList<PlayerSnapshot> player_list;
 
@@ -56,16 +58,20 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void initComponents() {
-        Label lb_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
-        lb_team.setPosition(
-                ts * 7 + (ts * 3 - lb_team.getPrefWidth()) / 2,
-                Gdx.graphics.getHeight() - ts / 2 - lb_team.getPrefHeight());
-        addActor(lb_team);
-        Label lb_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
-        lb_type.setPosition(
-                ts * 10 + ts / 2 + (ts * 4 - lb_type.getPrefWidth()) / 2,
-                Gdx.graphics.getHeight() - ts / 2 - lb_type.getPrefHeight());
-        addActor(lb_type);
+        player_list = new StringList<PlayerSnapshot>(ts);
+        ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(
+                        ResourceManager.getBorderDarkColor(),
+                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
+                super.draw(batch, parentAlpha);
+            }
+        };
+        sp_player_list.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
+        sp_player_list.setScrollingDisabled(true, false);
+        sp_player_list.setBounds(ts / 2, ts * 3 + ts / 2, ts * 3, Gdx.graphics.getHeight() - ts * 4);
+        addActor(sp_player_list);
 
         btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
         btn_start.setBounds(ts / 2, ts / 2, ts * 3, ts);
@@ -76,6 +82,16 @@ public class NetGameCreateScreen extends StageScreen {
             }
         });
         addActor(btn_start);
+
+        TextButton btn_message = new TextButton(Language.getText("LB_SEND_MESSAGE"), getContext().getSkin());
+        btn_message.setBounds(Gdx.graphics.getWidth() - ts * 3 - ts / 2, ts / 2, ts * 3, ts);
+        btn_message.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.input.getTextInput(message_input_listener, Language.getText("MSG_INFO_IM"), "", "");
+            }
+        });
+        addActor(btn_message);
 
         btn_leave = new TextButton(Language.getText("LB_LEAVE"), getContext().getSkin());
         btn_leave.setBounds(ts * 4, ts / 2, ts * 3, ts);
@@ -88,7 +104,7 @@ public class NetGameCreateScreen extends StageScreen {
         addActor(btn_leave);
 
         TextButton btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
-        btn_preview.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
+        btn_preview.setBounds(ts / 2, ts * 2, ts * 3, ts);
         btn_preview.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,7 +114,7 @@ public class NetGameCreateScreen extends StageScreen {
         addActor(btn_preview);
 
         btn_record = new TextButton("", getContext().getSkin());
-        btn_record.setBounds(ts * 11, ts / 2, ts * 3, ts);
+        btn_record.setBounds(Gdx.graphics.getWidth() - ts * 3 - ts / 2, ts * 2, ts * 3, ts);
         btn_record.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -117,19 +133,33 @@ public class NetGameCreateScreen extends StageScreen {
         });
         addDialog("preview", map_preview);
 
-        int tstw = Gdx.graphics.getWidth() - ts * 4;
-        int tsth = ts * 4 + ts / 2 * 4;
-        team_setting_pane = new Table();
+        Table team_setting_pane = new Table();
         team_setting_pane.setBounds(
-                ts * 4, Gdx.graphics.getHeight() - ts / 2 - lb_team.getPrefHeight() - tsth, tstw, tsth);
+                ts * 4, ts * 3 + ts / 2, Gdx.graphics.getWidth() - ts * 4, Gdx.graphics.getHeight() - ts * 3 - ts / 2);
         addActor(team_setting_pane);
+
+        Table team_setting_header = new Table();
+        Label label_space = new Label("", getContext().getSkin());
+        team_setting_header.add(label_space).width(ts * 2 + ts / 2);
+        Label label_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
+        label_team.setAlignment(Align.center);
+        team_setting_header.add(label_team).width(ts * 3).padLeft(ts / 2);
+        Label label_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
+        label_type.setAlignment(Align.center);
+        team_setting_header.add(label_type).width(ts * 4).padLeft(ts / 2);
+        team_setting_header.add(label_space).width(Gdx.graphics.getWidth() - ts * 14 - ts / 2);
+
+        team_setting_pane.add(team_setting_header).width(Gdx.graphics.getWidth() - ts * 4).padBottom(ts / 8).row();
+
+        team_setting_content = new Table();
+        team_setting_pane.add(team_setting_content).width(Gdx.graphics.getWidth() - ts * 4);
+
 
         btn_allocate = new TextButton[4];
         team_image = new Image[4];
         spinner_alliance = new Spinner[4];
         spinner_type = new Spinner[4];
         lb_username = new Label[4];
-        sp_username = new ScrollPane[4];
         for (int team = 0; team < 4; team++) {
             btn_allocate[team] = new PlayerAllocationButton(team, getContext().getSkin());
             btn_allocate[team].addListener(new ClickListener() {
@@ -158,28 +188,12 @@ public class NetGameCreateScreen extends StageScreen {
             spinner_type[team].setItems(type);
 
             lb_username[team] = new Label("", getContext().getSkin());
-            sp_username[team] = new ScrollPane(lb_username[team]);
-            sp_username[team].setScrollBarPositions(true, false);
+            lb_username[team].setAlignment(Align.center);
         }
 
-        player_list = new StringList<PlayerSnapshot>(ts);
-        ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
-            @Override
-            public void draw(Batch batch, float parentAlpha) {
-                batch.draw(
-                        ResourceManager.getBorderDarkColor(),
-                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
-                super.draw(batch, parentAlpha);
-            }
-        };
-        sp_player_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
-        sp_player_list.setScrollBarPositions(false, true);
-        sp_player_list.setBounds(ts / 2, ts * 2, ts * 3, Gdx.graphics.getHeight() - ts * 2 - ts / 2);
-        addActor(sp_player_list);
 
         HorizontalGroup info_group = new HorizontalGroup();
-        info_group.setBounds(ts * 4, ts * 2, Gdx.graphics.getWidth() - ts * 4, ts * 11 / 24);
+        info_group.setBounds(ts * 4, ts * 2, ts * 3, ts);
 
         TextureRegion tr_population = ResourceManager.getStatusHudIcon(0);
         TextureRegionDrawable trd_population = new TextureRegionDrawable(tr_population);
@@ -200,6 +214,27 @@ public class NetGameCreateScreen extends StageScreen {
         info_group.addActor(lb_gold);
 
         addActor(info_group);
+
+        message_pane = new Table() {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(ResourceManager.getListBackground(), getX(), getY(), getWidth(), getHeight());
+                super.draw(batch, parentAlpha);
+            }
+        };
+        sp_message = new ScrollPane(message_pane, getContext().getSkin()) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(
+                        ResourceManager.getBorderDarkColor(),
+                        getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
+                super.draw(batch, parentAlpha);
+            }
+        };
+        sp_message.setScrollingDisabled(true, false);
+        sp_message.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
+        sp_message.setBounds(ts * 7 + ts / 2, ts / 2, Gdx.graphics.getWidth() - ts * 11 - ts / 2, ts * 2 + ts / 2);
+        addActor(sp_message);
     }
 
     public RoomManager getRoomManager() {
@@ -323,6 +358,20 @@ public class NetGameCreateScreen extends StageScreen {
         });
     }
 
+    private void trySendMessage(String message) {
+        if (message.length() > 0) {
+            getContext().submitAsyncTask(new MessageSendingTask(message) {
+                @Override
+                public void onFinish(Void result) {
+                }
+
+                @Override
+                public void onFail(String message) {
+                }
+            });
+        }
+    }
+
     private void tryStartGame() {
         //local check
         Gdx.input.setInputProcessor(null);
@@ -355,6 +404,20 @@ public class NetGameCreateScreen extends StageScreen {
         getContext().getGameManager().getGameRecorder().setEnabled(record_on);
         getContext().gotoGameScreen(getRoomManager().getArrangedGame());
         getRoomManager().setStarted(true);
+    }
+
+    private void appendMessage(String username, String message) {
+        Label label_username = new Label(username + ": ", getContext().getSkin());
+        label_username.setAlignment(Align.topRight);
+        Label label_message = new Label(message, getContext().getSkin());
+        label_message.setWrap(true);
+        float pad_top = message_pane.getChildren().size > 0 ? ts / 8 : 0;
+        message_pane.add(label_username).width(ts * 2 + ts / 2).padTop(pad_top).padBottom(ts / 8);
+        message_pane.add(label_message)
+                .width(message_pane.getWidth() - ts * 2 - ts / 2).padTop(pad_top).padBottom(ts / 8).row();
+        message_pane.layout();
+        sp_message.layout();
+        sp_message.setScrollPercentY(1.0f);
     }
 
     @Override
@@ -392,29 +455,33 @@ public class NetGameCreateScreen extends StageScreen {
             lb_gold.setText(" - ");
         }
 
-        team_setting_pane.clear();
+        boolean empty = true;
+        team_setting_content.clear();
         for (int team = 0; team < 4; team++) {
             if (getGame().getMap().hasTeamAccess(team)) {
-                team_setting_pane.add(btn_allocate[team])
+                int pad_top = empty ? 0 : ts / 2;
+                team_setting_content.add(btn_allocate[team])
                         .size(ts, ts)
-                        .padTop(ts / 2);
-                team_setting_pane.add(team_image[team])
+                        .padTop(pad_top);
+                team_setting_content.add(team_image[team])
                         .size(ts, ts)
-                        .padTop(ts / 2)
+                        .padTop(pad_top)
                         .padLeft(ts / 2);
-                team_setting_pane.add(spinner_alliance[team])
+                team_setting_content.add(spinner_alliance[team])
                         .size(ts * 3, ts)
-                        .padTop(ts / 2)
+                        .padTop(pad_top)
                         .padLeft(ts / 2);
-                team_setting_pane.add(spinner_type[team])
+                team_setting_content.add(spinner_type[team])
                         .size(ts * 4, ts)
-                        .padTop(ts / 2)
+                        .padTop(pad_top)
                         .padLeft(ts / 2);
-                team_setting_pane.add(sp_username[team])
-                        .size(team_setting_pane.getWidth() - ts * 11 - ts / 2, ts)
-                        .padTop(ts / 2)
-                        .padLeft(ts / 2)
+                team_setting_content.add(lb_username[team])
+                        .size(Gdx.graphics.getWidth() - ts * 14 - ts / 2, ts)
+                        .padTop(pad_top)
                         .row();
+                if (empty) {
+                    empty = false;
+                }
             }
             spinner_type[team].setSelectedIndex(0);
         }
@@ -428,7 +495,7 @@ public class NetGameCreateScreen extends StageScreen {
     public void onPlayerJoin(int id, String username) {
         super.onPlayerJoin(id, username);
         updatePlayers();
-        //show in message box
+        appendMessage(Language.getText("LB_SYSTEM"), String.format(Language.getText("MSG_INFO_PJR"), username));
     }
 
     @Override
@@ -436,7 +503,7 @@ public class NetGameCreateScreen extends StageScreen {
         super.onPlayerLeave(id, username, host);
         updatePlayers();
         updateButtons();
-        //show in message box
+        appendMessage(Language.getText("LB_SYSTEM"), String.format(Language.getText("MSG_INFO_PLR"), username));
     }
 
     @Override
@@ -450,10 +517,27 @@ public class NetGameCreateScreen extends StageScreen {
         createGame();
     }
 
+    @Override
+    public void onReceiveMessage(String username, String message) {
+        appendMessage(username, message);
+    }
+
     private final SpinnerListener state_change_listener = new SpinnerListener() {
         @Override
         public void onValueChanged(Spinner spinner) {
             onStateChange();
+        }
+    };
+
+    private Input.TextInputListener message_input_listener = new Input.TextInputListener() {
+        @Override
+        public void input(String message) {
+            trySendMessage(message);
+        }
+
+        @Override
+        public void canceled() {
+            //do nothing
         }
     };
 
