@@ -45,11 +45,10 @@ public class DesktopLauncher {
 
     private void loadLanguage() throws IOException, URISyntaxException {
         String locale = java.util.Locale.getDefault().toString();
-        File language_file = new File(getClass().getResource("/launcher/" + locale + ".dat").toURI());
-        File default_language_file = new File(getClass().getResource("/launcher/en_US.dat").toURI());
-        language_file = language_file.exists() ? language_file : default_language_file;
-        FileInputStream fis = new FileInputStream(language_file);
-        InputStreamReader reader = new InputStreamReader(fis, "UTF8");
+        InputStream language_in = getClass().getResourceAsStream("/launcher/" + locale + ".dat");
+        InputStream default_language_in = getClass().getResourceAsStream("/launcher/en_US.dat");
+        language_in = language_in == null ? default_language_in : language_in;
+        InputStreamReader reader = new InputStreamReader(language_in, "UTF8");
         language = new ObjectMap<String, String>();
         PropertiesUtils.load(language, reader);
     }
