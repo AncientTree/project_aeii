@@ -221,9 +221,9 @@ public class DesktopLauncher {
 
     public void launch(int ts, int width, int height, boolean fs, int fps) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.addIcon("game_icon_large.png", Files.FileType.Internal);
-        config.addIcon("game_icon_medium.png", Files.FileType.Internal);
-        config.addIcon("game_icon_small.png", Files.FileType.Internal);
+        config.addIcon("desktop_icon_large.png", Files.FileType.Internal);
+        config.addIcon("desktop_icon_medium.png", Files.FileType.Internal);
+        config.addIcon("desktop_icon_small.png", Files.FileType.Internal);
         config.title = getLanguage().get("LB_TITLE");
         config.fullscreen = fs;
         config.width = width;
