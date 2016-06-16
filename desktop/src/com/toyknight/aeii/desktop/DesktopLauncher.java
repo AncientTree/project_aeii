@@ -1,5 +1,6 @@
 package com.toyknight.aeii.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -100,7 +101,7 @@ public class DesktopLauncher {
         } catch (IllegalAccessException ignored) {
         } catch (UnsupportedLookAndFeelException ignored) {
         }
-        JFrame window = new JFrame(getLanguage().get("LB_TITLE"));
+        JFrame window = new JFrame(getLanguage().get("LB_LAUNCHER"));
         window.getContentPane().setPreferredSize(new Dimension(240, 150));
 
         window.getContentPane().setLayout(new FlowLayout());
@@ -220,7 +221,10 @@ public class DesktopLauncher {
 
     public void launch(int ts, int width, int height, boolean fs, int fps) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "Ancient Empires II 10 Years Anniversary";
+        config.addIcon("game_icon_large.png", Files.FileType.Internal);
+        config.addIcon("game_icon_medium.png", Files.FileType.Internal);
+        config.addIcon("game_icon_small.png", Files.FileType.Internal);
+        config.title = getLanguage().get("LB_TITLE");
         config.fullscreen = fs;
         config.width = width;
         config.height = height;
