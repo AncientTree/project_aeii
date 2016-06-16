@@ -262,10 +262,8 @@ public class PositionGenerator {
                 if (getGame().getMap().isWithinMap(x + dx, y + dy)) {
                     positions.add(new Position(x + dx, y + dy));
                 }
-                if (dy != 0) {
-                    if (getGame().getMap().isWithinMap(x + dx, y - dy)) {
-                        positions.add(new Position(x + dx, y - dy));
-                    }
+                if (dy != 0 && getGame().getMap().isWithinMap(x + dx, y - dy)) {
+                    positions.add(new Position(x + dx, y - dy));
                 }
             }
         }
