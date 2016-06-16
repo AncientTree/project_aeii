@@ -75,7 +75,7 @@ public class Room {
     }
 
     public boolean checkPassword(String password) {
-        return password == null || this.password.equals(password);
+        return this.password == null || this.password.equals(password);
     }
 
     public GameManager getManager() {
