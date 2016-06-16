@@ -81,7 +81,7 @@ public class Wiki extends BasicDialog {
         RootNode node_terrains = RootNode.create(RootNode.TERRAINS, getContext().getSkin());
         RootNode node_units = RootNode.create(RootNode.UNITS, getContext().getSkin());
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-            if (index != UnitFactory.getCrystalIndex() && index != 14 && index != 16) {
+            if (index != UnitFactory.getCrystalIndex() && index != 16) {
                 node_units.add(UnitNode.create(index, getContext().getSkin()));
             }
         }

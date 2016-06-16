@@ -140,7 +140,7 @@ public class Rule implements Serializable {
         int crystal = UnitFactory.getCrystalIndex();
         Array<Integer> unit_list = new Array<Integer>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-            if (index != commander && index != skeleton && index != crystal && index != 14 && index != 16) {
+            if (index != commander && index != skeleton && index != crystal && index != 16) {
                 unit_list.add(index);
             }
         }

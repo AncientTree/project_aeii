@@ -205,7 +205,7 @@ UNIT_NAME_10=Skeleton
 UNIT_NAME_11=Crystal
 UNIT_NAME_12=Paladin
 UNIT_NAME_13=Berserker
-UNIT_NAME_14=Wolfrider
+UNIT_NAME_14=Ghost
 UNIT_NAME_15=Black Mage
 UNIT_NAME_16=Wolfarcher
 
@@ -220,12 +220,12 @@ UNIT_DESCRIPTION_7=Catapults blaze a trail of destruction with their enormous at
 UNIT_DESCRIPTION_8=These massive flying beasts have ruled the sky since ancient times. They have very high motility and deadly melee attacks.
 UNIT_DESCRIPTION_9=Commander is the heart of an army. He has quite strong battle skills and can capture enemy castles.
 UNIT_DESCRIPTION_10=Skeletons are undead beings summoned by necromancers. They are not very strong but have poisonous attacks.
-UNIT_DESCRIPTION_11=-
+UNIT_DESCRIPTION_11=<none>
 UNIT_DESCRIPTION_12=Paladins are holy armies who are skilled at healing and can also capture villages like soldiers do.
 UNIT_DESCRIPTION_13=Berserkers are born fighters. The more enemies are around them the stronger they become.
-UNIT_DESCRIPTION_14=-
+UNIT_DESCRIPTION_14=<none>
 UNIT_DESCRIPTION_15=Black mages are skilled at using dark magic. Their attacks are always powerful against those with low magic defence.
-UNIT_DESCRIPTION_16=-
+UNIT_DESCRIPTION_16=<none>
 
 UNIT_GUIDE_0=Soldiers are very useful in the early game, they can capture or repair villages to give you advantage. Although soldiers are not very powerful fighters, they can deal some decent damages to enemies with low physical defence.
 UNIT_GUIDE_1=Archers start with quite low attack power, but due to their long attack range you can level them up more easily then soldiers. As they level up their attack will be more powerful. Meanwhile archers are also good at destroying air forces.
