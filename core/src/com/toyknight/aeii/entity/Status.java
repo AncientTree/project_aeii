@@ -1,5 +1,6 @@
 package com.toyknight.aeii.entity;
 
+import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.Serializable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,10 +10,10 @@ import org.json.JSONObject;
  */
 public class Status implements Serializable {
 
-    public static final int POISONED = 0x1;
-    public static final int SLOWED = 0x2;
-    public static final int INSPIRED = 0x3;
-    public static final int BLINDED = 0x4;
+    public static final int POISONED = 0;
+    public static final int SLOWED = 1;
+    public static final int INSPIRED = 2;
+    public static final int BLINDED = 3;
 
     private final int type;
     private int remaining_turn;
@@ -81,6 +82,14 @@ public class Status implements Serializable {
             int type = status.getType();
             return type == POISONED || type == SLOWED || type == BLINDED;
         }
+    }
+
+    public static Array<Integer> getAllStatus() {
+        Array<Integer> status = new Array<Integer>();
+        for (int i = 0; i < 4; i++) {
+            status.add(i);
+        }
+        return status;
     }
 
 }

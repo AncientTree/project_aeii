@@ -286,7 +286,7 @@ public class OperationExecutor {
         Unit healer = getGame().getMap().getUnit(healer_x, healer_y);
         Unit target = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canHeal(healer, target)) {
-            int heal = UnitToolkit.getHeal(healer, target);
+            int heal = UnitToolkit.getHealerHeal(healer, target);
             if (target.getCurrentHp() + heal <= 0) {
                 submitGameEvent(GameEvent.HEAL,
                         healer_x, healer_y, target_x, target_y, UnitToolkit.validateHpChange(target, heal));
@@ -403,24 +403,33 @@ public class OperationExecutor {
                     getManager().getPositionGenerator().createPositionsWithinRange(unit_x, unit_y, 0, 2);
 
             JSONArray hp_changes = new JSONArray();
+            ObjectSet<Unit> destroyed_units = new ObjectSet<Unit>();
 
             for (Position target_position : aura_positions) {
                 Unit target = getGame().getMap().getUnit(target_position);
-                if (unit.hasAbility(Ability.REFRESH_AURA)) {
-                    int heal = Rule.REFRESH_BASE_HEAL + unit.getLevel() * 5;
-                    if (getGame().canHeal(unit, target)) {
-                        int change = UnitToolkit.validateHpChange(target, heal);
-                        if (change != 0) {
-                            JSONObject hp_change = new JSONObject();
-                            hp_change.put("x", target.getX());
-                            hp_change.put("y", target.getY());
-                            hp_change.put("change", change);
-                            hp_changes.put(hp_change);
+                if (unit.hasAbility(Ability.REFRESH_AURA) && getGame().canRefresh(unit, target)) {
+                    int heal = UnitToolkit.getRefresherHeal(unit, target);
+                    int change = UnitToolkit.validateHpChange(target, heal);
+                    if (change != 0) {
+                        JSONObject hp_change = new JSONObject();
+                        hp_change.put("x", target.getX());
+                        hp_change.put("y", target.getY());
+                        hp_change.put("change", change);
+                        hp_changes.put(hp_change);
+                        if (target.getCurrentHp() + change <= 0) {
+                            destroyed_units.add(target);
                         }
                     }
                 }
             }
             submitGameEvent(GameEvent.HP_CHANGE, hp_changes);
+            for (Unit destroyed_unit : destroyed_units) {
+                submitGameEvent(GameEvent.UNIT_DESTROY, destroyed_unit.getX(), destroyed_unit.getY());
+            }
+            int experience = destroyed_units.size * getGame().getRule().getInteger(KILL_EXPERIENCE);
+            if (experience > 0) {
+                submitGameEvent(GameEvent.GAIN_EXPERIENCE, unit_x, unit_y, experience);
+            }
             getManager().setState(GameManager.STATE_SELECT);
         }
     }

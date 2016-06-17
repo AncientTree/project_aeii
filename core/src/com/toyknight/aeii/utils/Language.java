@@ -41,6 +41,22 @@ public class Language {
         return languageMap.get("UNIT_DESCRIPTION_" + index);
     }
 
+    public static String getAbilityName(int ability) {
+        return languageMap.get("ABILITY_NAME_" + ability);
+    }
+
+    public static String getAbilityDescription(int ability) {
+        return languageMap.get("ABILITY_DESCRIPTION_" + ability);
+    }
+
+    public static String getStatusName(int status) {
+        return languageMap.get("STATUS_NAME_" + status);
+    }
+
+    public static String getStatusDescription(int status) {
+        return languageMap.get("STATUS_DESCRIPTION_" + status);
+    }
+
     public static String getText(String key) {
         return languageMap.get(key, "");
     }

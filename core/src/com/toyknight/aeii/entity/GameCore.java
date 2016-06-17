@@ -497,10 +497,14 @@ public class GameCore implements Serializable {
     }
 
     public boolean canReceiveHeal(Unit target) {
-        return !target.hasAbility(Ability.HEAVY_MACHINE)
-                && !target.hasAbility(Ability.UNDEAD)
+        return !target.hasAbility(Ability.UNDEAD)
                 && !target.hasStatus(Status.POISONED)
                 && target.getCurrentHp() <= target.getMaxHp();
+    }
+
+    public boolean canRefresh(Unit refresher, Unit target) {
+        return !(refresher == null || target == null)
+                && (!isEnemy(refresher, target) || target.hasAbility(Ability.UNDEAD));
     }
 
     public boolean canUnitMove(Unit unit, int dest_x, int dest_y) {

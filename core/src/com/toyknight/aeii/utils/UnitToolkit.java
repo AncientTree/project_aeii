@@ -27,7 +27,7 @@ public class UnitToolkit {
             defender.attachStatus(new Status(Status.POISONED, 2));
         }
         if (attacker.hasAbility(Ability.BLINDER) && !defender.hasAbility(Ability.BLINDER)) {
-            defender.attachStatus(new Status(Status.BLINDED, 2));
+            defender.attachStatus(new Status(Status.BLINDED, 1));
         }
     }
 
@@ -98,19 +98,6 @@ public class UnitToolkit {
 
     public static boolean isWithinRange(Unit unit, Unit target) {
         return isWithinRange(unit, target.getX(), target.getY());
-    }
-
-    public boolean canCounter(Unit counter, Unit attacker) {
-        if (getGame().isEnemy(counter, attacker) && isWithinRange(counter, attacker)) {
-            if (counter.hasAbility(Ability.COUNTER_MADNESS)) {
-                return getRange(counter, attacker) <= 2;
-            } else {
-                return getRange(counter, attacker) == 1
-                        && !(attacker.hasAbility(Ability.AMBUSH) && !counter.hasAbility(Ability.AMBUSH));
-            }
-        } else {
-            return false;
-        }
     }
 
     public static int getRange(int unit_x, int unit_y, int target_x, int target_y) {
@@ -230,7 +217,7 @@ public class UnitToolkit {
                 && unit.hasAbility(Ability.CHARGER);
     }
 
-    public static int getHeal(Unit healer, Unit target) {
+    public static int getHealerHeal(Unit healer, Unit target) {
         if (healer.hasAbility(Ability.HEALER)) {
             int heal = Rule.HEALER_BASE_HEAL + 10 * healer.getLevel();
             if (target.hasAbility(Ability.UNDEAD)) {
@@ -241,6 +228,11 @@ public class UnitToolkit {
         } else {
             return 0;
         }
+    }
+
+    public static int getRefresherHeal(Unit refresher, Unit target) {
+        int heal = Rule.REFRESH_BASE_HEAL + refresher.getLevel() * 5;
+        return target.hasAbility(Ability.UNDEAD) ? -heal : heal;
     }
 
     public static int validateHpChange(Unit unit, int change) {

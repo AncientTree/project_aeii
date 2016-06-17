@@ -21,8 +21,6 @@ import java.util.Queue;
  */
 public class GameEventExecutor {
 
-    private static final String TAG = "Executor";
-
     private final GameManager game_manager;
 
     private final Queue<JSONObject> event_queue;
@@ -340,6 +338,14 @@ public class GameEventExecutor {
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGame().standbyUnit(target_x, target_y);
 
+            //deal with tombs
+            if (getGame().getMap().isTomb(unit.getX(), unit.getY())) {
+                getGame().getMap().removeTomb(unit.getX(), unit.getY());
+                if (!unit.hasAbility(Ability.NECROMANCER)) {
+                    unit.attachStatus(new Status(Status.POISONED, 3));
+                }
+            }
+
             //deal with auras
             ObjectSet<Position> aura_positions =
                     getGameManager().getPositionGenerator().createPositionsWithinRange(target_x, target_y, 0, 2);
@@ -357,14 +363,6 @@ public class GameEventExecutor {
                     if (unit.hasAbility(Ability.REFRESH_AURA) && getGame().canClean(unit, target)) {
                         target.clearStatus();
                     }
-                }
-            }
-
-            //deal with tombs
-            if (getGame().getMap().isTomb(unit.getX(), unit.getY())) {
-                getGame().getMap().removeTomb(unit.getX(), unit.getY());
-                if (!unit.hasAbility(Ability.NECROMANCER)) {
-                    unit.attachStatus(new Status(Status.POISONED, 3));
                 }
             }
         }
