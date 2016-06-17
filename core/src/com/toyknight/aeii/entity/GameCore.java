@@ -477,13 +477,16 @@ public class GameCore implements Serializable {
         if (healer == null || target == null) {
             return false;
         } else {
-            if (canReceiveHeal(target)) {
-                return !isEnemy(healer, target)
-                        && canHealReachTarget(healer, target)
-                        && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target));
+            if (canHealReachTarget(healer, target)) {
+                if (canReceiveHeal(target)) {
+                    return !isEnemy(healer, target)
+                            && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target));
+                } else {
+                    //heal becomes damage for the undead
+                    return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
+                }
             } else {
-                //heal becomes damage for the undead
-                return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
+                return false;
             }
         }
     }
@@ -504,6 +507,7 @@ public class GameCore implements Serializable {
 
     public boolean canRefresh(Unit refresher, Unit target) {
         return !(refresher == null || target == null)
+                && canHealReachTarget(refresher, target)
                 && (!isEnemy(refresher, target) || target.hasAbility(Ability.UNDEAD));
     }
 
