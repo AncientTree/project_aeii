@@ -56,10 +56,9 @@ public class MapManager {
     }
 
     public void addMap(Map map, String map_name) throws IOException {
-        int index = 1;
         File map_file = new File("maps/" + map_name + ".aem");
-        while (map_file.exists()) {
-            map_file = new File("maps/" + map_name + " (" + (index++) + ")" + ".aem");
+        if (map_file.exists()) {
+            throw new IOException("Map " + map_file.getName() + " already exists!");
         }
         FileOutputStream fos = new FileOutputStream(map_file);
         DataOutputStream dos = new DataOutputStream(fos);
