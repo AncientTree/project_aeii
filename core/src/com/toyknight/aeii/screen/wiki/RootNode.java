@@ -17,7 +17,8 @@ public class RootNode extends Tree.Node {
     public static final int UNITS = 4;
     public static final int ABILITIES = 5;
     public static final int STATUS = 6;
-    public static final int ABOUT = 7;
+    public static final int MULTIPLAYER = 7;
+    public static final int ABOUT = 8;
 
     private final int type;
 

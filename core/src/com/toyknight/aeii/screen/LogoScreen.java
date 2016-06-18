@@ -54,7 +54,7 @@ public class LogoScreen implements Screen {
                 current_animator = logo_animator_queue.poll();
             }
         } else {
-            context.gotoMainMenuScreen();
+            context.gotoMainMenuScreen(true);
         }
     }
 

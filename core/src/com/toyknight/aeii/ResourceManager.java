@@ -65,6 +65,8 @@ public class ResourceManager {
     private static Texture texture_spark_attack;
     private static Texture texture_spark_white;
 
+    private static Texture texture_main_menu_background;
+
     private static Texture bg_list_selected;
     private static Texture bg_list_unselected;
     private static Texture bg_panel;
@@ -136,6 +138,7 @@ public class ResourceManager {
         asset_manager.load("images/dust.png", Texture.class);
         asset_manager.load("images/spark_attack.png", Texture.class);
         asset_manager.load("images/spark_white.png", Texture.class);
+        asset_manager.load("images/main_menu_background.png", Texture.class);
         //fonts
         FileHandleResolver resolver = new InternalFileHandleResolver();
         asset_manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
@@ -235,6 +238,7 @@ public class ResourceManager {
         texture_dust = asset_manager.get("images/dust.png", Texture.class);
         texture_spark_attack = asset_manager.get("images/spark_attack.png", Texture.class);
         texture_spark_white = asset_manager.get("images/spark_white.png", Texture.class);
+        texture_main_menu_background = asset_manager.get("images/main_menu_background.png", Texture.class);
 
         bg_list_selected = new Texture(createColoredPixmap(Color.GRAY));
         bg_list_unselected = new Texture(createColoredPixmap(Color.DARK_GRAY));
@@ -361,6 +365,10 @@ public class ResourceManager {
 
     public static Texture getWhiteSparkTexture() {
         return texture_spark_white;
+    }
+
+    public static Texture getMainMenuBackgroundTexture() {
+        return texture_main_menu_background;
     }
 
     public static Texture getEditorTexture(String key) {

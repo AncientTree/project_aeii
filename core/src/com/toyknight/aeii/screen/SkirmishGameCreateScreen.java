@@ -60,7 +60,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().gotoMainMenuScreen();
+                getContext().gotoMainMenuScreen(false);
             }
         });
         this.addActor(btn_back);

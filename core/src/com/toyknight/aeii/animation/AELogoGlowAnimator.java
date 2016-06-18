@@ -51,7 +51,7 @@ public class AELogoGlowAnimator extends Animator {
 
         shape_renderer.begin();
         shape_renderer.set(ShapeRenderer.ShapeType.Filled);
-        shape_renderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+        shape_renderer.setColor(52 / 256f, 52 / 256f, 52 / 256f, 1.0f);
         shape_renderer.rect(0, 0, (Gdx.app.getGraphics().getWidth() - WIDTH) / 2, Gdx.app.getGraphics().getHeight());
         shape_renderer.rect((Gdx.app.getGraphics().getWidth() - WIDTH) / 2 + WIDTH, 0, (Gdx.app.getGraphics().getWidth() - WIDTH) / 2, Gdx.app.getGraphics().getHeight());
         shape_renderer.end();

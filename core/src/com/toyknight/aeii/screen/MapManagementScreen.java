@@ -165,7 +165,7 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void back() {
-        getContext().gotoMainMenuScreen();
+        getContext().gotoMainMenuScreen(false);
         if (NetworkManager.isConnected()) {
             NetworkManager.disconnect();
         }

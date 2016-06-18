@@ -30,6 +30,7 @@ public class ReferenceLabel extends LabelButton {
                 setText(String.format("[%s]", Language.getUnitName(value)));
                 break;
         }
+        setColor(162 / 256f, 215 / 256f, 245 / 256f, 1.0f);
     }
 
     public int getType() {

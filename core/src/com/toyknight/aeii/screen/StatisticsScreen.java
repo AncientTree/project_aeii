@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.concurrent.AsyncTask;
 import com.toyknight.aeii.ResourceManager;
@@ -113,6 +114,7 @@ public class StatisticsScreen extends StageScreen {
                 public void onFinish(Void result) {
                     btn_leave.setText(Language.getText("LB_LEAVE"));
                     getContext().gotoLobbyScreen();
+                    AudioManager.loopMainTheme();
                 }
 
                 @Override
@@ -121,7 +123,7 @@ public class StatisticsScreen extends StageScreen {
                 }
             });
         } else {
-            getContext().gotoMainMenuScreen();
+            getContext().gotoMainMenuScreen(true);
         }
     }
 

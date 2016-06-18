@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.concurrent.MessageSendingTask;
@@ -498,6 +499,7 @@ public class NetGameCreateScreen extends StageScreen {
         super.onPlayerJoin(id, username);
         updatePlayers();
         appendMessage(Language.getText("LB_SYSTEM"), String.format(Language.getText("MSG_INFO_PJR"), username));
+        AudioManager.playSE("prompt.mp3");
     }
 
     @Override
@@ -506,6 +508,7 @@ public class NetGameCreateScreen extends StageScreen {
         updatePlayers();
         updateButtons();
         appendMessage(Language.getText("LB_SYSTEM"), String.format(Language.getText("MSG_INFO_PLR"), username));
+        AudioManager.playSE("prompt.mp3");
     }
 
     @Override

@@ -81,6 +81,10 @@ public class MainMenuScreen extends StageScreen {
     public void draw() {
         if (logo_animator.isAnimationFinished()) {
             logo_glow_animator.render(batch);
+            batch.begin();
+            batch.draw(ResourceManager.getMainMenuBackgroundTexture(),
+                    0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - ts * 85 / 48);
+            batch.end();
         } else {
             logo_animator.render(batch);
         }
@@ -106,7 +110,6 @@ public class MainMenuScreen extends StageScreen {
     @Override
     public void show() {
         super.show();
-        //AudioManager.loopMainTheme();
         closeAllDialogs();
     }
 

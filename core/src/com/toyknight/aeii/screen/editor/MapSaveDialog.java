@@ -33,7 +33,7 @@ public class MapSaveDialog extends BasicDialog {
         Label lb_filename = new Label(Language.getText("LB_FILENAME"), getContext().getSkin());
         this.add(lb_filename).width(ts * 5).align(Align.left).row();
         this.tf_filename = new TextField("", getContext().getSkin());
-        this.tf_filename.setMaxLength(15);
+        this.tf_filename.setMaxLength(20);
         this.add(tf_filename).width(ts * 5).row();
 
         Label lb_author = new Label(Language.getText("LB_AUTHOR"), getContext().getSkin());

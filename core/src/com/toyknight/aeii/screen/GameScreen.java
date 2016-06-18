@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.toyknight.aeii.AudioManager;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.Callable;
 import com.toyknight.aeii.manager.GameManager;
@@ -159,6 +160,15 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             }
         });
         this.addDialog("map", mini_map);
+
+        ObjectiveDialog objective_dialog = new ObjectiveDialog(this);
+        objective_dialog.setOkCallable(new Callable() {
+            @Override
+            public void call() {
+                closeDialog("objective");
+            }
+        });
+        this.addDialog("objective", objective_dialog);
     }
 
     @Override
@@ -326,6 +336,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.onPlayerJoin(id, username);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(Language.getText("MSG_INFO_PJ"), username));
+        AudioManager.playSE("prompt.mp3");
     }
 
     @Override
@@ -333,6 +344,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.onPlayerLeave(id, username, host);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(Language.getText("MSG_INFO_PD"), username));
+        AudioManager.playSE("prompt.mp3");
     }
 
     @Override

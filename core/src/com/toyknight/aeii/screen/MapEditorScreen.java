@@ -129,7 +129,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().gotoMainMenuScreen();
+                getContext().gotoMainMenuScreen(true);
             }
         });
         button_bar.add(btn_exit).padLeft(ts / 4);

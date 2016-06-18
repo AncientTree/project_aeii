@@ -99,8 +99,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         }
 
         dialog_layer.addFirst(name);
-        dialogs.get(name).setVisible(true);
         dialogs.get(name).display();
+        dialogs.get(name).setVisible(true);
 
         Gdx.input.setInputProcessor(dialog_stage);
         dialog_shown = true;
@@ -226,7 +226,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         showPrompt(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
-                getContext().gotoMainMenuScreen();
+                getContext().gotoMainMenuScreen(true);
             }
         });
     }

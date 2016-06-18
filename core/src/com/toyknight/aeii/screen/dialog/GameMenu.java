@@ -56,6 +56,13 @@ public class GameMenu extends BasicDialog {
         });
         this.add(btn_mini_map).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_objective = new TextButton(Language.getText("LB_OBJECTIVE"), getContext().getSkin());
+        this.btn_objective.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("menu");
+                getOwner().showDialog("objective");
+            }
+        });
         this.add(btn_objective).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
         this.btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
         this.btn_save.addListener(new ClickListener() {

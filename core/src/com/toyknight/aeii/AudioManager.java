@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.toyknight.aeii.utils.FileProvider;
-import com.toyknight.aeii.utils.Platform;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -18,13 +17,12 @@ public class AudioManager {
     private static final String AUDIO_PATH = "audio/";
     private static final String MUSIC_PATH = "music/";
     private static final String SE_PATH = "se/";
-    private static final String MAIN_THEME = "main_theme.ogg";
+    private static final String MAIN_THEME = "main_theme.mp3";
 
     public static float musicVolume = 1.0f;
     public static float seVolume = 0.8f;
 
     private static Music music;
-    private static Sound se;
 
     /**
      * Play a music file by given a the file name(with extension).
@@ -85,6 +83,23 @@ public class AudioManager {
         }
     }
 
+    public static float getMusicVolume() {
+        return musicVolume;
+    }
+
+    /**
+     * Set volume of sound effects.
+     *
+     * @param volume the volume of sound effects
+     */
+    public static void setSEVolume(float volume) {
+        seVolume = volume;
+    }
+
+    public static float getSEVolume() {
+        return seVolume;
+    }
+
     /**
      * Play music randomly. All audio files are in "asset/music/" directory in project.
      */
@@ -141,7 +156,7 @@ public class AudioManager {
     public static long playSE(String fileName) {
         String pathToFile = AUDIO_PATH + SE_PATH + fileName;
 
-        se = Gdx.audio.newSound(FileProvider.getAssetsFile(pathToFile));
+        Sound se = Gdx.audio.newSound(FileProvider.getAssetsFile(pathToFile));
 
         return se.play(seVolume);
     }

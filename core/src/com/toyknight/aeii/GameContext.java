@@ -102,6 +102,8 @@ public class GameContext extends Game implements GameManagerListener {
         if (!initialized) {
             try {
                 loadConfiguration();
+                AudioManager.setSEVolume(getSEVolume());
+                AudioManager.setMusicVolume(getMusicVolume());
                 resource_manager.initialize();
                 FontRenderer.initialize(TILE_SIZE);
                 TileValidator.initialize();
@@ -163,7 +165,9 @@ public class GameContext extends Game implements GameManagerListener {
                 InputStreamReader reader = new InputStreamReader(config_file.read(), "UTF8");
                 PropertiesUtils.load(configuration, reader);
             } else {
-                configuration.put("username", "nobody");
+                configuration.put("username", "undefined");
+                configuration.put("se_volume", "0.5");
+                configuration.put("music_volume", "0.5");
                 OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
                 PropertiesUtils.store(configuration, writer, "aeii user configuration file");
             }
@@ -173,9 +177,12 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void updateConfiguration(String key, String value) {
+        configuration.put(key, value);
+    }
+
+    public void saveConfiguration() {
         FileHandle config_file = FileProvider.getUserFile("user.config");
         try {
-            configuration.put(key, value);
             OutputStreamWriter writer = new OutputStreamWriter(config_file.write(false), "UTF8");
             PropertiesUtils.store(configuration, writer, "aeii user configure file");
         } catch (IOException ex) {
@@ -200,7 +207,15 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public String getUsername() {
-        return getConfiguration().get("username", "nobody");
+        return getConfiguration().get("username", "undefined");
+    }
+
+    public float getSEVolume() {
+        return Float.parseFloat(configuration.get("se_volume", "0.5"));
+    }
+
+    public float getMusicVolume() {
+        return Float.parseFloat(configuration.get("music_volume", "0.5"));
     }
 
     public String getVersion() {
@@ -232,17 +247,20 @@ public class GameContext extends Game implements GameManagerListener {
         return getGameManager().getGame();
     }
 
-    public void gotoMainMenuScreen() {
+    public void gotoMainMenuScreen(boolean restart_bgm) {
+        if (restart_bgm) {
+            AudioManager.loopMainTheme();
+        }
         gotoScreen(main_menu_screen);
     }
 
     public void gotoMapEditorScreen() {
-        //AudioManager.stopCurrentBGM();
+        AudioManager.stopCurrentBGM();
         gotoScreen(map_editor_screen);
     }
 
     public void gotoGameScreen(GameCore game) {
-        //AudioManager.stopCurrentBGM();
+        AudioManager.playRandomBGM("bg_good.mp3");
         if (!game.initialized()) {
             game.initialize();
         }
@@ -251,13 +269,13 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void gotoGameScreen(GameSave save) {
-        //AudioManager.stopCurrentBGM();
+        AudioManager.playRandomBGM("bg_good.mp3");
         getGameManager().setGame(save.getGame());
         gotoScreen(game_screen);
     }
 
     public void gotoGameScreen(GameRecord record) {
-        //AudioManager.stopCurrentBGM();
+        AudioManager.playRandomBGM("bg_good.mp3");
         getGameManager().setGame(record.getGame());
         getRecordPlayer().setRecord(record);
         gotoScreen(game_screen);
@@ -268,6 +286,7 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void gotoNetGameCreateScreen() {
+        AudioManager.stopCurrentBGM();
         gotoScreen(net_game_create_screen);
     }
 

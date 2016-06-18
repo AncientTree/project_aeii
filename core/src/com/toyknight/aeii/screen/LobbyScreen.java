@@ -79,7 +79,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().gotoMainMenuScreen();
+                getContext().gotoMainMenuScreen(false);
                 NetworkManager.disconnect();
             }
         });
@@ -170,7 +170,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         showPrompt(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
-                getContext().gotoMainMenuScreen();
+                getContext().gotoMainMenuScreen(false);
             }
         });
     }

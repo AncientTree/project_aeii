@@ -85,6 +85,10 @@ public class Spinner<T> extends Table {
         this.selected_index = 0;
     }
 
+    protected T[] getItems() {
+        return items;
+    }
+
     public void setSelectedIndex(int index) {
         if (0 <= index && index < items.length) {
             selected_index = index;

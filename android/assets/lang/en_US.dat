@@ -66,8 +66,10 @@ EDITOR_ERROR_2=Failed saving the map!
 
 LB_ABILITIES=Abilities
 LB_ABOUT=About
+LB_ARTS=Arts
 LB_AUTHOR=Author
 LB_BACK=Back
+LB_BALANCING=Balancing
 LB_BUY=Buy
 LB_CAMPAIGN=Campaign
 LB_CANCEL=Cancel
@@ -78,7 +80,9 @@ LB_CONNECT=Connect
 LB_CONNECTING=Connecting...
 LB_CREATE=Create
 LB_CREATING=Creating...
+LB_CREDITS=Credits
 LB_CURRENT_TURN=Current Turn
+LB_DEFENCE_BONUS=Defence Bonus
 LB_DELETE=Delete
 LB_DOWNLOAD=Download
 LB_DOWNLOADING=Downloading...
@@ -88,9 +92,10 @@ LB_ERROR=Error
 LB_EXIT=Exit
 LB_EXIT_GAME=Exit Game
 LB_FILENAME=File Name
-LB_GAMES=Games
+LB_GAMES=Lobby
 LB_HEIGHT=Height
 LB_HELP=Help
+LB_HP_RECOVERY=HP Reccovery
 LB_INCOME=Income
 LB_START_GOLD=Start Gold
 LB_JOIN=Join
@@ -104,10 +109,12 @@ LB_LOCAL_MAPS=Local Maps
 LB_LUV=Lost Unit Value
 LB_MANAGE_MAPS=Manage Maps
 LB_MAP_EDITOR=Map Editor
-LB_MAX_POPULATION=Max Population
+LB_MAX_POPULATION=Unit Capacity
 LB_MENU=Menu
 LB_MINI_MAP=Mini Map
+LB_MOBILITY_COST=Mobility cost
 LB_MULTIPLAYER=Multiplayer
+LB_MUSIC_VOLUME=Music Volume
 LB_NEW_GAME=New Game
 LB_NO=No
 LB_NONE=None
@@ -122,6 +129,7 @@ LB_OVERWRITE=Overwrite
 LB_PASSWORD=Password
 LB_PLAYER=Player
 LB_PREVIEW=Preview
+LB_PROGRAM=Program
 LB_RECONNECTING=Reconnecting...
 LB_RECORD=Record
 LB_RECRUIT=Recruit
@@ -133,6 +141,7 @@ LB_REPAIRED=Repaired
 LB_ROBOT=Robot
 LB_SAVE=Save
 LB_SAVING=Saving...
+LB_SE_VOLUME=SE Volume
 LB_SEARCH=Search
 LB_SEND=Send
 LB_SEND_MESSAGE=Send Message
@@ -148,8 +157,10 @@ LB_TEAM_0=BLUE
 LB_TEAM_1=RED
 LB_TEAM_2=GREEN
 LB_TEAM_3=BLACK
+LB_TILE_NUMBER=Terrain#
+LB_TRANSLATION=Translation
 LB_TYPE=Type
-LB_UHA=Units have this ability
+LB_UHA=Units having this ability
 LB_UPLOAD=Upload
 LB_UPLOADING=Uploading...
 LB_USERNAME=Username
@@ -182,7 +193,7 @@ MSG_INFO_IYUN=Input your username
 MSG_INFO_LTC=You lost control to team %s.
 MSG_INFO_MD=Map downloaded.
 MSG_INFO_MU=Map uploaded.
-MSG_INFO_NSY=Not supported yet :(
+MSG_INFO_NSY=Not opened yet :(
 MSG_INFO_PD=%s disconnected.
 MSG_INFO_PIP=Please input password
 MSG_INFO_PJ=%s joins the game.
@@ -192,6 +203,14 @@ MSG_INFO_GS=Game started.
 MSG_INFO_GSV=Game saved.
 MSG_INFO_GSVF=Game save failed.
 MSG_INFO_RPF=Record playback finished.
+
+OBJECTIVE_CU=Destroy all enemy units
+OBJECTIVE_CC=Capture all enemy castles
+
+STATUS_DESCRIPTION_0=Units who have been poisoned will lose 10 HP at turn start and cannot receive heal.
+STATUS_DESCRIPTION_1=For units who have been slowed, their movement points will be reduced to 1.
+STATUS_DESCRIPTION_2=For units who have been inspired, their gain 10 attack bonus.
+STATUS_DESCRIPTION_3=For units who have been blinded, their attack range will be reduced to 0.
 
 STATUS_NAME_0=Poisoned
 STATUS_NAME_1=Slowed
@@ -230,7 +249,7 @@ UNIT_DESCRIPTION_10=Skeletons are undead beings summoned by necromancers. They a
 UNIT_DESCRIPTION_11=<none>
 UNIT_DESCRIPTION_12=Paladins are holy armies who are skilled at healing and can also capture villages like soldiers do.
 UNIT_DESCRIPTION_13=Berserkers are born fighters. The more enemies are around them the stronger they become.
-UNIT_DESCRIPTION_14=<none>
+UNIT_DESCRIPTION_14=Ghosts are mystical undead beings. They float above the ground and can blind enemies with their attacks.
 UNIT_DESCRIPTION_15=Black mages are skilled at using dark magic. Their attacks are always powerful against those with low magic defence.
 UNIT_DESCRIPTION_16=<none>
 
@@ -238,7 +257,7 @@ UNIT_GUIDE_0=Soldiers are very useful in the early game, they can capture or rep
 UNIT_GUIDE_1=Archers start with quite low attack power, but due to their long attack range you can level them up more easily then soldiers. As they level up their attack will be more powerful. Meanwhile archers are also good at destroying air forces.
 UNIT_GUIDE_2=Elements can move and fight much more efficiently in the water, so if you are planning to pick up a fight in places covered by water element is a good choice.
 UNIT_GUIDE_3=Sorceresses can summon skeletons from fallen units, so if the battle goes intense and many units die it's a good idea to recruit sorceresses. But since sorceresses are weak against physical melee attacks you should move them smartly.
-UNIT_GUIDE_4=The refresh aura of spirits can remove debuff from as well as heal allies around them which means spirits are really good against wolves and skeletons. Note that spirits can fight better in forest but are weak against archers.
+UNIT_GUIDE_4=The refresh aura of spirits can remove negative effects from allies nearby as well as heal them a bit, which means spirits are really good against wolves and skeletons. Note that spirits can fight better in forest but are weak against archers.
 UNIT_GUIDE_5=Wolves have deadly physical attacks and can move swiftly on land, so you can use them to destroy enemy key units quickly. But since wolves cannot receive terrain heal you should consider recruiting some healers.
 UNIT_GUIDE_6=Golems have very high physical defence and become even tougher when in mountains so they are good at defending enemies' physical attacks. However golems have relatively low magic defence so keep them away from enemy magic users.
 UNIT_GUIDE_7=Catapults have the longest attack range of all units so you can use them to destroy enemy back lines. Also you can use catapults to destroy villages. But since catapults have little defence against melee attacks and cannot attack once moved so you have to protect them properly.
@@ -246,11 +265,60 @@ UNIT_GUIDE_8=Dragons are powerful air forces, they can move through all terrains
 UNIT_GUIDE_9=Commanders can capture enemy castles which is the key to victory. But since you cannot do that at the beginning and commander's recruiting price increases every time they die, you will want to protect him and level him up as much as you can.
 UNIT_GUIDE_10=Skeletons have very low attack power which means they are not good at dealing instant damages. But it's always a good idea trying to use skeletons to apply poison status to enemy key units.
 UNIT_GUIDE_11=<none>
-UNIT_GUIDE_12=Note that paladins' heal can exceed allies' max HP cap so you can use them to increase the attack power of your allies. Also paladins' heal can become holy damage to skeletons so you can use them to kill skeletons and avoid being poisoned.
+UNIT_GUIDE_12=Note that paladins' heal can exceed allies' max HP so you can use them to increase the attack power of your allies. Also paladins' heal can become holy damage to skeletons so you can use them to kill skeletons and avoid being poisoned.
 UNIT_GUIDE_13=Since the more enemies are around the more attack power and physical defence berserkers gain, so when you are outnumbered try to recruit some berserkers. Also berserkers' attack aura can make your allies stronger and avoid negative affects.
-UNIT_GUIDE_14=<none>
+UNIT_GUIDE_14=Since ghosts are undead beings they are not afraid of poisons. And since ghosts can blind enemies it's always a good idea try to use them to attack enemy units with high attack damage.
 UNIT_GUIDE_15=Black mages have no abilities but they have quite high magic attack which makes them good magic damage dealers. However black mages are not that good at melee combat so try to use them wisely.
 UNIT_GUIDE_16=<unavailable>
+
+WIKI_OVERVIEW_P1=This game is a remastered version of Ancient Empires II which was originally released to J2ME platforms 2015.
+WIKI_OVERVIEW_P2=What you see now is the in-game wiki which is designed to help you learn how to play this game. Please check the following sections for more information.
+
+WIKI_GAMEPLAY_OBJECTIVES_P1=For skirmish games the objectives are quite simple, you need to eliminate all enemy units and capture all enemy castles (excluding the neutral ones). To achieve this you need to recruit units and fight enemy armies with some strategies.
+WIKI_GAMEPLAY_OBJECTIVES_P2=However for campaigns the objectives can be more complicated which you need to pay attention to.
+
+WIKI_GAMEPLAY_RECRUITING_P1=You can recruit units from your castles. However you can only recruit units when there's no unit on the castle except your commander. Recruiting units will cost you gold coins and each unit will take up a certain amount of unit capacity. So remember to check that before recruiting a unit.
+WIKI_GAMEPLAY_RECRUITING_P2=However for commanders it is a little different. Firstly you can only recruit commander when your commander has fallen in the battle. Secondly commander's recruiting price will increase by 100 every time he dies.
+WIKI_GAMEPLAY_RECRUITING_P3=Note that even if you have reached maximum unit capacity, you can still recruit your fallen commander.
+
+WIKI_GAMEPLAY_ATTACKING_P1=To attack an enemy, you need to select and move a unit toward that enemy. And as long as that enemy is within your unit's attack range, you can attack him.
+WIKI_GAMEPLAY_ATTACKING_P2=There are two attack types: physical (attack displayed in red) and magic (attack displayed in blue), and there are also two defence types: physical defence (red shield icon) and magic defence (blue shield icon). So you should always try to attack an enemy weak to your unit's attack type. 
+WIKI_GAMEPLAY_ATTACKING_P3=When it comes to counter attack, the story is a bit different. Unit who can perform melee attack can always counter melee attacks. But ranged attacks cannot be countered. Keep that in mind when you decide to attack an enemy.
+WIKI_GAMEPLAY_ATTACKING_P4=Note that when attacking, the lower a unit's HP is, the less damage this unit can make.
+
+WIKI_GAMEPLAY_HEALING_P1=Units with healing related abilities can heal allies. Some heals can exceed target's max HP, but the exceeded HP will be removed when the unit standby or when his turn starts.
+WIKI_GAMEPLAY_HEALING_P2=Note that there's a restriction for healing, that is, the ground units cannot heal flying units, but flying units can heal everyone.
+
+WIKI_GAMEPLAY_INCOME_P1=Your income mainly comes from villages and castles. Each village can give you 50 gold coins per turn while each castle can give you 100. So try to capture as many villages and castles as you can to gain advantage against enemies.
+WIKI_GAMEPLAY_INCOME_P2=Note that if your commander is alive he can also give you some incomes. The base income of a commander is 50 gold coins per turn, which will be increased by 50 every time your commander levels up.
+
+WIKI_GAMEPLAY_STATUS_P1=Some units can attach status to other units, which is an important fact you need to consider about when fighting enemies.
+WIKI_GAMEPLAY_STATUS_P2=Note that when a unit is attached one type of status then this unit is immune to other types of status, but when it comes to the same type of status it will refresh the remaining turns of that status.
+
+WIKI_MULTIPLAYER_CREATE_GAME_P1=To create a multiplayer game you need to connect to a server first and it will lead you to the game lobby. By clicking the create button you can create either a new game or a game from a saving file.
+WIKI_MULTIPLAYER_CREATE_GAME_P2=To create a new game you need to choose a map, set the start gold, unit capacity and of course the maximum number of players alowed for this game (incluing spectators). However to create a game from save files you only need to set the maximum number of players alowed for this game.
+WIKI_MULTIPLAYER_CREATE_GAME_P3=After you have set up your game click create button then it will lead you to the game room where you can wait for other players to join your game and make the final team adjustment.
+WIKI_MULTIPLAYER_CREATE_GAME_P4=Also you can set a password for your game while you do not want unexpected players to join the game.
+
+WIKI_MULTIPLAYER_JOIN_GAME_P1=While you are in the game lobby, you can see the list of available game rooms. To join a game is quite simple, first make sure that the room is not full, then select it and click join button. If the room has a password then a dialog will popup to let you input the password.
+WIKI_MULTIPLAYER_JOIN_GAME_P2=You can leave the game any time by clicking the leave button while you are still in the game room. However if the game is started and you are not a spectator, we suggest that you finish the game before leaving.
+
+WIKI_MULTIPLAYER_COMMANDS_ASSIGN_P1=Room masters can use this command to assign a team to a player. To do this you need to click the message button on the top left corner of the screen then a dialog containing a player list will appear. Select a player then click send message button and input '/assign 0', this will assign team blue to the player you selected. Note that if there is already a player playing that team then he will lose control to that team.
+WIKI_MULTIPLAYER_COMMANDS_ASSIGN_P2=Team value: 0-team blue, 1-team red, 2-team green, 3-team black
+
+WIKI_ABOUT_P1=This game is created by toyknight using arts from the original Ancient Empires II game with renewed codes and some new arts.
+WIKI_ABOUT_P2=If you have any questions, suggestions or just wanna help please send email to toyknight@outlook.com. Thank you!
+
+WIKI_NODE_GAMEPLAY_OBJECTIVES=Objectives
+WIKI_NODE_GAMEPLAY_RECRUITING=Recruiting
+WIKI_NODE_GAMEPLAY_ATTACKING=Attacking
+WIKI_NODE_GAMEPLAY_HEALING=Healing
+WIKI_NODE_GAMEPLAY_INCOME=Income
+WIKI_NODE_GAMEPLAY_STATUS=Status
+
+WIKI_NODE_MULTIPLAYER_CREATE_GAME=Create Game
+WIKI_NODE_MULTIPLAYER_JOIN_GAME=Join Game
+WIKI_NODE_MULTIPLAYER_COMMANDS=Commands
 
 WIKI_NODE_ROOT_1=Overview
 WIKI_NODE_ROOT_2=Gameplay
@@ -258,4 +326,5 @@ WIKI_NODE_ROOT_3=Terrains
 WIKI_NODE_ROOT_4=Units
 WIKI_NODE_ROOT_5=Abilities
 WIKI_NODE_ROOT_6=Status
-WIKI_NODE_ROOT_7=About
+WIKI_NODE_ROOT_7=Multiplayer
+WIKI_NODE_ROOT_8=About

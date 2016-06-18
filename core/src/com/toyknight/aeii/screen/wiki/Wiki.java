@@ -14,6 +14,7 @@ import com.toyknight.aeii.entity.Status;
 import com.toyknight.aeii.screen.StageScreen;
 import com.toyknight.aeii.screen.dialog.BasicDialog;
 import com.toyknight.aeii.utils.Language;
+import com.toyknight.aeii.utils.TileFactory;
 import com.toyknight.aeii.utils.UnitFactory;
 
 import java.util.LinkedList;
@@ -40,8 +41,13 @@ public class Wiki extends BasicDialog {
     private final TextButton btn_previous;
     private final TextButton btn_next;
 
+    private final GameplayPage gameplay_page;
+    private final TilePage tile_page;
     private final UnitPage unit_page;
     private final AbilityPage ability_page;
+    private final StatusPage status_page;
+    private final MultiplayerPage multiplayer_page;
+    private final AboutPage about_page;
 
     private Tree.Node current_node;
 
@@ -82,12 +88,34 @@ public class Wiki extends BasicDialog {
 
         RootNode node_overview = RootNode.create(RootNode.OVERVIEW, getContext().getSkin());
         RootNode node_gameplay = RootNode.create(RootNode.GAMEPLAY, getContext().getSkin());
+        Tree.Node node_gameplay_objectives =
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_OBJECTIVES, ts, getContext().getSkin());
+        Tree.Node node_gameplay_recruiting =
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_RECRUITING, ts, getContext().getSkin());
+        Tree.Node node_gameplay_attacking =
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_ATTACKING, ts, getContext().getSkin());
+        Tree.Node node_gameplay_healing =
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_HEALING, ts, getContext().getSkin());
+        Tree.Node node_gameplay_income =
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_INCOME, ts, getContext().getSkin());
+        Tree.Node node_gameplay_status =
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_STATUS, ts, getContext().getSkin());
+        node_gameplay.add(node_gameplay_objectives);
+        node_gameplay.add(node_gameplay_recruiting);
+        node_gameplay.add(node_gameplay_attacking);
+        node_gameplay.add(node_gameplay_healing);
+        node_gameplay.add(node_gameplay_income);
+        node_gameplay.add(node_gameplay_status);
         RootNode node_terrains = RootNode.create(RootNode.TERRAINS, getContext().getSkin());
+        for (int index = 0; index < TileFactory.getTileCount(); index++) {
+            Tree.Node node = EntryNode.create(EntryNode.TYPE_TILE, index, ts, getContext().getSkin());
+            node_terrains.add(node);
+        }
         RootNode node_units = RootNode.create(RootNode.UNITS, getContext().getSkin());
         unit_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
             if (index != UnitFactory.getCrystalIndex()) {
-                Tree.Node node = EntryNode.create(EntryNode.TYPE_UNIT, index, getContext().getSkin());
+                Tree.Node node = EntryNode.create(EntryNode.TYPE_UNIT, index, ts, getContext().getSkin());
                 unit_nodes.put(index, node);
                 node_units.add(node);
             }
@@ -95,14 +123,24 @@ public class Wiki extends BasicDialog {
         RootNode node_abilities = RootNode.create(RootNode.ABILITIES, getContext().getSkin());
         ability_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int ability : Ability.getAllAbilities()) {
-            Tree.Node node = EntryNode.create(EntryNode.TYPE_ABILITY, ability, getContext().getSkin());
+            Tree.Node node = EntryNode.create(EntryNode.TYPE_ABILITY, ability, ts, getContext().getSkin());
             ability_nodes.put(ability, node);
             node_abilities.add(node);
         }
         RootNode node_status = RootNode.create(RootNode.STATUS, getContext().getSkin());
+        RootNode node_multiplayer = RootNode.create(RootNode.MULTIPLAYER, getContext().getSkin());
+        Tree.Node node_multiplayer_create_game =
+                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_CREATE_GAME, ts, getContext().getSkin());
+        Tree.Node node_multiplayer_join_game =
+                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_JOIN_GAME, ts, getContext().getSkin());
+        Tree.Node node_multiplayer_commands =
+                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_COMMANDS, ts, getContext().getSkin());
+        node_multiplayer.add(node_multiplayer_create_game);
+        node_multiplayer.add(node_multiplayer_join_game);
+        node_multiplayer.add(node_multiplayer_commands);
         status_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int status : Status.getAllStatus()) {
-            Tree.Node node = EntryNode.create(EntryNode.TYPE_STATUS, status, getContext().getSkin());
+            Tree.Node node = EntryNode.create(EntryNode.TYPE_STATUS, status, ts, getContext().getSkin());
             status_nodes.put(status, node);
             node_status.add(node);
         }
@@ -114,6 +152,7 @@ public class Wiki extends BasicDialog {
         content_list.add(node_units);
         content_list.add(node_abilities);
         content_list.add(node_status);
+        content_list.add(node_multiplayer);
         content_list.add(node_about);
 
         sp_content_list = new ScrollPane(content_list, getContext().getSkin());
@@ -163,8 +202,13 @@ public class Wiki extends BasicDialog {
 
         add(content_pane).size(ts * 8, height);
 
+        gameplay_page = new GameplayPage(this);
+        tile_page = new TilePage(this);
         unit_page = new UnitPage(this);
         ability_page = new AbilityPage(this);
+        status_page = new StatusPage(this);
+        multiplayer_page = new MultiplayerPage(this);
+        about_page = new AboutPage(this);
     }
 
     @Override
@@ -235,15 +279,33 @@ public class Wiki extends BasicDialog {
             generateRootPage(((RootNode) node).getType());
         }
         if (node instanceof EntryNode) {
-            switch (((EntryNode) node).getType()) {
+            int type = ((EntryNode) node).getType();
+            int value = ((EntryNode) node).getValue();
+            switch (type) {
                 case EntryNode.TYPE_ABILITY:
-                    generateAbilityPage(((EntryNode) node).getValue());
+                    generateAbilityPage(value);
                     break;
                 case EntryNode.TYPE_STATUS:
-                    generateStatusPage(((EntryNode) node).getValue());
+                    generateStatusPage(value);
+                    break;
+                case EntryNode.TYPE_TILE:
+                    generateTilePage(value);
                     break;
                 case EntryNode.TYPE_UNIT:
-                    generateUnitPage(((EntryNode) node).getValue());
+                    generateUnitPage(value);
+                    break;
+                case EntryNode.TYPE_GAMEPLAY_ATTACKING:
+                case EntryNode.TYPE_GAMEPLAY_HEALING:
+                case EntryNode.TYPE_GAMEPLAY_INCOME:
+                case EntryNode.TYPE_GAMEPLAY_OBJECTIVES:
+                case EntryNode.TYPE_GAMEPLAY_RECRUITING:
+                case EntryNode.TYPE_GAMEPLAY_STATUS:
+                    generateGameplayPage(type);
+                    break;
+                case EntryNode.TYPE_MULTIPLAYER_COMMANDS:
+                case EntryNode.TYPE_MULTIPLAYER_CREATE_GAME:
+                case EntryNode.TYPE_MULTIPLAYER_JOIN_GAME:
+                    generateMultiplayerPage(type);
                     break;
             }
         }
@@ -253,14 +315,60 @@ public class Wiki extends BasicDialog {
     }
 
     private void generateRootPage(int type) {
-        label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
+        switch (type) {
+            case RootNode.OVERVIEW:
+                label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
+                Label label_p1 = new Label(Language.getText("WIKI_OVERVIEW_P1"), getContext().getSkin());
+                label_p1.setWrap(true);
+                content_page.add(label_p1).width(ts * 7).padBottom(ts / 8).row();
+                Label label_p2 = new Label(Language.getText("WIKI_OVERVIEW_P2"), getContext().getSkin());
+                label_p2.setWrap(true);
+                content_page.add(label_p2).width(ts * 7).padBottom(ts / 8).row();
+                break;
+            case RootNode.ABOUT:
+                label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
+                content_page.add(about_page);
+                break;
+            default:
+                label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
+        }
+    }
+
+    private void generateGameplayPage(int type) {
+        switch (type) {
+            case EntryNode.TYPE_GAMEPLAY_ATTACKING:
+                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_ATTACKING"));
+                break;
+            case EntryNode.TYPE_GAMEPLAY_HEALING:
+                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_HEALING"));
+                break;
+            case EntryNode.TYPE_GAMEPLAY_INCOME:
+                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_INCOME"));
+                break;
+            case EntryNode.TYPE_GAMEPLAY_OBJECTIVES:
+                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_OBJECTIVES"));
+                break;
+            case EntryNode.TYPE_GAMEPLAY_RECRUITING:
+                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_RECRUITING"));
+                break;
+            case EntryNode.TYPE_GAMEPLAY_STATUS:
+                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_STATUS"));
+                break;
+        }
+        gameplay_page.setType(type);
+        content_page.add(gameplay_page);
+    }
+
+    private void generateTilePage(int index) {
+        label_title.setText(Language.getText("LB_TILE_NUMBER") + index);
+        tile_page.setIndex(index);
+        content_page.add(tile_page);
     }
 
     private void generateUnitPage(int index) {
         label_title.setText(Language.getUnitName(index));
         unit_page.setIndex(index);
         content_page.add(unit_page);
-
     }
 
     private void generateAbilityPage(int ability) {
@@ -271,6 +379,24 @@ public class Wiki extends BasicDialog {
 
     private void generateStatusPage(int status) {
         label_title.setText(Language.getStatusName(status));
+        status_page.setStatus(status);
+        content_page.add(status_page);
+    }
+
+    private void generateMultiplayerPage(int type) {
+        switch (type) {
+            case EntryNode.TYPE_MULTIPLAYER_COMMANDS:
+                label_title.setText(Language.getText("WIKI_NODE_MULTIPLAYER_COMMANDS"));
+                break;
+            case EntryNode.TYPE_MULTIPLAYER_CREATE_GAME:
+                label_title.setText(Language.getText("WIKI_NODE_MULTIPLAYER_CREATE_GAME"));
+                break;
+            case EntryNode.TYPE_MULTIPLAYER_JOIN_GAME:
+                label_title.setText(Language.getText("WIKI_NODE_MULTIPLAYER_JOIN_GAME"));
+                break;
+        }
+        multiplayer_page.setType(type);
+        content_page.add(multiplayer_page);
     }
 
 }
