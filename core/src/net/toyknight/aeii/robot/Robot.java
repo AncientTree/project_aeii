@@ -237,7 +237,12 @@ public class Robot {
         } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0
                 && (ally = getPreferredHealTarget(selected_unit, allies)) != null) {
             Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
-            submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
+            if (heal_position == null) {
+                Position move_position = getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                submitAction(move_position, move_position, Operation.HEAL);
+            } else {
+                submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
+            }
         } else {
             Unit target_enemy;
             Position attack_position;
@@ -450,16 +455,18 @@ public class Robot {
     }
 
     private Position getPreferredStandbyPosition(Unit unit, ObjectSet<Position> movable_positions) {
-        Position preferred_position = null;
+        Position preferred_position = movable_positions.first();
         int max_defence_bonus = Integer.MIN_VALUE;
         for (Position position : movable_positions) {
             Tile tile = getGame().getMap().getTile(position);
-            if (getManager().getUnitToolkit().getTerrainHeal(unit, tile) > 0) {
-                return position;
-            }
-            if (tile.getDefenceBonus() > max_defence_bonus) {
-                preferred_position = position;
-                max_defence_bonus = tile.getDefenceBonus();
+            if (unit.isCommander() || !tile.isCastle()) {
+                if (getManager().getUnitToolkit().getTerrainHeal(unit, tile) > 0) {
+                    return position;
+                }
+                if (tile.getDefenceBonus() > max_defence_bonus) {
+                    preferred_position = position;
+                    max_defence_bonus = tile.getDefenceBonus();
+                }
             }
         }
         return preferred_position;
