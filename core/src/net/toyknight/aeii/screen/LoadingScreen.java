@@ -1,0 +1,78 @@
+package net.toyknight.aeii.screen;
+
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import net.toyknight.aeii.GameContext;
+import com.toyknight.aeii.animation.*;
+import net.toyknight.aeii.animation.Animator;
+import net.toyknight.aeii.animation.BackgroundFadeAnimator;
+import net.toyknight.aeii.animation.LoadingAnimator;
+
+/**
+ * @author toyknight 4/2/2015.
+ */
+public class LoadingScreen implements Screen {
+
+    private final GameContext context;
+    private final SpriteBatch batch;
+
+    private Animator loading_animator;
+    private Animator bg_fade_animator;
+
+    public LoadingScreen(GameContext context) {
+        this.context = context;
+        this.batch = new SpriteBatch();
+
+        loading_animator = new LoadingAnimator();
+
+        bg_fade_animator = new BackgroundFadeAnimator(1.0f, 1.0f, 1.0f);
+    }
+
+    public GameContext getContext() {
+        return context;
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void render(float delta) {
+        if (getContext().getResourceManager().update()) {
+            if (getContext().initialized()) {
+                if (bg_fade_animator.isAnimationFinished()) {
+                    getContext().gotoMainMenuScreen(true);
+                } else {
+                    bg_fade_animator.render(batch);
+                    bg_fade_animator.update(delta);
+                }
+            } else {
+                getContext().initialize();
+            }
+        } else {
+            loading_animator.render(batch);
+            loading_animator.update(delta);
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void dispose() {
+    }
+
+}
