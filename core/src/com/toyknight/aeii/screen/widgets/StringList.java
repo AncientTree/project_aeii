@@ -4,9 +4,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.toyknight.aeii.ResourceManager;
 import com.toyknight.aeii.renderer.FontRenderer;
@@ -29,18 +29,16 @@ public class StringList<T> extends Widget {
     public StringList(int item_height) {
         this.item_height = item_height;
         this.text_offset = (item_height - ResourceManager.getTextFont().getCapHeight()) / 2;
-        addListener(new InputListener() {
+        addListener(new ClickListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (pointer == 0 && button != 0) return false;
-                if (selection.isDisabled()) return false;
-                StringList.this.touchDown(y);
-                return true;
+            public void clicked(InputEvent event, float x, float y) {
+                if (selection.isDisabled()) return;
+                StringList.this.onClick(y);
             }
         });
     }
 
-    private void touchDown(float y) {
+    private void onClick(float y) {
         if (items.size == 0) return;
         float height = getHeight();
         int index = (int) ((height - y) / item_height);

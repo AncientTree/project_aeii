@@ -410,6 +410,8 @@ public class MapManagementScreen extends StageScreen {
     public void show() {
         super.show();
         current_author = null;
+        local_map_list.clearItems();
+        server_map_list.clearItems();
         setNetworkRelatedButtonsEnabled(true);
         message_dialog.setMessage(Language.getText("LB_CONNECTING"));
         showDialog("message");
