@@ -67,7 +67,7 @@ public class RoomCreateDialog extends BasicDialog {
         };
         sp_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
-        sp_map_list.setScrollBarPositions(false, true);
+        sp_map_list.setScrollingDisabled(true, false);
         sp_map_list.setBounds(ts / 2, ts * 2, ts * 6 + ts / 2, getHeight() - ts * 2 - ts / 2);
         addActor(sp_map_list);
 
