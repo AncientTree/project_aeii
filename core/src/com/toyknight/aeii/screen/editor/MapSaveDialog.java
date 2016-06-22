@@ -67,7 +67,7 @@ public class MapSaveDialog extends BasicDialog {
     }
 
     private boolean isAuthorEditable(String author) {
-        return author.equals("default") || author.equals("undefined") || author.equals(getContext().getUsername());
+        return author.equals("default") || author.equals("undefined");
     }
 
     @Override
