@@ -3,7 +3,6 @@ package net.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.animation.*;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;

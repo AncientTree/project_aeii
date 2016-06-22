@@ -3,8 +3,6 @@ package net.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
-import com.toyknight.aeii.animation.*;
-import com.toyknight.aeii.entity.*;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.network.NetworkManager;

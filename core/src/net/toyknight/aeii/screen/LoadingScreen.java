@@ -3,7 +3,6 @@ package net.toyknight.aeii.screen;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import net.toyknight.aeii.GameContext;
-import com.toyknight.aeii.animation.*;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.animation.BackgroundFadeAnimator;
 import net.toyknight.aeii.animation.LoadingAnimator;

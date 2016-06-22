@@ -11,16 +11,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.animation.MapAnimator;
-import com.toyknight.aeii.entity.*;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.manager.MapEditorListener;
 import net.toyknight.aeii.renderer.TileRenderer;
 import net.toyknight.aeii.renderer.UnitRenderer;
-import com.toyknight.aeii.screen.editor.*;
 import net.toyknight.aeii.screen.editor.*;
 import net.toyknight.aeii.screen.widgets.CircleButton;
-import com.toyknight.aeii.utils.*;
 import net.toyknight.aeii.utils.TileFactory;
 
 /**

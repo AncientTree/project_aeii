@@ -4,7 +4,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.AEIIException;
-import com.toyknight.aeii.entity.*;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Tile;

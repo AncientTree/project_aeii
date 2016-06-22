@@ -20,12 +20,10 @@ import net.toyknight.aeii.record.GameRecord;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.FontRenderer;
-import com.toyknight.aeii.screen.*;
 import net.toyknight.aeii.screen.*;
 import net.toyknight.aeii.screen.wiki.Wiki;
 import net.toyknight.aeii.script.JavaScriptEngine;
 import net.toyknight.aeii.entity.GameSave;
-import com.toyknight.aeii.utils.*;
 import net.toyknight.aeii.utils.*;
 
 import java.io.IOException;

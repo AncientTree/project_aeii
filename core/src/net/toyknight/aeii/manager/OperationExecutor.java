@@ -3,7 +3,6 @@ package net.toyknight.aeii.manager;
 import static net.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.entity.*;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;

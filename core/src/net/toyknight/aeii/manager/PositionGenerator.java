@@ -2,7 +2,6 @@ package net.toyknight.aeii.manager;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.entity.*;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;

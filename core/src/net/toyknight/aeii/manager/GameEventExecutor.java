@@ -5,7 +5,6 @@ import static net.toyknight.aeii.entity.Rule.Entry.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.toyknight.aeii.entity.*;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.UnitFactory;
