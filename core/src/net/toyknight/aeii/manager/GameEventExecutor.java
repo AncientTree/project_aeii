@@ -224,6 +224,12 @@ public class GameEventExecutor {
 
     private void onNextTurn() throws JSONException {
         getGame().nextTurn();
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if (unit.getTeam() == getGame().getCurrentTeam()) {
+                getGame().resetUnit(unit);
+                unit.updateStatus();
+            }
+        }
         int team = getGame().getCurrentTeam();
         int income = getGame().gainIncome(team);
         getAnimationDispatcher().submitMessageAnimation(

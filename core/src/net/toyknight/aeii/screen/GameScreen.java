@@ -173,29 +173,31 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     @Override
     public void draw() {
         batch.begin();
-        drawMap();
-        if (canOperate()) {
-            switch (getGameManager().getState()) {
-                case GameManager.STATE_REMOVE:
-                case GameManager.STATE_MOVE:
-                    alpha_renderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
-                    move_path_renderer.drawMovePath(
-                            batch, getGameManager().getMovePath(getCursorMapX(), getCursorMapY()));
-                    break;
-                case GameManager.STATE_PREVIEW:
-                    alpha_renderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
-                    break;
-                case GameManager.STATE_ATTACK:
-                case GameManager.STATE_SUMMON:
-                case GameManager.STATE_HEAL:
-                    alpha_renderer.drawAttackAlpha(batch, getGameManager().getAttackablePositions());
-                    break;
-                default:
-                    //do nothing
+        synchronized (Map.ITERATOR_LOCK) {
+            drawMap();
+            if (canOperate()) {
+                switch (getGameManager().getState()) {
+                    case GameManager.STATE_REMOVE:
+                    case GameManager.STATE_MOVE:
+                        alpha_renderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
+                        move_path_renderer.drawMovePath(
+                                batch, getGameManager().getMovePath(getCursorMapX(), getCursorMapY()));
+                        break;
+                    case GameManager.STATE_PREVIEW:
+                        alpha_renderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
+                        break;
+                    case GameManager.STATE_ATTACK:
+                    case GameManager.STATE_SUMMON:
+                    case GameManager.STATE_HEAL:
+                        alpha_renderer.drawAttackAlpha(batch, getGameManager().getAttackablePositions());
+                        break;
+                    default:
+                        //do nothing
+                }
             }
+            drawTombs();
+            drawUnits();
         }
-        drawTombs();
-        drawUnits();
         drawCursor();
         drawAnimation();
         attack_info_renderer.render(batch);

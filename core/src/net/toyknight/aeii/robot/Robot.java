@@ -225,10 +225,6 @@ public class Robot {
             Position summon_position = getPreferredSummonPosition(
                     selected_unit, target, getManager().getMovablePositions());
             submitAction(summon_position, target, Operation.SUMMON);
-        } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0
-                && (ally = getPreferredHealTarget(selected_unit, allies)) != null) {
-            Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
-            submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
         } else if (selected_unit.hasAbility(Ability.COMMANDER)
                 && (cp = getNearestEnemyCastlePositionWithinReach(selected_unit, movable_positions)) != null) {
             submitAction(cp, cp, Operation.OCCUPY);
@@ -238,6 +234,10 @@ public class Robot {
         } else if (selected_unit.hasAbility(Ability.REPAIRER)
                 && (rp = getNearestRuinPositionWithinReach(selected_unit, movable_positions)) != null) {
             submitAction(rp, rp, Operation.REPAIR);
+        } else if (selected_unit.hasAbility(Ability.HEALER) && allies.size > 0
+                && (ally = getPreferredHealTarget(selected_unit, allies)) != null) {
+            Position heal_position = getPreferredHealPosition(selected_unit, ally, getManager().getMovablePositions());
+            submitAction(heal_position, getGame().getMap().getPosition(ally), Operation.HEAL);
         } else {
             Unit target_enemy;
             Position attack_position;
@@ -296,6 +296,28 @@ public class Robot {
         this.action_type = action_type;
         this.action_target = action_target;
         getManager().doMove(move_position.x, move_position.y);
+        switch (action_type) {
+            case Operation.ATTACK:
+                System.out.print("attack");
+                break;
+            case Operation.HEAL:
+                System.out.print("heal");
+                break;
+            case Operation.SUMMON:
+                System.out.print("summon");
+                break;
+            case Operation.OCCUPY:
+                System.out.print("occupy");
+                break;
+            case Operation.REPAIR:
+                System.out.print("repair");
+                break;
+            case Operation.STANDBY:
+                System.out.print("standby");
+                break;
+        }
+        System.out.print(" ");
+        System.out.println(action_target == null ? "null" : String.format("[%d, %d]", action_target.x, action_target.y));
     }
 
     private Unit getPreferredAttackTarget(Unit unit, ObjectSet<Unit> enemies) {
@@ -504,13 +526,15 @@ public class Robot {
 
     private int getEnemyDistance(Position position) {
         int total_distance = 0;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isEnemy(team, unit.getTeam())) {
-                int distance = getDistance(getGame().getMap().getPosition(unit), position);
-                if (distance <= 4) {
-                    return distance;
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (getGame().isEnemy(team, unit.getTeam())) {
+                    int distance = getDistance(getGame().getMap().getPosition(unit), position);
+                    if (distance <= 4) {
+                        return distance;
+                    }
+                    total_distance += distance;
                 }
-                total_distance += distance;
             }
         }
         for (Position cp : getGame().getMap().getCastlePositions()) {
@@ -533,9 +557,11 @@ public class Robot {
 
     private int getEnemyCountWithAbility(int ability) {
         int count = 0;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isEnemy(team, unit.getTeam()) && unit.hasAbility(ability)) {
-                count++;
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (getGame().isEnemy(team, unit.getTeam()) && unit.hasAbility(ability)) {
+                    count++;
+                }
             }
         }
         return count;
@@ -543,10 +569,12 @@ public class Robot {
 
     private int getUnhealthyAllyCount() {
         int count = 0;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isAlly(team, unit.getTeam())
-                    && (Status.isDebuff(unit.getStatus()) || unit.getCurrentHp() < unit.getMaxHp())) {
-                count++;
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (getGame().isAlly(team, unit.getTeam())
+                        && (Status.isDebuff(unit.getStatus()) || unit.getCurrentHp() < unit.getMaxHp())) {
+                    count++;
+                }
             }
         }
         return count;
@@ -581,10 +609,12 @@ public class Robot {
     private int getEnemyAveragePhysicalDefence() {
         int enemy_number = 0;
         int enemy_total_physical_defence = 0;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isEnemy(team, unit.getTeam())) {
-                enemy_number++;
-                enemy_total_physical_defence += unit.getPhysicalDefence();
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (getGame().isEnemy(team, unit.getTeam())) {
+                    enemy_number++;
+                    enemy_total_physical_defence += unit.getPhysicalDefence();
+                }
             }
         }
         if (enemy_number > 0) {
@@ -597,10 +627,12 @@ public class Robot {
     private int getEnemyAverageMagicDefence() {
         int enemy_number = 0;
         int enemy_total_magic_defence = 0;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isEnemy(team, unit.getTeam())) {
-                enemy_number++;
-                enemy_total_magic_defence += unit.getMagicDefence();
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (getGame().isEnemy(team, unit.getTeam())) {
+                    enemy_number++;
+                    enemy_total_magic_defence += unit.getMagicDefence();
+                }
             }
         }
         if (enemy_number > 0) {
@@ -652,9 +684,11 @@ public class Robot {
 
     private ObjectSet<Unit> getEnemyCommanders() {
         ObjectSet<Unit> commanders = new ObjectSet<Unit>();
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (unit.isCommander() && getGame().isEnemy(team, unit.getTeam())) {
-                commanders.add(unit);
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (unit.isCommander() && getGame().isEnemy(team, unit.getTeam())) {
+                    commanders.add(unit);
+                }
             }
         }
         return commanders;
@@ -729,23 +763,24 @@ public class Robot {
     }
 
     private ObjectSet<Position> getTombPositionsWithinReach(Unit unit) {
-        ObjectSet<Tomb> all_tombs = new ObjectSet<Tomb>(getGame().getMap().getTombs());
         ObjectSet<Position> reachable_positions = getManager().getPositionGenerator().createPositionsWithinReach(unit);
-        ObjectSet<Position> tomb_positions = new ObjectSet<Position>();
-        for (Tomb tomb : all_tombs) {
-            Position tomb_position = getGame().getMap().getPosition(tomb.x, tomb.y);
-            if (reachable_positions.contains(tomb_position)) {
-                tomb_positions.add(tomb_position);
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Position position : reachable_positions) {
+                if (!getGame().getMap().isTomb(position)) {
+                    reachable_positions.remove(position);
+                }
             }
         }
-        return tomb_positions;
+        return reachable_positions;
     }
 
     private ObjectSet<Unit> getEnemyUnits() {
         ObjectSet<Unit> enemies = new ObjectSet<Unit>();
-        for (Unit unit : getGame().getMap().getUnits()) {
-            if (getGame().isEnemy(team, unit.getTeam())) {
-                enemies.add(unit);
+        synchronized (Map.ITERATOR_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits()) {
+                if (getGame().isEnemy(team, unit.getTeam())) {
+                    enemies.add(unit);
+                }
             }
         }
         return enemies;

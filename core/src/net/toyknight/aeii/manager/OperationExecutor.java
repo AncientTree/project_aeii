@@ -239,14 +239,11 @@ public class OperationExecutor {
         for (Unit unit : getGame().getMap().getUnits()) {
             int change = 0;
             if (unit.getTeam() == next_team) {
-                //update status
-                unit.updateStatus();
-                getGame().resetUnit(unit);
                 //the terrain heal
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 change = getManager().getUnitToolkit().getTerrainHeal(unit, tile);
                 //the poison damage
-                if (unit.hasStatus(Status.POISONED)) {
+                if (unit.hasStatus(Status.POISONED) && unit.getStatus().getRemainingTurn() > 0) {
                     if (unit.hasAbility(Ability.UNDEAD)) {
                         change += Rule.POISON_DAMAGE;
                     } else {
