@@ -27,7 +27,7 @@ public class GameToolkit {
     public static final int SAVE = 0x1;
     public static final int RECORD = 0x2;
 
-    private static final DateFormat date_format = new SimpleDateFormat("MMddyyyy HH-mm", Locale.getDefault());
+    private static final DateFormat date_format = new SimpleDateFormat("MMddyyyy HH-mm-ss", Locale.getDefault());
 
     private GameToolkit() {
     }
