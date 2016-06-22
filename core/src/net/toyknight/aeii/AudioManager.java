@@ -3,7 +3,6 @@ package net.toyknight.aeii;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import net.toyknight.aeii.utils.FileProvider;
 
 import java.io.File;
@@ -18,6 +17,7 @@ public class AudioManager {
     private static final String MUSIC_PATH = "music/";
     private static final String SE_PATH = "se/";
     private static final String MAIN_THEME = "main_theme.mp3";
+    private static final String[] BGM_LIST = new String[]{"bg_good.mp3", "bg_bad.mp3"};
 
     public static float musicVolume = 1.0f;
     public static float seVolume = 0.8f;
@@ -104,15 +104,11 @@ public class AudioManager {
      * Play music randomly. All audio files are in "asset/music/" directory in project.
      */
     public static void playRandomBGM() {
-        String path = AUDIO_PATH + MUSIC_PATH;
-        FileHandle[] musicFiles = FileProvider.getAssetsFile(path).list(filterAudioExtensions());
-        int start = 0;
-        int end = musicFiles.length - 1;
 
         stopMusic();
 
-        int randomIndex = getRandomInt(start, end);
-        music = Gdx.audio.newMusic(musicFiles[randomIndex]);
+        String bgmPath = getRandomBgmPath();
+        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(bgmPath));
         music.setVolume(musicVolume);
         music.play();
 
@@ -213,14 +209,13 @@ public class AudioManager {
     }
 
     /**
-     * Get a random integer by given range.
+     * Get a random bgm path.
      *
-     * @param start minimum number
-     * @param end   maximum number
-     * @return the random integer
+     * @return the bgm path
      */
-    private static int getRandomInt(int start, int end) {
+    private static String getRandomBgmPath() {
         Random random = new Random();
-        return random.nextInt(end - start + 1) + start;
+        return AUDIO_PATH + MUSIC_PATH + BGM_LIST[random.nextInt(BGM_LIST.length)];
     }
+
 }
