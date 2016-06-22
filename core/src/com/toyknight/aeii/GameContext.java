@@ -36,7 +36,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.1";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -90,9 +90,9 @@ public class GameContext extends Game implements GameManagerListener {
             resource_manager.prepare(TILE_SIZE);
             Animator.setTileSize(TILE_SIZE);
 
-            LogoScreen logo_screen = new LogoScreen(this);
+            LoadingScreen loading_screen = new LoadingScreen(this);
             Gdx.input.setCatchBackKey(true);
-            setScreen(logo_screen);
+            setScreen(loading_screen);
         } catch (AEIIException ex) {
             Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
         }
@@ -109,7 +109,7 @@ public class GameContext extends Game implements GameManagerListener {
                 TileValidator.initialize();
                 BorderRenderer.initialize();
 
-                skin = new Skin(FileProvider.getAssetsFile("skin/aeii_skin.json"));
+                skin = getResourceManager().getSkin();
                 skin.get(TextButton.TextButtonStyle.class).font = ResourceManager.getTextFont();
                 skin.get(TextField.TextFieldStyle.class).font = ResourceManager.getTextFont();
                 skin.get(Label.LabelStyle.class).font = ResourceManager.getTextFont();

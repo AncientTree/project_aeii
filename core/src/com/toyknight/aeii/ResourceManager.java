@@ -2,19 +2,18 @@ package com.toyknight.aeii;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.toyknight.aeii.utils.FileProvider;
 import com.toyknight.aeii.utils.Language;
@@ -30,10 +29,6 @@ import java.util.Scanner;
 public class ResourceManager {
 
     private final AssetManager asset_manager = new AssetManager();
-
-    private static Texture ae_logo_texture;
-    private static Texture ae_logo_mask_texture;
-    private static Texture ae_logo_glow_texture;
 
     private static Texture[] texture_tiles;
     private static Texture[] texture_top_tiles;
@@ -89,10 +84,6 @@ public class ResourceManager {
     private static Texture texture_chars_small;
 
     public void prepare(int ts) {
-        //logo textures
-        asset_manager.load("images/ae_logo.png", Texture.class);
-        asset_manager.load("images/ae_logo_mask.png", Texture.class);
-        asset_manager.load("images/ae_logo_glow.png", Texture.class);
         //map related textures
         texture_tiles = new Texture[TileFactory.getTileCount()];
         for (int i = 0; i < texture_tiles.length; i++) {
@@ -139,10 +130,12 @@ public class ResourceManager {
         asset_manager.load("images/spark_attack.png", Texture.class);
         asset_manager.load("images/spark_white.png", Texture.class);
         asset_manager.load("images/main_menu_background.png", Texture.class);
+
+        FileHandleResolver file_resolver = new InternalFileHandleResolver();
+
         //fonts
-        FileHandleResolver resolver = new InternalFileHandleResolver();
-        asset_manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        asset_manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+        asset_manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(file_resolver));
+        asset_manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(file_resolver));
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter text_param = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         text_param.fontFileName = FileProvider.getUIDefaultFont().path();
@@ -150,21 +143,25 @@ public class ResourceManager {
         text_param.fontParameters.color = Color.WHITE;
         text_param.fontParameters.borderColor = Color.BLACK;
         text_param.fontParameters.borderWidth = ts / 24;
-        text_param.fontParameters.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, true);
+        text_param.fontParameters.characters = Language.createTextCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
         asset_manager.load("text.ttf", BitmapFont.class, text_param);
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter title_param = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         title_param.fontFileName = FileProvider.getUIDefaultFont().path();
         title_param.fontParameters.size = ts / 2;
         title_param.fontParameters.color = Color.WHITE;
-        title_param.fontParameters.shadowColor = Color.DARK_GRAY;
-        title_param.fontParameters.shadowOffsetX = ts / 24;
-        title_param.fontParameters.shadowOffsetY = ts / 24;
-        title_param.fontParameters.characters = Language.createCharset(FreeTypeFontGenerator.DEFAULT_CHARS, false);
+        title_param.fontParameters.shadowColor = Color.BLACK;
+        title_param.fontParameters.shadowOffsetX = ts / 12;
+        title_param.fontParameters.shadowOffsetY = ts / 12;
+        title_param.fontParameters.characters = Language.createTitleCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
         asset_manager.load("title.ttf", BitmapFont.class, title_param);
 
         asset_manager.load("images/chars_large.png", Texture.class);
         asset_manager.load("images/chars_small.png", Texture.class);
+        //skin
+        SkinLoader.SkinParameter skin_parameter = new SkinLoader.SkinParameter("skin/aeii_skin.atlas");
+        asset_manager.load("skin/aeii_skin.atlas", TextureAtlas.class);
+        asset_manager.load("skin/aeii_skin.json", Skin.class, skin_parameter);
         //shader
         grayscale_shader = new ShaderProgram(
                 FileProvider.getAssetsFile("shaders/Shader.VERT").readString(),
@@ -175,10 +172,6 @@ public class ResourceManager {
     }
 
     public void initialize() {
-        ae_logo_texture = asset_manager.get("images/ae_logo.png", Texture.class);
-        ae_logo_mask_texture = asset_manager.get("images/ae_logo_mask.png", Texture.class);
-        ae_logo_glow_texture = asset_manager.get("images/ae_logo_glow.png", Texture.class);
-
         for (int i = 0; i < texture_tiles.length; i++) {
             texture_tiles[i] = asset_manager.get("images/tiles/tile_" + i + ".png", Texture.class);
         }
@@ -267,16 +260,8 @@ public class ResourceManager {
         return asset_manager.update();
     }
 
-    public static Texture getAELogoTexture() {
-        return ae_logo_texture;
-    }
-
-    public static Texture getAELogoMaskTexture() {
-        return ae_logo_mask_texture;
-    }
-
-    public static Texture getAELogoGlowTexture() {
-        return ae_logo_glow_texture;
+    public Skin getSkin() {
+        return asset_manager.get("skin/aeii_skin.json", Skin.class);
     }
 
     public static Texture getTileTexture(int index) {

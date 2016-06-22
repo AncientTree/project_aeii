@@ -292,8 +292,11 @@ public class NetworkManager {
         return response != null && response.getBoolean("approved");
     }
 
-    public static Array<MapSnapshot> requestMapList() throws JSONException {
+    public static Array<MapSnapshot> requestMapList(String author) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.LIST_MAPS);
+        if (author != null) {
+            request.put("author", author);
+        }
         JSONObject response = sendRequest(request);
         if (response == null) {
             return null;

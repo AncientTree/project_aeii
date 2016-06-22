@@ -44,7 +44,7 @@ public class MapManagementScreen extends StageScreen {
     private final MiniMapDialog map_preview_dialog;
     private final ConfirmDialog confirm_dialog;
 
-    private final StringList<MapSnapshot> server_map_list;
+    private final StringList<Object> server_map_list;
     private final ScrollPane sp_server_map_list;
     private final StringList<MapFactory.MapSnapshot> local_map_list;
     private final ScrollPane sp_local_map_list;
@@ -57,6 +57,8 @@ public class MapManagementScreen extends StageScreen {
     private final TextButton btn_preview_local;
     private final TextButton btn_delete;
 
+    private String current_author;
+
     public MapManagementScreen(GameContext context) {
         super(context);
         Label label_online_map = new Label(Language.getText("LB_ONLINE_MAPS"), getContext().getSkin());
@@ -68,12 +70,22 @@ public class MapManagementScreen extends StageScreen {
         label_local_map.setBounds(ts * 9, Gdx.graphics.getHeight() - ts, ts * 8, ts);
         addActor(label_local_map);
 
-        server_map_list = new StringList<MapSnapshot>(ts);
+        server_map_list = new StringList<Object>(ts);
         sp_server_map_list = new ScrollPane(server_map_list, getContext().getSkin());
         sp_server_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
         sp_server_map_list.setScrollBarPositions(true, true);
         sp_server_map_list.setBounds(ts / 2, ts * 2, ts * 8, Gdx.graphics.getHeight() - ts * 3);
+        server_map_list.setListener(new StringList.SelectionListener() {
+            @Override
+            public void onSelect(int index, Object value) {
+                select(value);
+            }
+
+            @Override
+            public void onChange(int index, Object value) {
+            }
+        });
         addActor(sp_server_map_list);
         local_map_list = new StringList<MapFactory.MapSnapshot>(ts);
         sp_local_map_list = new ScrollPane(local_map_list, getContext().getSkin());
@@ -171,31 +183,45 @@ public class MapManagementScreen extends StageScreen {
         }
     }
 
+    private void select(Object value) {
+        if (value instanceof MapSnapshot && ((MapSnapshot) value).isDirectory()) {
+            current_author = ((MapSnapshot) value).getAuthor();
+            refresh();
+        }
+        if (value.equals("/...")) {
+            current_author = null;
+            refresh();
+        }
+    }
+
     private void downloadSelectedMap() {
-        message_dialog.setMessage(Language.getText("LB_DOWNLOADING"));
-        showDialog("message");
-        getContext().submitAsyncTask(new AsyncTask<Map>() {
-            @Override
-            public Map doTask() throws Exception {
-                return NetworkManager.requestDownloadMap(server_map_list.getSelected().getFilename());
-            }
-
-            @Override
-            public void onFinish(Map map) {
-                closeDialog("message");
-                if (map == null) {
-                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
-                } else {
-                    tryWriteMap(map, server_map_list.getSelected().getFilename());
+        if (checkSelectedMap()) {
+            final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
+            message_dialog.setMessage(Language.getText("LB_DOWNLOADING"));
+            showDialog("message");
+            getContext().submitAsyncTask(new AsyncTask<Map>() {
+                @Override
+                public Map doTask() throws Exception {
+                    return NetworkManager.requestDownloadMap(filename);
                 }
-            }
 
-            @Override
-            public void onFail(String message) {
-                closeDialog("message");
-                showPrompt(Language.getText("MSG_ERR_FDM"), null);
-            }
-        });
+                @Override
+                public void onFinish(Map map) {
+                    closeDialog("message");
+                    if (map == null) {
+                        showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                    } else {
+                        tryWriteMap(map, filename);
+                    }
+                }
+
+                @Override
+                public void onFail(String message) {
+                    closeDialog("message");
+                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                }
+            });
+        }
     }
 
     private void uploadSelectedMap() {
@@ -243,30 +269,33 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void previewSelectedServerMap() {
-        message_dialog.setMessage(Language.getText("LB_DOWNLOADING"));
-        showDialog("message");
-        getContext().submitAsyncTask(new AsyncTask<Map>() {
-            @Override
-            public Map doTask() throws Exception {
-                return NetworkManager.requestDownloadMap(server_map_list.getSelected().getFilename());
-            }
-
-            @Override
-            public void onFinish(Map map) {
-                closeDialog("message");
-                if (map == null) {
-                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
-                } else {
-                    preview(map);
+        if (checkSelectedMap()) {
+            final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
+            message_dialog.setMessage(Language.getText("LB_DOWNLOADING"));
+            showDialog("message");
+            getContext().submitAsyncTask(new AsyncTask<Map>() {
+                @Override
+                public Map doTask() throws Exception {
+                    return NetworkManager.requestDownloadMap(filename);
                 }
-            }
 
-            @Override
-            public void onFail(String message) {
-                closeDialog("message");
-                showPrompt(Language.getText("MSG_ERR_FDM"), null);
-            }
-        });
+                @Override
+                public void onFinish(Map map) {
+                    closeDialog("message");
+                    if (map == null) {
+                        showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                    } else {
+                        preview(map);
+                    }
+                }
+
+                @Override
+                public void onFail(String message) {
+                    closeDialog("message");
+                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                }
+            });
+        }
     }
 
     private void previewSelectedLocalMap() {
@@ -292,13 +321,13 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public Array<MapSnapshot> doTask() throws Exception {
                 refreshLocalMaps();
-                return NetworkManager.requestMapList();
+                return NetworkManager.requestMapList(current_author);
             }
 
             @Override
             public void onFinish(Array<MapSnapshot> map_list) {
                 closeDialog("message");
-                server_map_list.setItems(map_list);
+                updateServerMapList(map_list);
             }
 
             @Override
@@ -307,6 +336,16 @@ public class MapManagementScreen extends StageScreen {
                 showPrompt(Language.getText("MSG_ERR_CNGML"), null);
             }
         });
+    }
+
+    private void updateServerMapList(Array<MapSnapshot> map_list) {
+        if (current_author == null) {
+            server_map_list.setItems(map_list);
+        } else {
+            Array<Object> list = new Array<Object>(map_list);
+            list.insert(0, "/...");
+            server_map_list.setItems(list);
+        }
     }
 
     private void refreshLocalMaps() {
@@ -339,6 +378,11 @@ public class MapManagementScreen extends StageScreen {
         map_file.delete();
     }
 
+    private boolean checkSelectedMap() {
+        Object selected = server_map_list.getSelected();
+        return selected instanceof MapSnapshot && !((MapSnapshot) selected).isDirectory();
+    }
+
     @Override
     public void act(float delta) {
         map_preview_dialog.update(delta);
@@ -365,6 +409,7 @@ public class MapManagementScreen extends StageScreen {
     @Override
     public void show() {
         super.show();
+        current_author = null;
         setNetworkRelatedButtonsEnabled(true);
         message_dialog.setMessage(Language.getText("LB_CONNECTING"));
         showDialog("message");

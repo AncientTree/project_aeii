@@ -12,19 +12,14 @@ import com.toyknight.aeii.utils.FileProvider;
 /**
  * @author toyknight 4/2/2015.
  */
-public class MSLogoAnimator extends Animator {
-
-    private final int WIDTH = 178;
-    private final int HEIGHT = 178;
+public class LoadingAnimator extends Animator {
 
     private final Animation animation;
     private final ShapeRenderer shape_renderer;
 
-    private float time_waited = 0f;
-
-    public MSLogoAnimator() {
-        Texture texture_ms_logo = new Texture(FileProvider.getAssetsFile("images/ms_logo.png"));
-        animation = ResourceManager.createAnimation(texture_ms_logo, 8, 5, 0.065f);
+    public LoadingAnimator() {
+        Texture texture_loading = new Texture(FileProvider.getAssetsFile("images/loading.png"));
+        animation = ResourceManager.createAnimation(texture_loading, 18, 1, 0.065f);
         shape_renderer = new ShapeRenderer();
         shape_renderer.setAutoShapeType(true);
     }
@@ -39,24 +34,20 @@ public class MSLogoAnimator extends Animator {
 
         batch.begin();
         TextureRegion current_frame = animation.getKeyFrame(getStateTime(), true);
-        int draw_x = (Gdx.app.getGraphics().getWidth() - WIDTH * ts / 48) / 2;
-        int draw_y = (Gdx.app.getGraphics().getHeight() - HEIGHT * ts / 48) / 2;
-        batch.draw(current_frame, draw_x, draw_y, WIDTH * ts / 48, HEIGHT * ts / 48);
+        int draw_x = (Gdx.app.getGraphics().getWidth() - 64 * ts / 48) / 2;
+        int draw_y = (Gdx.app.getGraphics().getHeight() - 64 * ts / 48) / 2;
+        batch.draw(current_frame, draw_x, draw_y, 64 * ts / 48, 64 * ts / 48);
         batch.end();
     }
 
     @Override
     public void update(float delta_time) {
-        if (time_waited < 0.5f) {
-            time_waited += delta_time;
-        } else {
-            addStateTime(delta_time);
-        }
+        addStateTime(delta_time);
     }
 
     @Override
     public boolean isAnimationFinished() {
-        return animation.isAnimationFinished(getStateTime());
+        return false;
     }
 
 }

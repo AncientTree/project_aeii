@@ -46,11 +46,23 @@ public class StringList<T> extends Widget {
         int index = (int) ((height - y) / item_height);
         index = Math.max(0, index);
         index = Math.min(items.size - 1, index);
-        if (!selection.contains(items.get(index))) {
+        if (selection.contains(items.get(index))) {
+            fireSelectEvent(index, getSelected());
+        } else {
             selection.choose(items.get(index));
-            if (listener != null) {
-                listener.onSelect(index, getSelected());
-            }
+            fireChangeEvent(index, getSelected());
+        }
+    }
+
+    private void fireSelectEvent(int index, Object value) {
+        if (listener != null) {
+            listener.onSelect(index, value);
+        }
+    }
+
+    private void fireChangeEvent(int index, Object value) {
+        if (listener != null) {
+            listener.onChange(index, value);
         }
     }
 
@@ -146,6 +158,8 @@ public class StringList<T> extends Widget {
     public interface SelectionListener {
 
         void onSelect(int index, Object value);
+
+        void onChange(int index, Object value);
 
     }
 

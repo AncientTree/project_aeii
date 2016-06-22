@@ -362,7 +362,12 @@ public class GameServer {
         try {
             if (player.isAuthenticated()) {
                 JSONObject response = createResponse(request);
-                response.put("maps", getMapManager().getSerializedMapList());
+                if (request.has("author")) {
+                    String author = request.getString("author");
+                    response.put("maps", getMapManager().getSerializedMapList(author));
+                } else {
+                    response.put("maps", getMapManager().getSerializedAuthorList());
+                }
                 player.getConnection().sendTCP(response.toString());
             }
         } catch (JSONException ex) {

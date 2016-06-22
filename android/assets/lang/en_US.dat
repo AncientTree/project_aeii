@@ -1,6 +1,9 @@
 ﻿
 FONT=en_US.ttf
 
+_TITLE=Ancient Empires Reloaded
+_TITLE_Lobby=Game Lobby
+
 ABILITY_DESCRIPTION_0=Units with this ability can capture villages.
 ABILITY_DESCRIPTION_1=Units with this ability gain 10 attack/defence bonus when in water.
 ABILITY_DESCRIPTION_2=Units with this ability gain 10 attack/defence bonus when in forest.
@@ -104,7 +107,6 @@ LB_LEAVE=Leave
 LB_LEAVING=Leaving...
 LB_LOAD=Load
 LB_LOAD_GAME=Load Game
-LB_LOBBY=Lobby
 LB_LOCAL_MAPS=Local Maps
 LB_LUV=Lost Unit Value
 LB_MANAGE_MAPS=Manage Maps
@@ -271,8 +273,7 @@ UNIT_GUIDE_14=Since ghosts are undead beings they are not afraid of poisons. And
 UNIT_GUIDE_15=Black mages have no abilities but they have quite high magic attack which makes them good magic damage dealers. However black mages are not that good at melee combat so try to use them wisely.
 UNIT_GUIDE_16=<unavailable>
 
-WIKI_OVERVIEW_P1=This game is a remastered version of Ancient Empires II which was originally released to J2ME platforms 2015.
-WIKI_OVERVIEW_P2=What you see now is the in-game wiki which is designed to help you learn how to play this game. Please check the following sections for more information.
+WIKI_OVERVIEW_P1=What you see now is the in-game wiki which is designed to help you learn how to play this game. Please check the following sections for more information.
 
 WIKI_GAMEPLAY_OBJECTIVES_P1=For skirmish games the objectives are quite simple, you need to eliminate all enemy units and capture all enemy castles (excluding the neutral ones). To achieve this you need to recruit units and fight enemy armies with some strategies.
 WIKI_GAMEPLAY_OBJECTIVES_P2=However for campaigns the objectives can be more complicated which you need to pay attention to.
@@ -306,7 +307,7 @@ WIKI_MULTIPLAYER_JOIN_GAME_P2=You can leave the game any time by clicking the le
 WIKI_MULTIPLAYER_COMMANDS_ASSIGN_P1=Room masters can use this command to assign team to players when the game is started. To do this you need to click the message button on the top left corner of the screen then a dialog containing a player list will appear. Select a player then click send message button and input '/assign 0', this will assign team blue to the player you selected. Note that if there is already a player playing that team then he will lose control to that team.
 WIKI_MULTIPLAYER_COMMANDS_ASSIGN_P2=Team value: 0-team blue, 1-team red, 2-team green, 3-team black
 
-WIKI_ABOUT_P1=This game is created by toyknight using arts from the original Ancient Empires II game with renewed codes and some new arts.
+WIKI_ABOUT_P1=This game is created by toyknight and the project was started since June 2014.
 WIKI_ABOUT_P2=If you have any questions, suggestions or just wanna help please send email to toyknight@outlook.com. Thank you!
 
 WIKI_NODE_GAMEPLAY_OBJECTIVES=Objectives

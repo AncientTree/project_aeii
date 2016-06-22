@@ -13,6 +13,8 @@ public class MapSnapshot implements Serializable {
     private final String filename;
     private final String author;
 
+    private boolean directory = false;
+
     public MapSnapshot(int capacity, String filename, String author) {
         this.capacity = capacity;
         this.filename = filename;
@@ -21,6 +23,15 @@ public class MapSnapshot implements Serializable {
 
     public MapSnapshot(JSONObject json) throws JSONException {
         this(json.getInt("capacity"), json.getString("filename"), json.getString("author"));
+        setDirectory(json.getBoolean("directory"));
+    }
+
+    public void setDirectory(boolean directory) {
+        this.directory = directory;
+    }
+
+    public boolean isDirectory() {
+        return directory;
     }
 
     public int getCapacity() {
@@ -37,7 +48,11 @@ public class MapSnapshot implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("(%d) %s [%s]", capacity, filename, author);
+        if (isDirectory()) {
+            return "/" + getAuthor();
+        } else {
+            return String.format("(%d) %s [%s]", getCapacity(), getFilename(), getAuthor());
+        }
     }
 
     @Override
@@ -46,6 +61,7 @@ public class MapSnapshot implements Serializable {
         json.put("capacity", capacity);
         json.put("filename", filename);
         json.put("author", author);
+        json.put("directory", directory);
         return json;
     }
 }

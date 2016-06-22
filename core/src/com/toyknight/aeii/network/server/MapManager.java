@@ -1,6 +1,8 @@
 package com.toyknight.aeii.network.server;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.toyknight.aeii.AEIIException;
 import com.toyknight.aeii.entity.Map;
 import com.toyknight.aeii.network.entity.MapSnapshot;
@@ -18,7 +20,7 @@ public class MapManager {
 
     private final FileFilter map_file_filter = new MapFileFilter();
 
-    private final Array<MapSnapshot> maps = new Array<MapSnapshot>();
+    private final ObjectMap<String, ObjectSet<MapSnapshot>> maps = new ObjectMap<String, ObjectSet<MapSnapshot>>();
 
     public void initialize() throws AEIIException {
         File map_dir = new File("maps");
@@ -41,7 +43,7 @@ public class MapManager {
                 Map map = MapFactory.createMap(dis);
 
                 MapSnapshot snapshot = new MapSnapshot(getCapacity(map), map_file.getName(), map.getAuthor());
-                maps.add(snapshot);
+                addSnapshot(snapshot);
             } catch (IOException ignored) {
             } catch (AEIIException ignored) {
             }
@@ -66,15 +68,36 @@ public class MapManager {
 
         MapSnapshot snapshot = new MapSnapshot(getCapacity(map), map_file.getName(), map.getAuthor());
         synchronized (MAP_LOCK) {
-            maps.add(snapshot);
+            addSnapshot(snapshot);
         }
     }
 
-    public JSONArray getSerializedMapList() {
+    public void addSnapshot(MapSnapshot snapshot) {
+        if (!maps.containsKey(snapshot.getAuthor())) {
+            maps.put(snapshot.getAuthor(), new ObjectSet<MapSnapshot>());
+        }
+        maps.get(snapshot.getAuthor()).add(snapshot);
+    }
+
+    public JSONArray getSerializedAuthorList() {
         JSONArray list = new JSONArray();
         synchronized (MAP_LOCK) {
-            for (MapSnapshot snapshot : maps) {
+            for (String author : maps.keys()) {
+                MapSnapshot snapshot = new MapSnapshot(0, "null", author);
+                snapshot.setDirectory(true);
                 list.put(snapshot.toJson());
+            }
+        }
+        return list;
+    }
+
+    public JSONArray getSerializedMapList(String author) {
+        JSONArray list = new JSONArray();
+        synchronized (MAP_LOCK) {
+            if (maps.containsKey(author)) {
+                for (MapSnapshot snapshot : maps.get(author)) {
+                    list.put(snapshot.toJson());
+                }
             }
         }
         return list;

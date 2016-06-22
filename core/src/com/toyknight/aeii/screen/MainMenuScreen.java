@@ -6,21 +6,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.toyknight.aeii.GameContext;
 import com.toyknight.aeii.ResourceManager;
-import com.toyknight.aeii.animation.AELogoAnimator;
-import com.toyknight.aeii.animation.AELogoGlowAnimator;
+import com.toyknight.aeii.renderer.FontRenderer;
 import com.toyknight.aeii.screen.dialog.GameLoadDialog;
 import com.toyknight.aeii.screen.dialog.MainMenu;
 import com.toyknight.aeii.screen.dialog.ServerListDialog;
 import com.toyknight.aeii.screen.dialog.SettingDialog;
 import com.toyknight.aeii.screen.widgets.CircleButton;
+import com.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 4/3/2015.
  */
 public class MainMenuScreen extends StageScreen {
-
-    private final AELogoAnimator logo_animator;
-    private final AELogoGlowAnimator logo_glow_animator;
 
     private final MainMenu menu;
     private final SettingDialog setting_dialog;
@@ -28,15 +25,10 @@ public class MainMenuScreen extends StageScreen {
     private final CircleButton btn_setting;
     private final Label lb_version;
 
-    private boolean logo_shown;
-
     public MainMenuScreen(GameContext context) {
         super(context);
-        this.logo_animator = new AELogoAnimator();
-        this.logo_glow_animator = new AELogoGlowAnimator();
 
         this.menu = new MainMenu(this);
-        this.menu.setVisible(false);
         this.addActor(menu);
 
         ServerListDialog server_list = new ServerListDialog(this);
@@ -66,45 +58,22 @@ public class MainMenuScreen extends StageScreen {
             }
         });
         this.btn_setting.setPosition(0, 0);
-        this.btn_setting.setVisible(false);
         this.addActor(btn_setting);
 
         this.lb_version = new Label(getContext().getVersion(), getContext().getSkin());
         this.lb_version.setPosition(Gdx.graphics.getWidth() - lb_version.getPrefWidth(), 0);
-        this.lb_version.setVisible(false);
         this.addActor(lb_version);
-
-        this.logo_shown = false;
     }
 
     @Override
     public void draw() {
-        if (logo_animator.isAnimationFinished()) {
-            logo_glow_animator.render(batch);
-            batch.begin();
-            batch.draw(ResourceManager.getMainMenuBackgroundTexture(),
-                    0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - ts * 85 / 48);
-            batch.end();
-        } else {
-            logo_animator.render(batch);
-        }
+        batch.begin();
+        batch.draw(ResourceManager.getMainMenuBackgroundTexture(),
+                0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        FontRenderer.drawTitleCenter(batch, Language.getText("_TITLE"),
+                0, Gdx.graphics.getHeight() - 85, Gdx.graphics.getWidth(), 85);
+        batch.end();
         super.draw();
-    }
-
-    @Override
-    public void act(float delta) {
-        if (logo_animator.isAnimationFinished()) {
-            logo_glow_animator.update(delta);
-            if (!logo_shown) {
-                btn_setting.setVisible(true);
-                lb_version.setVisible(true);
-                menu.setVisible(true);
-                logo_shown = true;
-            }
-        } else {
-            logo_animator.update(delta);
-        }
-        super.act(delta);
     }
 
     @Override

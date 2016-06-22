@@ -148,7 +148,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
     }
 
     @Override
-    public void onSelect(int index, Object value) {
+    public void onChange(int index, Object value) {
         try {
             team_setting_pane.clear();
 
@@ -182,6 +182,10 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
             selected_map = null;
             showPrompt(Language.getText("MSG_ERR_BMF"), null);
         }
+    }
+
+    @Override
+    public void onSelect(int index, Object value) {
     }
 
     private void onStateChange() {
@@ -284,7 +288,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         Array<MapFactory.MapSnapshot> maps = MapFactory.getAllMapSnapshots();
         map_list.setItems(maps);
         if (maps.size > 0) {
-            onSelect(0, map_list.getSelected());
+            onChange(0, map_list.getSelected());
         }
     }
 

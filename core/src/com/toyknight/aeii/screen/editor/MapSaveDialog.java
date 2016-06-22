@@ -66,11 +66,15 @@ public class MapSaveDialog extends BasicDialog {
         return editor;
     }
 
+    private boolean isAuthorEditable(String author) {
+        return author.equals("default") || author.equals("undefined");
+    }
+
     @Override
     public void display() {
         this.tf_filename.setText(getEditor().getFilename());
         this.tf_author.setText(getEditor().getMap().getAuthor());
-        this.tf_author.setTouchable(tf_author.getText().equals("default") ? Touchable.enabled : Touchable.disabled);
+        this.tf_author.setTouchable(isAuthorEditable(tf_author.getText()) ? Touchable.enabled : Touchable.disabled);
     }
 
 }

@@ -321,9 +321,6 @@ public class Wiki extends BasicDialog {
                 Label label_p1 = new Label(Language.getText("WIKI_OVERVIEW_P1"), getContext().getSkin());
                 label_p1.setWrap(true);
                 content_page.add(label_p1).width(ts * 7).padBottom(ts / 8).row();
-                Label label_p2 = new Label(Language.getText("WIKI_OVERVIEW_P2"), getContext().getSkin());
-                label_p2.setWrap(true);
-                content_page.add(label_p2).width(ts * 7).padBottom(ts / 8).row();
                 break;
             case RootNode.ABOUT:
                 label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));

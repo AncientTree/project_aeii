@@ -22,6 +22,8 @@ public class MapEditor {
 
     private final MapEditorListener listener;
 
+    private String username;
+
     private Map map;
     private String filename;
 
@@ -39,9 +41,11 @@ public class MapEditor {
         return listener;
     }
 
-    public void initialize() {
+    public void initialize(String username) {
+        this.username = username;
+
         Map map = createEmptyMap(15, 15);
-        setMap(map, "not defined");
+        setMap(map, "undefined");
         this.brush_type = TYPE_TILE;
         this.selected_tile_index = 0;
         this.selected_unit = UnitFactory.getSample(0);
@@ -136,7 +140,7 @@ public class MapEditor {
 
     public Map createEmptyMap(int width, int height) {
         Map map = new Map(width, height);
-        map.setAuthor("default");
+        map.setAuthor(username);
         return map;
     }
 

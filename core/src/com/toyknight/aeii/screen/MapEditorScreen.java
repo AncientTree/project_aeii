@@ -248,7 +248,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     public void show() {
         super.show();
         MapAnimator.setCanvas(this);
-        getEditor().initialize();
+        getEditor().initialize(getContext().getUsername());
         this.scale = 1.0f;
         locateViewport(0, 0);
     }
