@@ -64,7 +64,7 @@ public class Wiki extends BasicDialog {
 
         content_list = new Tree(getContext().getSkin());
         content_list.setPadding(ts / 4);
-        content_list.setYSpacing(ts / 4);
+        content_list.setYSpacing(ts / 2);
         content_list.getSelection().setMultiple(false);
         content_list.getSelection().setRequired(true);
         content_list.addListener(new ChangeListener() {
