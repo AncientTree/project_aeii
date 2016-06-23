@@ -257,6 +257,10 @@ public class Robot {
                     if (enemy_castle_positions.size > 0) {
                         Position move_position = getManager().getPositionGenerator().getNextPositionToTarget(
                                 selected_unit, enemy_castle_positions.first());
+                        //TODO: Remove this check after path finding is improved
+                        if (!getGame().canUnitMove(selected_unit, move_position.x, move_position.y)) {
+                            move_position = getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                        }
                         submitAction(move_position, move_position, Operation.STANDBY);
                     } else {
                         Position move_position =
@@ -268,6 +272,10 @@ public class Robot {
                     if (enemy_village_positions.size > 0) {
                         Position move_position = getManager().getPositionGenerator().getNextPositionToTarget(
                                 selected_unit, enemy_village_positions.first());
+                        //TODO: Remove this check after path finding is improved
+                        if (!getGame().canUnitMove(selected_unit, move_position.x, move_position.y)) {
+                            move_position = getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                        }
                         submitAction(move_position, move_position, Operation.STANDBY);
                     } else {
                         Position move_position =
@@ -770,15 +778,15 @@ public class Robot {
     }
 
     private ObjectSet<Position> getTombPositionsWithinReach(Unit unit) {
-        ObjectSet<Position> reachable_positions = getManager().getPositionGenerator().createPositionsWithinReach(unit);
         synchronized (Map.ITERATOR_LOCK) {
+            ObjectSet<Position> reachable_positions = getManager().getPositionGenerator().createPositionsWithinReach(unit);
             for (Position position : reachable_positions) {
                 if (!getGame().getMap().isTomb(position)) {
                     reachable_positions.remove(position);
                 }
             }
+            return reachable_positions;
         }
-        return reachable_positions;
     }
 
     private ObjectSet<Unit> getEnemyUnits() {
