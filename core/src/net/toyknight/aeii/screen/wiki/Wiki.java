@@ -193,7 +193,7 @@ public class Wiki extends BasicDialog {
         btn_close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().closeDialog("wiki");
+                getOwner().closeWiki();
             }
         });
         button_pane.add(btn_close).size(ts * 2, ts / 2).padLeft(ts / 2);

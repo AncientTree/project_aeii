@@ -37,7 +37,7 @@ public class OperationExecutor {
         operation_queue.clear();
     }
 
-    public void operate() {
+    public void operate() throws CheatingException {
         if (isOperating()) {
             executeOperation(operation_queue.poll());
         }
@@ -56,7 +56,7 @@ public class OperationExecutor {
         getManager().getGameEventExecutor().submitGameEvent(type, params);
     }
 
-    private void executeOperation(Operation operation) {
+    private void executeOperation(Operation operation) throws CheatingException {
         switch (operation.getType()) {
             case Operation.ACTION_FINISH:
                 int unit_x = operation.getParameter(0);
@@ -184,7 +184,7 @@ public class OperationExecutor {
                         attacker_x, attacker_y,
                         getGame().getRule().getInteger(ATTACK_EXPERIENCE));
             } else {
-                int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender);
+                int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, true);
                 submitGameEvent(GameEvent.ATTACK, attacker_x, attacker_y, target_x, target_y, attack_damage);
                 if (attack_damage < defender.getCurrentHp()) {
                     submitGameEvent(
@@ -192,7 +192,7 @@ public class OperationExecutor {
                             attacker_x, attacker_y,
                             getGame().getRule().getInteger(ATTACK_EXPERIENCE));
                 } else {
-                    submitGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y);
+                    submitGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y, attacker.getTeam());
                     submitGameEvent(
                             GameEvent.GAIN_EXPERIENCE,
                             attacker_x, attacker_y,
@@ -210,7 +210,7 @@ public class OperationExecutor {
         Unit attacker = getGame().getMap().getUnit(attacker_x, attacker_y);
         Unit defender = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canCounter(attacker, defender)) {
-            int counter_damage = getManager().getUnitToolkit().getDamage(defender, attacker);
+            int counter_damage = getManager().getUnitToolkit().getDamage(defender, attacker, true);
             submitGameEvent(GameEvent.ATTACK, target_x, target_y, attacker_x, attacker_y, counter_damage);
             if (counter_damage < attacker.getCurrentHp()) {
                 submitGameEvent(
@@ -218,7 +218,7 @@ public class OperationExecutor {
                         target_x, target_y,
                         getGame().getRule().getInteger(COUNTER_EXPERIENCE));
             } else {
-                submitGameEvent(GameEvent.UNIT_DESTROY, attacker_x, attacker_y);
+                submitGameEvent(GameEvent.UNIT_DESTROY, attacker_x, attacker_y, defender.getTeam());
                 submitGameEvent(
                         GameEvent.GAIN_EXPERIENCE,
                         target_x, target_y,
@@ -275,7 +275,7 @@ public class OperationExecutor {
         }
         submitGameEvent(GameEvent.HP_CHANGE, hp_changes);
         for (Unit unit : destroyed_units) {
-            submitGameEvent(GameEvent.UNIT_DESTROY, unit.getX(), unit.getY());
+            submitGameEvent(GameEvent.UNIT_DESTROY, unit.getX(), unit.getY(), -1);
         }
     }
 
@@ -287,7 +287,7 @@ public class OperationExecutor {
             if (target.getCurrentHp() + heal <= 0) {
                 submitGameEvent(GameEvent.HEAL,
                         healer_x, healer_y, target_x, target_y, UnitToolkit.validateHpChange(target, heal));
-                submitGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y);
+                submitGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y, healer.getTeam());
             } else {
                 submitGameEvent(GameEvent.HEAL, healer_x, healer_y, target_x, target_y, heal);
             }
@@ -421,7 +421,7 @@ public class OperationExecutor {
             }
             submitGameEvent(GameEvent.HP_CHANGE, hp_changes);
             for (Unit destroyed_unit : destroyed_units) {
-                submitGameEvent(GameEvent.UNIT_DESTROY, destroyed_unit.getX(), destroyed_unit.getY());
+                submitGameEvent(GameEvent.UNIT_DESTROY, destroyed_unit.getX(), destroyed_unit.getY(), unit.getTeam());
             }
             int experience = destroyed_units.size * getGame().getRule().getInteger(KILL_EXPERIENCE);
             if (experience > 0) {

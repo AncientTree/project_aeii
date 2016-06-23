@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Player;
+import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import net.toyknight.aeii.entity.Rule;
@@ -264,7 +265,7 @@ public class Room {
         game_started = true;
     }
 
-    public void submitGameEvent(JSONObject event) {
+    public void submitGameEvent(JSONObject event) throws CheatingException {
         synchronized (GAME_LOCK) {
             getManager().getGameEventExecutor().submitGameEvent(event);
             while (!getGame().isGameOver() && getManager().getGameEventExecutor().isProcessing()) {

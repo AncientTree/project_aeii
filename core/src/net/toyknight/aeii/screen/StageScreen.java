@@ -16,6 +16,7 @@ import net.toyknight.aeii.network.NetworkListener;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.dialog.BasicDialog;
+import net.toyknight.aeii.screen.dialog.ConfirmDialog;
 import net.toyknight.aeii.utils.Language;
 import org.json.JSONObject;
 
@@ -37,6 +38,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     private final HashMap<String, BasicDialog> dialogs;
     private final LinkedList<String> dialog_layer;
 
+    private final ConfirmDialog confirm_dialog;
+
     private static Stage prompt_layer;
     private static Dialog prompt_dialog;
     private static Callable prompt_callback;
@@ -56,6 +59,9 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         this.dialogs = new HashMap<String, BasicDialog>();
         this.dialog_layer = new LinkedList<String>();
         this.dialog_shown = false;
+
+        this.confirm_dialog = new ConfirmDialog(this);
+        this.addDialog("confirm", confirm_dialog);
     }
 
     public static void initializePrompt(Skin skin, int ts) {
@@ -81,6 +87,17 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         dialog.setVisible(false);
     }
 
+    public void showConfirmDialog(String message, Callable yes_callback, Callable no_callback) {
+        confirm_dialog.setMessage(message);
+        confirm_dialog.setYesCallback(yes_callback);
+        confirm_dialog.setNoCallable(no_callback);
+        showDialog("confirm");
+    }
+
+    public void closeConfirmDialog() {
+        closeDialog("confirm");
+    }
+
     public void showWiki() {
         if (!dialogs.containsKey("wiki")) {
             addDialog("wiki", getContext().getWiki());
@@ -94,16 +111,19 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public void showDialog(String name) {
-        if (dialog_layer.size() > 0) {
-            dialogs.get(dialog_layer.peekFirst()).setVisible(false);
+        BasicDialog dialog = dialogs.get(name);
+        if (dialog != null && !dialog.isVisible()) {
+            if (dialog_layer.size() > 0) {
+                dialogs.get(dialog_layer.peekFirst()).setVisible(false);
+            }
+
+            dialog_layer.addFirst(name);
+            dialog.display();
+            dialog.setVisible(true);
+
+            Gdx.input.setInputProcessor(dialog_stage);
+            dialog_shown = true;
         }
-
-        dialog_layer.addFirst(name);
-        dialogs.get(name).display();
-        dialogs.get(name).setVisible(true);
-
-        Gdx.input.setInputProcessor(dialog_stage);
-        dialog_shown = true;
     }
 
     public void closeAllDialogs() {

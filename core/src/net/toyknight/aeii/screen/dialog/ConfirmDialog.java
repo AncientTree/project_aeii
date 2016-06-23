@@ -29,6 +29,7 @@ public class ConfirmDialog extends BasicDialog {
 
         label_message = new Label("", getContext().getSkin());
         label_message.setAlignment(Align.center);
+        label_message.setWrap(true);
         add(label_message).size(ts * 6 + ts / 2, ts).row();
 
         Table button_bar = new Table();

@@ -11,6 +11,7 @@ import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
+import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
@@ -481,8 +482,13 @@ public class GameServer {
                 JSONObject event = notification.getJSONObject("game_event");
                 Room room = getRoom(submitter.getRoomNumber());
                 if (!room.isOpen()) {
-                    room.submitGameEvent(event);
                     notifyGameEvent(room, submitter.getID(), event);
+                    try {
+                        room.submitGameEvent(event);
+                    } catch (CheatingException e) {
+                        DisconnectingTask disconnecting_task = new DisconnectingTask(submitter, "/cheating");
+                        executor.submit(disconnecting_task);
+                    }
                 }
             }
         } catch (JSONException ex) {
@@ -497,7 +503,9 @@ public class GameServer {
             if (submitter.isAuthenticated()) {
                 String message = notification.getString("message");
                 Room room = getRoom(submitter.getRoomNumber());
-                notifyMessage(room, submitter.getUsername(), message);
+                if (!message.startsWith("/")) {
+                    notifyMessage(room, submitter.getUsername(), message);
+                }
             }
         } catch (JSONException ex) {
             String message = String.format(
@@ -717,6 +725,31 @@ public class GameServer {
         @Override
         public void run() {
             connection.sendTCP(notification.toString());
+        }
+
+    }
+
+    private class DisconnectingTask implements Runnable {
+
+        private final PlayerService player;
+        private final String message;
+
+        public DisconnectingTask(PlayerService player, String message) {
+            this.player = player;
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            JSONObject notification = createNotification(NetworkConstants.MESSAGE);
+            notification.put("username", "Server");
+            notification.put("message", message);
+            player.getConnection().sendTCP(notification.toString());
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ignored) {
+            }
+            player.getConnection().close();
         }
 
     }

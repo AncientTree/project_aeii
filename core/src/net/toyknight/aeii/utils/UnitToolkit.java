@@ -175,7 +175,7 @@ public class UnitToolkit {
         return attack_bonus;
     }
 
-    public int getDamage(Unit attacker, Unit defender) {
+    public int getDamage(Unit attacker, Unit defender, boolean apply_rng) {
         int attacker_tile_index = getGame().getMap().getTileIndex(attacker.getX(), attacker.getY());
         int defender_tile_index = getGame().getMap().getTileIndex(defender.getX(), defender.getY());
 
@@ -191,7 +191,7 @@ public class UnitToolkit {
         int attacker_hp = attacker.getCurrentHp();
         int attacker_max_hp = attacker.getMaxHp();
         //calculate random damage offset
-        int offset = random.nextInt(5) - 2;
+        int offset = apply_rng ? random.nextInt(5) - 2 : 0;
         //calculate final damage
         damage = damage * attacker_hp / attacker_max_hp;
         damage += offset;

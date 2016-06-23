@@ -21,7 +21,6 @@ import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.network.server.ServerConfiguration;
 import net.toyknight.aeii.renderer.BorderRenderer;
-import net.toyknight.aeii.screen.dialog.ConfirmDialog;
 import net.toyknight.aeii.screen.dialog.MessageDialog;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
@@ -42,7 +41,6 @@ public class MapManagementScreen extends StageScreen {
 
     private final MessageDialog message_dialog;
     private final MiniMapDialog map_preview_dialog;
-    private final ConfirmDialog confirm_dialog;
 
     private final StringList<Object> server_map_list;
     private final ScrollPane sp_server_map_list;
@@ -171,9 +169,6 @@ public class MapManagementScreen extends StageScreen {
             }
         });
         addDialog("preview", map_preview_dialog);
-
-        confirm_dialog = new ConfirmDialog(this);
-        addDialog("confirm", confirm_dialog);
     }
 
     private void back() {
@@ -354,22 +349,7 @@ public class MapManagementScreen extends StageScreen {
 
     private void delete() {
         if (local_map_list.getSelected() != null) {
-            confirm_dialog.setMessage(Language.getText("MSG_INFO_DSM"));
-            confirm_dialog.setYesCallback(new Callable() {
-                @Override
-                public void call() {
-                    closeDialog("confirm");
-                    deleteSelectedMap();
-                    refreshLocalMaps();
-                }
-            });
-            confirm_dialog.setNoCallable(new Callable() {
-                @Override
-                public void call() {
-                    closeDialog("confirm");
-                }
-            });
-            showDialog("confirm");
+            showConfirmDialog(Language.getText("MSG_INFO_DSM"), delete_map_yes_callback, delete_map_no_callback);
         }
     }
 
@@ -458,5 +438,21 @@ public class MapManagementScreen extends StageScreen {
         GameContext.setButtonEnabled(btn_preview_server, enabled);
         GameContext.setButtonEnabled(btn_refresh, enabled);
     }
+
+    private final Callable delete_map_yes_callback = new Callable() {
+        @Override
+        public void call() {
+            closeConfirmDialog();
+            deleteSelectedMap();
+            refreshLocalMaps();
+        }
+    };
+
+    private final Callable delete_map_no_callback = new Callable() {
+        @Override
+        public void call() {
+            closeConfirmDialog();
+        }
+    };
 
 }

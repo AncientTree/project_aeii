@@ -12,6 +12,7 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.animation.*;
 import net.toyknight.aeii.entity.*;
+import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.NetworkManager;
@@ -67,6 +68,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     private MiniMapDialog mini_map;
     private MessageBox message_box;
     private GameMenu menu;
+
+    private boolean allow_cheating;
 
     public GameScreen(GameContext context) {
         super(context);
@@ -355,7 +358,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onReceiveMessage(String username, String message) {
-        appendMessage(username, message);
+        if (message.startsWith("/")) {
+            if (message.equals("/cheating")) {
+                appendMessage(username, Language.getText("MSG_INFO_CDCN"));
+            }
+        } else {
+            appendMessage(username, message);
+        }
     }
 
     @Override
@@ -369,13 +378,22 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         updateViewport();
         super.act(delta);
 
-        getContext().getGameManager().update(delta);
         getContext().getRecordPlayer().update(delta);
+        try {
+            getContext().getGameManager().update(delta);
+        } catch (CheatingException ex) {
+            if (!allow_cheating) {
+                int team = ex.getTeam();
+                String message = String.format(Language.getText("MSG_INFO_CD"), Language.getText("LB_TEAM_" + team));
+                showConfirmDialog(message, cheating_confirm_yes_callback, cheating_confirm_no_callback);
+            }
+        }
     }
 
     @Override
     public void show() {
         super.show();
+        allow_cheating = false;
         MapAnimator.setCanvas(this);
 
         scale = 1.0f;
@@ -916,5 +934,21 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             viewport.y = (map_height - viewport.height) / 2;
         }
     }
+
+    private final Callable cheating_confirm_yes_callback = new Callable() {
+        @Override
+        public void call() {
+            closeConfirmDialog();
+            getContext().gotoStatisticsScreen(getGame());
+        }
+    };
+
+    private final Callable cheating_confirm_no_callback = new Callable() {
+        @Override
+        public void call() {
+            closeConfirmDialog();
+            allow_cheating = true;
+        }
+    };
 
 }

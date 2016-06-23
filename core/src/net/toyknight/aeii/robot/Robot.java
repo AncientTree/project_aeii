@@ -329,7 +329,7 @@ public class Robot {
         Unit target = null;
         int min_remaining_hp = Integer.MAX_VALUE;
         for (Unit enemy : enemies) {
-            int damage = getManager().getUnitToolkit().getDamage(unit, enemy);
+            int damage = getManager().getUnitToolkit().getDamage(unit, enemy, false);
             int remaining_hp = enemy.getCurrentHp() - damage;
             if (enemy.getCurrentHp() - damage <= 0) {
                 return enemy;

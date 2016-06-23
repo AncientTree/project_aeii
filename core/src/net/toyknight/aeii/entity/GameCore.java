@@ -461,7 +461,9 @@ public class GameCore implements Serializable {
     }
 
     public boolean canSummon(Unit summoner, int x, int y) {
-        return UnitToolkit.isWithinRange(summoner, x, y) && getMap().isTomb(x, y) && getMap().getUnit(x, y) == null;
+        return summoner.hasAbility(Ability.NECROMANCER)
+                && UnitToolkit.isWithinRange(summoner, x, y)
+                && getMap().isTomb(x, y) && getMap().getUnit(x, y) == null;
     }
 
     public boolean canHeal(Unit healer, int x, int y) {
@@ -477,13 +479,13 @@ public class GameCore implements Serializable {
         if (healer == null || target == null) {
             return false;
         } else {
-            if (canHealReachTarget(healer, target)) {
+            if (healer.hasAbility(Ability.HEALER) && canHealReachTarget(healer, target)) {
                 if (canReceiveHeal(target)) {
                     return !isEnemy(healer, target)
                             && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target));
                 } else {
                     //heal becomes damage for the undead
-                    return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
+                    return target.hasAbility(Ability.UNDEAD);
                 }
             } else {
                 return false;

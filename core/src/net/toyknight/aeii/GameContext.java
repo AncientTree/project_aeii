@@ -117,6 +117,7 @@ public class GameContext extends Game implements GameManagerListener {
                 skin.get(List.ListStyle.class).font = ResourceManager.getTextFont();
 
                 game_manager = new GameManager(this, new AnimationManager());
+                game_manager.getGameEventExecutor().setCheckEventValue(true);
                 game_manager.setListener(this);
 
                 room_manager = new RoomManager();

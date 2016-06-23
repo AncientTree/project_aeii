@@ -207,7 +207,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    public void update(float delta) {
+    public void update(float delta) throws CheatingException {
         if (getAnimationDispatcher().isAnimating()) {
             getAnimationDispatcher().updateAnimation(delta);
         } else {
