@@ -226,8 +226,8 @@ public class GameEventExecutor {
         getGame().nextTurn();
         for (Unit unit : getGame().getMap().getUnits()) {
             if (unit.getTeam() == getGame().getCurrentTeam()) {
-                getGame().resetUnit(unit);
                 unit.updateStatus();
+                getGame().resetUnit(unit);
             }
         }
         int team = getGame().getCurrentTeam();
