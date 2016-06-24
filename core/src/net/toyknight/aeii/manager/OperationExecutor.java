@@ -38,8 +38,9 @@ public class OperationExecutor {
     }
 
     public void operate() throws CheatingException {
-        if (isOperating()) {
-            executeOperation(operation_queue.poll());
+        Operation operation;
+        if ((operation = operation_queue.poll()) != null) {
+            executeOperation(operation);
         }
     }
 

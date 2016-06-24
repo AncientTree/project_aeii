@@ -286,6 +286,10 @@ public class Robot {
                     if (enemy_commanders.size > 0) {
                         Position move_position = getManager().getPositionGenerator().getNextPositionToTarget(
                                 selected_unit, getGame().getMap().getPosition(enemy_commanders.first()));
+                        //TODO: Remove this check after path finding is improved
+                        if (!getGame().canUnitMove(selected_unit, move_position.x, move_position.y)) {
+                            move_position = getPreferredStandbyPosition(selected_unit, getManager().getMovablePositions());
+                        }
                         submitAction(move_position, move_position, Operation.STANDBY);
                     } else {
                         ObjectSet<Unit> all_enemies = getEnemyUnits();
@@ -385,12 +389,16 @@ public class Robot {
         if (healer == null || target == null) {
             return false;
         } else {
-            if (getGame().canReceiveHeal(target)) {
-                return !getGame().isEnemy(healer, target)
-                        && getGame().canHealReachTarget(healer, target);
+            if (healer.hasAbility(Ability.HEALER) && getGame().canHealReachTarget(healer, target)) {
+                if (getGame().canReceiveHeal(target)) {
+                    return !getGame().isEnemy(healer, target)
+                            && (UnitToolkit.isWithinRange(healer, target) || UnitToolkit.isTheSameUnit(healer, target));
+                } else {
+                    //heal becomes damage for the undead
+                    return target.hasAbility(Ability.UNDEAD);
+                }
             } else {
-                //heal becomes damage for the undead
-                return healer.hasAbility(Ability.HEALER) && target.hasAbility(Ability.UNDEAD);
+                return false;
             }
         }
     }
