@@ -86,7 +86,6 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "rhino:js:$rhinoVersion"
         compile "com.esotericsoftware:kryonet:$kryonetVersion"
         compile "org.json:json:$jsonVersion"
     }

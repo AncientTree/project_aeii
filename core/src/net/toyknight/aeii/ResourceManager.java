@@ -59,6 +59,7 @@ public class ResourceManager {
     private static Texture texture_dust;
     private static Texture texture_spark_attack;
     private static Texture texture_spark_white;
+    private static TextureRegion[] texture_portraits;
 
     private static Texture texture_main_menu_background;
 
@@ -130,6 +131,7 @@ public class ResourceManager {
         asset_manager.load("images/spark_attack.png", Texture.class);
         asset_manager.load("images/spark_white.png", Texture.class);
         asset_manager.load("images/main_menu_background.png", Texture.class);
+        asset_manager.load("images/portraits.png", Texture.class);
 
         FileHandleResolver file_resolver = new InternalFileHandleResolver();
 
@@ -231,6 +233,8 @@ public class ResourceManager {
         texture_dust = asset_manager.get("images/dust.png", Texture.class);
         texture_spark_attack = asset_manager.get("images/spark_attack.png", Texture.class);
         texture_spark_white = asset_manager.get("images/spark_white.png", Texture.class);
+        Texture sheet_portraits = asset_manager.get("images/portraits.png", Texture.class);
+        texture_portraits = createFrames(sheet_portraits, 6, 1);
         texture_main_menu_background = asset_manager.get("images/main_menu_background.png", Texture.class);
 
         bg_list_selected = new Texture(createColoredPixmap(Color.GRAY));
@@ -350,6 +354,10 @@ public class ResourceManager {
 
     public static Texture getWhiteSparkTexture() {
         return texture_spark_white;
+    }
+
+    public static TextureRegion getPortraitTexture(int index) {
+        return texture_portraits[index];
     }
 
     public static Texture getMainMenuBackgroundTexture() {

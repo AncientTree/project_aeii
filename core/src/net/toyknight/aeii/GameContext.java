@@ -22,7 +22,6 @@ import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.*;
 import net.toyknight.aeii.screen.wiki.Wiki;
-import net.toyknight.aeii.script.JavaScriptEngine;
 import net.toyknight.aeii.entity.GameSave;
 import net.toyknight.aeii.utils.*;
 
@@ -45,8 +44,6 @@ public class GameContext extends Game implements GameManagerListener {
     private boolean initialized = false;
 
     private ExecutorService executor;
-
-    private JavaScriptEngine script_engine;
 
     private Skin skin;
 
@@ -136,8 +133,6 @@ public class GameContext extends Game implements GameManagerListener {
                 record_player = new GameRecordPlayer(this);
                 record_player.setListener(game_screen);
 
-                script_engine = new JavaScriptEngine();
-
                 initialized = true;
             } catch (AEIIException ex) {
                 Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
@@ -201,10 +196,6 @@ public class GameContext extends Game implements GameManagerListener {
 
     public ObjectMap<String, String> getConfiguration() {
         return configuration;
-    }
-
-    public JavaScriptEngine getScriptEngine() {
-        return script_engine;
     }
 
     public String getUsername() {
