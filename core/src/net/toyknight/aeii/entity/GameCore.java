@@ -388,15 +388,11 @@ public class GameCore implements Serializable {
             return 0;
         }
         int count = 0;
-        for (int ar = -range; ar <= range; ar++) {
-            for (int dx = -ar; dx <= ar; dx++) {
-                int dy = dx >= 0 ? ar - dx : -ar - dx;
-                Unit target = getMap().getUnit(map_x + dx, map_y + dy);
-                if (target != null) {
-                    if (isEnemy(team, target.getTeam())) {
-                        count++;
-                    }
-                    if (dy != 0 && isEnemy(team, target.getTeam())) {
+        for (int dx = -range; dx <= range; dx++) {
+            for (int dy = -range; dy <= range; dy++) {
+                if (Math.abs(dx) + Math.abs(dy) <= range) {
+                    Unit unit = getMap().getUnit(map_x + dx, map_y + dy);
+                    if (unit != null && isEnemy(team, unit.getTeam())) {
                         count++;
                     }
                 }
