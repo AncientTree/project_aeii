@@ -63,6 +63,10 @@ public class EmptyAnimationManager implements AnimationDispatcher {
     }
 
     @Override
+    public void submitReinforceAnimation(Array<Unit> reinforcements) {
+    }
+
+    @Override
     public void submitAnimation(Animator animation) {
     }
 

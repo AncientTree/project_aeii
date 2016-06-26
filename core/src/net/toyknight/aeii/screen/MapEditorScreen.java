@@ -376,7 +376,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     }
 
     @Override
-    public void focus(int map_x, int map_y) {
+    public void focus(int map_x, int map_y, boolean focus_viewport) {
     }
 
     public void dragViewport(int delta_x, int delta_y) {

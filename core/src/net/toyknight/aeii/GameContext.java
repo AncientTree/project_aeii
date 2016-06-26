@@ -11,7 +11,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import net.toyknight.aeii.animation.AnimationManager;
 import net.toyknight.aeii.animation.Animator;
-import net.toyknight.aeii.entity.GameCore;
+import net.toyknight.aeii.campaign.CampaignContext;
+import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.GameManagerListener;
@@ -22,7 +23,6 @@ import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.*;
 import net.toyknight.aeii.screen.wiki.Wiki;
-import net.toyknight.aeii.entity.GameSave;
 import net.toyknight.aeii.utils.*;
 
 import java.io.IOException;
@@ -55,6 +55,8 @@ public class GameContext extends Game implements GameManagerListener {
 
     private GameRecordPlayer record_player;
 
+    private CampaignContext campaign_context;
+
     private RoomManager room_manager;
 
     private Screen previous_screen;
@@ -69,6 +71,7 @@ public class GameContext extends Game implements GameManagerListener {
     private GameScreen game_screen;
     private StatisticsScreen statistics_screen;
     private MapManagementScreen map_management_screen;
+    private CampaignScreen campaign_screen;
 
     public GameContext(Platform platform, int ts) {
         this.TILE_SIZE = ts;
@@ -128,10 +131,13 @@ public class GameContext extends Game implements GameManagerListener {
                 game_screen = new GameScreen(this);
                 statistics_screen = new StatisticsScreen(this);
                 map_management_screen = new MapManagementScreen(this);
+                campaign_screen = new CampaignScreen(this);
                 wiki = new Wiki(main_menu_screen);
 
                 record_player = new GameRecordPlayer(this);
                 record_player.setListener(game_screen);
+
+                campaign_context = new CampaignContext(this);
 
                 initialized = true;
             } catch (AEIIException ex) {
@@ -210,6 +216,16 @@ public class GameContext extends Game implements GameManagerListener {
         return Float.parseFloat(configuration.get("music_volume", "0.5"));
     }
 
+    public int getCampaignProgress(String campaign_code) {
+        if (getConfiguration().containsKey(campaign_code)) {
+            return Integer.parseInt(getConfiguration().get(campaign_code));
+        } else {
+            updateConfiguration(campaign_code, Integer.toString(0));
+            saveConfiguration();
+            return 0;
+        }
+    }
+
     public String getVersion() {
         return VERSION;
     }
@@ -229,6 +245,10 @@ public class GameContext extends Game implements GameManagerListener {
 
     public GameRecordPlayer getRecordPlayer() {
         return record_player;
+    }
+
+    public CampaignContext getCampaignContext() {
+        return campaign_context;
     }
 
     public RoomManager getRoomManager() {
@@ -258,6 +278,20 @@ public class GameContext extends Game implements GameManagerListener {
         }
         getGameManager().setGame(game);
         gotoScreen(game_screen);
+    }
+
+    public void gotoGameScreen(String campaign_code, int stage) {
+        try {
+            getCampaignContext().setCurrentCampaign(campaign_code);
+            getCampaignContext().setCurrentStage(stage);
+            GameCore game = GameToolkit.createCampaignGame(getCampaignContext().getCurrentCampaign().getCurrentStage());
+            gotoGameScreen(game);
+            getCampaignContext().onGameStart();
+        } catch (AEIIException ex) {
+            if (getScreen() instanceof StageScreen) {
+                ((StageScreen) getScreen()).showPrompt(Language.getText("MSG_ERR_BMF"), null);
+            }
+        }
     }
 
     public void gotoGameScreen(GameSave save) {
@@ -297,6 +331,10 @@ public class GameContext extends Game implements GameManagerListener {
         gotoScreen(map_management_screen);
     }
 
+    public void gotoCampaignScreen() {
+        gotoScreen(campaign_screen);
+    }
+
     public void gotoPreviousScreen() {
         this.gotoScreen(previous_screen);
     }
@@ -311,8 +349,8 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     @Override
-    public void onMapFocusRequired(int map_x, int map_y) {
-        game_screen.focus(map_x, map_y);
+    public void onMapFocusRequired(int map_x, int map_y, boolean focus_viewport) {
+        game_screen.focus(map_x, map_y, focus_viewport);
     }
 
     @Override
@@ -321,8 +359,35 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     @Override
+    public void onCampaignMessageSubmitted() {
+        game_screen.showCampaignMessage();
+    }
+
+    @Override
     public void onGameOver() {
-        gotoStatisticsScreen(getGame());
+        if (getGame().getType() == GameCore.CAMPAIGN) {
+            if (getCampaignContext().getCurrentCampaign().getCurrentStage().isCleared()) {
+                boolean has_next_stage = getCampaignContext().getCurrentCampaign().nextStage();
+                if (has_next_stage) {
+                    String campaign_code = getCampaignContext().getCurrentCampaign().getCode();
+                    int stage_number = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+
+                    if (stage_number > getCampaignProgress(campaign_code)) {
+                        updateConfiguration(campaign_code, Integer.toString(stage_number));
+                        saveConfiguration();
+                    }
+                    gotoGameScreen(campaign_code, stage_number);
+                } else {
+                    gotoCampaignScreen();
+                }
+            } else {
+                gotoCampaignScreen();
+            }
+            AudioManager.loopMainTheme();
+        }
+        if (getGame().getType() == GameCore.SKIRMISH) {
+            gotoStatisticsScreen(getGame());
+        }
     }
 
     @Override

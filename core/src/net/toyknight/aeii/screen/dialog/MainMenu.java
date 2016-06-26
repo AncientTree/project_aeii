@@ -53,7 +53,7 @@ public class MainMenu extends BasicDialog {
         this.btn_campaign.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().showPrompt(Language.getText("MSG_INFO_NSY"), null);
+                getContext().gotoCampaignScreen();
             }
         });
         this.add(btn_campaign).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();

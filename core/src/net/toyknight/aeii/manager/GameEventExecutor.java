@@ -5,6 +5,7 @@ import static net.toyknight.aeii.entity.Rule.Entry.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.UnitFactory;
@@ -92,7 +93,8 @@ public class GameEventExecutor {
                 int target_x = event.getJSONArray("parameters").getInt(2);
                 int target_y = event.getJSONArray("parameters").getInt(3);
                 int attack_damage = event.getJSONArray("parameters").getInt(4);
-                onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage);
+                boolean counter = event.getJSONArray("parameters").getBoolean(5);
+                onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage, counter);
                 break;
             case GameEvent.BUY:
                 int index = event.getJSONArray("parameters").getInt(0);
@@ -177,15 +179,23 @@ public class GameEventExecutor {
                 int experience = event.getJSONArray("parameters").getInt(2);
                 onUnitGainExperience(target_x, target_y, experience);
                 break;
+            case GameEvent.REINFORCE:
+                team = event.getJSONArray("parameters").getInt(0);
+                JSONArray indexes = event.getJSONArray("parameters").getJSONArray(1);
+                JSONArray positions = event.getJSONArray("parameters").getJSONArray(2);
+                onReinforce(team, indexes, positions);
+            case GameEvent.CAMPAIGN_MESSAGE:
+                JSONArray messages = event.getJSONArray("parameters").getJSONArray(0);
+                onCampaignMessage(messages);
             default:
                 //do nothing
         }
     }
 
-    private void onAttack(int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage)
+    private void onAttack(int attacker_x, int attacker_y, int target_x, int target_y, int attack_damage, boolean counter)
             throws CheatingException {
         if (canAttack(attacker_x, attacker_y, target_x, target_y, attack_damage)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit attacker = getGame().getMap().getUnit(attacker_x, attacker_y);
             Unit defender = getGame().getMap().getUnit(target_x, target_y);
@@ -197,6 +207,9 @@ public class GameEventExecutor {
                     UnitToolkit.attachAttackStatus(attacker, defender);
                     getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, attack_damage);
                 }
+            }
+            if (!counter) {
+                getGameManager().getContext().getCampaignContext().onUnitAttacked(attacker, defender);
             }
         } else {
             throw new CheatingException("attacking check failed!", getGame().getCurrentTeam());
@@ -221,7 +234,7 @@ public class GameEventExecutor {
 
     private void onBuy(int index, int team, int target_x, int target_y) throws CheatingException {
         if (canBuy(index, team)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
             int price = getGame().getUnitPrice(index, team);
             getGame().getCurrentPlayer().changeGold(-price);
 
@@ -259,7 +272,7 @@ public class GameEventExecutor {
 
     private void onHeal(int healer_x, int healer_y, int target_x, int target_y, int heal) throws CheatingException {
         if (canHeal(healer_x, healer_y, target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit target = getGame().getMap().getUnit(target_x, target_y);
             target.changeCurrentHp(heal);
@@ -277,7 +290,7 @@ public class GameEventExecutor {
     private void onMove(int unit_x, int unit_y, int target_x, int target_y, int movement_point, JSONArray move_path)
             throws JSONException, CheatingException {
         if (canMove(unit_x, unit_y, target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Array<Position> path = new Array<Position>();
             for (int i = 0; i < move_path.length(); i++) {
@@ -290,6 +303,8 @@ public class GameEventExecutor {
             getGame().moveUnit(unit_x, unit_y, target_x, target_y);
             unit.setCurrentMovementPoint(movement_point);
             getAnimationDispatcher().submitUnitMoveAnimation(unit, path);
+
+            getGameManager().getContext().getCampaignContext().onUnitMoved(unit, target_x, target_y);
         } else {
             throw new CheatingException("moving check failed!", getGame().getCurrentTeam());
         }
@@ -309,13 +324,15 @@ public class GameEventExecutor {
 
     private void onOccupy(int target_x, int target_y, int team) throws CheatingException {
         if (canOccupy(target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
 
             onCheckTeamDestroy(target_tile.getTeam());
+
+            getGameManager().getContext().getCampaignContext().onTileOccupied(target_x, target_y, team);
         } else {
             throw new CheatingException("occupying check failed!", getGame().getCurrentTeam());
         }
@@ -328,11 +345,13 @@ public class GameEventExecutor {
 
     private void onRepair(int target_x, int target_y) throws CheatingException {
         if (canRepair(target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_REPAIRED"), 0.5f);
+
+            getGameManager().getContext().getCampaignContext().onTileRepaired(target_x, target_y);
         } else {
             throw new CheatingException("repairing check failed!", getGame().getCurrentTeam());
         }
@@ -345,7 +364,7 @@ public class GameEventExecutor {
 
     private void onReverse(int unit_x, int unit_y, int origin_x, int origin_y) throws CheatingException {
         if (canReverse(unit_x, unit_y, origin_x, origin_y)) {
-            getGameManager().fireMapFocusEvent(origin_x, origin_y);
+            getGameManager().fireMapFocusEvent(origin_x, origin_y, false);
 
             Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
             getGame().getMap().moveUnit(unit, origin_x, origin_y);
@@ -362,7 +381,7 @@ public class GameEventExecutor {
 
     private void onSelect(int target_x, int target_y) throws CheatingException {
         if (canSelect(target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGameManager().setSelectedUnit(unit);
@@ -378,7 +397,7 @@ public class GameEventExecutor {
 
     private void onStandby(int target_x, int target_y) throws CheatingException {
         if (canStandby(target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             getGame().standbyUnit(target_x, target_y);
@@ -422,7 +441,7 @@ public class GameEventExecutor {
 
     private void onSummon(int summoner_x, int summoner_y, int target_x, int target_y) throws CheatingException {
         if (canSummon(summoner_x, summoner_y, target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit summoner = getGame().getMap().getUnit(summoner_x, summoner_y);
             getGame().getMap().removeTomb(target_x, target_y);
@@ -440,7 +459,7 @@ public class GameEventExecutor {
 
     private void onTileDestroy(int target_x, int target_y) throws CheatingException {
         if (canDestroyTile(target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Tile tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(tile.getDestroyedTileIndex(), target_x, target_y);
@@ -457,7 +476,7 @@ public class GameEventExecutor {
 
     private void onUnitDestroy(int target_x, int target_y, int destroyer_team) throws CheatingException {
         if (canDestroyUnit(target_x, target_y)) {
-            getGameManager().fireMapFocusEvent(target_x, target_y);
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit unit = getGame().getMap().getUnit(target_x, target_y);
             if (destroyer_team >= 0) {
@@ -468,6 +487,8 @@ public class GameEventExecutor {
             getAnimationDispatcher().submitDustAriseAnimation(unit.getX(), unit.getY());
 
             onCheckTeamDestroy(unit.getTeam());
+
+            getGameManager().getContext().getCampaignContext().onUnitDestroyed(unit);
         } else {
             throw new CheatingException("unit destroying check failed", getGame().getCurrentTeam());
         }
@@ -487,6 +508,34 @@ public class GameEventExecutor {
         } else {
             throw new CheatingException("gaining experience check failed", getGame().getCurrentTeam());
         }
+    }
+
+    private void onReinforce(int team, JSONArray indexes, JSONArray positions) throws JSONException {
+        Array<Unit> reinforcements = new Array<Unit>();
+        for (int i = 0; i < indexes.length(); i++) {
+            int index = indexes.getInt(i);
+            JSONObject position = positions.getJSONObject(i);
+            int map_x = position.getInt("x");
+            int map_y = position.getInt("y");
+            if (getGame().getMap().getUnit(map_x, map_y) == null) {
+                getGame().createUnit(index, team, map_x, map_y);
+                reinforcements.add(getGame().getMap().getUnit(map_x, map_y));
+            }
+        }
+        if (reinforcements.size > 0) {
+            Unit first_unit = reinforcements.first();
+            getGameManager().fireMapFocusEvent(first_unit.getX(), first_unit.getY(), true);
+            getAnimationDispatcher().submitReinforceAnimation(reinforcements);
+        }
+    }
+
+    private void onCampaignMessage(JSONArray messages) throws JSONException {
+        for (int i = 0; i < messages.length(); i++) {
+            JSONObject json = messages.getJSONObject(i);
+            Message message = new Message(json.getInt("portrait"), json.getString("message"));
+            getGameManager().submitCampaignMessage(message);
+        }
+        getGameManager().fireCampaignMessageSubmitEvent();
     }
 
     private void onHpChange(JSONArray changes) throws JSONException {
@@ -510,12 +559,14 @@ public class GameEventExecutor {
     }
 
     private void onCheckTeamDestroy(int team) {
-        Analyzer analyzer = new Analyzer(getGame());
-        if (team >= 0 && analyzer.isTeamDestroyed(team)) {
-            getGame().destroyTeam(team);
-            int winner_alliance = analyzer.getWinnerAlliance();
-            if (winner_alliance >= 0) {
-                getGame().setGameOver(true);
+        if (getGame().getType() == GameCore.SKIRMISH) {
+            Analyzer analyzer = new Analyzer(getGame());
+            if (team >= 0 && analyzer.isTeamDestroyed(team)) {
+                getGame().destroyTeam(team);
+                int winner_alliance = analyzer.getWinnerAlliance();
+                if (winner_alliance >= 0) {
+                    getGame().setGameOver(true);
+                }
             }
         }
     }

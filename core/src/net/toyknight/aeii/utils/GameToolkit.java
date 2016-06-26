@@ -6,9 +6,9 @@ import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import net.toyknight.aeii.AEIIException;
-import net.toyknight.aeii.entity.GameCore;
+import net.toyknight.aeii.campaign.StageController;
+import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.record.GameRecord;
-import net.toyknight.aeii.entity.GameSave;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +30,25 @@ public class GameToolkit {
     private static final DateFormat date_format = new SimpleDateFormat("MMddyyyy-HHmmss", Locale.getDefault());
 
     private GameToolkit() {
+    }
+
+    public static GameCore createCampaignGame(StageController stage) throws AEIIException {
+        FileHandle map_file = FileProvider.getAssetsFile("map/campaign/" + stage.getMapName());
+        Map map = MapFactory.createMap(map_file);
+        Rule rule = stage.getRule();
+
+        GameCore game = new GameCore(map, rule, stage.getStartGold(), GameCore.CAMPAIGN);
+        for (int team = 0; team < 4; team++) {
+            if (game.getMap().hasTeamAccess(team)) {
+                game.getPlayer(team).setAlliance(team);
+                if (team == stage.getPlayerTeam()) {
+                    game.getPlayer(team).setType(Player.LOCAL);
+                } else {
+                    game.getPlayer(team).setType(Player.ROBOT);
+                }
+            }
+        }
+        return game;
     }
 
     public static void save(GameCore game) throws AEIIException {

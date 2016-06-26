@@ -92,6 +92,11 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
+    public void submitReinforceAnimation(Array<Unit> reinforcements) {
+        submitAnimation(new ReinforceAnimator(reinforcements));
+    }
+
+    @Override
     public void submitAnimation(Animator animation) {
         if (current_animation == null) {
             current_animation = animation;

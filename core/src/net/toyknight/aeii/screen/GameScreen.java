@@ -163,6 +163,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         });
         this.addDialog("map", mini_map);
 
+        CampaignMessageDialog campaign_message = new CampaignMessageDialog(this, viewport.width);
+        this.addDialog("campaign_message", campaign_message);
+
         ObjectiveDialog objective_dialog = new ObjectiveDialog(this);
         objective_dialog.setOkCallable(new Callable() {
             @Override
@@ -292,6 +295,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         if (animator != null) {
             animator.render(batch);
         }
+    }
+
+    public void showCampaignMessage() {
+        showDialog("campaign_message");
     }
 
     @Override
@@ -782,10 +789,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     @Override
-    public void focus(int map_x, int map_y) {
+    public void focus(int map_x, int map_y, boolean focus_viewport) {
         cursor_map_x = map_x;
         cursor_map_y = map_y;
-        //locateViewport(map_x, map_y);
+        if (focus_viewport) {
+            locateViewport(map_x, map_y);
+        }
     }
 
     @Override

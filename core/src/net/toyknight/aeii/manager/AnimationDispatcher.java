@@ -36,6 +36,8 @@ public interface AnimationDispatcher {
 
     void submitUnitMoveAnimation(Unit unit, Array<Position> path);
 
+    void submitReinforceAnimation(Array<Unit> reinforcements);
+
     void submitAnimation(Animator animation);
 
     void reset();

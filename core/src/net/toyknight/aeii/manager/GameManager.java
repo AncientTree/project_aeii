@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.animation.Animator;
+import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.server.EmptyAnimationManager;
@@ -13,6 +14,8 @@ import net.toyknight.aeii.robot.Robot;
 import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONObject;
+
+import java.util.LinkedList;
 
 /**
  * @author toyknight  5/28/2015.
@@ -51,6 +54,8 @@ public class GameManager implements GameEventListener, AnimationListener {
     private final ObjectSet<Position> movable_positions;
     private final ObjectSet<Position> attackable_positions;
 
+    private final LinkedList<Message> campaign_messages;
+
     public GameManager() {
         this(null, new EmptyAnimationManager());
     }
@@ -69,6 +74,8 @@ public class GameManager implements GameEventListener, AnimationListener {
         this.move_path = new Array<Position>();
         this.movable_positions = new ObjectSet<Position>();
         this.attackable_positions = new ObjectSet<Position>();
+
+        this.campaign_messages = new LinkedList<Message>();
     }
 
     public void setGame(GameCore game) {
@@ -189,37 +196,65 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    private void fireGameOverEvent() {
+    public void fireGameOverEvent() {
         if (getListener() != null) {
             getListener().onGameOver();
         }
     }
 
-    private void fireStateChangeEvent() {
+    public void fireStateChangeEvent() {
         if (getListener() != null) {
             getListener().onGameManagerStateChanged();
         }
     }
 
-    public void fireMapFocusEvent(int map_x, int map_y) {
+    public void fireMapFocusEvent(int map_x, int map_y, boolean focus_viewport) {
         if (getListener() != null) {
-            getListener().onMapFocusRequired(map_x, map_y);
+            getListener().onMapFocusRequired(map_x, map_y, focus_viewport);
         }
     }
 
+    public void fireCampaignMessageSubmitEvent() {
+        if (getListener() != null) {
+            getListener().onCampaignMessageSubmitted();
+        }
+    }
+
+    public void submitCampaignMessage(Message message) {
+        campaign_messages.addLast(message);
+    }
+
+    public boolean nextCampaignMessage() {
+        campaign_messages.pollFirst();
+        return campaign_messages.size() > 0;
+    }
+
+    public Message getCurrentCampaignMessage() {
+        return campaign_messages.peekFirst();
+    }
+
     public void update(float delta) throws CheatingException {
-        if (getAnimationDispatcher().isAnimating()) {
-            getAnimationDispatcher().updateAnimation(delta);
-        } else {
-            if (getGameEventExecutor().isProcessing()) {
-                getGameEventExecutor().dispatchGameEvents();
+        if (campaign_messages.isEmpty()) {
+            if (getAnimationDispatcher().isAnimating()) {
+                getAnimationDispatcher().updateAnimation(delta);
             } else {
-                getOperationExecutor().operate();
+                if (getGameEventExecutor().isProcessing()) {
+                    getGameEventExecutor().dispatchGameEvents();
+                } else {
+                    getOperationExecutor().operate();
+                }
             }
         }
-        if (!isAnimating() && !isProcessing() && getGame().getCurrentPlayer().getType() == Player.ROBOT) {
+        if (canRobotCalculate()) {
             getRobot().calculate();
         }
+    }
+
+    private boolean canRobotCalculate() {
+        return !isAnimating() &&
+                !isProcessing() &&
+                campaign_messages.isEmpty() &&
+                getGame().getCurrentPlayer().getType() == Player.ROBOT;
     }
 
     public void setSelectedUnit(Unit unit) {
@@ -377,6 +412,7 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public void doEndTurn() {
         getOperationExecutor().submitOperation(Operation.NEXT_TURN);
+        getOperationExecutor().submitOperation(Operation.TURN_STARTED);
     }
 
     public void createMovablePositions() {

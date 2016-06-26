@@ -194,7 +194,6 @@ public class UnitToolkit {
         int offset = apply_rng ? random.nextInt(5) - 2 : 0;
         //calculate final damage
         damage = damage * attacker_hp / attacker_max_hp;
-        damage += offset;
         damage = damage > 0 ? damage : 0;
         //final damage percentage calculation
         float percentage_modifier = 1.0f;
@@ -205,6 +204,7 @@ public class UnitToolkit {
         }
         percentage_modifier = percentage_modifier >= 0f ? percentage_modifier : 0f;
         damage = (int) (damage * percentage_modifier);
+        damage += offset;
         //validate damage
         damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
         return damage;

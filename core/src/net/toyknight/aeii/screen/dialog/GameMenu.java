@@ -84,7 +84,11 @@ public class GameMenu extends BasicDialog {
         this.btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getContext().gotoStatisticsScreen(getOwner().getGame());
+                if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
+                    getContext().gotoMainMenuScreen(true);
+                } else {
+                    getContext().gotoStatisticsScreen(getOwner().getGame());
+                }
             }
         });
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -136,7 +140,8 @@ public class GameMenu extends BasicDialog {
     }
 
     private boolean canSave() {
-        return getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
+        return getContext().getGame().getType() == GameCore.SKIRMISH
+                && getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
     }
 

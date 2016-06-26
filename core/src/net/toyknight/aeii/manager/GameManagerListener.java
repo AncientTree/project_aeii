@@ -5,9 +5,11 @@ package net.toyknight.aeii.manager;
  */
 public interface GameManagerListener {
 
-    void onMapFocusRequired(int map_x, int map_y);
+    void onMapFocusRequired(int map_x, int map_y, boolean focus_viewport);
 
     void onGameManagerStateChanged();
+
+    void onCampaignMessageSubmitted();
 
     void onGameOver();
 

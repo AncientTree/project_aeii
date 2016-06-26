@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.Callable;
+import net.toyknight.aeii.entity.GameCore;
+import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.screen.StageScreen;
 import net.toyknight.aeii.utils.Language;
 
@@ -45,13 +47,20 @@ public class ObjectiveDialog extends BasicDialog {
     @Override
     public void display() {
         objective_pane.clearChildren();
-        Label label_objective_cu = new Label(">" + Language.getText("OBJECTIVE_CU"), getContext().getSkin());
-        label_objective_cu.setWrap(true);
-        Label label_objective_cc = new Label(">" + Language.getText("OBJECTIVE_CC"), getContext().getSkin());
-        label_objective_cc.setWrap(true);
-        objective_pane.add(label_objective_cu).width(ts * 6).padBottom(ts / 4).row();
-        objective_pane.add(label_objective_cc).width(ts * 6).padBottom(ts / 4);
-
+        if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
+            for (String objective : getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getObjectives()) {
+                Label label_objective = new Label(">" + objective, getContext().getSkin());
+                label_objective.setWrap(true);
+                objective_pane.add(label_objective).width(ts * 6).padBottom(ts / 4).row();
+            }
+        } else {
+            Label label_objective_cu = new Label(">" + Language.getText("OBJECTIVE_CU"), getContext().getSkin());
+            label_objective_cu.setWrap(true);
+            Label label_objective_cc = new Label(">" + Language.getText("OBJECTIVE_CC"), getContext().getSkin());
+            label_objective_cc.setWrap(true);
+            objective_pane.add(label_objective_cu).width(ts * 6).padBottom(ts / 4).row();
+            objective_pane.add(label_objective_cc).width(ts * 6).padBottom(ts / 4);
+        }
         objective_pane.layout();
         layout();
 

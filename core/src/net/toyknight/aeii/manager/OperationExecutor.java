@@ -151,6 +151,14 @@ public class OperationExecutor {
                 target_y = operation.getParameter(3);
                 onSummon(unit_x, unit_y, target_x, target_y);
                 break;
+            case Operation.TURN_STARTED:
+                int current_turn = getGame().getCurrentTurn();
+                getManager().getContext().getCampaignContext().onTurnStart(current_turn);
+
+                Position map_focus = getGame().getTeamFocus(current_turn);
+                getManager().fireMapFocusEvent(map_focus.x, map_focus.y, true);
+                getManager().fireStateChangeEvent();
+                break;
             default:
                 //do nothing
         }
@@ -160,7 +168,7 @@ public class OperationExecutor {
     private void onActionFinish(int unit_x, int unit_y) {
         Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
         if (getGame().isUnitAccessible(unit)) {
-            getManager().fireMapFocusEvent(unit_x, unit_y);
+            getManager().fireMapFocusEvent(unit_x, unit_y, false);
             if (UnitToolkit.canMoveAgain(unit)) {
                 Position position = getGame().getMap().getPosition(unit);
                 getManager().setLastPosition(position);
@@ -178,7 +186,7 @@ public class OperationExecutor {
         Unit defender = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canAttack(attacker, target_x, target_y)) {
             if (defender == null) {
-                submitGameEvent(GameEvent.ATTACK, attacker_x, attacker_y, target_x, target_y, -1);
+                submitGameEvent(GameEvent.ATTACK, attacker_x, attacker_y, target_x, target_y, -1, false);
                 submitGameEvent(GameEvent.TILE_DESTROY, target_x, target_y);
                 submitGameEvent(
                         GameEvent.GAIN_EXPERIENCE,
@@ -186,7 +194,7 @@ public class OperationExecutor {
                         getGame().getRule().getInteger(ATTACK_EXPERIENCE));
             } else {
                 int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, true);
-                submitGameEvent(GameEvent.ATTACK, attacker_x, attacker_y, target_x, target_y, attack_damage);
+                submitGameEvent(GameEvent.ATTACK, attacker_x, attacker_y, target_x, target_y, attack_damage, false);
                 if (attack_damage < defender.getCurrentHp()) {
                     submitGameEvent(
                             GameEvent.GAIN_EXPERIENCE,
@@ -212,7 +220,7 @@ public class OperationExecutor {
         Unit defender = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canCounter(attacker, defender)) {
             int counter_damage = getManager().getUnitToolkit().getDamage(defender, attacker, true);
-            submitGameEvent(GameEvent.ATTACK, target_x, target_y, attacker_x, attacker_y, counter_damage);
+            submitGameEvent(GameEvent.ATTACK, target_x, target_y, attacker_x, attacker_y, counter_damage, true);
             if (counter_damage < attacker.getCurrentHp()) {
                 submitGameEvent(
                         GameEvent.GAIN_EXPERIENCE,
@@ -230,6 +238,7 @@ public class OperationExecutor {
 
     private void onNextTurn() {
         getManager().setState(GameManager.STATE_SELECT);
+        getManager().getContext().getCampaignContext().onTurnEnd(getGame().getCurrentTurn());
         submitGameEvent(GameEvent.NEXT_TURN);
         //calculate hp change at turn start
         int next_team = getGame().getNextTeam();
