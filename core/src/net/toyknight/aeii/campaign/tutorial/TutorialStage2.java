@@ -19,6 +19,8 @@ public class TutorialStage2 extends StageController {
         getContext().set("occupied_village_left", 0);
         getContext().set("repaired_village_right", 0);
         getContext().set("occupied_village_right", 0);
+
+        getContext().set("occupied", 0);
         Message message1 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_1"));
         Message message2 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_2"));
         Message message3 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_3"));
@@ -74,7 +76,10 @@ public class TutorialStage2 extends StageController {
         if (x == 6 && y == 7 && team == getPlayerTeam()) {
             getContext().set("occupied_village_right", 1);
         }
-        if (getContext().get("occupied_village_left") == 1 && getContext().get("occupied_village_right") == 1) {
+        if (getContext().get("occupied") == 0
+                && getContext().get("occupied_village_left") == 1
+                && getContext().get("occupied_village_right") == 1) {
+            getContext().set("occupied", 1);
             Message message11 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_11"));
             getContext().message(message11);
         }
