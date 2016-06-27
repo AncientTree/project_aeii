@@ -115,6 +115,12 @@ CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_1=VICTORY: Defeat all enemy units.
 CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_CHALLENGE_STAGE_1_MESSAGE_1=Enemies are coming, prepare yourself!
 
+CAMPAIGN_CHALLENGE_STAGE_2_NAME=Blitzkrieg
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_1=VICTORY: Capture all enemy castles.
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_3=DEFEAT: Turn number exceeds 31.
+CAMPAIGN_CHALLENGE_STAGE_2_MESSAGE_1=It's one of the enemies' key cities. Enemy reinforcement is on the way, we need to hurry. Capture all blue army castles within 31 turns to win the stage!
+
 EDITOR_ERROR_1=At least 2 teams!
 EDITOR_ERROR_2=Failed saving the map!
 
