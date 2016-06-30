@@ -77,13 +77,23 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
+    public void submitUnitAttackAnimation(Unit target, int damage) {
+        submitAnimation(new UnitAttackAnimator(target, damage));
+    }
+
+    @Override
+    public void submitUnitAttackAnimation(int target_x, int target_y) {
+        submitAnimation(new UnitAttackAnimator(target_x, target_y));
+    }
+
+    @Override
     public void submitUnitAttackAnimation(Unit attacker, int target_x, int target_y) {
         submitAnimation(new UnitAttackAnimator(attacker, target_x, target_y));
     }
 
     @Override
-    public void submitUnitDestroyAnimation(Unit unit) {
-        submitAnimation(new UnitDestroyAnimator(unit));
+    public void submitUnitSparkAnimation(Unit unit) {
+        submitAnimation(new UnitSparkAnimator(unit));
     }
 
     @Override
@@ -92,8 +102,28 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
-    public void submitReinforceAnimation(Array<Unit> reinforcements) {
-        submitAnimation(new ReinforceAnimator(reinforcements));
+    public void submitReinforceAnimation(Array<Unit> reinforcements, int from_x, int from_y) {
+        submitAnimation(new ReinforceAnimator(reinforcements, from_x, from_y));
+    }
+
+    @Override
+    public void submitCrystalStealAnimation(int map_x, int map_y, int target_x, int target_y) {
+        submitAnimation(new CrystalStealAnimator(map_x, map_y, target_x, target_y));
+    }
+
+    @Override
+    public void submitFlyOverAnimation(Unit flier, Unit target, int start_x, int start_y) {
+        submitAnimation(new FlyOverAnimator(flier, target, start_x, start_y));
+    }
+
+    @Override
+    public void submitUnitCarryAnimation(Unit carrier, Unit target, int dest_x, int dest_y) {
+        submitAnimation(new UnitCarryAnimator(carrier, target, dest_x, dest_y));
+    }
+
+    @Override
+    public void submitHavensFuryAnimation(Unit target) {
+        submitAnimation(new HavensFuryAnimator(target));
     }
 
     @Override

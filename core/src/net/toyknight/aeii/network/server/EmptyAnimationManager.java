@@ -55,7 +55,15 @@ public class EmptyAnimationManager implements AnimationDispatcher {
     }
 
     @Override
-    public void submitUnitDestroyAnimation(Unit unit) {
+    public void submitUnitAttackAnimation(Unit target, int damage) {
+    }
+
+    @Override
+    public void submitUnitAttackAnimation(int target_x, int target_y) {
+    }
+
+    @Override
+    public void submitUnitSparkAnimation(Unit unit) {
     }
 
     @Override
@@ -63,7 +71,23 @@ public class EmptyAnimationManager implements AnimationDispatcher {
     }
 
     @Override
-    public void submitReinforceAnimation(Array<Unit> reinforcements) {
+    public void submitReinforceAnimation(Array<Unit> reinforcements, int from_x, int from_y) {
+    }
+
+    @Override
+    public void submitCrystalStealAnimation(int map_x, int map_y, int target_x, int target_y) {
+    }
+
+    @Override
+    public void submitFlyOverAnimation(Unit flier, Unit target, int start_x, int start_y) {
+    }
+
+    @Override
+    public void submitUnitCarryAnimation(Unit carrier, Unit target, int dest_x, int dest_y) {
+    }
+
+    @Override
+    public void submitHavensFuryAnimation(Unit target) {
     }
 
     @Override

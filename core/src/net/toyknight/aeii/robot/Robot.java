@@ -20,7 +20,7 @@ public class Robot {
 
     private final GameManager manager;
 
-    private final ObjectSet<String> target_units;
+    private final ObjectSet<String> static_units;
 
     private final ObjectMap<String, Position> routes;
 
@@ -41,7 +41,7 @@ public class Robot {
     public Robot(GameManager manager) {
         this.manager = manager;
         this.random = new Random();
-        this.target_units = new ObjectSet<String>();
+        this.static_units = new ObjectSet<String>();
         this.routes = new ObjectMap<String, Position>();
         this.ability_map = new ObjectMap<Integer, ObjectSet<Integer>>();
     }
@@ -60,8 +60,11 @@ public class Robot {
                 }
             }
         }
-        target_units.clear();
-        //TODO: Add target units from rule.
+        static_units.clear();
+    }
+
+    public void addStaticUnit(String unit_code) {
+        static_units.add(unit_code);
     }
 
     public GameManager getManager() {
@@ -72,8 +75,8 @@ public class Robot {
         return getManager().getGame();
     }
 
-    public ObjectSet<String> getTargetUnits() {
-        return target_units;
+    public ObjectSet<String> getStaticUnits() {
+        return static_units;
     }
 
     private int getGold() {
@@ -156,13 +159,19 @@ public class Robot {
                 int index;
                 if (getAllyCountWithAbility(Ability.CONQUEROR) < 4) {
                     index = getCheapestUnitIndexWithAbility(Ability.CONQUEROR);
-                } else if (getGame().getMap().getTombs().size > 1 && getAllyCountWithAbility(Ability.NECROMANCER) < 1) {
+                } else if (getGame().getMap().getTombs().size > 1
+                        && getAllyCountWithAbility(Ability.NECROMANCER) < 1
+                        && ability_map.containsKey(Ability.NECROMANCER)) {
                     index = getCheapestUnitIndexWithAbility(Ability.NECROMANCER);
-                } else if (getAllyCountWithAbility(Ability.HEALER) < 1) {
+                } else if (getAllyCountWithAbility(Ability.HEALER) < 1 && ability_map.containsKey(Ability.HEALER)) {
                     index = getCheapestUnitIndexWithAbility(Ability.HEALER);
-                } else if (getUnhealthyAllyCount() >= 5 && getAllyCountWithAbility(Ability.REFRESH_AURA) < 1) {
+                } else if (getUnhealthyAllyCount() >= 5
+                        && getAllyCountWithAbility(Ability.REFRESH_AURA) < 1
+                        && ability_map.containsKey(Ability.REFRESH_AURA)) {
                     index = getCheapestUnitIndexWithAbility(Ability.REFRESH_AURA);
-                } else if (getEnemyCountWithAbility(Ability.AIR_FORCE) > 0 && getAllyCountWithAbility(Ability.MARKSMAN) < 1) {
+                } else if (getEnemyCountWithAbility(Ability.AIR_FORCE) > 0
+                        && getAllyCountWithAbility(Ability.MARKSMAN) < 1
+                        && ability_map.containsKey(Ability.MARKSMAN)) {
                     index = getCheapestUnitIndexWithAbility(Ability.MARKSMAN);
                 } else {
                     if (getEnemyAveragePhysicalDefence() > getEnemyAverageMagicDefence()) {
@@ -210,10 +219,31 @@ public class Robot {
     }
 
     private void calculateMoveAndAction() {
+        Unit selected_unit = getManager().getSelectedUnit();
+        if (getStaticUnits().contains(selected_unit.getUnitCode())) {
+            Position standby_position = getGame().getMap().getPosition(selected_unit);
+            if (getManager().hasEnemyWithinRange(selected_unit)) {
+                Position attack_target = null;
+                for (Position position :
+                        getManager().getPositionGenerator().createAttackablePositions(selected_unit, false)) {
+                    if (getGame().isEnemy(selected_unit, getGame().getMap().getUnit(position))) {
+                        attack_target = position;
+                        break;
+                    }
+                }
+                if (attack_target == null) {
+                    submitAction(standby_position, standby_position, Operation.STANDBY);
+                } else {
+                    submitAction(standby_position, attack_target, Operation.ATTACK);
+                }
+            } else {
+                submitAction(standby_position, standby_position, Operation.STANDBY);
+            }
+            return;
+        }
         Position cp;
         Position vp;
         Position rp;
-        Unit selected_unit = getManager().getSelectedUnit();
         ObjectSet<Unit> allies = getAlliesWithinReach(selected_unit);
         ObjectSet<Unit> enemies = getEnemiesWithinReach(selected_unit);
         ObjectSet<Position> tombs = getTombPositionsWithinReach(selected_unit);
@@ -313,28 +343,28 @@ public class Robot {
         this.action_type = action_type;
         this.action_target = action_target;
         getManager().doMove(move_position.x, move_position.y);
-        switch (action_type) {
-            case Operation.ATTACK:
-                System.out.print("attack");
-                break;
-            case Operation.HEAL:
-                System.out.print("heal");
-                break;
-            case Operation.SUMMON:
-                System.out.print("summon");
-                break;
-            case Operation.OCCUPY:
-                System.out.print("occupy");
-                break;
-            case Operation.REPAIR:
-                System.out.print("repair");
-                break;
-            case Operation.STANDBY:
-                System.out.print("standby");
-                break;
-        }
-        System.out.print(" ");
-        System.out.println(action_target == null ? "null" : String.format("[%d, %d]", action_target.x, action_target.y));
+//        switch (action_type) {
+//            case Operation.ATTACK:
+//                System.out.print("attack");
+//                break;
+//            case Operation.HEAL:
+//                System.out.print("heal");
+//                break;
+//            case Operation.SUMMON:
+//                System.out.print("summon");
+//                break;
+//            case Operation.OCCUPY:
+//                System.out.print("occupy");
+//                break;
+//            case Operation.REPAIR:
+//                System.out.print("repair");
+//                break;
+//            case Operation.STANDBY:
+//                System.out.print("standby");
+//                break;
+//        }
+//        System.out.print(" ");
+//        System.out.println(action_target == null ? "null" : String.format("[%d, %d]", action_target.x, action_target.y));
     }
 
     private Unit getPreferredAttackTarget(Unit unit, ObjectSet<Unit> enemies) {
@@ -347,6 +377,9 @@ public class Robot {
                 return enemy;
             }
             if (unit.hasAbility(Ability.POISONER) || damage >= 10) {
+                if (enemy.isCrystal()) {
+                    return enemy;
+                }
                 if (enemy.isCommander() && damage >= 20) {
                     return enemy;
                 }

@@ -155,8 +155,14 @@ public class OperationExecutor {
                 int current_turn = getGame().getCurrentTurn();
                 getManager().getContext().getCampaignContext().onTurnStart(current_turn);
 
-                Position map_focus = getGame().getTeamFocus(current_turn);
+                Position map_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
                 getManager().fireMapFocusEvent(map_focus.x, map_focus.y, true);
+                getManager().fireStateChangeEvent();
+                break;
+            case Operation.AFTER_STANDBY:
+                unit_x = operation.getParameter(0);
+                unit_y = operation.getParameter(1);
+                getManager().getContext().getCampaignContext().onUnitStandby(unit_x, unit_y);
                 getManager().fireStateChangeEvent();
                 break;
             default:

@@ -1,9 +1,8 @@
 package net.toyknight.aeii.campaign.challenge;
 
-import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.campaign.Message;
+import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
-import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
@@ -24,12 +23,16 @@ public class ChallengeStage1 extends StageController {
     }
 
     @Override
+    public void onUnitStandby(Unit unit) {
+    }
+
+    @Override
     public void onUnitAttacked(Unit attacker, Unit defender) {
     }
 
     @Override
     public void onUnitDestroyed(Unit unit) {
-        if (unit.getTeam() == getPlayerTeam() && unit.isCommander()) {
+        if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         } else {
             if (getContext().count(1) == 0) {
@@ -50,84 +53,44 @@ public class ChallengeStage1 extends StageController {
     public void onTurnStart(int turn) {
         switch (turn) {
             case 2:
-                Array<Integer> indexes = new Array<Integer>();
-                indexes.add(4);
-                indexes.add(2);
-                indexes.add(4);
-                Array<Position> positions = new Array<Position>();
-                positions.add(getContext().position(0, 1));
-                positions.add(getContext().position(0, 0));
-                positions.add(getContext().position(1, 0));
-                getContext().reinforce(1, indexes, positions);
-                indexes = new Array<Integer>();
-                indexes.add(4);
-                indexes.add(2);
-                indexes.add(4);
-                positions = new Array<Position>();
-                positions.add(getContext().position(15, 16));
-                positions.add(getContext().position(16, 16));
-                positions.add(getContext().position(16, 15));
-                getContext().reinforce(1, indexes, positions);
+                getContext().reinforce(1,
+                        new Reinforcement(4, 0, 1),
+                        new Reinforcement(2, 0, 0),
+                        new Reinforcement(4, 1, 0));
+                getContext().reinforce(1,
+                        new Reinforcement(4, 15, 16),
+                        new Reinforcement(2, 16, 16),
+                        new Reinforcement(4, 16, 15));
                 break;
             case 4:
-                indexes = new Array<Integer>();
-                indexes.add(13);
-                indexes.add(3);
-                indexes.add(13);
-                positions = new Array<Position>();
-                positions.add(getContext().position(0, 7));
-                positions.add(getContext().position(0, 8));
-                positions.add(getContext().position(0, 9));
-                getContext().reinforce(1, indexes, positions);
-                indexes = new Array<Integer>();
-                indexes.add(13);
-                indexes.add(3);
-                indexes.add(13);
-                positions = new Array<Position>();
-                positions.add(getContext().position(16, 7));
-                positions.add(getContext().position(16, 8));
-                positions.add(getContext().position(16, 9));
-                getContext().reinforce(1, indexes, positions);
+                getContext().reinforce(1,
+                        new Reinforcement(13, 0, 7),
+                        new Reinforcement(3, 0, 8),
+                        new Reinforcement(13, 0, 9));
+                getContext().reinforce(1,
+                        new Reinforcement(13, 16, 7),
+                        new Reinforcement(3, 16, 8),
+                        new Reinforcement(13, 16, 9));
                 break;
             case 6:
-                indexes = new Array<Integer>();
-                indexes.add(5);
-                indexes.add(6);
-                indexes.add(5);
-                positions = new Array<Position>();
-                positions.add(getContext().position(7, 0));
-                positions.add(getContext().position(8, 0));
-                positions.add(getContext().position(9, 0));
-                getContext().reinforce(1, indexes, positions);
-                indexes = new Array<Integer>();
-                indexes.add(5);
-                indexes.add(6);
-                indexes.add(5);
-                positions = new Array<Position>();
-                positions.add(getContext().position(7, 16));
-                positions.add(getContext().position(8, 16));
-                positions.add(getContext().position(9, 16));
-                getContext().reinforce(1, indexes, positions);
+                getContext().reinforce(1,
+                        new Reinforcement(5, 7, 0),
+                        new Reinforcement(6, 8, 0),
+                        new Reinforcement(5, 9, 0));
+                getContext().reinforce(1,
+                        new Reinforcement(5, 7, 16),
+                        new Reinforcement(6, 8, 16),
+                        new Reinforcement(5, 9, 16));
                 break;
             case 8:
-                indexes = new Array<Integer>();
-                indexes.add(16);
-                indexes.add(8);
-                indexes.add(16);
-                positions = new Array<Position>();
-                positions.add(getContext().position(0, 7));
-                positions.add(getContext().position(0, 8));
-                positions.add(getContext().position(0, 9));
-                getContext().reinforce(1, indexes, positions);
-                indexes = new Array<Integer>();
-                indexes.add(16);
-                indexes.add(8);
-                indexes.add(16);
-                positions = new Array<Position>();
-                positions.add(getContext().position(16, 7));
-                positions.add(getContext().position(16, 8));
-                positions.add(getContext().position(16, 9));
-                getContext().reinforce(1, indexes, positions);
+                getContext().reinforce(1,
+                        new Reinforcement(16, 0, 7),
+                        new Reinforcement(8, 0, 8),
+                        new Reinforcement(16, 0, 9));
+                getContext().reinforce(1,
+                        new Reinforcement(16, 16, 7),
+                        new Reinforcement(8, 16, 8),
+                        new Reinforcement(16, 16, 9));
                 break;
         }
     }

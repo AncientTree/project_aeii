@@ -24,7 +24,7 @@ public class Unit implements Serializable, Verifiable {
     private int level;
     private int experience = 0;
 
-    private final String unit_code;
+    private String unit_code;
     private int team;
 
     private int max_hp;
@@ -52,6 +52,8 @@ public class Unit implements Serializable, Verifiable {
     private int min_attack_range;
 
     private boolean is_standby;
+
+    private int head = 0;
 
     private Unit(int index, String unit_code) {
         this.level = 0;
@@ -92,6 +94,7 @@ public class Unit implements Serializable, Verifiable {
         this.min_attack_range = unit.getMinAttackRange();
         this.abilities = new Array<Integer>(unit.getAbilities());
         this.status = unit.getStatus() == null ? null : new Status(unit.getStatus());
+        this.head = unit.getHead();
     }
 
     public Unit(UnitDefinition definition, int index) {
@@ -122,6 +125,10 @@ public class Unit implements Serializable, Verifiable {
         return getIndex() == UnitFactory.getCommanderIndex();
     }
 
+    public boolean isCrystal() {
+        return getIndex() == UnitFactory.getCrystalIndex();
+    }
+
     public boolean isSkeleton() {
         return getIndex() == UnitFactory.getSkeletonIndex();
     }
@@ -148,6 +155,10 @@ public class Unit implements Serializable, Verifiable {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public void setUnitCode(String unit_code) {
+        this.unit_code = unit_code;
     }
 
     public String getUnitCode() {
@@ -342,7 +353,8 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public void attachStatus(Status status) {
-        if ((getStatus() == null || getStatus().equals(status)) && !hasAbility(Ability.HEAVY_MACHINE)) {
+        if ((getStatus() == null || getStatus().equals(status))
+                && !hasAbility(Ability.HEAVY_MACHINE) && !isCrystal() && !getUnitCode().equals("saeth")) {
             setStatus(status);
         }
     }
@@ -360,12 +372,16 @@ public class Unit implements Serializable, Verifiable {
         }
     }
 
-    public boolean isAt(int x, int y) {
-        return this.x_position == x && this.y_position == y;
+    public void setHead(int head) {
+        this.head = head;
     }
 
-    public boolean isDebuffGiver() {
-        return hasAbility(Ability.POISONER) || hasAbility(Ability.SLOWING_AURA) || hasAbility(Ability.BLINDER);
+    public int getHead() {
+        return head;
+    }
+
+    public boolean isAt(int x, int y) {
+        return this.x_position == x && this.y_position == y;
     }
 
     @Override
@@ -396,6 +412,7 @@ public class Unit implements Serializable, Verifiable {
         json.put("x_position", getX());
         json.put("y_position", getY());
         json.put("standby", isStandby());
+        json.put("head", getHead());
         if (getStatus() != null) {
             json.put("status", getStatus().toJson());
         }

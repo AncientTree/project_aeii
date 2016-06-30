@@ -1,17 +1,15 @@
 package net.toyknight.aeii.campaign;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.campaign.aeii.AEIICampaign;
 import net.toyknight.aeii.campaign.challenge.ChallengeCampaign;
 import net.toyknight.aeii.campaign.tutorial.TutorialCampaign;
-import net.toyknight.aeii.entity.GameCore;
-import net.toyknight.aeii.entity.Position;
-import net.toyknight.aeii.entity.Tile;
-import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,6 +35,10 @@ public class CampaignContext {
         CampaignController campaign_challenge = new ChallengeCampaign();
         campaign_challenge.initialize();
         campaigns.put(campaign_challenge.getCode(), campaign_challenge);
+
+        CampaignController campaign_aeii = new AEIICampaign();
+        campaign_aeii.initialize();
+        campaigns.put(campaign_aeii.getCode(), campaign_aeii);
     }
 
     public GameContext getContext() {
@@ -81,6 +83,15 @@ public class CampaignContext {
     public void onUnitMoved(Unit unit, int x, int y) {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
             getCurrentCampaign().getCurrentStage().onUnitMoved(new Unit(unit), x, y);
+        }
+    }
+
+    public void onUnitStandby(int x, int y) {
+        if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
+            Unit unit = getContext().getGame().getMap().getUnit(x, y);
+            if (unit != null) {
+                getCurrentCampaign().getCurrentStage().onUnitStandby(new Unit(unit));
+            }
         }
     }
 
@@ -133,20 +144,22 @@ public class CampaignContext {
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_MESSAGE, message_list);
         }
 
-        public void reinforce(int team, Array<Integer> indexes, Array<Position> positions) {
+        public void reinforce(int team, Reinforcement... reinforcements) {
+            reinforce(team, -1, -1, reinforcements);
+        }
+
+        public void reinforce(int team, int from_x, int from_y, Reinforcement... reinforcements) {
             JSONArray index_array = new JSONArray();
-            for (Integer index : indexes) {
-                index_array.put(index);
-            }
             JSONArray position_array = new JSONArray();
-            for (Position position : positions) {
+            for (Reinforcement reinforcement : reinforcements) {
+                index_array.put(reinforcement.getIndex());
                 JSONObject json = new JSONObject();
-                json.put("x", position.x);
-                json.put("y", position.y);
+                json.put("x", reinforcement.getMapX());
+                json.put("y", reinforcement.getMapY());
                 position_array.put(json);
             }
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(
-                    GameEvent.REINFORCE, team, index_array, position_array);
+                    GameEvent.CAMPAIGN_REINFORCE, team, from_x, from_y, index_array, position_array);
         }
 
         public int count(int team) {
@@ -154,14 +167,11 @@ public class CampaignContext {
         }
 
         public void clear() {
-            getCurrentCampaign().getCurrentStage().setCleared(true);
-            getContext().getGame().setGameOver(true);
-            getContext().getGameManager().getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_STAGE_CLEAR"), 1.0f);
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_CLEAR);
         }
 
         public void fail() {
-            getContext().getGame().setGameOver(true);
-            getContext().getGameManager().getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_STAGE_FAIL"), 1.0f);
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_FAIL);
         }
 
         public Position position(int x, int y) {
@@ -185,6 +195,157 @@ public class CampaignContext {
 
         public Tile tile(int map_x, int map_y) {
             return getContext().getGame().getMap().getTile(map_x, map_y);
+        }
+
+        public void gold(int team, int gold) {
+            getContext().getGame().getPlayer(team).setGold(gold);
+        }
+
+        public void alliance(int team, int alliance) {
+            getContext().getGame().getPlayer(team).setAlliance(alliance);
+        }
+
+        public void destroy_team(int team) {
+            getContext().getGame().destroyTeam(team);
+        }
+
+        public void restore(int team) {
+            getContext().getGame().getPlayer(team).setType(Player.ROBOT);
+            getContext().getGame().setTeamDestroyed(team, false);
+        }
+
+        public void attack(int x, int y, int damage) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_ATTACK, x, y, damage);
+        }
+
+        public void destroy_unit(int x, int y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.UNIT_DESTROY, x, y, -1);
+        }
+
+        public void destroy_tile(int x, int y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.TILE_DESTROY, x, y, -1);
+        }
+
+        public void focus(int x, int y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_FOCUS, x, y);
+        }
+
+        public void head(int team, int index) {
+            getContext().getGame().getCommander(team).setHead(index);
+        }
+
+        public void head(int x, int y, int index) {
+            Unit unit = getContext().getGame().getMap().getUnit(x, y);
+            if (unit != null) {
+                unit.setHead(index);
+            }
+        }
+
+        public void steal_crystal(int map_x, int map_y, int target_x, int target_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_CRYSTAL_STEAL, map_x, map_y, target_x, target_y);
+        }
+
+        public void create(int index, int team, int map_x, int map_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_CREATE_UNIT, index, team, map_x, map_y);
+        }
+
+        public void move(int unit_x, int unit_y, int target_x, int target_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_MOVE_UNIT, unit_x, unit_y, target_x, target_y);
+        }
+
+        public void remove(int unit_x, int unit_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_REMOVE_UNIT, unit_x, unit_y);
+        }
+
+        public void team(int unit_x, int unit_y, int team) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_CHANGE_TEAM, unit_x, unit_y, team);
+        }
+
+        public Unit crystal(int team) {
+            for (Unit unit : getContext().getGame().getMap().getUnits(team)) {
+                if (unit.isCrystal()) {
+                    return unit;
+                }
+            }
+            return null;
+        }
+
+        public void fly_over(int index, int team, int start_x, int start_y, int target_x, int target_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_FLY_OVER, index, team, start_x, start_y, target_x, target_y);
+        }
+
+        public void carry(int carrier_x, int carrier_y, int target_index, int target_team, int dest_x, int dest_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_CARRY_UNIT, carrier_x, carrier_y, target_index, target_team, dest_x, dest_y);
+        }
+
+        public void show_objectives() {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_SHOW_OBJECTIVES);
+        }
+
+        public void havens_fury(int team, int target_x, int target_y, int damage) {
+            Unit target;
+            if ((target = getContext().getGame().getMap().getUnit(target_x, target_y)) == null) {
+                ObjectSet<Unit> units = getContext().getGame().getMap().getUnits(team);
+                int max_price = Integer.MIN_VALUE;
+                int max_hp = Integer.MIN_VALUE;
+                for (Unit unit : units) {
+                    if (!unit.isCommander()) {
+                        if (unit.getCurrentHp() > max_hp
+                                || (unit.getCurrentHp() == max_hp && unit.getPrice() > max_price)) {
+                            target = unit;
+                            max_price = unit.getPrice();
+                            max_hp = unit.getCurrentHp();
+                        }
+                    }
+                }
+                if (target == null && units.size > 0) {
+                    target = units.first();
+                }
+                if (target != null) {
+                    getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                            GameEvent.CAMPAIGN_HAVENS_FURY, target.getX(), target.getY(), damage);
+                }
+            } else {
+                getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                        GameEvent.CAMPAIGN_HAVENS_FURY, target_x, target_y, damage);
+            }
+            if (target != null) {
+                if (damage != 0) {
+                    hp_change(target.getX(), target.getY(), -damage);
+                }
+                if (target.getCurrentHp() - damage <= 0) {
+                    destroy_unit(target_x, target_y);
+                }
+            }
+        }
+
+        public void hp_change(int x, int y, int change) {
+            Unit target = getContext().getGame().getMap().getUnit(x, y);
+            if (target != null) {
+                JSONArray hp_changes = new JSONArray();
+                JSONObject hp_change = new JSONObject();
+                change = UnitToolkit.validateHpChange(target, change);
+                hp_change.put("x", x);
+                hp_change.put("y", y);
+                hp_change.put("change", change);
+                hp_changes.put(hp_change);
+                getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.HP_CHANGE, hp_changes);
+            }
+        }
+
+        public void code(int x, int y, String code) {
+            getContext().getGame().getMap().getUnit(x, y).setUnitCode(code);
+        }
+
+        public void static_unit(String unit_code) {
+            getContext().getGameManager().getRobot().addStaticUnit(unit_code);
         }
 
     }

@@ -220,6 +220,12 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
+    public void fireCampaignObjectiveRequestEvent() {
+        if (getListener() != null) {
+            getListener().onCampaignObjectiveRequested();
+        }
+    }
+
     public void submitCampaignMessage(Message message) {
         campaign_messages.addLast(message);
     }
@@ -230,7 +236,11 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public Message getCurrentCampaignMessage() {
-        return campaign_messages.peekFirst();
+        if (campaign_messages.size() > 0) {
+            return campaign_messages.getFirst();
+        } else {
+            return null;
+        }
     }
 
     public void update(float delta) throws CheatingException {
@@ -407,6 +417,7 @@ public class GameManager implements GameEventListener, AnimationListener {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit)) {
             getOperationExecutor().submitOperation(Operation.STANDBY, unit.getX(), unit.getY());
+            getOperationExecutor().submitOperation(Operation.AFTER_STANDBY, unit.getX(), unit.getY());
         }
     }
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.MapEditor;
+import net.toyknight.aeii.renderer.UnitRenderer;
 
 /**
  * @author toyknight 7/9/2015.
@@ -52,9 +53,9 @@ public class UnitButton extends Button {
                     ResourceManager.getBorderLightColor(),
                     getX(), getY(), getWidth(), getHeight());
         }
-        batch.draw(
-                ResourceManager.getUnitTexture(editor.getSelectedTeam(), unit.getIndex(), 0, 0),
-                getX(), getY(), getWidth(), getHeight());
+        unit.setTeam(getEditor().getSelectedTeam());
+        unit.setHead(getEditor().getSelectedTeam());
+        UnitRenderer.drawUnit_(batch, unit, getX(), getY(), 0, ts);
         super.draw(batch, parentAlpha);
     }
 

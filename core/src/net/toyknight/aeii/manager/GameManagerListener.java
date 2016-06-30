@@ -11,6 +11,8 @@ public interface GameManagerListener {
 
     void onCampaignMessageSubmitted();
 
+    void onCampaignObjectiveRequested();
+
     void onGameOver();
 
 }

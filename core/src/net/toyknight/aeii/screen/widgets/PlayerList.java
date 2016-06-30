@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Player;
+import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.RoomManager;
 import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
+import net.toyknight.aeii.renderer.UnitRenderer;
 import net.toyknight.aeii.utils.UnitFactory;
 
 /**
@@ -18,6 +20,8 @@ public class PlayerList extends StringList<PlayerSnapshot> {
 
     private final RoomManager room_manager;
 
+    private final Unit[] commanders;
+
     private final int big_circle_width;
     private final int big_circle_height;
     private final int bc_offset;
@@ -27,6 +31,10 @@ public class PlayerList extends StringList<PlayerSnapshot> {
         super(item_height);
         this.ts = ts;
         this.room_manager = room_manager;
+        this.commanders = new Unit[4];
+        for (int team = 0; team < 4; team++) {
+            commanders[team] = UnitFactory.createCommander(team);
+        }
         this.big_circle_width = ts * 32 / 24;
         this.big_circle_height = ts * 33 / 24;
         this.bc_offset = (item_height - big_circle_height) / 2;
@@ -66,10 +74,10 @@ public class PlayerList extends StringList<PlayerSnapshot> {
                             x + ts / 4 + s_width + bc_offset + ti * (bc_offset + big_circle_width),
                             y + itemY - item_height + bc_offset,
                             big_circle_width, big_circle_height);
-                    batch.draw(ResourceManager.getUnitTexture(team, UnitFactory.getCommanderIndex(), 0, 0),
+                    UnitRenderer.drawUnit_(batch, commanders[team],
                             x + ts / 4 + s_width + bc_offset + ti * (bc_offset + big_circle_width) + unit_offset,
                             y + itemY - item_height + bc_offset + unit_offset,
-                            ts, ts);
+                            0, ts);
                     ti++;
                 }
             }

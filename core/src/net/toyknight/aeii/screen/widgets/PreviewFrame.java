@@ -5,6 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Status;
 import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.renderer.UnitRenderer;
+import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 6/17/2016.
@@ -13,27 +15,20 @@ public class PreviewFrame extends Widget {
 
     private final int ts;
 
-    private int team;
-
     private int tile_index;
     private int unit_index;
 
     private int status;
 
     public PreviewFrame(int ts) {
-        this(ts, 0, 0, 0, -1);
+        this(ts, 0, 0, -1);
     }
 
-    public PreviewFrame(int ts, int team, int tile_index, int unit_index, int status) {
+    public PreviewFrame(int ts, int tile_index, int unit_index, int status) {
         this.ts = ts;
-        this.team = team;
         this.tile_index = tile_index;
         this.unit_index = unit_index;
         this.status = status;
-    }
-
-    public void setTeam(int team) {
-        this.team = team;
     }
 
     public void setTileIndex(int tile_index) {
@@ -64,7 +59,7 @@ public class PreviewFrame extends Widget {
         batch.draw(ResourceManager.getTileTexture(tile_index), x, y, width, height);
         BorderRenderer.drawBorder(batch, x, y, width, height);
         if (unit_index >= 0) {
-            batch.draw(ResourceManager.getUnitTexture(team, unit_index, 0, 0), x, y, width, height);
+            UnitRenderer.drawUnit_(batch, UnitFactory.getSample(unit_index), x, y, 0, ts);
         }
 
         int sw = ts * ResourceManager.getStatusTexture(0).getRegionWidth() / 24;

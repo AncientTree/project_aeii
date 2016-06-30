@@ -47,7 +47,7 @@ public class ServerListDialog extends BasicDialog {
         this.addActor(sp_server_list);
 
         Array<ServerConfiguration> servers = new Array<ServerConfiguration>();
-//        servers.add(new ServerConfiguration("127.0.0.1", 5438, "aeii server - Local"));
+        servers.add(new ServerConfiguration("127.0.0.1", 5438, "aeii server - Local"));
         servers.add(new ServerConfiguration("112.74.215.26", 5438, "aeii server - China"));
         servers.add(new ServerConfiguration("45.56.93.69", 5438, "aeii server - NA"));
         server_list.setItems(servers);

@@ -9,11 +9,11 @@ import net.toyknight.aeii.entity.Unit;
 /**
  * @author toyknight 5/20/2015.
  */
-public class UnitDestroyAnimator extends UnitAnimator {
+public class UnitSparkAnimator extends UnitAnimator {
 
     private final Animation spark_animation;
 
-    public UnitDestroyAnimator(Unit unit) {
+    public UnitSparkAnimator(Unit unit) {
         this.addUnit(unit, "target");
         Texture texture_white_spark = ResourceManager.getWhiteSparkTexture();
         this.spark_animation = new Animation(1f / 15, ResourceManager.createFrames(texture_white_spark, 6, 1));

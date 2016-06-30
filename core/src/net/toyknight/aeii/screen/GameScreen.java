@@ -47,6 +47,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     private final MapViewport viewport;
 
+    private float offset_x = 0f;
+    private float offset_y = 0f;
+
     private float scale;
 
     private int pointer_x;
@@ -220,11 +223,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 int sy = getYOnScreen(y);
                 if (isWithinPaintArea(sx, sy)) {
                     int index = getGame().getMap().getTileIndex(x, y);
-                    tile_renderer.drawTile(batch, index, sx, sy);
+                    tile_renderer.drawTile(batch, index, sx + offset_x, sy + offset_y);
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts());
+                        tile_renderer.drawTopTile(batch, top_tile_index, sx + offset_x, sy + ts() + offset_y);
                     }
                 }
             }
@@ -251,14 +254,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 int sx = getXOnScreen(unit_x);
                 int sy = getYOnScreen(unit_y);
                 if (isWithinPaintArea(sx, sy)) {
-                    getUnitRenderer().drawUnitWithInformation(batch, unit, unit_x, unit_y);
+                    getUnitRenderer().drawUnitWithInformation(batch, unit, unit_x, unit_y, offset_x, offset_y);
                 }
             }
         }
     }
 
     private void drawCursor() {
-        if (!getGameManager().isProcessing() && !getGameManager().isAnimating()) {
+        if (!getGameManager().isAnimating()) {
             int cursor_x = getCursorMapX();
             int cursor_y = getCursorMapY();
             Unit selected_unit = getGameManager().getSelectedUnit();
@@ -299,6 +302,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     public void showCampaignMessage() {
         showDialog("campaign_message");
+    }
+
+    public void showObjectives() {
+        showDialog("objective");
     }
 
     @Override
@@ -389,10 +396,13 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         try {
             getContext().getGameManager().update(delta);
         } catch (CheatingException ex) {
-            if (!allow_cheating) {
+            if (!allow_cheating && getGame().getCurrentPlayer().getType() == Player.REMOTE) {
                 int team = ex.getTeam();
                 String message = String.format(Language.getText("MSG_INFO_CD"), Language.getText("LB_TEAM_" + team));
-                showConfirmDialog(message, cheating_confirm_yes_callback, cheating_confirm_no_callback);
+                String cause = String.format(" [%s]", ex.getMessage());
+                showConfirmDialog(message + cause, cheating_confirm_yes_callback, cheating_confirm_no_callback);
+            } else {
+                ex.printStackTrace();
             }
         }
     }
@@ -792,8 +802,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void focus(int map_x, int map_y, boolean focus_viewport) {
         cursor_map_x = map_x;
         cursor_map_y = map_y;
-        if (focus_viewport) {
-            locateViewport(map_x, map_y);
+        if (!Gdx.input.isTouched()) {
+            int player_type = getGame().getCurrentPlayer().getType();
+            if (focus_viewport || player_type == Player.ROBOT || player_type == Player.RECORD) {
+                locateViewport(map_x, map_y);
+            }
         }
     }
 
@@ -817,6 +830,16 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     @Override
     public int getCursorMapY() {
         return cursor_map_y;
+    }
+
+    @Override
+    public void setOffsetX(float offset_x) {
+        this.offset_x = offset_x;
+    }
+
+    @Override
+    public void setOffsetY(float offset_y) {
+        this.offset_y = offset_y;
     }
 
     private int createCursorMapY(int pointer_y) {

@@ -31,7 +31,9 @@ public class MapAnimator extends Animator {
     }
 
     public final void addLocation(int x, int y) {
-        this.locations.add(new Position(x, y));
+        if (getCanvas().getMap().isWithinMap(x, y)) {
+            this.locations.add(getCanvas().getMap().getPosition(x, y));
+        }
     }
 
     public final boolean hasLocation(int x, int y) {

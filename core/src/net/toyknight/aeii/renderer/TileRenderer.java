@@ -23,7 +23,7 @@ public class TileRenderer {
         return canvas.ts();
     }
 
-    public void drawTile(SpriteBatch batch, int index, int x, int y) {
+    public void drawTile(SpriteBatch batch, int index, float x, float y) {
         int current_frame = getCurrentFrame();
         Tile tile = TileFactory.getTile(index);
         if (tile.isAnimated()) {
@@ -38,7 +38,7 @@ public class TileRenderer {
         batch.flush();
     }
 
-    public void drawTopTile(SpriteBatch batch, int index, int x, int y) {
+    public void drawTopTile(SpriteBatch batch, int index, float x, float y) {
         batch.draw(ResourceManager.getTopTileTexture(index), x, y, ts(), ts());
         batch.flush();
     }

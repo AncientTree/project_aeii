@@ -17,6 +17,7 @@ public class ChallengeCampaign extends CampaignController {
     public void initialize() {
         addStage(new ChallengeStage1());
         addStage(new ChallengeStage2());
+        addStage(new ChallengeStage3());
     }
 
     @Override

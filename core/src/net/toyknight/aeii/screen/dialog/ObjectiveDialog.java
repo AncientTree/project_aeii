@@ -1,6 +1,6 @@
 package net.toyknight.aeii.screen.dialog;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -8,8 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.Callable;
+import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
-import net.toyknight.aeii.entity.Rule;
+import net.toyknight.aeii.screen.GameScreen;
 import net.toyknight.aeii.screen.StageScreen;
 import net.toyknight.aeii.utils.Language;
 
@@ -25,9 +26,17 @@ public class ObjectiveDialog extends BasicDialog {
     public ObjectiveDialog(StageScreen owner) {
         super(owner);
 
-        Label label_title = new Label(Language.getText("LB_OBJECTIVE"), getContext().getSkin());
+        setTopBottomBorderEnabled(true);
+
+        Label label_title = new Label(Language.getText("LB_OBJECTIVE"), getContext().getSkin()) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                super.draw(batch, parentAlpha);
+            }
+        };
         label_title.setAlignment(Align.center);
-        add(label_title).width(ts * 6).padTop(ts / 4).padBottom(ts / 4).row();
+        add(label_title).width(getOwner().getViewportWidth()).height(ts).padBottom(ts / 4).row();
 
         objective_pane = new Table();
         add(objective_pane).width(ts * 6).row();
@@ -44,29 +53,33 @@ public class ObjectiveDialog extends BasicDialog {
         add(btn_ok).size(ts * 3, ts / 2).padBottom(ts / 4);
     }
 
+    public GameScreen getOwner() {
+        return (GameScreen) super.getOwner();
+    }
+
     @Override
     public void display() {
         objective_pane.clearChildren();
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
             for (String objective : getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getObjectives()) {
-                Label label_objective = new Label(">" + objective, getContext().getSkin());
+                Label label_objective = new Label(objective, getContext().getSkin());
                 label_objective.setWrap(true);
-                objective_pane.add(label_objective).width(ts * 6).padBottom(ts / 4).row();
+                objective_pane.add(label_objective).width(getOwner().getViewportWidth() - ts).padBottom(ts / 4).row();
             }
         } else {
-            Label label_objective_cu = new Label(">" + Language.getText("OBJECTIVE_CU"), getContext().getSkin());
+            Label label_objective_cu = new Label(Language.getText("OBJECTIVE_CU"), getContext().getSkin());
             label_objective_cu.setWrap(true);
-            Label label_objective_cc = new Label(">" + Language.getText("OBJECTIVE_CC"), getContext().getSkin());
+            Label label_objective_cc = new Label(Language.getText("OBJECTIVE_CC"), getContext().getSkin());
             label_objective_cc.setWrap(true);
-            objective_pane.add(label_objective_cu).width(ts * 6).padBottom(ts / 4).row();
-            objective_pane.add(label_objective_cc).width(ts * 6).padBottom(ts / 4);
+            objective_pane.add(label_objective_cu).width(getOwner().getViewportWidth() - ts).padBottom(ts / 4).row();
+            objective_pane.add(label_objective_cc).width(getOwner().getViewportWidth() - ts).padBottom(ts / 4);
         }
         objective_pane.layout();
         layout();
 
-        float width = ts * 7;
+        float width = getOwner().getViewportWidth();
         float height = getPrefHeight();
-        setBounds((Gdx.graphics.getWidth() - width) / 2, (Gdx.graphics.getHeight() - height) / 2, width, height);
+        setBounds(0, (getOwner().getViewportHeight() - height) / 2 + ts, width, height);
     }
 
     public void setOkCallable(Callable callable_ok) {

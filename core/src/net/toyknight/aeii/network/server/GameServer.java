@@ -361,67 +361,58 @@ public class GameServer {
 
     public void doRespondListMaps(PlayerService player, JSONObject request) {
         try {
-            if (player.isAuthenticated()) {
-                JSONObject response = createResponse(request);
-                if (request.has("author")) {
-                    String author = request.getString("author");
-                    response.put("maps", getMapManager().getSerializedMapList(author));
-                } else {
-                    response.put("maps", getMapManager().getSerializedAuthorList());
-                }
-                player.getConnection().sendTCP(response.toString());
+            JSONObject response = createResponse(request);
+            if (request.has("author")) {
+                String author = request.getString("author");
+                response.put("maps", getMapManager().getSerializedMapList(author));
+            } else {
+                response.put("maps", getMapManager().getSerializedAuthorList());
             }
+            player.getConnection().sendTCP(response.toString());
         } catch (JSONException ex) {
-            String message = String.format(
-                    "Bad map listing request from %s@%s", player.getUsername(), player.getAddress());
+            String message = String.format("Bad map listing request from %s", player.getAddress());
             Log.error(TAG, message, ex);
         }
     }
 
     public void doRespondUploadMap(PlayerService player, JSONObject request) {
         try {
-            if (player.isAuthenticated()) {
-                JSONObject response = createResponse(request);
-                Map map = new Map(request.getJSONObject("map"));
-                String map_name = request.getString("map_name");
-                boolean approved;
-                try {
-                    getMapManager().addMap(map, map_name);
-                    approved = true;
-                } catch (IOException ex) {
-                    approved = false;
-                }
-                response.put("approved", approved);
-                player.getConnection().sendTCP(response.toString());
+            JSONObject response = createResponse(request);
+            Map map = new Map(request.getJSONObject("map"));
+            String map_name = request.getString("map_name");
+            boolean approved;
+            try {
+                getMapManager().addMap(map, map_name);
+                approved = true;
+            } catch (IOException ex) {
+                approved = false;
             }
+            response.put("approved", approved);
+            player.getConnection().sendTCP(response.toString());
         } catch (JSONException ex) {
-            String message = String.format(
-                    "Bad map uploading request from %s@%s", player.getUsername(), player.getAddress());
+            String message = String.format("Bad map uploading request from %s", player.getAddress());
             Log.error(TAG, message, ex);
         }
     }
 
     public void doRespondDownloadMap(PlayerService player, JSONObject request) {
         try {
-            if (player.isAuthenticated()) {
-                JSONObject response = createResponse(request);
-                String filename = request.getString("filename");
-                boolean approved;
-                try {
-                    Map map = getMapManager().getMap(filename);
-                    response.put("map", map.toJson());
-                    approved = true;
-                } catch (IOException ex) {
-                    approved = false;
-                } catch (AEIIException ex) {
-                    approved = false;
-                }
-                response.put("approved", approved);
-                player.getConnection().sendTCP(response.toString());
+            JSONObject response = createResponse(request);
+            String filename = request.getString("filename");
+            boolean approved;
+            try {
+                Map map = getMapManager().getMap(filename);
+                response.put("map", map.toJson());
+                approved = true;
+            } catch (IOException ex) {
+                approved = false;
+            } catch (AEIIException ex) {
+                approved = false;
             }
+            response.put("approved", approved);
+            player.getConnection().sendTCP(response.toString());
         } catch (JSONException ex) {
-            String message = String.format(
-                    "Bad map downloading request from %s@%s", player.getUsername(), player.getAddress());
+            String message = String.format("Bad map downloading request from %s", player.getAddress());
             Log.error(TAG, message, ex);
         }
     }

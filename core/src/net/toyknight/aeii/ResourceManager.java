@@ -40,7 +40,8 @@ public class ResourceManager {
     private static Texture texture_move_target_cursor;
     private static TextureRegion[] icons_unit_preview;
 
-    private static TextureRegion[][][][] texture_units;
+    private static TextureRegion[][][] texture_units;
+    private static TextureRegion[] texture_heads;
     private static TextureRegion[] texture_status;
 
     private static HashMap<String, Texture> texture_map_editor_icons;
@@ -57,6 +58,7 @@ public class ResourceManager {
     private static TextureRegion[] icons_main_menu;
 
     private static Texture texture_dust;
+    private static Texture texture_smoke;
     private static Texture texture_spark_attack;
     private static Texture texture_spark_white;
     private static TextureRegion[] texture_portraits;
@@ -105,10 +107,12 @@ public class ResourceManager {
         asset_manager.load("images/cursor_move_target.png", Texture.class);
         asset_manager.load("images/icons_unit_preview.png", Texture.class);
         //unit textures
-        texture_units = new TextureRegion[4][UnitFactory.getUnitCount()][4][2];
+        texture_units = new TextureRegion[4][UnitFactory.getUnitCount()][2];
         for (int team = 0; team < 4; team++) {
             asset_manager.load("images/units/unit_sheet_" + team + ".png", Texture.class);
         }
+        texture_heads = new TextureRegion[4];
+        asset_manager.load("images/units/heads.png", Texture.class);
         asset_manager.load("images/status.png", Texture.class);
         //map editor icons
         asset_manager.load("images/editor/icon_brush.png", Texture.class);
@@ -128,6 +132,7 @@ public class ResourceManager {
         asset_manager.load("images/icons_hud_battle.png", Texture.class);
         asset_manager.load("images/icons_main_menu.png", Texture.class);
         asset_manager.load("images/dust.png", Texture.class);
+        asset_manager.load("images/smoke.png", Texture.class);
         asset_manager.load("images/spark_attack.png", Texture.class);
         asset_manager.load("images/spark_white.png", Texture.class);
         asset_manager.load("images/main_menu_background.png", Texture.class);
@@ -195,14 +200,14 @@ public class ResourceManager {
             Texture sheet_units = asset_manager.get("images/units/unit_sheet_" + team + ".png", Texture.class);
             int texture_size = sheet_units.getWidth() / UnitFactory.getUnitCount();
             for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-                for (int level = 0; level < 4; level++) {
-                    texture_units[team][index][level][0] = new TextureRegion(sheet_units,
-                            index * texture_size, level * texture_size * 2, texture_size, texture_size);
-                    texture_units[team][index][level][1] = new TextureRegion(sheet_units,
-                            index * texture_size, level * texture_size * 2 + texture_size, texture_size, texture_size);
-                }
+                texture_units[team][index][0] = new TextureRegion(sheet_units,
+                        index * texture_size, 0, texture_size, texture_size);
+                texture_units[team][index][1] = new TextureRegion(sheet_units,
+                        index * texture_size, texture_size, texture_size, texture_size);
             }
         }
+        Texture sheet_heads = asset_manager.get("images/units/heads.png", Texture.class);
+        texture_heads = createFrames(sheet_heads, 4, 1);
         Texture sheet_status = asset_manager.get("images/status.png", Texture.class);
         texture_status = createFrames(sheet_status, 4, 1);
 
@@ -231,6 +236,7 @@ public class ResourceManager {
         Texture sheet_icons_main_menu = asset_manager.get("images/icons_main_menu.png", Texture.class);
         icons_main_menu = createFrames(sheet_icons_main_menu, 10, 1);
         texture_dust = asset_manager.get("images/dust.png", Texture.class);
+        texture_smoke = asset_manager.get("images/smoke.png", Texture.class);
         texture_spark_attack = asset_manager.get("images/spark_attack.png", Texture.class);
         texture_spark_white = asset_manager.get("images/spark_white.png", Texture.class);
         Texture sheet_portraits = asset_manager.get("images/portraits.png", Texture.class);
@@ -304,8 +310,12 @@ public class ResourceManager {
         return icons_unit_preview[team];
     }
 
-    public static TextureRegion getUnitTexture(int team, int index, int level, int frame) {
-        return texture_units[team][index][level][frame];
+    public static TextureRegion getUnitTexture(int team, int index, int frame) {
+        return texture_units[team][index][frame];
+    }
+
+    public static TextureRegion getHeadTexture(int index) {
+        return texture_heads[index];
     }
 
     public static TextureRegion getStatusTexture(int index) {
@@ -346,6 +356,10 @@ public class ResourceManager {
 
     public static Texture getDustTexture() {
         return texture_dust;
+    }
+
+    public static Texture getSmokeTexture() {
+        return texture_smoke;
     }
 
     public static Texture getAttackSparkTexture() {

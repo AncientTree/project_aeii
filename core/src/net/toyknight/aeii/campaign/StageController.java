@@ -2,6 +2,7 @@ package net.toyknight.aeii.campaign;
 
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 6/24/2016.
@@ -20,6 +21,14 @@ public abstract class StageController {
         return context;
     }
 
+    protected boolean isCommander(Unit unit, int team) {
+        return unit.getTeam() == team && unit.isCommander();
+    }
+
+    protected boolean isCrystal(Unit unit, int team) {
+        return unit.getTeam() == team && unit.getIndex() == UnitFactory.getCrystalIndex();
+    }
+
     public final void setCleared(boolean cleared) {
         this.cleared = cleared;
     }
@@ -31,6 +40,8 @@ public abstract class StageController {
     abstract public void onGameStart();
 
     abstract public void onUnitMoved(Unit unit, int x, int y);
+
+    abstract public void onUnitStandby(Unit unit);
 
     abstract public void onUnitAttacked(Unit attacker, Unit defender);
 

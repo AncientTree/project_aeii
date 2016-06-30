@@ -267,12 +267,13 @@ public class GameCore implements Serializable {
         }
     }
 
-    public void createUnit(int index, int team, int x, int y) {
+    public Unit createUnit(int index, int team, int x, int y) {
         Unit unit = UnitFactory.createUnit(index, team);
         unit.setX(x);
         unit.setY(y);
         getMap().addUnit(unit);
         updatePopulation(team);
+        return unit;
     }
 
     public void moveUnit(int target_x, int target_y, int dest_x, int dest_y) {

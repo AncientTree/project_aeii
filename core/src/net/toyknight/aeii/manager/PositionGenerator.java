@@ -161,23 +161,34 @@ public class PositionGenerator {
     }
 
     public Position getNextPositionToTarget(Unit unit, int target_x, int target_y) {
-        current_unit = UnitFactory.cloneUnit(unit);
-        initializeMoveMarkMap();
-        searchPathToTarget(createStartStep(unit), unit, getGame().getMap().getPosition(target_x, target_y));
-        createMovePath(unit, target_x, target_y);
-        current_unit = null;
-        if (move_path.size > 0) {
-            for (int i = move_path.size - 1; i >= 0; i--) {
-                int map_x = move_path.get(i).x;
-                int map_y = move_path.get(i).y;
-                if (move_mark_map[map_x][map_y] >= 0 && getGame().getMap().getUnit(map_x, map_y) == null) {
-                    return move_path.get(i);
-                }
+//        current_unit = UnitFactory.cloneUnit(unit);
+//        initializeMoveMarkMap();
+//        searchPathToTarget(createStartStep(unit), unit, getGame().getMap().getPosition(target_x, target_y));
+//        createMovePath(unit, target_x, target_y);
+//        current_unit = null;
+//        if (move_path.size > 0) {
+//            for (int i = move_path.size - 1; i >= 0; i--) {
+//                int map_x = move_path.get(i).x;
+//                int map_y = move_path.get(i).y;
+//                if (move_mark_map[map_x][map_y] >= 0 && getGame().getMap().getUnit(map_x, map_y) == null) {
+//                    return move_path.get(i);
+//                }
+//            }
+//            return move_path.get(0);
+//        } else {
+//            return getGame().getMap().getPosition(unit);
+//        }
+        ObjectSet<Position> movable_positions = createMovablePositions(unit);
+        Position next_position = movable_positions.first();
+        int min_distance = Integer.MAX_VALUE;
+        for (Position position : movable_positions) {
+            int distance = UnitToolkit.getRange(position.x, position.y, target_x, target_y);
+            if (distance < min_distance) {
+                next_position = position;
+                min_distance = distance;
             }
-            return move_path.get(0);
-        } else {
-            return getGame().getMap().getPosition(unit);
         }
+        return next_position;
     }
 
     public int getMovementPointsToTarget(Unit unit, Position target_position) {

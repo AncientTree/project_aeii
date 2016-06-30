@@ -36,6 +36,8 @@ public class NetworkManager {
 
     private static int service_id;
 
+    private static long current_request_id = 0;
+
     private NetworkManager() {
     }
 
@@ -72,7 +74,11 @@ public class NetworkManager {
         });
         client.start();
         client.connect(5000, server.getAddress(), server.getPort());
-        return requestAuthentication(username, v_string);
+        return !(username != null && v_string != null) || requestAuthentication(username, v_string);
+    }
+
+    public static boolean connect(ServerConfiguration server) throws IOException, JSONException {
+        return connect(server, null, null);
     }
 
     public static void disconnect() {
@@ -361,6 +367,11 @@ public class NetworkManager {
         JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
         notification.put("game_event", event);
         sendNotification(notification);
+        //TODO: Just try to ensure that events are received sequentially. To be improved in the future.
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException ignored) {
+        }
     }
 
     public static void sendMessage(String message) throws JSONException {
@@ -371,7 +382,7 @@ public class NetworkManager {
 
     private static JSONObject createRequest(int operation) throws JSONException {
         JSONObject packet = new JSONObject();
-        packet.put("request_id", System.currentTimeMillis());
+        packet.put("request_id", current_request_id++);
         packet.put("type", NetworkConstants.REQUEST);
         packet.put("operation", operation);
         return packet;

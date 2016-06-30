@@ -286,7 +286,10 @@ public class GameContext extends Game implements GameManagerListener {
             getCampaignContext().setCurrentStage(stage);
             GameCore game = GameToolkit.createCampaignGame(getCampaignContext().getCurrentCampaign().getCurrentStage());
             gotoGameScreen(game);
+            String stage_name = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageName();
+            getGameManager().getAnimationDispatcher().submitMessageAnimation(stage_name, 1f);
             getCampaignContext().onGameStart();
+            getCampaignContext().getCurrentCampaign().getCurrentStage().getContext().show_objectives();
         } catch (AEIIException ex) {
             if (getScreen() instanceof StageScreen) {
                 ((StageScreen) getScreen()).showPrompt(Language.getText("MSG_ERR_BMF"), null);
@@ -361,6 +364,11 @@ public class GameContext extends Game implements GameManagerListener {
     @Override
     public void onCampaignMessageSubmitted() {
         game_screen.showCampaignMessage();
+    }
+
+    @Override
+    public void onCampaignObjectiveRequested() {
+        game_screen.showObjectives();
     }
 
     @Override

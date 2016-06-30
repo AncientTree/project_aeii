@@ -30,7 +30,7 @@ public class ConfirmDialog extends BasicDialog {
         label_message = new Label("", getContext().getSkin());
         label_message.setAlignment(Align.center);
         label_message.setWrap(true);
-        add(label_message).size(ts * 6 + ts / 2, ts).row();
+        add(label_message).size(ts * 6 + ts / 2, ts + ts / 2).row();
 
         Table button_bar = new Table();
         btn_yes = new TextButton(Language.getText("LB_YES"), getContext().getSkin());
@@ -40,7 +40,7 @@ public class ConfirmDialog extends BasicDialog {
                 yes_callable.call();
             }
         });
-        button_bar.add(btn_yes).size(ts * 3, ts);
+        button_bar.add(btn_yes).size(ts * 3, ts).padBottom(ts / 2);
         btn_no = new TextButton(Language.getText("LB_NO"), getContext().getSkin());
         btn_no.addListener(new ClickListener() {
             @Override
@@ -48,8 +48,8 @@ public class ConfirmDialog extends BasicDialog {
                 no_callable.call();
             }
         });
-        button_bar.add(btn_no).size(ts * 3, ts).padLeft(ts / 2);
-        add(button_bar).size(ts * 6 + ts / 2, ts);
+        button_bar.add(btn_no).size(ts * 3, ts).padLeft(ts / 2).padBottom(ts / 2);
+        add(button_bar).size(ts * 6 + ts / 2, ts + ts / 2);
 
         int width = ts * 7 + ts / 2;
         int height = ts * 3;

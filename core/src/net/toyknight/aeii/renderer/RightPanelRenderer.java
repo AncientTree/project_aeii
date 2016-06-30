@@ -3,7 +3,6 @@ package net.toyknight.aeii.renderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -73,8 +72,12 @@ public class RightPanelRenderer {
         String STR_HP = "HP ";
         String STR_EXP = "XP ";
         if (target_unit != null) {
-            TextureRegion unit_texture = ResourceManager.getUnitTexture(target_unit.getTeam(), target_unit.getIndex(), target_unit.getLevel(), 0);
-            batch.draw(unit_texture, screen.getViewportWidth() + ts, screen.getViewportHeight() - ts * 2, ts, ts);
+            batch.draw(ResourceManager.getUnitTexture(target_unit.getTeam(), target_unit.getIndex(), 0),
+                    screen.getViewportWidth() + ts, screen.getViewportHeight() - ts * 2, ts, ts);
+            if (target_unit.isCommander()) {
+                UnitRenderer.drawHead(batch, target_unit.getHead(),
+                        screen.getViewportWidth() + ts, screen.getViewportHeight() - ts * 2, 0, ts);
+            }
             //draw level
             String level_str = Integer.toString(target_unit.getLevel());
             FontRenderer.drawText(batch, level_str,

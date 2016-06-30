@@ -33,6 +33,10 @@ public class TutorialStage2 extends StageController {
     }
 
     @Override
+    public void onUnitStandby(Unit unit) {
+    }
+
+    @Override
     public void onUnitAttacked(Unit attacker, Unit defender) {
     }
 

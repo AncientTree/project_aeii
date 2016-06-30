@@ -44,6 +44,7 @@ public class Room {
     public Room(long room_number, String room_name, GameCore game) {
         this(room_number, room_name);
         manager = new GameManager();
+        manager.getGameEventExecutor().setCheckEventValue(false);
         manager.setGame(game);
         start_gold = -1;
     }
@@ -67,6 +68,7 @@ public class Room {
                 game.getPlayer(team).setAlliance(team + 1);
             }
             manager = new GameManager();
+            manager.getGameEventExecutor().setCheckEventValue(false);
             manager.setGame(game);
         }
     }

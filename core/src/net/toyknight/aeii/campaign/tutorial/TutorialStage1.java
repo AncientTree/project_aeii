@@ -36,6 +36,10 @@ public class TutorialStage1 extends StageController {
     }
 
     @Override
+    public void onUnitStandby(Unit unit) {
+    }
+
+    @Override
     public void onUnitAttacked(Unit attacker, Unit defender) {
         int attacked = getContext().get("attacked");
         if (attacker.getTeam() == getPlayerTeam() && attacker.isCommander() && attacked == 0) {

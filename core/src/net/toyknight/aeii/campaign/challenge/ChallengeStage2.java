@@ -14,6 +14,8 @@ public class ChallengeStage2 extends StageController {
 
     @Override
     public void onGameStart() {
+        getContext().head(0, 1);
+        getContext().head(1, 0);
         Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_2_MESSAGE_1"));
         getContext().message(message);
     }
@@ -23,12 +25,16 @@ public class ChallengeStage2 extends StageController {
     }
 
     @Override
+    public void onUnitStandby(Unit unit) {
+    }
+
+    @Override
     public void onUnitAttacked(Unit attacker, Unit defender) {
     }
 
     @Override
     public void onUnitDestroyed(Unit unit) {
-        if (unit.getTeam() == getPlayerTeam() && unit.isCommander()) {
+        if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         }
     }
@@ -48,7 +54,7 @@ public class ChallengeStage2 extends StageController {
 
     @Override
     public void onTurnStart(int turn) {
-        if (turn > 31) {
+        if (turn > 32) {
             getContext().fail();
         }
     }

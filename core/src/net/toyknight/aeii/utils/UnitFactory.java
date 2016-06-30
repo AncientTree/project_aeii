@@ -68,6 +68,7 @@ public class UnitFactory {
         unit.setX(json.getInt("x_position"));
         unit.setY(json.getInt("y_position"));
         unit.setStandby(json.getBoolean("standby"));
+        unit.setHead(json.getInt("head"));
         if (json.has("status")) {
             unit.setStatus(new Status(json.getJSONObject("status")));
         }
@@ -82,6 +83,7 @@ public class UnitFactory {
     public static Unit createUnit(int index, int team, String unit_code) {
         Unit unit = new Unit(default_units[index], unit_code);
         unit.setTeam(team);
+        unit.setHead(team);
         unit.setStandby(false);
         unit.setCurrentHp(unit.getMaxHp());
         unit.setCurrentMovementPoint(unit.getMovementPoint());

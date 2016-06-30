@@ -28,6 +28,10 @@ public interface MapCanvas {
 
     int getCursorMapY();
 
+    void setOffsetX(float offset_x);
+
+    void setOffsetY(float offset_y);
+
     int ts();
 
 }

@@ -24,27 +24,35 @@ public class UnitRenderer {
         return canvas.ts();
     }
 
-    public void drawUnit(Batch batch, Unit unit, float screen_x, float screen_y) {
+    public static void drawUnit_(Batch batch, Unit unit, float screen_x, float screen_y, int frame, int ts) {
         TextureRegion unit_texture;
         if (unit.isStandby()) {
             batch.setShader(ResourceManager.getGrayscaleShader(0f));
-            unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), 0);
+            unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), 0);
         } else {
-            unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), unit.getLevel(), getCurrentFrame());
+            unit_texture = ResourceManager.getUnitTexture(unit.getTeam(), unit.getIndex(), frame);
         }
-        batch.draw(unit_texture, screen_x, screen_y, ts(), ts());
+        batch.draw(unit_texture, screen_x, screen_y, ts, ts);
+        if (unit.isCommander()) {
+            drawHead(batch, unit.getHead(), screen_x, screen_y, frame, ts);
+        }
         batch.setShader(null);
         batch.flush();
     }
 
+    public static void drawHead(Batch batch, int head_index, float screen_x, float screen_y, int frame, int ts) {
+        batch.draw(ResourceManager.getHeadTexture(head_index),
+                screen_x + ts / 24 * 7, screen_y + ts / 2 - frame * ts / 24, ts * 13 / 24, ts * 12 / 24);
+    }
+
     public void drawUnit(Batch batch, Unit unit, int map_x, int map_y) {
-        drawUnit(batch, unit, map_x, map_y, 0, 0);
+        drawUnit(batch, unit, map_x, map_y, 0f, 0f);
     }
 
     public void drawUnit(Batch batch, Unit unit, int map_x, int map_y, float offset_x, float offset_y) {
         int screen_x = canvas.getXOnScreen(map_x);
         int screen_y = canvas.getYOnScreen(map_y);
-        drawUnit(batch, unit, screen_x + offset_x, screen_y + offset_y);
+        drawUnit_(batch, unit, screen_x + offset_x, screen_y + offset_y, getCurrentFrame(), ts());
     }
 
     public void drawUnitWithInformation(Batch batch, Unit unit, int map_x, int map_y) {

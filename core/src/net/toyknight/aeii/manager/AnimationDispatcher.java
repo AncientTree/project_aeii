@@ -32,11 +32,23 @@ public interface AnimationDispatcher {
 
     void submitUnitAttackAnimation(Unit attacker, int target_x, int target_y);
 
-    void submitUnitDestroyAnimation(Unit unit);
+    void submitUnitAttackAnimation(Unit target, int damage);
+
+    void submitUnitAttackAnimation(int target_x, int target_y);
+
+    void submitUnitSparkAnimation(Unit unit);
 
     void submitUnitMoveAnimation(Unit unit, Array<Position> path);
 
-    void submitReinforceAnimation(Array<Unit> reinforcements);
+    void submitReinforceAnimation(Array<Unit> reinforcements, int from_x, int from_y);
+
+    void submitCrystalStealAnimation(int map_x, int map_y, int target_x, int target_y);
+
+    void submitFlyOverAnimation(Unit flier, Unit target, int start_x, int start_y);
+
+    void submitUnitCarryAnimation(Unit carrier, Unit target, int dest_x, int dest_y);
+
+    void submitHavensFuryAnimation(Unit target);
 
     void submitAnimation(Animator animation);
 

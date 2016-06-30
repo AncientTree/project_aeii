@@ -398,8 +398,7 @@ public class MapManagementScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
-                return NetworkManager.connect(
-                        map_server_configuration, getContext().getUsername(), getContext().getVerificationString());
+                return NetworkManager.connect(map_server_configuration);
             }
 
             @Override

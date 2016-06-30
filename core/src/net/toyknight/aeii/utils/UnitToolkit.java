@@ -31,6 +31,9 @@ public class UnitToolkit {
     }
 
     public int getTerrainHeal(Unit unit, Tile tile) {
+        if (unit.getUnitCode().equals("seath")) {
+            return 50;
+        }
         int heal = 0;
         if (!unit.hasAbility(Ability.CRAWLER)) {
             if (tile.getTeam() == -1) {
@@ -73,8 +76,9 @@ public class UnitToolkit {
         if (unit.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile_type == Tile.TYPE_MOUNTAIN) {
             mp_cost = 1;
         }
-        if (mp_cost < 1) {
-            mp_cost = 1;
+        if (unit.getIndex() == UnitFactory.getCrystalIndex() &&
+                tile.getType() == Tile.TYPE_MOUNTAIN && tile.getStepCost() >= 3) {
+            mp_cost = 99;
         }
         return mp_cost;
     }
@@ -108,6 +112,9 @@ public class UnitToolkit {
     }
 
     public int getTileDefenceBonus(Unit unit, int tile_index) {
+        if (unit.getUnitCode().equals("seath")) {
+            return 30;
+        }
         int defence_bonus = 0;
         Tile tile = TileFactory.getTile(tile_index);
         if (!unit.hasAbility(Ability.AIR_FORCE)) {
@@ -206,6 +213,7 @@ public class UnitToolkit {
         damage = (int) (damage * percentage_modifier);
         damage += offset;
         //validate damage
+        damage = damage >= 0 ? damage : 0;
         damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
         return damage;
     }

@@ -406,6 +406,14 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         return cursor_map_y;
     }
 
+    @Override
+    public void setOffsetX(float offset_x) {
+    }
+
+    @Override
+    public void setOffsetY(float offset_y) {
+    }
+
     private int createCursorMapY(int pointer_y) {
         int map_height = getMap().getHeight();
         int cursor_y = (pointer_y + viewport.y) / ts();

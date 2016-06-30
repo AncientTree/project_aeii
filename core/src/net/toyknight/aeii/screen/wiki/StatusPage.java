@@ -28,7 +28,6 @@ public class StatusPage extends Table {
         status_preview = new PreviewFrame(ts);
         status_preview.setTileIndex(18);
         status_preview.setUnitIndex(0);
-        status_preview.setTeam(0);
         add(status_preview).size(ts, ts).padBottom(ts / 8).row();
 
         label_description = new Label("", getWiki().getContext().getSkin()) {

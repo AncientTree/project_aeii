@@ -48,6 +48,23 @@ public class UnitAttackAnimator extends UnitAnimator {
         this.target_y = target_y;
     }
 
+    public UnitAttackAnimator(Unit target, int damage) {
+        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+        this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
+        this.addUnit(target, TARGET_KEY);
+        this.damage = damage;
+        this.target_x = target.getX();
+        this.target_y = target.getY();
+    }
+
+    public UnitAttackAnimator(int target_x, int target_y) {
+        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+        this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
+        this.damage = -1;
+        this.target_x = target_x;
+        this.target_y = target_y;
+    }
+
     @Override
     public void render(Batch batch) {
         Unit attacker = getUnit(ATTACKER_KEY);
@@ -58,7 +75,9 @@ public class UnitAttackAnimator extends UnitAnimator {
         int tile_index = getCanvas().getMap().getTileIndex(target_x, target_y);
         batch.draw(ResourceManager.getTileTexture(tile_index), target_sx, target_sy, ts(), ts());
         //paint units
-        getCanvas().getUnitRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
+        if (attacker != null) {
+            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
+        }
         if (target != null) {
             getCanvas().getUnitRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
         }

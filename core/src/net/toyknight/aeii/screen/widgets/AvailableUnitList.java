@@ -10,7 +10,9 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.renderer.FontRenderer;
+import net.toyknight.aeii.renderer.UnitRenderer;
 import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 5/29/2015.
@@ -124,8 +126,12 @@ public class AvailableUnitList extends Widget implements Cullable {
             }
             batch.draw(ResourceManager.getBigCircleTexture(0),
                     x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
-            batch.draw(ResourceManager.getUnitTexture(current_team, unit_index, 0, 0),
+            batch.draw(ResourceManager.getUnitTexture(current_team, unit_index, 0),
                     x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
+            if (UnitFactory.getCommanderIndex() == unit_index) {
+                UnitRenderer.drawHead(batch, getGame().getCommander(current_team).getHead(),
+                        x + unit_offset, y + itemY - item_height + unit_offset, 0, ts);
+            }
             batch.flush();
             FontRenderer.drawTextCenter(batch, Language.getUnitName(unit_index),
                     x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
