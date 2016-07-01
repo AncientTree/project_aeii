@@ -63,11 +63,15 @@ public class PositionGenerator {
     }
 
     public ObjectSet<Position> createMovablePositions(Unit unit) {
-        current_unit = UnitFactory.cloneUnit(unit);
         movable_positions.clear();
-        initializeMoveMarkMap();
-        createMovablePositions(createStartStep(unit), unit);
-        return movable_positions;
+        if (unit == null) {
+            return movable_positions;
+        } else {
+            current_unit = UnitFactory.cloneUnit(unit);
+            initializeMoveMarkMap();
+            createMovablePositions(createStartStep(unit), unit);
+            return movable_positions;
+        }
     }
 
     private void createMovablePositions(Queue<Step> current_steps, Unit unit) {
