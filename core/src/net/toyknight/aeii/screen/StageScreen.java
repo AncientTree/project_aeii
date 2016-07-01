@@ -114,7 +114,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         BasicDialog dialog = dialogs.get(name);
         if (dialog != null && !dialog.isVisible()) {
             if (dialog_layer.size() > 0) {
-                dialogs.get(dialog_layer.peekFirst()).setVisible(false);
+                dialogs.get(dialog_layer.getFirst()).setVisible(false);
             }
 
             dialog_layer.addFirst(name);
@@ -128,26 +128,28 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public void closeAllDialogs() {
         while (dialog_layer.size() > 0) {
-            String dialog_name = dialog_layer.peekFirst();
+            String dialog_name = dialog_layer.getFirst();
             closeDialog(dialog_name);
         }
     }
 
     public void closeTopDialog() {
-        String top_dialog_name = dialog_layer.peekFirst();
-        closeDialog(top_dialog_name);
+        if (dialog_layer.size() > 0) {
+            String top_dialog_name = dialog_layer.getFirst();
+            closeDialog(top_dialog_name);
+        }
     }
 
     public void closeDialog(String name) {
         dialog_layer.remove(name);
         dialogs.get(name).setVisible(false);
 
-        String top_dialog_name = dialog_layer.peekFirst();
-        if (top_dialog_name == null) {
+        if (dialog_layer.size() > 0) {
+            String top_dialog_name = dialog_layer.getFirst();
+            dialogs.get(top_dialog_name).setVisible(true);
+        } else {
             Gdx.input.setInputProcessor(this);
             dialog_shown = false;
-        } else {
-            dialogs.get(top_dialog_name).setVisible(true);
         }
     }
 
