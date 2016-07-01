@@ -505,16 +505,19 @@ public class GameManager implements GameEventListener, AnimationListener {
             Tile tile = getGame().getMap().getTile(map_x, map_y);
             Unit unit = getGame().getMap().getUnit(map_x, map_y);
             if (getGame().isCastleAccessible(tile, team) && getGame().canBuyUponUnit(unit, team)) {
-                Unit sample = UnitFactory.getSample(index);
+                Unit sample = UnitFactory.cloneUnit(UnitFactory.getSample(index));
                 int price = getGame().getUnitPrice(index, team);
                 int movement_point = sample.getMovementPoint();
                 sample.setCurrentMovementPoint(movement_point);
+                sample.setTeam(team);
                 sample.setX(map_x);
                 sample.setY(map_y);
                 getPositionGenerator().reset();
+                ObjectSet<Position> movable_positions = getPositionGenerator().createMovablePositions(sample);
+                System.out.println(movable_positions.size);
                 return price >= 0
+                        && movable_positions.size > 0
                         && getGame().getCurrentPlayer().getGold() >= price
-                        && getPositionGenerator().createMovablePositions(sample).size > 0
                         && (getGame().canAddPopulation(team, sample.getOccupancy()) || sample.isCommander());
             } else {
                 return false;

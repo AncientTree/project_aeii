@@ -38,6 +38,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
     private TextButton btn_recruit;
     private AvailableUnitList unit_list;
+    private ScrollPane sp_unit_list;
 
     private int castle_x;
     private int castle_y;
@@ -58,7 +59,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     private void initComponents(Skin skin) {
         this.unit_list = new AvailableUnitList(ts);
         this.unit_list.setUnitListListener(this);
-        ScrollPane sp_unit_list = new ScrollPane(unit_list, skin) {
+        sp_unit_list = new ScrollPane(unit_list, skin) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
@@ -170,6 +171,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         GameManager manager = getManager();
         Array<Integer> available_units = manager.getGame().getRule().getAvailableUnits();
         unit_list.setAvailableUnits(available_units);
+        sp_unit_list.setScrollPercentY(0f);
     }
 
     @Override
