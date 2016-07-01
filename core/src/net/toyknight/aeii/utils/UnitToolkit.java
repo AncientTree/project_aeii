@@ -31,7 +31,7 @@ public class UnitToolkit {
     }
 
     public int getTerrainHeal(Unit unit, Tile tile) {
-        if (unit.getUnitCode().equals("seath")) {
+        if (unit.getUnitCode().equals("saeth")) {
             return 50;
         }
         int heal = 0;
@@ -112,7 +112,7 @@ public class UnitToolkit {
     }
 
     public int getTileDefenceBonus(Unit unit, int tile_index) {
-        if (unit.getUnitCode().equals("seath")) {
+        if (unit.getUnitCode().equals("saeth")) {
             return 30;
         }
         int defence_bonus = 0;
