@@ -16,7 +16,7 @@ public class AEIIStage2 extends StageController {
     private void checkClear() {
         if (getContext().tile(12, 3).getTeam() == getPlayerTeam() &&
                 getContext().tile(3, 5).getTeam() == getPlayerTeam() &&
-                getContext().count(1) == 0) {
+                getContext().count_unit(1) == 0) {
             Message message9 = new Message(1, Language.getText("CAMPAIGN_AEII_STAGE_2_MESSAGE_9"));
             Message message10 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_2_MESSAGE_10"));
             getContext().message(message9, message10);
@@ -48,7 +48,7 @@ public class AEIIStage2 extends StageController {
         Message message5 = new Message(2, Language.getText("CAMPAIGN_AEII_STAGE_2_MESSAGE_5"));
         getContext().message(message5);
         getContext().destroy_unit(6, 2);
-        getContext().remove(6, 0);
+        getContext().remove_unit(6, 0);
         getContext().focus(8, 9);
         Message message6 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_2_MESSAGE_6"));
         Message message7 = new Message(1, Language.getText("CAMPAIGN_AEII_STAGE_2_MESSAGE_7"));

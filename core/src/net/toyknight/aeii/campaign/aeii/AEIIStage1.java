@@ -49,7 +49,7 @@ public class AEIIStage1 extends StageController {
         if (unit.getTeam() == getPlayerTeam() && unit.isCommander()) {
             getContext().fail();
         }
-        if (getContext().count(1) == 0) {
+        if (getContext().count_unit(1) == 0) {
             if (getContext().get("reinforced") == 0) {
                 getContext().reinforce(1, new Reinforcement(0, 10, 10));
                 getContext().move(10, 10, 10, 9);

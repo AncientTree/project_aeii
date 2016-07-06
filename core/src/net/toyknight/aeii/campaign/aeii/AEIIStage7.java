@@ -17,7 +17,7 @@ public class AEIIStage7 extends StageController {
     private void checkClear() {
         Tile castle1 = getContext().tile(0, 8);
         Tile castle2 = getContext().tile(12, 9);
-        if (getContext().count(1) == 0 && castle1.getTeam() == getPlayerTeam() && castle2.getTeam() == getPlayerTeam()) {
+        if (getContext().count_unit(1) == 0 && castle1.getTeam() == getPlayerTeam() && castle2.getTeam() == getPlayerTeam()) {
             getContext().clear();
         }
     }
@@ -94,7 +94,7 @@ public class AEIIStage7 extends StageController {
 
     @Override
     public void onUnitDestroyed(Unit unit) {
-        if (getContext().count(1) == 0 && getContext().get("stolen") == 0) {
+        if (getContext().count_unit(1) == 0 && getContext().get("stolen") == 0) {
             triggerStealEvent();
         }
         if (isCommander(unit, getPlayerTeam()) || isCrystal(unit, getPlayerTeam())) {

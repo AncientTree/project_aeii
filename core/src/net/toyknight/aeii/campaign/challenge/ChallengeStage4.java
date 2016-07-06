@@ -1,34 +1,29 @@
-package net.toyknight.aeii.campaign.aeii;
+package net.toyknight.aeii.campaign.challenge;
 
-import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.StageController;
+import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
-import net.toyknight.aeii.entity.Tile;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
 
 /**
- * @author toyknight 6/29/2016.
+ * @author toyknight 7/3/2016.
  */
-public class AEIIStage6 extends StageController {
+public class ChallengeStage4 extends StageController {
 
     private void checkClear() {
-        Tile castle1 = getContext().tile(5, 17);
-        Tile castle2 = getContext().tile(5, 5);
-        if (getContext().count_unit(1) == 0 && castle1.getTeam() == getPlayerTeam() && castle2.getTeam() == getPlayerTeam()) {
-            Message message2 = new Message(1, Language.getText("CAMPAIGN_AEII_STAGE_6_MESSAGE_2"));
-            getContext().message(message2);
+        if (getContext().count_unit(0) == 0 && getContext().count_unit(2) == 0 && getContext().count_castle(0) == 0) {
             getContext().clear();
         }
     }
 
     @Override
     public void onGameStart() {
-        getContext().head(0, 2);
-        getContext().focus(5, 17);
-        Message message1 = new Message(1, Language.getText("CAMPAIGN_AEII_STAGE_6_MESSAGE_1"));
-        getContext().message(message1);
+        getContext().head(0, 1);
+        getContext().head(1, 0);
+        Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1"));
+        getContext().message(message);
     }
 
     @Override
@@ -49,6 +44,11 @@ public class AEIIStage6 extends StageController {
             getContext().fail();
         } else {
             checkClear();
+            if (!unit.hasAbility(Ability.UNDEAD) && !unit.isCommander()) {
+                getContext().restore(2);
+                getContext().remove_tomb(unit.getX(), unit.getY());
+                getContext().create(14, 2, unit.getX(), unit.getY());
+            }
         }
     }
 
@@ -69,49 +69,50 @@ public class AEIIStage6 extends StageController {
 
     @Override
     public void onTurnEnd(int turn) {
+        if (getContext().count_unit(2) == 0) {
+            getContext().destroy_team(2);
+
+        }
     }
 
     @Override
     public String getMapName() {
-        return "aeii_c5.aem";
+        return "challenge_stage_4.aem";
     }
 
     @Override
     public Rule getRule() {
         Rule rule = Rule.createDefault();
-        Array<Integer> available_units = new Array<Integer>();
-        for (int i = 0; i < 8; i++) {
-            available_units.add(i);
-        }
-        available_units.add(9);
-        rule.setAvailableUnits(available_units);
         rule.setValue(Rule.Entry.MAX_POPULATION, 30);
         return rule;
     }
 
     @Override
     public int getStartGold() {
-        return 600;
+        return 500;
     }
 
     @Override
     public int getPlayerTeam() {
-        return 0;
+        return 1;
     }
 
     @Override
     public String[] getObjectives() {
-        return new String[]{Language.getText("CAMPAIGN_AEII_STAGE_6_OBJECTIVE")};
+        return new String[]{
+                Language.getText("CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1"),
+                Language.getText("CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2")
+        };
     }
 
     @Override
     public int getStageNumber() {
-        return 5;
+        return 3;
     }
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_AEII_STAGE_6_NAME");
+        return Language.getText("CAMPAIGN_CHALLENGE_STAGE_4_NAME");
     }
 
 }

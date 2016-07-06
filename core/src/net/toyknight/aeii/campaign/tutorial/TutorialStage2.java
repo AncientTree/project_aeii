@@ -45,7 +45,7 @@ public class TutorialStage2 extends StageController {
         if (unit.getTeam() == getPlayerTeam() && unit.isCommander()) {
             getContext().fail();
         }
-        if (getContext().count(1) == 0) {
+        if (getContext().count_unit(1) == 0) {
             getContext().clear();
         }
     }

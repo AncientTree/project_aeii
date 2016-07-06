@@ -9,6 +9,7 @@ import net.toyknight.aeii.campaign.tutorial.TutorialCampaign;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
+import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -162,8 +163,12 @@ public class CampaignContext {
                     GameEvent.CAMPAIGN_REINFORCE, team, from_x, from_y, index_array, position_array);
         }
 
-        public int count(int team) {
+        public int count_unit(int team) {
             return getContext().getGame().getMap().getUnits(team).size;
+        }
+
+        public int count_castle(int team) {
+            return getContext().getGame().getMap().getCastlePositions(team).size;
         }
 
         public void clear() {
@@ -256,9 +261,15 @@ public class CampaignContext {
                     GameEvent.CAMPAIGN_MOVE_UNIT, unit_x, unit_y, target_x, target_y);
         }
 
-        public void remove(int unit_x, int unit_y) {
+        public void remove_unit(int unit_x, int unit_y) {
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(
                     GameEvent.CAMPAIGN_REMOVE_UNIT, unit_x, unit_y);
+        }
+
+        public void remove_tomb(int map_x, int map_y) {
+            if (getContext().getGame().getMap().isTomb(map_x, map_y)) {
+                getContext().getGame().getMap().removeTomb(map_x, map_y);
+            }
         }
 
         public void team(int unit_x, int unit_y, int team) {
@@ -346,6 +357,10 @@ public class CampaignContext {
 
         public void static_unit(String unit_code) {
             getContext().getGameManager().getRobot().addStaticUnit(unit_code);
+        }
+
+        public Unit get_unit(int map_x, int map_y) {
+            return UnitFactory.cloneUnit(getContext().getGame().getMap().getUnit(map_x, map_y));
         }
 
     }

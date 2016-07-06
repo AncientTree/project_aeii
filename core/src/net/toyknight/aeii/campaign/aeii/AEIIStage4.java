@@ -16,7 +16,7 @@ public class AEIIStage4 extends StageController {
     private void checkClear() {
         Tile castle1 = getContext().tile(7, 1);
         Tile castle2 = getContext().tile(13, 9);
-        if (getContext().count(1) == 0 && castle1.getTeam() == getPlayerTeam() && castle2.getTeam() == getPlayerTeam()) {
+        if (getContext().count_unit(1) == 0 && castle1.getTeam() == getPlayerTeam() && castle2.getTeam() == getPlayerTeam()) {
             Message message6 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_6"));
             Message message7 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_7"));
             getContext().message(message6, message7);

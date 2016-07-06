@@ -126,6 +126,11 @@ CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_1=VICTORY: Capture all enemy castles.
 CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=Damn, the enemy cities have noticed us! The ambush operation has failed, we must fight them head on. Capture all their castles!
 
+CAMPAIGN_CHALLENGE_STAGE_4_NAME=Ghost Island
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Commander, this island looks strange, we should be careful!
+
 CAMPAIGN_AEII_NAME=Battle of Thorin
 CAMPAIGN_AEII_STAGE_1_NAME=The Temple of Courage
 CAMPAIGN_AEII_STAGE_1_OBJECTIVE=Stop the raiders, King Galamar must survive.

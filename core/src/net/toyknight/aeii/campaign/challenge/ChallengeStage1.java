@@ -35,7 +35,7 @@ public class ChallengeStage1 extends StageController {
         if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         } else {
-            if (getContext().count(1) == 0) {
+            if (getContext().count_unit(1) == 0) {
                 getContext().clear();
             }
         }

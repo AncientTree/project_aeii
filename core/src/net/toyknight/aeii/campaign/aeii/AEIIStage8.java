@@ -32,11 +32,11 @@ public class AEIIStage8 extends StageController {
         Message message5 = new Message(4, Language.getText("CAMPAIGN_AEII_STAGE_8_MESSAGE_5"));
         getContext().message(message5);
         getContext().move(5, 2, 7, 2);
-        getContext().remove(7, 2);
+        getContext().remove_unit(7, 2);
         getContext().move(9, 2, 7, 2);
-        getContext().remove(7, 2);
+        getContext().remove_unit(7, 2);
         getContext().move(7, 3, 7, 2);
-        getContext().remove(7, 2);
+        getContext().remove_unit(7, 2);
         getContext().move(7, 4, 7, 2);
         getContext().havens_fury(0, 9, 15, 0);
         getContext().destroy_unit(9, 15);
@@ -70,7 +70,7 @@ public class AEIIStage8 extends StageController {
         if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         }
-        if (getContext().count(1) == 0) {
+        if (getContext().count_unit(1) == 0) {
             Message message10 = new Message(4, Language.getText("CAMPAIGN_AEII_STAGE_8_MESSAGE_10"));
             Message message11 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_8_MESSAGE_11"));
             Message message12 = new Message(4, Language.getText("CAMPAIGN_AEII_STAGE_8_MESSAGE_12"));

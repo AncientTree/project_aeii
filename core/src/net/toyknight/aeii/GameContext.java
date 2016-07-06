@@ -217,12 +217,16 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public int getCampaignProgress(String campaign_code) {
-        if (getConfiguration().containsKey(campaign_code)) {
-            return Integer.parseInt(getConfiguration().get(campaign_code));
+        if (campaign_code.equals("C_CH")) {
+            return getCampaignContext().getCampaign(campaign_code).getStages().size - 1;
         } else {
-            updateConfiguration(campaign_code, Integer.toString(0));
-            saveConfiguration();
-            return 0;
+            if (getConfiguration().containsKey(campaign_code)) {
+                return Integer.parseInt(getConfiguration().get(campaign_code));
+            } else {
+                updateConfiguration(campaign_code, Integer.toString(0));
+                saveConfiguration();
+                return 0;
+            }
         }
     }
 

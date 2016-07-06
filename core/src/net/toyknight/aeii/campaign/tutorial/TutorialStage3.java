@@ -50,7 +50,7 @@ public class TutorialStage3 extends StageController {
         if (unit.getTeam() == getPlayerTeam() && unit.isCommander()) {
             getContext().fail();
         }
-        if (getContext().count(1) == 0 && getContext().tile(4, 0).getTeam() == getPlayerTeam()) {
+        if (getContext().count_unit(1) == 0 && getContext().tile(4, 0).getTeam() == getPlayerTeam()) {
             clear();
         }
     }
@@ -61,7 +61,7 @@ public class TutorialStage3 extends StageController {
 
     @Override
     public void onTileOccupied(int x, int y, int team) {
-        if (x == 4 && y == 0 && getContext().count(1) == 0) {
+        if (x == 4 && y == 0 && getContext().count_unit(1) == 0) {
             clear();
         }
     }

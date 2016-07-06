@@ -96,7 +96,7 @@ public class AEIIStage5 extends StageController {
         if (isCommander(unit, getPlayerTeam()) || isCrystal(unit, getPlayerTeam())) {
             getContext().fail();
         }
-        if (getContext().count(1) == 0) {
+        if (getContext().count_unit(1) == 0) {
             getContext().destroy_team(1);
         }
     }
