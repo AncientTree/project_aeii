@@ -16,6 +16,8 @@ import java.util.Queue;
  */
 public class OperationExecutor {
 
+    private final Object OPERATION_LOCK = new Object();
+
     private final GameManager manager;
 
     private final Queue<Operation> operation_queue;
@@ -34,13 +36,17 @@ public class OperationExecutor {
     }
 
     public void reset() {
-        operation_queue.clear();
+        synchronized (OPERATION_LOCK) {
+            operation_queue.clear();
+        }
     }
 
     public void operate() throws CheatingException {
-        Operation operation;
-        if ((operation = operation_queue.poll()) != null) {
-            executeOperation(operation);
+        synchronized (OPERATION_LOCK) {
+            Operation operation;
+            if ((operation = operation_queue.poll()) != null) {
+                executeOperation(operation);
+            }
         }
     }
 
@@ -49,8 +55,10 @@ public class OperationExecutor {
     }
 
     public void submitOperation(int type, int... parameters) {
-        Operation operation = new Operation(type, parameters);
-        operation_queue.add(operation);
+        synchronized (OPERATION_LOCK) {
+            Operation operation = new Operation(type, parameters);
+            operation_queue.add(operation);
+        }
     }
 
     private void submitGameEvent(int type, Object... params) {
