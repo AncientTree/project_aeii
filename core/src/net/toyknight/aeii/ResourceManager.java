@@ -43,6 +43,7 @@ public class ResourceManager {
     private TextureRegion[][][] texture_units;
     private TextureRegion[] texture_heads;
     private TextureRegion[] texture_status;
+    private TextureRegion[] texture_level;
 
     private HashMap<String, Texture> texture_map_editor_icons;
 
@@ -114,6 +115,7 @@ public class ResourceManager {
         texture_heads = new TextureRegion[4];
         asset_manager.load("images/units/heads.png", Texture.class);
         asset_manager.load("images/status.png", Texture.class);
+        asset_manager.load("images/level.png", Texture.class);
         //map editor icons
         asset_manager.load("images/editor/icon_brush.png", Texture.class);
         asset_manager.load("images/editor/icon_hand.png", Texture.class);
@@ -210,6 +212,8 @@ public class ResourceManager {
         texture_heads = createFrames(sheet_heads, 4, 1);
         Texture sheet_status = asset_manager.get("images/status.png", Texture.class);
         texture_status = createFrames(sheet_status, 4, 1);
+        Texture sheet_level = asset_manager.get("images/level.png", Texture.class);
+        texture_level = createFrames(sheet_level, 3, 1);
 
         texture_map_editor_icons = new HashMap<String, Texture>();
         texture_map_editor_icons.put("icon_brush", asset_manager.get("images/editor/icon_brush.png", Texture.class));
@@ -284,6 +288,7 @@ public class ResourceManager {
         texture_units = null;
         texture_heads = null;
         texture_status = null;
+        texture_level = null;
 
         texture_map_editor_icons.clear();
 
@@ -379,6 +384,10 @@ public class ResourceManager {
 
     public TextureRegion getStatusTexture(int index) {
         return texture_status[index];
+    }
+
+    public TextureRegion getLevelTexture(int index) {
+        return texture_level[index];
     }
 
     public Texture getBorderTexture() {

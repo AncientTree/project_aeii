@@ -65,12 +65,12 @@ public class PositionGenerator {
     public ObjectSet<Position> createMovablePositions(Unit unit) {
         movable_positions.clear();
         if (unit == null) {
-            return movable_positions;
+            return new ObjectSet<Position>(movable_positions);
         } else {
             current_unit = UnitFactory.cloneUnit(unit);
             initializeMoveMarkMap();
             createMovablePositions(createStartStep(unit), unit);
-            return movable_positions;
+            return new ObjectSet<Position>(movable_positions);
         }
     }
 
@@ -119,7 +119,7 @@ public class PositionGenerator {
         if ((start_x != dest_x || start_y != dest_y) && move_mark_map[dest_x][dest_y] > Integer.MIN_VALUE) {
             createMovePath(dest_x, dest_y, start_x, start_y);
         }
-        return move_path;
+        return new Array<Position>(move_path);
     }
 
     private void createMovePath(int current_x, int current_y, int start_x, int start_y) {

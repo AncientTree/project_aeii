@@ -72,7 +72,7 @@ public class CanvasRenderer {
         }
         batch.draw(unit_texture, screen_x, screen_y, ts, ts);
         if (unit.isCommander()) {
-            drawHead(batch, unit.getHead(), screen_x, screen_y, frame, ts);
+            drawHead(batch, unit.getHead(), screen_x, screen_y, unit.isStandby() ? 0 : frame, ts);
         }
         batch.setShader(null);
         batch.flush();
@@ -127,6 +127,9 @@ public class CanvasRenderer {
                     //do nothing
             }
         }
+//        if (unit.getLevel() > 0) {
+//            batch.draw(getResources().getLevelTexture(unit.getLevel() - 1), screen_x + ts() - sw + offset_x, screen_y + ts() - sh + offset_y, sw, sh);
+//        }
         batch.flush();
     }
 
