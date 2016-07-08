@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import net.toyknight.aeii.animation.AnimationManager;
-import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.campaign.CampaignContext;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.concurrent.AsyncTask;
@@ -20,6 +19,7 @@ import net.toyknight.aeii.manager.RoomManager;
 import net.toyknight.aeii.record.GameRecord;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.*;
 import net.toyknight.aeii.screen.wiki.Wiki;
@@ -59,9 +59,13 @@ public class GameContext extends Game implements GameManagerListener {
 
     private RoomManager room_manager;
 
-    private Screen previous_screen;
-
     private Wiki wiki;
+
+    private FontRenderer font_renderer;
+
+    private CanvasRenderer canvas_renderer;
+
+    private BorderRenderer border_renderer;
 
     private MainMenuScreen main_menu_screen;
     private MapEditorScreen map_editor_screen;
@@ -88,7 +92,6 @@ public class GameContext extends Game implements GameManagerListener {
             UnitFactory.loadUnitData();
             resource_manager = new ResourceManager();
             resource_manager.prepare(TILE_SIZE);
-            Animator.setTileSize(TILE_SIZE);
 
             LoadingScreen loading_screen = new LoadingScreen(this);
             Gdx.input.setCatchBackKey(true);
@@ -105,18 +108,20 @@ public class GameContext extends Game implements GameManagerListener {
                 AudioManager.setSEVolume(getSEVolume());
                 AudioManager.setMusicVolume(getMusicVolume());
                 resource_manager.initialize();
-                FontRenderer.initialize(TILE_SIZE);
                 TileValidator.initialize();
-                BorderRenderer.initialize();
 
-                skin = getResourceManager().getSkin();
-                skin.get(TextButton.TextButtonStyle.class).font = ResourceManager.getTextFont();
-                skin.get(TextField.TextFieldStyle.class).font = ResourceManager.getTextFont();
-                skin.get(Label.LabelStyle.class).font = ResourceManager.getTextFont();
-                skin.get(Dialog.WindowStyle.class).titleFont = ResourceManager.getTextFont();
-                skin.get(List.ListStyle.class).font = ResourceManager.getTextFont();
+                skin = getResources().getSkin();
+                skin.get(TextButton.TextButtonStyle.class).font = getResources().getTextFont();
+                skin.get(TextField.TextFieldStyle.class).font = getResources().getTextFont();
+                skin.get(Label.LabelStyle.class).font = getResources().getTextFont();
+                skin.get(Dialog.WindowStyle.class).titleFont = getResources().getTextFont();
+                skin.get(List.ListStyle.class).font = getResources().getTextFont();
 
-                game_manager = new GameManager(this, new AnimationManager());
+                font_renderer = new FontRenderer(this);
+                canvas_renderer = new CanvasRenderer(this);
+                border_renderer = new BorderRenderer(this);
+
+                game_manager = new GameManager(this, new AnimationManager(this));
                 game_manager.getGameEventExecutor().setCheckEventValue(true);
                 game_manager.setListener(this);
 
@@ -151,8 +156,20 @@ public class GameContext extends Game implements GameManagerListener {
         return initialized;
     }
 
-    public ResourceManager getResourceManager() {
+    public ResourceManager getResources() {
         return resource_manager;
+    }
+
+    public FontRenderer getFontRenderer() {
+        return font_renderer;
+    }
+
+    public CanvasRenderer getCanvasRenderer() {
+        return canvas_renderer;
+    }
+
+    public BorderRenderer getBorderRenderer() {
+        return border_renderer;
     }
 
     public Wiki getWiki() {
@@ -342,12 +359,10 @@ public class GameContext extends Game implements GameManagerListener {
         gotoScreen(campaign_screen);
     }
 
-    public void gotoPreviousScreen() {
-        this.gotoScreen(previous_screen);
-    }
-
     public void gotoScreen(Screen screen) {
-        this.previous_screen = getScreen();
+        if (screen instanceof MapCanvas) {
+            getCanvasRenderer().setCanvas((MapCanvas) screen);
+        }
         this.setScreen(screen);
     }
 

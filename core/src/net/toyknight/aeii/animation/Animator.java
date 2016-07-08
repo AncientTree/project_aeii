@@ -1,15 +1,24 @@
 package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.ResourceManager;
 
 /**
  * @author toyknight 4/2/2015.
  */
 public class Animator {
 
-    protected static int ts;
+    protected final int ts;
+
+    private final GameContext context;
 
     private float state_time = 0f;
+
+    public Animator(GameContext context) {
+        this.context = context;
+        this.ts = context == null ? 48 : context.getTileSize();
+    }
 
     public final void addStateTime(float time) {
         state_time += time;
@@ -29,8 +38,12 @@ public class Animator {
         return false;
     }
 
-    public static void setTileSize(int ts) {
-        Animator.ts = ts;
+    public GameContext getContext() {
+        return context;
+    }
+
+    public ResourceManager getResources() {
+        return getContext().getResources();
     }
 
 }

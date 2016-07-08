@@ -5,8 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
-import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.dialog.GameLoadDialog;
 import net.toyknight.aeii.screen.dialog.MainMenu;
 import net.toyknight.aeii.screen.dialog.ServerListDialog;
@@ -46,7 +44,7 @@ public class MainMenuScreen extends StageScreen {
         this.setting_dialog = new SettingDialog(this);
         this.addDialog("setting", setting_dialog);
 
-        this.btn_setting = new CircleButton(CircleButton.LARGE, ResourceManager.getMenuIcon(4), ts);
+        this.btn_setting = new CircleButton(getContext(), CircleButton.LARGE, getResources().getMenuIcon(4));
         this.btn_setting.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -68,9 +66,9 @@ public class MainMenuScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(ResourceManager.getMainMenuBackgroundTexture(),
+        batch.draw(getResources().getMainMenuBackgroundTexture(),
                 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        FontRenderer.drawTitleCenter(batch, Language.getText("_TITLE"),
+        getContext().getFontRenderer().drawTitleCenter(batch, Language.getText("_TITLE"),
                 0, Gdx.graphics.getHeight() - 85, Gdx.graphics.getWidth(), 85);
         batch.end();
         super.draw();

@@ -1,22 +1,18 @@
 package net.toyknight.aeii.screen.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import net.toyknight.aeii.ResourceManager;
-import net.toyknight.aeii.renderer.UnitRenderer;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 6/12/2016.
  */
-public class UnitFrame extends Widget {
-
-    private final int ts;
+public class UnitFrame extends AEIIWidget {
 
     private int index;
 
-    public UnitFrame(int ts) {
-        this.ts = ts;
+    public UnitFrame(GameContext context) {
+        super(context);
     }
 
     public void setIndex(int index) {
@@ -36,9 +32,9 @@ public class UnitFrame extends Widget {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(ResourceManager.getBorderLightColor(), x, y, width, height);
-        batch.draw(ResourceManager.getListBackground(), x + ts / 12, y + ts / 12, width - ts / 6, height - ts / 6);
-        UnitRenderer.drawUnit_(batch, UnitFactory.getSample(index), x + ts / 2, y + ts / 2, 0, ts);
+        batch.draw(getResources().getBorderLightColor(), x, y, width, height);
+        batch.draw(getResources().getListBackground(), x + ts / 12, y + ts / 12, width - ts / 6, height - ts / 6);
+        getContext().getCanvasRenderer().drawUnit_(batch, UnitFactory.getSample(index), x + ts / 2, y + ts / 2, 0, ts);
         batch.flush();
     }
 

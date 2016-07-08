@@ -1,7 +1,7 @@
 package net.toyknight.aeii.screen.widgets;
 
 /**
- * Created by toyknight on 9/2/2015.
+ * @author toyknight on 9/2/2015.
  */
 public interface SpinnerListener {
 

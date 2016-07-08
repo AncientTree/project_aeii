@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.record.GameRecord;
 import net.toyknight.aeii.entity.Player;
@@ -46,19 +45,19 @@ public class GameLoadDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        save_list = new StringList<String>(ts);
+        save_list = new StringList<String>(getContext(), ts);
         ScrollPane sp_save_list = new ScrollPane(save_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_save_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
         sp_save_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_save_list.setScrollBarPositions(false, true);
         this.addActor(sp_save_list);
 

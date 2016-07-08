@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.CommandExecutor;
 import net.toyknight.aeii.concurrent.MessageSendingTask;
 import net.toyknight.aeii.screen.StageScreen;
@@ -35,18 +34,18 @@ public class MessageBox extends BasicDialog {
     }
 
     private void initComponents() {
-        player_list = new PlayerList(getContext().getRoomManager(), ts * 3 / 2, ts);
+        player_list = new PlayerList(getContext(), ts * 3 / 2, ts);
         ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_player_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_player_list.setScrollBarPositions(false, true);
         sp_player_list.setFadeScrollBars(false);
         add(sp_player_list).size(ts * 6 + ts / 2, ts * 6).padTop(ts / 2).padLeft(ts / 2).padRight(ts / 2).row();

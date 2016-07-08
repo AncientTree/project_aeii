@@ -3,16 +3,13 @@ package net.toyknight.aeii.screen.widgets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import net.toyknight.aeii.ResourceManager;
-import net.toyknight.aeii.renderer.FontRenderer;
+import net.toyknight.aeii.GameContext;
 
 /**
  * @author toyknight 6/12/2016.
  */
-public class SmallCircleLabel extends Widget {
+public class SmallCircleLabel extends AEIIWidget {
 
-    private final int ts;
     private final TextureRegion icon;
 
     private final int scw;
@@ -29,8 +26,8 @@ public class SmallCircleLabel extends Widget {
     private String text;
     private Color color_text;
 
-    public SmallCircleLabel(TextureRegion icon, int ts) {
-        this.ts = ts;
+    public SmallCircleLabel(GameContext context, TextureRegion icon) {
+        super(context);
         this.icon = icon;
         scw = ts * 20 / 24;
         sch = ts * 21 / 24;
@@ -58,12 +55,13 @@ public class SmallCircleLabel extends Widget {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(ResourceManager.getTextBackground(), x + tfp, y + tfp, width - tfp, tfh);
-        batch.draw(ResourceManager.getSmallCircleTexture(0), x, y, scw, sch);
+        batch.draw(getResources().getTextBackground(), x + tfp, y + tfp, width - tfp, tfh);
+        batch.draw(getResources().getSmallCircleTexture(0), x, y, scw, sch);
         batch.draw(icon, x + ipx, y + ipy, iw, ih);
-        FontRenderer.setTextColor(color_text);
-        FontRenderer.drawText(batch, text, x + scw + ts / 12, y + height - (height - ResourceManager.getTextFont().getCapHeight()) / 2);
-        FontRenderer.setTextColor(Color.WHITE);
+        getContext().getFontRenderer().setTextColor(color_text);
+        getContext().getFontRenderer().drawText(batch, text,
+                x + scw + ts / 12, y + height - (height - getResources().getTextFont().getCapHeight()) / 2);
+        getContext().getFontRenderer().setTextColor(Color.WHITE);
     }
 
 }

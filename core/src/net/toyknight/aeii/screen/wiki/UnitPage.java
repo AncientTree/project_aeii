@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.screen.widgets.AEIITable;
 import net.toyknight.aeii.screen.widgets.SmallCircleLabel;
 import net.toyknight.aeii.screen.widgets.UnitFrame;
 import net.toyknight.aeii.utils.Language;
@@ -19,9 +20,7 @@ import net.toyknight.aeii.utils.UnitFactory;
 /**
  * @author toyknight 6/12/2016.
  */
-public class UnitPage extends Table {
-
-    private final int ts;
+public class UnitPage extends AEIITable {
 
     private final Wiki wiki;
 
@@ -43,25 +42,24 @@ public class UnitPage extends Table {
     private final Label label_none;
 
     public UnitPage(Wiki wiki) {
-        super();
+        super(wiki.getContext());
         this.wiki = wiki;
-        this.ts = getWiki().getContext().getTileSize();
 
         Table preview_pane = new Table();
 
-        unit_frame = new UnitFrame(ts);
+        unit_frame = new UnitFrame(getContext());
         preview_pane.add(unit_frame);
 
         Table data_pane = new Table();
-        label_attack = new SmallCircleLabel(ResourceManager.getBattleHudIcon(0), ts);
+        label_attack = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(0));
         data_pane.add(label_attack).width(ts * 2);
-        label_move = new SmallCircleLabel(ResourceManager.getActionIcon(4), ts);
+        label_move = new SmallCircleLabel(getContext(), getResources().getActionIcon(4));
         label_move.setTextColor(Color.WHITE);
         data_pane.add(label_move).width(ts * 2).padLeft(ts / 2).row();
-        label_physical_defence = new SmallCircleLabel(ResourceManager.getBattleHudIcon(1), ts);
+        label_physical_defence = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(1));
         label_physical_defence.setTextColor(Color.WHITE);
         data_pane.add(label_physical_defence).width(ts * 2).padTop(ts / 4);
-        label_magic_defence = new SmallCircleLabel(ResourceManager.getBattleHudIcon(2), ts);
+        label_magic_defence = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(2));
         label_magic_defence.setTextColor(Color.WHITE);
         data_pane.add(label_magic_defence).width(ts * 2).padLeft(ts / 2).padTop(ts / 4);
 
@@ -72,25 +70,25 @@ public class UnitPage extends Table {
         Table hud_pane = new Table() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
 
         int hs = ts * 11 / 24;
 
-        Image image_price = new Image(ResourceManager.createDrawable(ResourceManager.getStatusHudIcon(1), hs, hs));
+        Image image_price = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(1), hs, hs));
         hud_pane.add(image_price);
         label_price = new Label("", getWiki().getContext().getSkin());
         hud_pane.add(label_price).width(ts * 2 - hs - ts / 4).padLeft(ts / 4);
 
-        Image image_attack_range = new Image(ResourceManager.createDrawable(ResourceManager.getStatusHudIcon(2), hs, hs));
+        Image image_attack_range = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(2), hs, hs));
         hud_pane.add(image_attack_range).padLeft(ts / 2);
         label_attack_range = new Label("", getWiki().getContext().getSkin());
         hud_pane.add(label_attack_range).width(ts * 2 - hs - ts / 4).padLeft(ts / 4);
 
-        Image image_occupancy = new Image(ResourceManager.createDrawable(ResourceManager.getStatusHudIcon(0), hs, hs));
+        Image image_occupancy = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(0), hs, hs));
         hud_pane.add(image_occupancy).padLeft(ts / 2);
         label_occupancy = new Label("", getWiki().getContext().getSkin());
         hud_pane.add(label_occupancy).width(ts * 2 - hs - ts / 4).padLeft(ts / 4);
@@ -104,8 +102,8 @@ public class UnitPage extends Table {
         Label label_abilities = new Label(Language.getText("LB_ABILITIES"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -123,7 +121,7 @@ public class UnitPage extends Table {
         Unit sample = UnitFactory.getSample(index);
         label_attack.setText(Integer.toString(sample.getAttack()));
         label_attack.setTextColor(sample.getAttackType() == Unit.ATTACK_PHYSICAL ?
-                ResourceManager.getPhysicalAttackColor() : ResourceManager.getMagicalAttackColor());
+                getResources().getPhysicalAttackColor() : getResources().getMagicalAttackColor());
         label_move.setText(Integer.toString(sample.getMovementPoint()));
         label_physical_defence.setText(Integer.toString(sample.getPhysicalDefence()));
         label_magic_defence.setText(Integer.toString(sample.getMagicDefence()));
@@ -135,7 +133,7 @@ public class UnitPage extends Table {
         if (sample.getAbilities().size > 0) {
             for (int ability : sample.getAbilities()) {
                 ReferenceLabel ability_reference =
-                        new ReferenceLabel(ReferenceLabel.TYPE_ABILITY, ability, getWiki().getContext().getSkin());
+                        new ReferenceLabel(getContext(), ReferenceLabel.TYPE_ABILITY, ability);
                 ability_reference.addListener(ability_reference_click_listener);
                 ability_references.add(ability_reference).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
             }

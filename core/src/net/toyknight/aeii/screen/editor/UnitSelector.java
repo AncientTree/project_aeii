@@ -2,37 +2,35 @@ package net.toyknight.aeii.screen.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.manager.MapEditor;
-import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.screen.widgets.AEIIContainer;
 import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class UnitSelector extends Container<ScrollPane> {
+public class UnitSelector extends AEIIContainer {
 
-    private final int ts;
     private final MapEditor editor;
 
-    public UnitSelector(MapEditor editor, int ts) {
+    public UnitSelector(GameContext context, MapEditor editor) {
+        super(context);
         this.editor = editor;
-        this.ts = ts;
         this.initComponents();
     }
 
     private void initComponents() {
         ImageButton[] btn_team = new ImageButton[4];
         for (int i = 0; i < 4; i++) {
-            TextureRegionDrawable team_bg = new TextureRegionDrawable(new TextureRegion(ResourceManager.getTeamBackground(i)));
+            TextureRegionDrawable team_bg = ResourceManager.createDrawable(getResources().getTeamBackground(i));
             team_bg.setMinWidth(ts);
             team_bg.setMinHeight(ts);
             btn_team[i] = new ImageButton(team_bg);
@@ -71,7 +69,7 @@ public class UnitSelector extends Container<ScrollPane> {
         //add units
         int index = 0;
         for (int i = 0; i < UnitFactory.getUnitCount(); i++) {
-            UnitButton btn_unit = new UnitButton(editor, UnitFactory.getSample(i), ts);
+            UnitButton btn_unit = new UnitButton(getContext(), editor, UnitFactory.getSample(i));
             if (index % 2 == 0) {
                 unit_table.add(btn_unit).padTop(ts / 4);
             } else {
@@ -95,9 +93,9 @@ public class UnitSelector extends Container<ScrollPane> {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(getResources().getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, getX(), getY(), getWidth(), getHeight());
         batch.flush();
     }
 

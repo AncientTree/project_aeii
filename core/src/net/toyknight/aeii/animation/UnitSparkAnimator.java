@@ -3,6 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Unit;
 
@@ -13,16 +14,17 @@ public class UnitSparkAnimator extends UnitAnimator {
 
     private final Animation spark_animation;
 
-    public UnitSparkAnimator(Unit unit) {
+    public UnitSparkAnimator(GameContext context, Unit unit) {
+        super(context);
         this.addUnit(unit, "target");
-        Texture texture_white_spark = ResourceManager.getWhiteSparkTexture();
+        Texture texture_white_spark = getResources().getWhiteSparkTexture();
         this.spark_animation = new Animation(1f / 15, ResourceManager.createFrames(texture_white_spark, 6, 1));
     }
 
     @Override
     public void render(Batch batch) {
         Unit unit = getUnit("target");
-        getCanvas().getUnitRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
+        getCanvas().getRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
         int screen_x = getCanvas().getXOnScreen(unit.getX());
         int screen_y = getCanvas().getYOnScreen(unit.getY());
         batch.draw(spark_animation.getKeyFrame(getStateTime()), screen_x, screen_y, ts(), ts());

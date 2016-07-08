@@ -37,7 +37,7 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (getContext().getResourceManager().update()) {
+        if (getContext().getResources().update()) {
             if (getContext().initialized()) {
                 if (bg_fade_animator.isAnimationFinished()) {
                     getContext().gotoMainMenuScreen(true);

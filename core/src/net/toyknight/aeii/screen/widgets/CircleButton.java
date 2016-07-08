@@ -3,30 +3,28 @@ package net.toyknight.aeii.screen.widgets;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.GameContext;
 
 /**
  * @author toyknight 5/30/2015.
  */
-public class CircleButton extends Button {
+public class CircleButton extends AEIIButton {
 
     public static final int SMALL = 0x1;
     public static final int LARGE = 0x2;
 
-    private final int ts;
     private final int type;
     private final TextureRegion icon;
     private boolean is_held;
 
-    public CircleButton(int type, Texture icon, int ts) {
-        this(type, new TextureRegion(icon, icon.getWidth(), icon.getHeight()), ts);
+    public CircleButton(GameContext context, int type, Texture icon) {
+        this(context, type, new TextureRegion(icon, icon.getWidth(), icon.getHeight()));
     }
 
-    public CircleButton(int type, TextureRegion icon, int ts) {
+    public CircleButton(GameContext context, int type, TextureRegion icon) {
+        super(context);
         this.type = type;
         this.icon = icon;
-        this.ts = ts;
         this.is_held = false;
         setStyle(new ButtonStyle());
         setSize(getPrefWidth(), getPrefHeight());
@@ -70,10 +68,10 @@ public class CircleButton extends Button {
         int circle_index = isPressed() || isHeld() ? 1 : 0;
         switch (type) {
             case SMALL:
-                batch.draw(ResourceManager.getSmallCircleTexture(circle_index), x, y, width, height);
+                batch.draw(getResources().getSmallCircleTexture(circle_index), x, y, width, height);
                 break;
             case LARGE:
-                batch.draw(ResourceManager.getBigCircleTexture(circle_index), x, y, width, height);
+                batch.draw(getResources().getBigCircleTexture(circle_index), x, y, width, height);
                 break;
         }
         float scale = width / getPrefWidth();

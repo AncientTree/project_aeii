@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.screen.MainMenuScreen;
@@ -37,11 +36,11 @@ public class ServerListDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        server_list = new StringList<ServerConfiguration>(ts);
+        server_list = new StringList<ServerConfiguration>(getContext(), ts);
         ScrollPane sp_server_list = new ScrollPane(server_list, getContext().getSkin());
         sp_server_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
         sp_server_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_server_list.setScrollBarPositions(false, true);
 
         this.addActor(sp_server_list);

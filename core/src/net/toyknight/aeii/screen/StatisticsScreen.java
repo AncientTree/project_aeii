@@ -14,12 +14,9 @@ import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Statistics;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.renderer.BorderRenderer;
-import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.utils.Language;
 
 /**
@@ -76,7 +73,7 @@ public class StatisticsScreen extends StageScreen {
         lb_destroy = new Label[4];
         lb_lose = new Label[4];
         for (int team = 0; team < 4; team++) {
-            Texture color = ResourceManager.getTeamBackground(team);
+            Texture color = getResources().getTeamBackground(team);
             team_color[team] = new Image(new TextureRegion(color, ts, ts));
             lb_income[team] = new Label("", getContext().getSkin());
             lb_income[team].setAlignment(Align.center);
@@ -88,7 +85,7 @@ public class StatisticsScreen extends StageScreen {
             team_table[team] = new Table() {
                 @Override
                 public void draw(Batch batch, float parentAlpha) {
-                    batch.draw(ResourceManager.getBorderDarkColor(), getX(), getY(), getWidth(), getHeight());
+                    batch.draw(getResources().getBorderDarkColor(), getX(), getY(), getWidth(), getHeight());
                     super.draw(batch, parentAlpha);
                 }
             };
@@ -147,9 +144,10 @@ public class StatisticsScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        FontRenderer.drawTitleCenter(batch, Language.getText("LB_STATISTICS"), 0, Gdx.graphics.getHeight() - ts * 2, Gdx.graphics.getWidth(), ts * 2);
+        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getFontRenderer().drawTitleCenter(batch, Language.getText("LB_STATISTICS"),
+                0, Gdx.graphics.getHeight() - ts * 2, Gdx.graphics.getWidth(), ts * 2);
         batch.end();
         super.draw();
     }

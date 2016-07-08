@@ -83,23 +83,23 @@ public class Wiki extends BasicDialog {
                 }
             }
         });
-        content_list.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
-        content_list.getStyle().selection = ResourceManager.createDrawable(ResourceManager.getListSelectedBackground());
+        content_list.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
+        content_list.getStyle().selection = ResourceManager.createDrawable(getResources().getListSelectedBackground());
 
         RootNode node_overview = RootNode.create(RootNode.OVERVIEW, getContext().getSkin());
         RootNode node_gameplay = RootNode.create(RootNode.GAMEPLAY, getContext().getSkin());
         Tree.Node node_gameplay_objectives =
-                EntryNode.create(EntryNode.TYPE_GAMEPLAY_OBJECTIVES, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_OBJECTIVES, ts, getContext());
         Tree.Node node_gameplay_recruiting =
-                EntryNode.create(EntryNode.TYPE_GAMEPLAY_RECRUITING, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_RECRUITING, ts, getContext());
         Tree.Node node_gameplay_attacking =
-                EntryNode.create(EntryNode.TYPE_GAMEPLAY_ATTACKING, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_ATTACKING, ts, getContext());
         Tree.Node node_gameplay_healing =
-                EntryNode.create(EntryNode.TYPE_GAMEPLAY_HEALING, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_HEALING, ts, getContext());
         Tree.Node node_gameplay_income =
-                EntryNode.create(EntryNode.TYPE_GAMEPLAY_INCOME, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_INCOME, ts, getContext());
         Tree.Node node_gameplay_status =
-                EntryNode.create(EntryNode.TYPE_GAMEPLAY_STATUS, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_GAMEPLAY_STATUS, ts, getContext());
         node_gameplay.add(node_gameplay_objectives);
         node_gameplay.add(node_gameplay_recruiting);
         node_gameplay.add(node_gameplay_attacking);
@@ -108,14 +108,14 @@ public class Wiki extends BasicDialog {
         node_gameplay.add(node_gameplay_status);
         RootNode node_terrains = RootNode.create(RootNode.TERRAINS, getContext().getSkin());
         for (int index = 0; index < TileFactory.getTileCount(); index++) {
-            Tree.Node node = EntryNode.create(EntryNode.TYPE_TILE, index, ts, getContext().getSkin());
+            Tree.Node node = EntryNode.create(EntryNode.TYPE_TILE, index, ts, getContext());
             node_terrains.add(node);
         }
         RootNode node_units = RootNode.create(RootNode.UNITS, getContext().getSkin());
         unit_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
             if (index != UnitFactory.getCrystalIndex()) {
-                Tree.Node node = EntryNode.create(EntryNode.TYPE_UNIT, index, ts, getContext().getSkin());
+                Tree.Node node = EntryNode.create(EntryNode.TYPE_UNIT, index, ts, getContext());
                 unit_nodes.put(index, node);
                 node_units.add(node);
             }
@@ -123,24 +123,24 @@ public class Wiki extends BasicDialog {
         RootNode node_abilities = RootNode.create(RootNode.ABILITIES, getContext().getSkin());
         ability_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int ability : Ability.getAllAbilities()) {
-            Tree.Node node = EntryNode.create(EntryNode.TYPE_ABILITY, ability, ts, getContext().getSkin());
+            Tree.Node node = EntryNode.create(EntryNode.TYPE_ABILITY, ability, ts, getContext());
             ability_nodes.put(ability, node);
             node_abilities.add(node);
         }
         RootNode node_status = RootNode.create(RootNode.STATUS, getContext().getSkin());
         RootNode node_multiplayer = RootNode.create(RootNode.MULTIPLAYER, getContext().getSkin());
         Tree.Node node_multiplayer_create_game =
-                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_CREATE_GAME, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_CREATE_GAME, ts, getContext());
         Tree.Node node_multiplayer_join_game =
-                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_JOIN_GAME, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_JOIN_GAME, ts, getContext());
         Tree.Node node_multiplayer_commands =
-                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_COMMANDS, ts, getContext().getSkin());
+                EntryNode.create(EntryNode.TYPE_MULTIPLAYER_COMMANDS, ts, getContext());
         node_multiplayer.add(node_multiplayer_create_game);
         node_multiplayer.add(node_multiplayer_join_game);
         node_multiplayer.add(node_multiplayer_commands);
         status_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int status : Status.getAllStatus()) {
-            Tree.Node node = EntryNode.create(EntryNode.TYPE_STATUS, status, ts, getContext().getSkin());
+            Tree.Node node = EntryNode.create(EntryNode.TYPE_STATUS, status, ts, getContext());
             status_nodes.put(status, node);
             node_status.add(node);
         }
@@ -156,7 +156,7 @@ public class Wiki extends BasicDialog {
         content_list.add(node_about);
 
         sp_content_list = new ScrollPane(content_list, getContext().getSkin());
-        sp_content_list.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
+        sp_content_list.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
         sp_content_list.setScrollingDisabled(true, false);
         add(sp_content_list).size(ts * 6, height - ts / 2).padLeft(ts / 4);
 

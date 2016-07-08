@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.Callable;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.screen.GameScreen;
 import net.toyknight.aeii.screen.StageScreen;
@@ -31,7 +30,7 @@ public class ObjectiveDialog extends BasicDialog {
         Label label_title = new Label(Language.getText("LB_OBJECTIVE"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

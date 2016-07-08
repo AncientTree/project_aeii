@@ -1,7 +1,7 @@
 package net.toyknight.aeii.screen;
 
 import net.toyknight.aeii.entity.Map;
-import net.toyknight.aeii.renderer.UnitRenderer;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 
 /**
  * @author toyknight 7/8/2015.
@@ -10,7 +10,7 @@ public interface MapCanvas {
 
     Map getMap();
 
-    UnitRenderer getUnitRenderer();
+    CanvasRenderer getRenderer();
 
     void focus(int map_x, int map_y, boolean focus_viewport);
 

@@ -1,6 +1,7 @@
 package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
@@ -29,7 +30,8 @@ public class CrystalStealAnimator extends UnitAnimator {
 
     private float offset = 0f;
 
-    public CrystalStealAnimator(int map_x, int map_y, int target_x, int target_y) {
+    public CrystalStealAnimator(GameContext context, int map_x, int map_y, int target_x, int target_y) {
+        super(context);
         this.map_x = map_x;
         this.map_y = map_y;
         this.target_x = target_x;
@@ -60,13 +62,13 @@ public class CrystalStealAnimator extends UnitAnimator {
     @Override
     public void render(Batch batch) {
         if (getCanvas().getMap().isWithinMap(x1, y1)) {
-            getCanvas().getUnitRenderer().drawUnit(batch, unit1, x1, y1, getOffsetX(x1), getOffsetY(x1, y1));
+            getCanvas().getRenderer().drawUnit(batch, unit1, x1, y1, getOffsetX(x1), getOffsetY(x1, y1));
         }
         if ((x1 != map_x || y1 != map_y) && getCanvas().getMap().isWithinMap(x2, y2)) {
-            getCanvas().getUnitRenderer().drawUnit(batch, unit2, x2, y2, getOffsetX(x2), getOffsetY(x2, y2));
+            getCanvas().getRenderer().drawUnit(batch, unit2, x2, y2, getOffsetX(x2), getOffsetY(x2, y2));
         }
         if ((x2 != map_x || y2 != map_y) && getCanvas().getMap().isWithinMap(x3, y3)) {
-            getCanvas().getUnitRenderer().drawUnit(batch, unit3, x3, y3, getOffsetX(x3), getOffsetY(x3, y3));
+            getCanvas().getRenderer().drawUnit(batch, unit3, x3, y3, getOffsetX(x3), getOffsetY(x3, y3));
         }
     }
 

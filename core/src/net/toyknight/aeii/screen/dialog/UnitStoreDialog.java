@@ -57,19 +57,19 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     }
 
     private void initComponents(Skin skin) {
-        this.unit_list = new AvailableUnitList(ts);
+        this.unit_list = new AvailableUnitList(getContext());
         this.unit_list.setUnitListListener(this);
         sp_unit_list = new ScrollPane(unit_list, skin) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_unit_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_unit_list.setScrollBarPositions(false, true);
         add(sp_unit_list).size(ts * 5, ts * 3 / 2 * 5);
 
@@ -79,17 +79,17 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
         int hs = ts * 11 / 24;
 
-        Image image_price = new Image(ResourceManager.createDrawable(ResourceManager.getStatusHudIcon(1), hs, hs));
+        Image image_price = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(1), hs, hs));
         hud_pane.add(image_price);
         label_price = new Label("", getContext().getSkin());
         hud_pane.add(label_price).width(ts);
 
-        Image image_attack_range = new Image(ResourceManager.createDrawable(ResourceManager.getStatusHudIcon(2), hs, hs));
+        Image image_attack_range = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(2), hs, hs));
         hud_pane.add(image_attack_range);
         label_attack_range = new Label("", getContext().getSkin());
         hud_pane.add(label_attack_range).width(ts);
 
-        Image image_occupancy = new Image(ResourceManager.createDrawable(ResourceManager.getStatusHudIcon(0), hs, hs));
+        Image image_occupancy = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(0), hs, hs));
         hud_pane.add(image_occupancy);
         label_occupancy = new Label("", getContext().getSkin());
         hud_pane.add(label_occupancy).width(ts);
@@ -99,21 +99,21 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         Table data_pane = new Table() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
 
-        label_attack = new SmallCircleLabel(ResourceManager.getBattleHudIcon(0), ts);
+        label_attack = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(0));
         data_pane.add(label_attack).width(ts * 2 + ts / 8).padTop(ts / 8);
-        label_move = new SmallCircleLabel(ResourceManager.getActionIcon(4), ts);
+        label_move = new SmallCircleLabel(getContext(), getResources().getActionIcon(4));
         label_move.setTextColor(Color.WHITE);
         data_pane.add(label_move).width(ts * 2 + ts / 8).padLeft(ts / 4).padTop(ts / 8).row();
-        label_physical_defence = new SmallCircleLabel(ResourceManager.getBattleHudIcon(1), ts);
+        label_physical_defence = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(1));
         label_physical_defence.setTextColor(Color.WHITE);
         data_pane.add(label_physical_defence).width(ts * 2 + ts / 8).padTop(ts / 4).padBottom(ts / 8);
-        label_magic_defence = new SmallCircleLabel(ResourceManager.getBattleHudIcon(2), ts);
+        label_magic_defence = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(2));
         label_magic_defence.setTextColor(Color.WHITE);
         data_pane.add(label_magic_defence).width(ts * 2 + ts / 8).padLeft(ts / 4).padTop(ts / 4).padBottom(ts / 8);
 
@@ -193,7 +193,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
             label_attack_range.setText(selected_unit.getMinAttackRange() + "-" + selected_unit.getMaxAttackRange());
             label_attack.setText(Integer.toString(selected_unit.getAttack()));
             label_attack.setTextColor(selected_unit.getAttackType() == Unit.ATTACK_PHYSICAL ?
-                    ResourceManager.getPhysicalAttackColor() : ResourceManager.getMagicalAttackColor());
+                    getResources().getPhysicalAttackColor() : getResources().getMagicalAttackColor());
             label_move.setText(Integer.toString(selected_unit.getMovementPoint()));
             label_physical_defence.setText(Integer.toString(selected_unit.getPhysicalDefence()));
             label_magic_defence.setText(Integer.toString(selected_unit.getMagicDefence()));

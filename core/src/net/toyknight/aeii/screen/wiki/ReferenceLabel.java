@@ -1,6 +1,7 @@
 package net.toyknight.aeii.screen.wiki;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.screen.widgets.LabelButton;
 import net.toyknight.aeii.utils.Language;
 
 /**
@@ -15,8 +16,8 @@ public class ReferenceLabel extends LabelButton {
     private final int type;
     private final int value;
 
-    public ReferenceLabel(int type, int value, Skin skin) {
-        super("", skin);
+    public ReferenceLabel(GameContext context, int type, int value) {
+        super(context, "");
         this.type = type;
         this.value = value;
         switch (type) {

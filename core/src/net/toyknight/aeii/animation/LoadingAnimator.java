@@ -18,6 +18,7 @@ public class LoadingAnimator extends Animator {
     private final ShapeRenderer shape_renderer;
 
     public LoadingAnimator() {
+        super(null);
         Texture texture_loading = new Texture(FileProvider.getAssetsFile("images/loading.png"));
         animation = ResourceManager.createAnimation(texture_loading, 18, 1, 0.065f);
         shape_renderer = new ShapeRenderer();

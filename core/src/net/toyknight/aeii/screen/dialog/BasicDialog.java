@@ -26,6 +26,10 @@ public class BasicDialog extends Table {
         return getOwner().getContext();
     }
 
+    public ResourceManager getResources() {
+        return getContext().getResources();
+    }
+
     public StageScreen getOwner() {
         return owner;
     }
@@ -46,11 +50,11 @@ public class BasicDialog extends Table {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(getResources().getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         if (top_bottom_border_enabled) {
-            BorderRenderer.drawTopBottomBorder(batch, getX(), getY(), getWidth(), getHeight());
+            getContext().getBorderRenderer().drawTopBottomBorder(batch, getX(), getY(), getWidth(), getHeight());
         } else {
-            BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+            getContext().getBorderRenderer().drawBorder(batch, getX(), getY(), getWidth(), getHeight());
         }
         batch.flush();
         drawCustom(batch, parentAlpha);

@@ -3,8 +3,8 @@ package net.toyknight.aeii.screen.wiki;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Tile;
+import net.toyknight.aeii.screen.widgets.AEIITable;
 import net.toyknight.aeii.screen.widgets.PreviewFrame;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.TileFactory;
@@ -12,9 +12,7 @@ import net.toyknight.aeii.utils.TileFactory;
 /**
  * @author toyknight 6/17/2016.
  */
-public class TilePage extends Table {
-
-    private final int ts;
+public class TilePage extends AEIITable {
 
     private final Wiki wiki;
 
@@ -25,18 +23,17 @@ public class TilePage extends Table {
     private final Label label_hp_recovery_value;
 
     public TilePage(Wiki wiki) {
-        super();
+        super(wiki.getContext());
         this.wiki = wiki;
-        this.ts = getWiki().getContext().getTileSize();
 
-        tile_preview = new PreviewFrame(ts);
+        tile_preview = new PreviewFrame(getContext());
         tile_preview.setUnitIndex(-1);
         add(tile_preview).padBottom(ts / 8).row();
 
         Table data_pane = new Table() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

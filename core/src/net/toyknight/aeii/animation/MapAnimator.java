@@ -1,5 +1,6 @@
 package net.toyknight.aeii.animation;
 
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.screen.MapCanvas;
 
@@ -11,19 +12,20 @@ import java.util.HashSet;
 public class MapAnimator extends Animator {
 
     private final HashSet<Position> locations = new HashSet<Position>();
-    private static MapCanvas canvas;
 
-    public MapAnimator() {
+    public MapAnimator(GameContext context) {
+        super(context);
     }
 
-    public MapAnimator(int x, int y) {
+    public MapAnimator(GameContext context, int x, int y) {
+        this(context);
         if (x >= 0 && y >= 0) {
             this.addLocation(x, y);
         }
     }
 
     protected MapCanvas getCanvas() {
-        return canvas;
+        return getContext().getCanvasRenderer().getCanvas();
     }
 
     protected int ts() {
@@ -38,10 +40,6 @@ public class MapAnimator extends Animator {
 
     public final boolean hasLocation(int x, int y) {
         return locations.contains(new Position(x, y));
-    }
-
-    public static void setCanvas(MapCanvas canvas) {
-        MapAnimator.canvas = canvas;
     }
 
 }

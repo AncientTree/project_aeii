@@ -18,7 +18,6 @@ import net.toyknight.aeii.entity.Player;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.manager.RoomManager;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.screen.widgets.PlayerAllocationButton;
@@ -62,17 +61,17 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void initComponents() {
-        player_list = new StringList<PlayerSnapshot>(ts);
+        player_list = new StringList<PlayerSnapshot>(getContext(), ts);
         ScrollPane sp_player_list = new ScrollPane(player_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
-        sp_player_list.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
+        sp_player_list.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
         sp_player_list.setScrollingDisabled(true, false);
         sp_player_list.setBounds(ts / 2, ts * 3 + ts / 2, ts * 3, Gdx.graphics.getHeight() - ts * 4);
         addActor(sp_player_list);
@@ -176,19 +175,19 @@ public class NetGameCreateScreen extends StageScreen {
             });
 
             TextureRegionDrawable team_color =
-                    new TextureRegionDrawable(new TextureRegion(ResourceManager.getTeamBackground(team)));
+                    new TextureRegionDrawable(new TextureRegion(getResources().getTeamBackground(team)));
             team_color.setMinWidth(ts);
             team_color.setMinHeight(ts);
             team_image[team] = new Image(team_color);
 
             Integer[] alliance = new Integer[]{1, 2, 3, 4};
-            spinner_alliance[team] = new Spinner<Integer>(ts, getContext().getSkin());
+            spinner_alliance[team] = new Spinner<Integer>(getContext());
             spinner_alliance[team].setListener(state_change_listener);
             spinner_alliance[team].setItems(alliance);
 
             String[] type = new String[]{
                     Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
-            spinner_type[team] = new Spinner<String>(ts, getContext().getSkin());
+            spinner_type[team] = new Spinner<String>(getContext());
             spinner_type[team].setListener(state_change_listener);
             spinner_type[team].setContentWidth(ts * 2);
             spinner_type[team].setItems(type);
@@ -201,7 +200,7 @@ public class NetGameCreateScreen extends StageScreen {
         HorizontalGroup info_group = new HorizontalGroup();
         info_group.setBounds(ts * 4, ts * 2, ts * 3, ts);
 
-        TextureRegion tr_population = ResourceManager.getStatusHudIcon(0);
+        TextureRegion tr_population = getResources().getStatusHudIcon(0);
         TextureRegionDrawable trd_population = new TextureRegionDrawable(tr_population);
         trd_population.setMinWidth(ts / 24 * 11);
         trd_population.setMinHeight(ts / 24 * 11);
@@ -210,7 +209,7 @@ public class NetGameCreateScreen extends StageScreen {
         lb_population = new Label("", getContext().getSkin());
         info_group.addActor(lb_population);
 
-        TextureRegion tr_gold = ResourceManager.getStatusHudIcon(1);
+        TextureRegion tr_gold = getResources().getStatusHudIcon(1);
         TextureRegionDrawable trd_gold = new TextureRegionDrawable(tr_gold);
         trd_gold.setMinWidth(ts / 24 * 11);
         trd_gold.setMinHeight(ts / 24 * 11);
@@ -224,7 +223,7 @@ public class NetGameCreateScreen extends StageScreen {
         message_pane = new Table() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getListBackground(), getX(), getY(), getWidth(), getHeight());
+                batch.draw(getResources().getListBackground(), getX(), getY(), getWidth(), getHeight());
                 super.draw(batch, parentAlpha);
             }
         };
@@ -232,13 +231,13 @@ public class NetGameCreateScreen extends StageScreen {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_message.setScrollingDisabled(true, false);
-        sp_message.getStyle().background = ResourceManager.createDrawable(ResourceManager.getListBackground());
+        sp_message.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
         sp_message.setBounds(ts * 7 + ts / 2, ts / 2, Gdx.graphics.getWidth() - ts * 11 - ts / 2, ts * 2 + ts / 2);
         addActor(sp_message);
     }
@@ -441,8 +440,8 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void drawBackground() {
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     @Override

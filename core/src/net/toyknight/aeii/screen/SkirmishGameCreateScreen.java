@@ -15,9 +15,7 @@ import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Player;
-import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.entity.Rule;
-import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.widgets.Spinner;
 import net.toyknight.aeii.screen.widgets.SpinnerListener;
@@ -74,19 +72,19 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         });
         this.addActor(btn_start);
 
-        this.map_list = new StringList<MapFactory.MapSnapshot>(ts);
+        this.map_list = new StringList<MapFactory.MapSnapshot>(getContext(), ts);
         this.map_list.setListener(this);
         ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_map_list.setScrollBarPositions(false, true);
         sp_map_list.setBounds(ts / 2, ts / 2 + ts * 2, ts * 6 + ts / 2, Gdx.graphics.getHeight() - ts * 3);
         this.addActor(sp_map_list);
@@ -114,14 +112,14 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
                 Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
         for (int team = 0; team < 4; team++) {
             TextureRegionDrawable team_color =
-                    ResourceManager.createDrawable(ResourceManager.getTeamBackground(team), ts, ts);
+                    ResourceManager.createDrawable(getResources().getTeamBackground(team), ts, ts);
             team_image[team] = new Image(team_color);
 
-            spinner_alliance[team] = new Spinner<Integer>(ts, getContext().getSkin());
+            spinner_alliance[team] = new Spinner<Integer>(getContext());
             spinner_alliance[team].setListener(state_change_listener);
             spinner_alliance[team].setItems(alliance_preset);
 
-            spinner_type[team] = new Spinner<String>(ts, getContext().getSkin());
+            spinner_type[team] = new Spinner<String>(getContext());
             spinner_type[team].setListener(state_change_listener);
             spinner_type[team].setContentWidth(ts * 2);
             spinner_type[team].setItems(player_type_preset);
@@ -137,11 +135,11 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         Label label_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
         label_population.setAlignment(Align.center);
         gp_setting_pane.add(label_population).width(ts * 3).height(ts).padLeft(ts / 2).row();
-        spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());
+        spinner_gold = new Spinner<Integer>(getContext());
         spinner_gold.setItems(Rule.GOLD_PRESET);
         spinner_gold.setListener(state_change_listener);
         gp_setting_pane.add(spinner_gold).width(ts * 3).height(ts);
-        spinner_population = new Spinner<Integer>(ts, getContext().getSkin());
+        spinner_population = new Spinner<Integer>(getContext());
         spinner_population.setItems(Rule.POPULATION_PRESET);
         spinner_population.setListener(state_change_listener);
         gp_setting_pane.add(spinner_population).width(ts * 3).height(ts).padLeft(ts / 2);
@@ -260,14 +258,14 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        FontRenderer.drawTextCenter(
+        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getFontRenderer().drawTextCenter(
                 batch, Language.getText("LB_TEAM"), ts * 9 + ts / 4, Gdx.graphics.getHeight() - ts - ts / 2, ts * 3, ts);
-        FontRenderer.drawTextCenter(
+        getContext().getFontRenderer().drawTextCenter(
                 batch, Language.getText("LB_TYPE"), ts * 12 + ts / 4 * 3, Gdx.graphics.getHeight() - ts - ts / 2, ts * 4, ts);
         if (selected_map == null) {
-            FontRenderer.drawTextCenter(batch,
+            getContext().getFontRenderer().drawTextCenter(batch,
                     Language.getText("MSG_ERR_BMF"),
                     ts * 7, ts * 2,
                     Gdx.graphics.getWidth() - ts * 7 - ts / 2, Gdx.graphics.getHeight() - ts * 2 - ts / 2);

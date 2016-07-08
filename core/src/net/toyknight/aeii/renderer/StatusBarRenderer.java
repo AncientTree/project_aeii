@@ -4,8 +4,8 @@ import static net.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.screen.GameScreen;
 
 /**
@@ -22,12 +22,16 @@ public class StatusBarRenderer {
 
     public StatusBarRenderer(GameScreen screen, int ts) {
         this.ts = ts;
+        this.screen = screen;
         this.hud_size = ts / 24 * 11;
-        this.max_pop_width = FontRenderer.getLNumberWidth(9999, false);
-        int max_gold_width = FontRenderer.getLFractionWidth(99, 99);
+        this.max_pop_width = getContext().getFontRenderer().getLNumberWidth(9999, false);
+        int max_gold_width = getContext().getFontRenderer().getLFractionWidth(99, 99);
         this.margin_left = (screen.getViewportWidth() - ts - max_pop_width - max_gold_width - hud_size * 2) / 3;
         this.margin_bottom = (ts - hud_size) / 2;
-        this.screen = screen;
+    }
+
+    private GameContext getContext() {
+        return screen.getContext();
     }
 
     private GameManager getManager() {
@@ -36,13 +40,14 @@ public class StatusBarRenderer {
 
     public void drawStatusBar(SpriteBatch batch) {
         int current_team = getManager().getGame().getCurrentTeam();
-        batch.draw(ResourceManager.getTeamBackground(current_team),
+        batch.draw(getContext().getResources().getTeamBackground(current_team),
                 0, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth(), ts);
         batch.flush();
         drawSelectedTile(batch);
         drawInformation(batch);
-        BorderRenderer.drawBorder(batch, 0, 0, ts, ts);
-        BorderRenderer.drawBorder(batch, ts, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth() - ts, ts);
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, ts, ts);
+        getContext().getBorderRenderer().drawBorder(
+                batch, ts, 0, Gdx.app.getGraphics().getWidth() - screen.getRightPanelWidth() - ts, ts);
     }
 
     private void drawInformation(SpriteBatch batch) {
@@ -50,12 +55,12 @@ public class StatusBarRenderer {
         int current_pop = getManager().getGame().getCurrentPlayer().getPopulation();
         int max_pop = getManager().getGame().getRule().getInteger(MAX_POPULATION);
         //draw population
-        batch.draw(ResourceManager.getStatusHudIcon(0), ts + margin_left, margin_bottom, hud_size, hud_size);
-        FontRenderer.drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);
+        batch.draw(getContext().getResources().getStatusHudIcon(0), ts + margin_left, margin_bottom, hud_size, hud_size);
+        getContext().getFontRenderer().drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);
         //draw gold
-        batch.draw(ResourceManager.getStatusHudIcon(1),
+        batch.draw(getContext().getResources().getStatusHudIcon(1),
                 ts + margin_left * 2 + hud_size + max_pop_width, margin_bottom, hud_size, hud_size);
-        FontRenderer.drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
+        getContext().getFontRenderer().drawLNumber(batch, gold, ts + margin_left * 2 + hud_size * 2 + max_pop_width, margin_bottom);
         batch.flush();
     }
 
@@ -64,11 +69,11 @@ public class StatusBarRenderer {
         int cursor_y = screen.getCursorMapY();
         if (cursor_x >= 0 && cursor_y >= 0) {
             short tile_index = getManager().getGame().getMap().getTileIndex(cursor_x, cursor_y);
-            batch.draw(ResourceManager.getTileTexture(tile_index), 0, 0, ts, ts);
+            batch.draw(getContext().getResources().getTileTexture(tile_index), 0, 0, ts, ts);
             //draw defence bonus
-            FontRenderer.drawTileDefenceBonus(
+            getContext().getFontRenderer().drawTileDefenceBonus(
                     batch, getManager().getGame().getMap().getTile(cursor_x, cursor_y).getDefenceBonus(),
-                    (ts - FontRenderer.getSNumberWidth(99, true)) / 2, ts / 12);
+                    (ts - getContext().getFontRenderer().getSNumberWidth(99, true)) / 2, ts / 12);
         }
         batch.flush();
     }

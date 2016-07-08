@@ -5,8 +5,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import net.toyknight.aeii.utils.FileProvider;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Random;
 
 /**
@@ -30,24 +28,26 @@ public class AudioManager {
      * @param fileName the music file name(with extension)
      */
     public static void playBGM(String fileName, boolean loop) {
-        String pathToFile = AUDIO_PATH + MUSIC_PATH + fileName;
+        if (musicVolume > 0f) {
+            String pathToFile = AUDIO_PATH + MUSIC_PATH + fileName;
 
-        stopMusic();
+            stopMusic();
 
-        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
-        music.setVolume(musicVolume);
-        music.setLooping(loop);
+            music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
+            music.setVolume(musicVolume);
+            music.setLooping(loop);
 
-        music.setOnCompletionListener(new Music.OnCompletionListener() {
-            @Override
-            public void onCompletion(Music music) {
-                if (!music.isLooping()) {
-                    music.dispose();
+            music.setOnCompletionListener(new Music.OnCompletionListener() {
+                @Override
+                public void onCompletion(Music music) {
+                    if (!music.isLooping()) {
+                        music.dispose();
+                    }
                 }
-            }
-        });
+            });
 
-        music.play();
+            music.play();
+        }
     }
 
     /**
@@ -79,7 +79,14 @@ public class AudioManager {
     public static void setMusicVolume(float volume) {
         musicVolume = volume;
         if (music != null) {
-            music.setVolume(musicVolume);
+            if (volume > 0f) {
+                music.setVolume(musicVolume);
+            } else {
+                stopCurrentBGM();
+                music = null;
+            }
+        } else {
+            loopMainTheme();
         }
     }
 
@@ -104,20 +111,21 @@ public class AudioManager {
      * Play music randomly. All audio files are in "asset/music/" directory in project.
      */
     public static void playRandomBGM() {
+        if (musicVolume > 0f) {
+            stopMusic();
 
-        stopMusic();
+            String bgmPath = getRandomBgmPath();
+            music = Gdx.audio.newMusic(FileProvider.getAssetsFile(bgmPath));
+            music.setVolume(musicVolume);
+            music.play();
 
-        String bgmPath = getRandomBgmPath();
-        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(bgmPath));
-        music.setVolume(musicVolume);
-        music.play();
-
-        music.setOnCompletionListener(new Music.OnCompletionListener() {
-            @Override
-            public void onCompletion(Music music) {
-                playRandomBGM();
-            }
-        });
+            music.setOnCompletionListener(new Music.OnCompletionListener() {
+                @Override
+                public void onCompletion(Music music) {
+                    playRandomBGM();
+                }
+            });
+        }
     }
 
     /**
@@ -126,21 +134,23 @@ public class AudioManager {
      * @param startBGM the starting music file name(with extension)
      */
     public static void playRandomBGM(String startBGM) {
-        String pathToFile = AUDIO_PATH + MUSIC_PATH + startBGM;
+        if (musicVolume > 0f) {
+            String pathToFile = AUDIO_PATH + MUSIC_PATH + startBGM;
 
-        stopMusic();
+            stopMusic();
 
-        music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
-        music.setVolume(musicVolume);
+            music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
+            music.setVolume(musicVolume);
 
-        music.play();
+            music.play();
 
-        music.setOnCompletionListener(new Music.OnCompletionListener() {
-            @Override
-            public void onCompletion(Music music) {
-                playRandomBGM();
-            }
-        });
+            music.setOnCompletionListener(new Music.OnCompletionListener() {
+                @Override
+                public void onCompletion(Music music) {
+                    playRandomBGM();
+                }
+            });
+        }
     }
 
     /**
@@ -161,9 +171,7 @@ public class AudioManager {
      * Mute music.
      */
     public static void muteBGM() {
-        musicVolume = 0.0f;
-
-        music.setVolume(musicVolume);
+        setMusicVolume(0f);
     }
 
     /**
@@ -171,32 +179,6 @@ public class AudioManager {
      */
     public static void muteSE() {
         seVolume = 0.0f;
-    }
-
-    /**
-     * Filter audio file extensions(.wav, .mp3, .ogg).
-     *
-     * @return the {@link FilenameFilter} object
-     */
-    private static FilenameFilter filterAudioExtensions() {
-        return new FilenameFilter() {
-            private boolean isWAV(String name) {
-                return name.toLowerCase().endsWith(".wav");
-            }
-
-            private boolean isMP3(String name) {
-                return name.toLowerCase().endsWith(".mp3");
-            }
-
-            private boolean isOGG(String name) {
-                return name.toLowerCase().endsWith(".ogg");
-            }
-
-            @Override
-            public boolean accept(File dir, String name) {
-                return (isWAV(name) || isMP3(name) || isOGG(name));
-            }
-        };
     }
 
     /**

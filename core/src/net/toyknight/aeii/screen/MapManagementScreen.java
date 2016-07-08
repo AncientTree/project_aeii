@@ -14,13 +14,11 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.network.server.ServerConfiguration;
-import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.screen.dialog.MessageDialog;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
@@ -68,10 +66,10 @@ public class MapManagementScreen extends StageScreen {
         label_local_map.setBounds(ts * 9, Gdx.graphics.getHeight() - ts, ts * 8, ts);
         addActor(label_local_map);
 
-        server_map_list = new StringList<Object>(ts);
+        server_map_list = new StringList<Object>(getContext(), ts);
         sp_server_map_list = new ScrollPane(server_map_list, getContext().getSkin());
         sp_server_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_server_map_list.setScrollBarPositions(true, true);
         sp_server_map_list.setBounds(ts / 2, ts * 2, ts * 8, Gdx.graphics.getHeight() - ts * 3);
         server_map_list.setListener(new StringList.SelectionListener() {
@@ -85,10 +83,10 @@ public class MapManagementScreen extends StageScreen {
             }
         });
         addActor(sp_server_map_list);
-        local_map_list = new StringList<MapFactory.MapSnapshot>(ts);
+        local_map_list = new StringList<MapFactory.MapSnapshot>(getContext(), ts);
         sp_local_map_list = new ScrollPane(local_map_list, getContext().getSkin());
         sp_local_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_local_map_list.setScrollBarPositions(true, true);
         sp_local_map_list.setBounds(
                 Gdx.graphics.getWidth() - ts * 8 - ts / 2, ts * 2, ts * 8, Gdx.graphics.getHeight() - ts * 3);
@@ -372,14 +370,14 @@ public class MapManagementScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(
-                ResourceManager.getBorderDarkColor(),
+                getResources().getBorderDarkColor(),
                 sp_server_map_list.getX() - ts / 24, sp_server_map_list.getY() - ts / 24,
                 sp_server_map_list.getWidth() + ts / 12, sp_server_map_list.getHeight() + ts / 12);
         batch.draw(
-                ResourceManager.getBorderDarkColor(),
+                getResources().getBorderDarkColor(),
                 sp_local_map_list.getX() - ts / 24, sp_local_map_list.getY() - ts / 24,
                 sp_local_map_list.getWidth() + ts / 12, sp_local_map_list.getHeight() + ts / 12);
         batch.end();

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Tile;
@@ -63,14 +62,14 @@ public class MiniMapDialog extends BasicDialog {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(ResourceManager.getBorderDarkColor(), x, y, width, height);
-        batch.draw(ResourceManager.getBorderLightColor(), x + 1, y + 1, width - 2, height - 2);
-        batch.draw(ResourceManager.getBorderDarkColor(), x + 4, y + 4, width - 8, height - 8);
+        batch.draw(getResources().getBorderDarkColor(), x, y, width, height);
+        batch.draw(getResources().getBorderLightColor(), x + 1, y + 1, width - 2, height - 2);
+        batch.draw(getResources().getBorderDarkColor(), x + 4, y + 4, width - 8, height - 8);
         for (int map_x = 0; map_x < getMap().getWidth(); map_x++) {
             for (int map_y = 0; map_y < getMap().getHeight(); map_y++) {
                 Tile tile = getMap().getTile(map_x, map_y);
                 batch.draw(
-                        ResourceManager.getSmallTileTexture(tile.getMiniMapIndex()),
+                        getResources().getSmallTileTexture(tile.getMiniMapIndex()),
                         x + map_x * sts + 5, y + height - 5 - map_y * sts - sts, sts, sts);
             }
         }
@@ -80,7 +79,7 @@ public class MiniMapDialog extends BasicDialog {
             Unit unit = getMap().getUnit(position.x, position.y);
             if (((int) (state_time / 0.3f)) % 2 != 0) {
                 batch.draw(
-                        ResourceManager.getUnitPreviewTexture(unit.getTeam()),
+                        getResources().getUnitPreviewTexture(unit.getTeam()),
                         x + unit.getX() * sts + 5, y + height - 5 - unit.getY() * sts - sts, sts, sts);
             }
         }

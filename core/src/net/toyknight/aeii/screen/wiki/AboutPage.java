@@ -2,24 +2,20 @@ package net.toyknight.aeii.screen.wiki;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.screen.widgets.AEIITable;
 import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 6/17/2016.
  */
-public class AboutPage extends Table {
-
-    private final int ts;
+public class AboutPage extends AEIITable {
 
     private final Wiki wiki;
 
     public AboutPage(Wiki wiki) {
-        super();
+        super(wiki.getContext());
         this.wiki = wiki;
-        this.ts = getWiki().getContext().getTileSize();
 
         Label label_about_p1 = new Label(Language.getText("WIKI_ABOUT_P1"), getWiki().getContext().getSkin());
         label_about_p1.setWrap(true);
@@ -31,8 +27,8 @@ public class AboutPage extends Table {
         Label label_credits = new Label(Language.getText("LB_CREDITS"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

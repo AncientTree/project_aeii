@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.Callable;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkListener;
 import net.toyknight.aeii.concurrent.AsyncTask;
@@ -25,8 +24,6 @@ import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.dialog.RoomCreateDialog;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
-import net.toyknight.aeii.renderer.BorderRenderer;
-import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.MapFactory;
@@ -54,19 +51,19 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
     }
 
     private void initComponents() {
-        room_list = new StringList<RoomSnapshot>(ts);
+        room_list = new StringList<RoomSnapshot>(getContext(), ts);
         ScrollPane sp_room_list = new ScrollPane(room_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_room_list.setBounds(ts, ts * 2, Gdx.graphics.getWidth() - ts * 2, Gdx.graphics.getHeight() - ts * 3);
         sp_room_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_room_list.setScrollBarPositions(false, true);
 
         this.addActor(sp_room_list);
@@ -298,9 +295,9 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        FontRenderer.drawTitleCenter(
+        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getFontRenderer().drawTitleCenter(
                 batch, Language.getText("LB_GAMES"), ts, Gdx.graphics.getHeight() - ts, ts * 3, ts);
         batch.end();
         super.draw();

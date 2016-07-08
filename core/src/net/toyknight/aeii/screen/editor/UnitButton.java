@@ -2,24 +2,22 @@ package net.toyknight.aeii.screen.editor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.MapEditor;
-import net.toyknight.aeii.renderer.UnitRenderer;
+import net.toyknight.aeii.screen.widgets.AEIIButton;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class UnitButton extends Button {
+public class UnitButton extends AEIIButton {
 
-    private final int ts;
     private final Unit unit;
     private final MapEditor editor;
 
-    public UnitButton(MapEditor editor, Unit unit, int ts) {
-        this.ts = ts;
+    public UnitButton(GameContext context, MapEditor editor, Unit unit) {
+        super(context);
         this.unit = unit;
         this.editor = editor;
         setStyle(new ButtonStyle());
@@ -50,12 +48,12 @@ public class UnitButton extends Button {
         if (getEditor().getBrushType() == MapEditor.TYPE_UNIT
                 && getEditor().getSelectedUnit().getIndex() == unit.getIndex()) {
             batch.draw(
-                    ResourceManager.getBorderLightColor(),
+                    getResources().getBorderLightColor(),
                     getX(), getY(), getWidth(), getHeight());
         }
         unit.setTeam(getEditor().getSelectedTeam());
         unit.setHead(getEditor().getSelectedTeam());
-        UnitRenderer.drawUnit_(batch, unit, getX(), getY(), 0, ts);
+        getContext().getCanvasRenderer().drawUnit_(batch, unit, getX(), getY(), 0, ts);
         super.draw(batch, parentAlpha);
     }
 

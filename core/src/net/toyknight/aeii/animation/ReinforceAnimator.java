@@ -3,6 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
 
@@ -22,7 +23,8 @@ public class ReinforceAnimator extends UnitAnimator {
 
     private float offset = 0f;
 
-    public ReinforceAnimator(Array<Unit> reinforcements, int from_x, int from_y) {
+    public ReinforceAnimator(GameContext context, Array<Unit> reinforcements, int from_x, int from_y) {
+        super(context);
         this.from_x = from_x;
         this.from_y = from_y;
         unit_count = reinforcements.size;
@@ -48,9 +50,9 @@ public class ReinforceAnimator extends UnitAnimator {
                     Position position = animation_positions.get("unit" + i);
                     Unit unit = getUnit("unit" + i);
                     if (unit.isAt(position.x, position.y)) {
-                        getCanvas().getUnitRenderer().drawUnit(batch, unit, position.x, position.y);
+                        getCanvas().getRenderer().drawUnit(batch, unit, position.x, position.y);
                     } else {
-                        getCanvas().getUnitRenderer().drawUnit(batch, unit,
+                        getCanvas().getRenderer().drawUnit(batch, unit,
                                 position.x, position.y,
                                 getOffsetX(position.x, unit.getX()),
                                 getOffsetY(position.x, position.y, unit.getX(), unit.getY()));
@@ -63,7 +65,7 @@ public class ReinforceAnimator extends UnitAnimator {
                 for (int i = 0; i <= n; i++) {
                     if (i < unit_count) {
                         Unit unit = getUnit("unit" + i);
-                        getCanvas().getUnitRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
+                        getCanvas().getRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
                     }
                 }
             }

@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.Rule;
@@ -57,18 +56,18 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        object_list = new StringList<Object>(ts);
+        object_list = new StringList<Object>(getContext(), ts);
         ScrollPane sp_map_list = new ScrollPane(object_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_map_list.setScrollingDisabled(true, false);
         sp_map_list.setBounds(ts / 2, ts * 2, ts * 6 + ts / 2, getHeight() - ts * 2 - ts / 2);
         addActor(sp_map_list);
@@ -107,19 +106,19 @@ public class RoomCreateDialog extends BasicDialog {
 
         Label lb_capacity = new Label(Language.getText("LB_CAPACITY"), getContext().getSkin());
         setting_pane.add(lb_capacity).width(ts * 3).padBottom(ts / 4).row();
-        spinner_capacity = new Spinner<Integer>(ts, getContext().getSkin());
+        spinner_capacity = new Spinner<Integer>(getContext());
         spinner_capacity.setItems(new Integer[]{2, 3, 4, 5, 6, 7, 8});
         setting_pane.add(spinner_capacity).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_initial_gold = new Label(Language.getText("LB_START_GOLD"), getContext().getSkin());
         setting_pane.add(lb_initial_gold).width(ts * 3).padBottom(ts / 4).row();
-        spinner_gold = new Spinner<Integer>(ts, getContext().getSkin());
+        spinner_gold = new Spinner<Integer>(getContext());
         spinner_gold.setItems(Rule.GOLD_PRESET);
         setting_pane.add(spinner_gold).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
         setting_pane.add(lb_max_population).width(ts * 3).padBottom(ts / 4).row();
-        spinner_population = new Spinner<Integer>(ts, getContext().getSkin());
+        spinner_population = new Spinner<Integer>(getContext());
         spinner_population.setItems(Rule.POPULATION_PRESET);
         setting_pane.add(spinner_population).size(ts * 3, ts).padBottom(ts / 4).row();
 

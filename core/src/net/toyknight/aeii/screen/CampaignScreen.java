@@ -10,10 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.campaign.CampaignController;
 import net.toyknight.aeii.campaign.StageController;
-import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.Language;
 
@@ -40,7 +38,7 @@ public class CampaignScreen extends StageScreen {
         label_scenarios.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, list_width, ts);
         addActor(label_scenarios);
 
-        scenario_list = new StringList<CampaignController.Snapshot>(ts);
+        scenario_list = new StringList<CampaignController.Snapshot>(getContext(), ts);
         scenario_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
@@ -63,7 +61,7 @@ public class CampaignScreen extends StageScreen {
         label_stages.setBounds(list_width + ts, Gdx.graphics.getHeight() - ts, list_width, ts);
         addActor(label_stages);
 
-        stage_list = new StringList<StageController.Snapshot>(ts);
+        stage_list = new StringList<StageController.Snapshot>(getContext(), ts);
         sp_stage_list = new ScrollPane(stage_list, getContext().getSkin());
         sp_stage_list.setBounds(list_width + ts, ts * 2, list_width, Gdx.graphics.getHeight() - ts * 3);
         addActor(sp_stage_list);
@@ -144,14 +142,14 @@ public class CampaignScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(ResourceManager.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(
-                ResourceManager.getBorderDarkColor(),
+                getResources().getBorderDarkColor(),
                 sp_scenario_list.getX() - ts / 24, sp_scenario_list.getY() - ts / 24,
                 sp_scenario_list.getWidth() + ts / 12, sp_scenario_list.getHeight() + ts / 12);
         batch.draw(
-                ResourceManager.getBorderDarkColor(),
+                getResources().getBorderDarkColor(),
                 sp_stage_list.getX() - ts / 24, sp_stage_list.getY() - ts / 24,
                 sp_stage_list.getWidth() + ts / 12, sp_stage_list.getHeight() + ts / 12);
         batch.end();

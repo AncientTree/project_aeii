@@ -14,7 +14,6 @@ import net.toyknight.aeii.animation.*;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.record.GameRecordPlayerListener;
 import net.toyknight.aeii.renderer.*;
@@ -34,10 +33,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     private final int RIGHT_PANEL_WIDTH;
 
-    private final TileRenderer tile_renderer;
-    private final UnitRenderer unit_renderer;
-    private final AlphaRenderer alpha_renderer;
-    private final MovePathRenderer move_path_renderer;
     private final StatusBarRenderer status_bar_renderer;
     private final RightPanelRenderer right_panel_renderer;
     private final AttackInformationRenderer attack_info_renderer;
@@ -82,16 +77,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.viewport.width = Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH;
         this.viewport.height = Gdx.graphics.getHeight() - ts;
 
-        this.tile_renderer = new TileRenderer(this);
-        this.unit_renderer = new UnitRenderer(this);
-        this.alpha_renderer = new AlphaRenderer(this);
-        this.move_path_renderer = new MovePathRenderer(this);
         this.status_bar_renderer = new StatusBarRenderer(this, ts);
         this.right_panel_renderer = new RightPanelRenderer(this, ts);
         this.attack_info_renderer = new AttackInformationRenderer(this);
 
-        this.cursor = new CursorAnimator();
-        this.attack_cursor = new AttackCursorAnimator();
+        this.cursor = new CursorAnimator(getContext());
+        this.attack_cursor = new AttackCursorAnimator(getContext());
 
         initComponents();
     }
@@ -117,7 +108,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         });
         this.addActor(btn_end_turn);
 
-        this.btn_message = new CircleButton(CircleButton.LARGE, ResourceManager.getMenuIcon(7), ts);
+        this.btn_message = new CircleButton(getContext(), CircleButton.LARGE, getResources().getMenuIcon(7));
         this.btn_message.setPosition(0, Gdx.graphics.getHeight() - btn_message.getPrefHeight());
         this.btn_message.addListener(new ClickListener() {
             @Override
@@ -129,7 +120,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.addActor(btn_message);
 
         //message board
-        this.message_board = new MessageBoard(ts);
+        this.message_board = new MessageBoard(getContext());
         this.message_board.setBounds(0, ts, viewport.width, viewport.height);
         addActor(message_board);
 
@@ -188,17 +179,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 switch (getGameManager().getState()) {
                     case GameManager.STATE_REMOVE:
                     case GameManager.STATE_MOVE:
-                        alpha_renderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
-                        move_path_renderer.drawMovePath(
+                        getRenderer().drawMoveAlpha(batch, getGameManager().getMovablePositions());
+                        getRenderer().drawMovePath(
                                 batch, getGameManager().getMovePath(getCursorMapX(), getCursorMapY()));
                         break;
                     case GameManager.STATE_PREVIEW:
-                        alpha_renderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
+                        getRenderer().drawMoveAlpha(batch, getGameManager().getMovablePositions());
                         break;
                     case GameManager.STATE_ATTACK:
                     case GameManager.STATE_SUMMON:
                     case GameManager.STATE_HEAL:
-                        alpha_renderer.drawAttackAlpha(batch, getGameManager().getAttackablePositions());
+                        getRenderer().drawAttackAlpha(batch, getGameManager().getAttackablePositions());
                         break;
                     default:
                         //do nothing
@@ -223,11 +214,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 int sy = getYOnScreen(y);
                 if (isWithinPaintArea(sx, sy)) {
                     int index = getGame().getMap().getTileIndex(x, y);
-                    tile_renderer.drawTile(batch, index, sx + offset_x, sy + offset_y);
+                    getRenderer().drawTile(batch, index, sx + offset_x, sy + offset_y);
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.drawTopTile(batch, top_tile_index, sx + offset_x, sy + ts() + offset_y);
+                        getRenderer().drawTopTile(batch, top_tile_index, sx + offset_x, sy + ts() + offset_y);
                     }
                 }
             }
@@ -238,7 +229,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         for (Tomb tomb : getGame().getMap().getTombs()) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
-            batch.draw(ResourceManager.getTombTexture(), tomb_sx, tomb_sy, ts(), ts());
+            batch.draw(getResources().getTombTexture(), tomb_sx, tomb_sy, ts(), ts());
             batch.flush();
         }
     }
@@ -254,7 +245,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 int sx = getXOnScreen(unit_x);
                 int sy = getYOnScreen(unit_y);
                 if (isWithinPaintArea(sx, sy)) {
-                    getUnitRenderer().drawUnitWithInformation(batch, unit, unit_x, unit_y, offset_x, offset_y);
+                    getRenderer().drawUnitWithInformation(batch, unit, unit_x, unit_y, offset_x, offset_y);
                 }
             }
         }
@@ -387,8 +378,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         mini_map.update(delta);
         cursor.update(delta);
         attack_cursor.update(delta);
-        tile_renderer.update(delta);
-        unit_renderer.update(delta);
+        getRenderer().update(delta);
         updateViewport();
         super.act(delta);
 
@@ -411,7 +401,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void show() {
         super.show();
         allow_cheating = false;
-        MapAnimator.setCanvas(this);
+        getContext().getGameManager().getAnimationDispatcher().setCanvas(this);
 
         scale = 1.0f;
         Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
@@ -794,8 +784,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     @Override
-    public UnitRenderer getUnitRenderer() {
-        return unit_renderer;
+    public CanvasRenderer getRenderer() {
+        return getContext().getCanvasRenderer();
     }
 
     @Override

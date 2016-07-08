@@ -7,18 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Status;
+import net.toyknight.aeii.screen.widgets.AEIITable;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 6/16/2016.
  */
-public class AbilityPage extends Table {
-
-    private final int ts;
+public class AbilityPage extends AEIITable {
 
     private final Wiki wiki;
 
@@ -31,9 +29,8 @@ public class AbilityPage extends Table {
     private final Label label_none;
 
     public AbilityPage(Wiki wiki) {
-        super();
+        super(wiki.getContext());
         this.wiki = wiki;
-        this.ts = getWiki().getContext().getTileSize();
 
         label_description = new Label("", getWiki().getContext().getSkin());
         label_description.setWrap(true);
@@ -42,8 +39,8 @@ public class AbilityPage extends Table {
         Label label_uha = new Label(Language.getText("LB_UHA"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -56,8 +53,8 @@ public class AbilityPage extends Table {
         Label label_references = new Label(Language.getText("LB_REFERENCES"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(ResourceManager.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -82,7 +79,7 @@ public class AbilityPage extends Table {
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
             if (UnitFactory.getSample(index).hasAbility(ability)) {
                 ReferenceLabel reference_unit =
-                        new ReferenceLabel(ReferenceLabel.TYPE_UNIT, index, getWiki().getContext().getSkin());
+                        new ReferenceLabel(getContext(), ReferenceLabel.TYPE_UNIT, index);
                 reference_unit.addListener(unit_reference_click_listener);
                 unit_references.add(reference_unit).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 count++;
@@ -118,25 +115,25 @@ public class AbilityPage extends Table {
                 break;
             case Ability.AMBUSH:
                 ReferenceLabel reference_ability = new ReferenceLabel(
-                        ReferenceLabel.TYPE_ABILITY, Ability.COUNTER_MADNESS, getWiki().getContext().getSkin());
+                        getContext(), ReferenceLabel.TYPE_ABILITY, Ability.COUNTER_MADNESS);
                 reference_ability.addListener(content_reference_click_listener);
                 content_references.add(reference_ability).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.ATTACK_AURA:
                 ReferenceLabel reference_status = new ReferenceLabel(
-                        ReferenceLabel.TYPE_STATUS, Status.INSPIRED, getWiki().getContext().getSkin());
+                        getContext(), ReferenceLabel.TYPE_STATUS, Status.INSPIRED);
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.BLINDER:
                 reference_status = new ReferenceLabel(
-                        ReferenceLabel.TYPE_STATUS, Status.BLINDED, getWiki().getContext().getSkin());
+                        getContext(), ReferenceLabel.TYPE_STATUS, Status.BLINDED);
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.MARKSMAN:
                 reference_ability = new ReferenceLabel(
-                        ReferenceLabel.TYPE_ABILITY, Ability.AIR_FORCE, getWiki().getContext().getSkin());
+                        getContext(), ReferenceLabel.TYPE_ABILITY, Ability.AIR_FORCE);
                 reference_ability.addListener(content_reference_click_listener);
                 content_references.add(reference_ability).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
@@ -145,13 +142,13 @@ public class AbilityPage extends Table {
             case Ability.REHABILITATION:
             case Ability.UNDEAD:
                 reference_status = new ReferenceLabel(
-                        ReferenceLabel.TYPE_STATUS, Status.POISONED, getWiki().getContext().getSkin());
+                        getContext(), ReferenceLabel.TYPE_STATUS, Status.POISONED);
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.SLOWING_AURA:
                 reference_status = new ReferenceLabel(
-                        ReferenceLabel.TYPE_STATUS, Status.SLOWED, getWiki().getContext().getSkin());
+                        getContext(), ReferenceLabel.TYPE_STATUS, Status.SLOWED);
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;

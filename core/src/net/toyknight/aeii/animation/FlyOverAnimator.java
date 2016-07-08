@@ -1,6 +1,7 @@
 package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.UnitFactory;
 
@@ -14,7 +15,8 @@ public class FlyOverAnimator extends UnitAnimator {
     private final Unit flier;
     private final Unit target;
 
-    public FlyOverAnimator(Unit flier, Unit target, int start_x, int start_y) {
+    public FlyOverAnimator(GameContext context, Unit flier, Unit target, int start_x, int start_y) {
+        super(context);
         this.flier = UnitFactory.cloneUnit(flier);
         this.flier.setX(start_x);
         this.flier.setY(start_y);
@@ -24,8 +26,8 @@ public class FlyOverAnimator extends UnitAnimator {
 
     @Override
     public void render(Batch batch) {
-        getCanvas().getUnitRenderer().drawUnit(batch, target, target.getX(), target.getY());
-        getCanvas().getUnitRenderer().drawUnit(batch, flier, flier.getX(), flier.getY(), getOffsetX(), getOffsetY());
+        getCanvas().getRenderer().drawUnit(batch, target, target.getX(), target.getY());
+        getCanvas().getRenderer().drawUnit(batch, flier, flier.getX(), flier.getY(), getOffsetX(), getOffsetY());
     }
 
     private float getOffsetX() {

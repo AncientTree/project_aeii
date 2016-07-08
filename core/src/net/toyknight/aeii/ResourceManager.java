@@ -30,61 +30,61 @@ public class ResourceManager {
 
     private final AssetManager asset_manager = new AssetManager();
 
-    private static Texture[] texture_tiles;
-    private static Texture[] texture_top_tiles;
-    private static Texture[] texture_small_tiles;
-    private static Texture texture_tomb;
-    private static Texture texture_alpha;
-    private static Texture texture_normal_cursor;
-    private static Texture texture_attack_cursor;
-    private static Texture texture_move_target_cursor;
-    private static TextureRegion[] icons_unit_preview;
+    private Texture[] texture_tiles;
+    private Texture[] texture_top_tiles;
+    private Texture[] texture_small_tiles;
+    private Texture texture_tomb;
+    private Texture texture_alpha;
+    private Texture texture_normal_cursor;
+    private Texture texture_attack_cursor;
+    private Texture texture_move_target_cursor;
+    private TextureRegion[] icons_unit_preview;
 
-    private static TextureRegion[][][] texture_units;
-    private static TextureRegion[] texture_heads;
-    private static TextureRegion[] texture_status;
+    private TextureRegion[][][] texture_units;
+    private TextureRegion[] texture_heads;
+    private TextureRegion[] texture_status;
 
-    private static HashMap<String, Texture> texture_map_editor_icons;
+    private HashMap<String, Texture> texture_map_editor_icons;
 
-    private static Texture texture_border;
+    private Texture texture_border;
 
-    private static TextureRegion[] texture_big_circle;
-    private static TextureRegion[] texture_small_circle;
+    private TextureRegion[] texture_big_circle;
+    private TextureRegion[] texture_small_circle;
 
-    private static TextureRegion[] icons_arrow;
-    private static TextureRegion[] icons_action;
-    private static TextureRegion[] icons_hud_status;
-    private static TextureRegion[] icons_hud_battle;
-    private static TextureRegion[] icons_main_menu;
+    private TextureRegion[] icons_arrow;
+    private TextureRegion[] icons_action;
+    private TextureRegion[] icons_hud_status;
+    private TextureRegion[] icons_hud_battle;
+    private TextureRegion[] icons_main_menu;
 
-    private static Texture texture_dust;
-    private static Texture texture_smoke;
-    private static Texture texture_spark_attack;
-    private static Texture texture_spark_white;
-    private static TextureRegion[] texture_portraits;
+    private Texture texture_dust;
+    private Texture texture_smoke;
+    private Texture texture_spark_attack;
+    private Texture texture_spark_white;
+    private TextureRegion[] texture_portraits;
 
-    private static Texture texture_main_menu_background;
+    private Texture texture_main_menu_background;
 
-    private static Texture bg_list_selected;
-    private static Texture bg_list_unselected;
-    private static Texture bg_panel;
-    private static Texture[] bg_team;
-    private static Texture bg_text;
-    private static Texture color_move_path;
-    private static Texture color_white;
-    private static Texture color_border_dark;
-    private static Texture color_border_light;
+    private Texture bg_list_selected;
+    private Texture bg_list_unselected;
+    private Texture bg_panel;
+    private Texture[] bg_team;
+    private Texture bg_text;
+    private Texture color_move_path;
+    private Texture color_white;
+    private Texture color_border_dark;
+    private Texture color_border_light;
 
-    private static Color color_physical_attack;
-    private static Color color_magic_attack;
+    private Color color_physical_attack;
+    private Color color_magic_attack;
 
-    private static ShaderProgram grayscale_shader;
-    private static ShaderProgram color_filter_shader;
+    private ShaderProgram grayscale_shader;
+    private ShaderProgram color_filter_shader;
 
-    private static BitmapFont font_title;
-    private static BitmapFont font_text;
-    private static Texture texture_chars_large;
-    private static Texture texture_chars_small;
+    private BitmapFont font_title;
+    private BitmapFont font_text;
+    private Texture texture_chars_large;
+    private Texture texture_chars_small;
 
     public void prepare(int ts) {
         //map related textures
@@ -274,185 +274,185 @@ public class ResourceManager {
         return asset_manager.get("skin/aeii_skin.json", Skin.class);
     }
 
-    public static Texture getTileTexture(int index) {
+    public Texture getTileTexture(int index) {
         return texture_tiles[index];
     }
 
-    public static Texture getTopTileTexture(int index) {
+    public Texture getTopTileTexture(int index) {
         return texture_top_tiles[index];
     }
 
-    public static Texture getSmallTileTexture(int index) {
+    public Texture getSmallTileTexture(int index) {
         return texture_small_tiles[index];
     }
 
-    public static Texture getTombTexture() {
+    public Texture getTombTexture() {
         return texture_tomb;
     }
 
-    public static Texture getAlphaTexture() {
+    public Texture getAlphaTexture() {
         return texture_alpha;
     }
 
-    public static Texture getNormalCursorTexture() {
+    public Texture getNormalCursorTexture() {
         return texture_normal_cursor;
     }
 
-    public static Texture getAttackCursorTexture() {
+    public Texture getAttackCursorTexture() {
         return texture_attack_cursor;
     }
 
-    public static Texture getMoveTargetCursorTexture() {
+    public Texture getMoveTargetCursorTexture() {
         return texture_move_target_cursor;
     }
 
-    public static TextureRegion getUnitPreviewTexture(int team) {
+    public TextureRegion getUnitPreviewTexture(int team) {
         return icons_unit_preview[team];
     }
 
-    public static TextureRegion getUnitTexture(int team, int index, int frame) {
+    public TextureRegion getUnitTexture(int team, int index, int frame) {
         return texture_units[team][index][frame];
     }
 
-    public static TextureRegion getHeadTexture(int index) {
+    public TextureRegion getHeadTexture(int index) {
         return texture_heads[index];
     }
 
-    public static TextureRegion getStatusTexture(int index) {
+    public TextureRegion getStatusTexture(int index) {
         return texture_status[index];
     }
 
-    public static Texture getBorderTexture() {
+    public Texture getBorderTexture() {
         return texture_border;
     }
 
-    public static TextureRegion getBigCircleTexture(int index) {
+    public TextureRegion getBigCircleTexture(int index) {
         return texture_big_circle[index];
     }
 
-    public static TextureRegion getSmallCircleTexture(int index) {
+    public TextureRegion getSmallCircleTexture(int index) {
         return texture_small_circle[index];
     }
 
-    public static TextureRegion getArrowIcon(int index) {
+    public TextureRegion getArrowIcon(int index) {
         return icons_arrow[index];
     }
 
-    public static TextureRegion getActionIcon(int index) {
+    public TextureRegion getActionIcon(int index) {
         return icons_action[index];
     }
 
-    public static TextureRegion getStatusHudIcon(int index) {
+    public TextureRegion getStatusHudIcon(int index) {
         return icons_hud_status[index];
     }
 
-    public static TextureRegion getBattleHudIcon(int index) {
+    public TextureRegion getBattleHudIcon(int index) {
         return icons_hud_battle[index];
     }
 
-    public static TextureRegion getMenuIcon(int index) {
+    public TextureRegion getMenuIcon(int index) {
         return icons_main_menu[index];
     }
 
-    public static Texture getDustTexture() {
+    public Texture getDustTexture() {
         return texture_dust;
     }
 
-    public static Texture getSmokeTexture() {
+    public Texture getSmokeTexture() {
         return texture_smoke;
     }
 
-    public static Texture getAttackSparkTexture() {
+    public Texture getAttackSparkTexture() {
         return texture_spark_attack;
     }
 
-    public static Texture getWhiteSparkTexture() {
+    public Texture getWhiteSparkTexture() {
         return texture_spark_white;
     }
 
-    public static TextureRegion getPortraitTexture(int index) {
+    public TextureRegion getPortraitTexture(int index) {
         return texture_portraits[index];
     }
 
-    public static Texture getMainMenuBackgroundTexture() {
+    public Texture getMainMenuBackgroundTexture() {
         return texture_main_menu_background;
     }
 
-    public static Texture getEditorTexture(String key) {
+    public Texture getEditorTexture(String key) {
         return texture_map_editor_icons.get(key);
     }
 
-    public static Texture getListSelectedBackground() {
+    public Texture getListSelectedBackground() {
         return bg_list_selected;
     }
 
-    public static Texture getListBackground() {
+    public Texture getListBackground() {
         return bg_list_unselected;
     }
 
-    public static Texture getPanelBackground() {
+    public Texture getPanelBackground() {
         return bg_panel;
     }
 
-    public static Texture getTeamBackground(int team) {
+    public Texture getTeamBackground(int team) {
         return bg_team[team];
     }
 
-    public static Texture getMovePathColor() {
+    public Texture getMovePathColor() {
         return color_move_path;
     }
 
-    public static Texture getWhiteColor() {
+    public Texture getWhiteColor() {
         return color_white;
     }
 
-    public static Texture getTextBackground() {
+    public Texture getTextBackground() {
         return bg_text;
     }
 
-    public static Texture getBorderDarkColor() {
+    public Texture getBorderDarkColor() {
         return color_border_dark;
     }
 
-    public static Texture getBorderLightColor() {
+    public Texture getBorderLightColor() {
         return color_border_light;
     }
 
-    public static Color getPhysicalAttackColor() {
+    public Color getPhysicalAttackColor() {
         return color_physical_attack;
     }
 
-    public static Color getMagicalAttackColor() {
+    public Color getMagicalAttackColor() {
         return color_magic_attack;
     }
 
-    public static ShaderProgram getGrayscaleShader(float scale) {
+    public ShaderProgram getGrayscaleShader(float scale) {
         grayscale_shader.begin();
         grayscale_shader.setUniformf("grayscale", scale);
         grayscale_shader.end();
         return grayscale_shader;
     }
 
-    public static ShaderProgram getWhiteMaskShader(float scale) {
+    public ShaderProgram getWhiteMaskShader(float scale) {
         color_filter_shader.begin();
         grayscale_shader.setUniformf("grayscale", scale);
         color_filter_shader.end();
         return color_filter_shader;
     }
 
-    public static BitmapFont getTextFont() {
+    public BitmapFont getTextFont() {
         return font_text;
     }
 
-    public static BitmapFont getTitleFont() {
+    public BitmapFont getTitleFont() {
         return font_title;
     }
 
-    public static Texture getLargeCharacterTexture() {
+    public Texture getLargeCharacterTexture() {
         return texture_chars_large;
     }
 
-    public static Texture getSmallCharacterTexture() {
+    public Texture getSmallCharacterTexture() {
         return texture_chars_small;
     }
 

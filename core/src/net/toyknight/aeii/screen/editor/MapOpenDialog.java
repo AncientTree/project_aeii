@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.AEIIException;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.screen.StageScreen;
@@ -34,19 +33,19 @@ public class MapOpenDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        this.map_list = new StringList<MapFactory.MapSnapshot>(ts);
+        this.map_list = new StringList<MapFactory.MapSnapshot>(getContext(), ts);
         ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        ResourceManager.getBorderDarkColor(),
+                        getResources().getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_map_list.setBounds(ts / 4, ts + ts / 2, ts * 8 - ts / 2, ts * 6 - ts / 4 * 3);
         sp_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(ResourceManager.getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_map_list.setScrollBarPositions(false, true);
         this.addActor(sp_map_list);
 

@@ -19,6 +19,7 @@ public class BackgroundFadeAnimator extends Animator {
     private ShapeRenderer shape_renderer;
 
     public BackgroundFadeAnimator(float r, float g, float b) {
+        super(null);
         this.start_r = r;
         this.start_g = g;
         this.start_b = b;
@@ -40,10 +41,10 @@ public class BackgroundFadeAnimator extends Animator {
 
     @Override
     public void update(float delta_time) {
-        if(r > 0f) {
-            r -= start_r/(1.0f/delta_time/2.0f);
-            g -= start_g/(1.0f/delta_time/2.0f);
-            b -= start_b/(1.0f/delta_time/2.0f);
+        if (r > 0f) {
+            r -= start_r / (1.0f / delta_time / 2.0f);
+            g -= start_g / (1.0f / delta_time / 2.0f);
+            b -= start_b / (1.0f / delta_time / 2.0f);
         } else {
             r = 0f;
             g = 0f;

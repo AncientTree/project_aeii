@@ -9,13 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.animation.MapAnimator;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.manager.MapEditorListener;
-import net.toyknight.aeii.renderer.TileRenderer;
-import net.toyknight.aeii.renderer.UnitRenderer;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.screen.editor.*;
 import net.toyknight.aeii.screen.widgets.CircleButton;
 import net.toyknight.aeii.utils.TileFactory;
@@ -26,9 +24,6 @@ import net.toyknight.aeii.utils.TileFactory;
 public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditorListener {
 
     private final MapEditor editor;
-
-    private final TileRenderer tile_renderer;
-    private final UnitRenderer unit_renderer;
 
     private final MapViewport viewport;
 
@@ -47,9 +42,6 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         super(context);
         this.editor = new MapEditor(this);
 
-        this.tile_renderer = new TileRenderer(this);
-        this.unit_renderer = new UnitRenderer(this);
-
         this.viewport = new MapViewport();
         this.viewport.width = Gdx.graphics.getWidth();
         this.viewport.height = Gdx.graphics.getHeight();
@@ -58,12 +50,12 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     }
 
     private void initComponents() {
-        TileSelector tile_selector = new TileSelector(getEditor(), ts);
+        TileSelector tile_selector = new TileSelector(getContext(), getEditor());
         tile_selector.setBounds(0, 0, ts * 4, Gdx.graphics.getHeight());
         this.addActor(tile_selector);
 
         int usw = ts * 2 + ts / 4 * 3;
-        UnitSelector unit_selector = new UnitSelector(getEditor(), ts);
+        UnitSelector unit_selector = new UnitSelector(getContext(), getEditor());
         unit_selector.setBounds(Gdx.graphics.getWidth() - usw, 0, usw, Gdx.graphics.getHeight());
         this.addActor(unit_selector);
 
@@ -73,7 +65,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
                 Gdx.graphics.getWidth() - tile_selector.getWidth() - unit_selector.getWidth(), ts * 33 / 24);
         this.addActor(button_bar);
 
-        btn_hand = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_hand"), ts);
+        btn_hand = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_hand"));
         btn_hand.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -81,7 +73,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
             }
         });
         button_bar.add(btn_hand);
-        btn_brush = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_brush"), ts);
+        btn_brush = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_brush"));
         btn_brush.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -89,7 +81,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
             }
         });
         button_bar.add(btn_brush).padLeft(ts / 4);
-        btn_eraser = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_eraser"), ts);
+        btn_eraser = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_eraser"));
         btn_eraser.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,7 +90,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         });
         button_bar.add(btn_eraser).padLeft(ts / 4);
 
-        CircleButton btn_resize = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_resize"), ts);
+        CircleButton btn_resize = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_resize"));
         btn_resize.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -107,7 +99,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         });
         button_bar.add(btn_resize).padLeft(ts / 4);
 
-        CircleButton btn_save = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_save"), ts);
+        CircleButton btn_save = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_save"));
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -116,7 +108,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         });
         button_bar.add(btn_save).padLeft(ts / 4);
 
-        CircleButton btn_load = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_load"), ts);
+        CircleButton btn_load = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_load"));
         btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -125,7 +117,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
         });
         button_bar.add(btn_load).padLeft(ts / 4);
 
-        CircleButton btn_exit = new CircleButton(CircleButton.LARGE, ResourceManager.getEditorTexture("icon_exit"), ts);
+        CircleButton btn_exit = new CircleButton(getContext(), CircleButton.LARGE, getResources().getEditorTexture("icon_exit"));
         btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -212,11 +204,11 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
                 int sy = getYOnScreen(y);
                 if (isWithinPaintArea(sx, sy)) {
                     int index = getMap().getTileIndex(x, y);
-                    tile_renderer.drawTile(batch, index, sx, sy);
+                    getRenderer().drawTile(batch, index, sx, sy);
                     Tile tile = TileFactory.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        tile_renderer.drawTopTile(batch, top_tile_index, sx, sy + ts());
+                        getRenderer().drawTopTile(batch, top_tile_index, sx, sy + ts());
                     }
                 }
             }
@@ -232,22 +224,21 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
             int sx = getXOnScreen(unit_x);
             int sy = getYOnScreen(unit_y);
             if (isWithinPaintArea(sx, sy)) {
-                unit_renderer.drawUnit(batch, unit, unit_x, unit_y);
+                getRenderer().drawUnit(batch, unit, unit_x, unit_y);
             }
         }
     }
 
     @Override
     public void act(float delta) {
-        tile_renderer.update(delta);
-        unit_renderer.update(delta);
+        getRenderer().update(delta);
         super.act(delta);
     }
 
     @Override
     public void show() {
         super.show();
-        MapAnimator.setCanvas(this);
+        getContext().getGameManager().getAnimationDispatcher().setCanvas(this);
         getEditor().initialize(getContext().getUsername());
         this.scale = 1.0f;
         locateViewport(0, 0);
@@ -371,8 +362,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     }
 
     @Override
-    public UnitRenderer getUnitRenderer() {
-        return unit_renderer;
+    public CanvasRenderer getRenderer() {
+        return getContext().getCanvasRenderer();
     }
 
     @Override

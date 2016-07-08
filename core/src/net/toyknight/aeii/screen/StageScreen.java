@@ -12,9 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
+import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.NetworkListener;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.screen.dialog.BasicDialog;
 import net.toyknight.aeii.screen.dialog.ConfirmDialog;
 import net.toyknight.aeii.utils.Language;
@@ -79,6 +79,10 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public GameContext getContext() {
         return context;
+    }
+
+    public ResourceManager getResources() {
+        return getContext().getResources();
     }
 
     public void addDialog(String name, BasicDialog dialog) {
@@ -168,7 +172,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
             //set the message and title
             prompt_dialog.getContentTable().reset();
             prompt_dialog.getContentTable().add(new Label(content, getContext().getSkin()));
-            prompt_dialog.setWidth(Math.max(ts * 6, FontRenderer.getTextLayout(content).width + ts));
+            prompt_dialog.setWidth(Math.max(ts * 6, getContext().getFontRenderer().getTextLayout(content).width + ts));
 
             //set the button
             prompt_dialog.getButtonTable().reset();

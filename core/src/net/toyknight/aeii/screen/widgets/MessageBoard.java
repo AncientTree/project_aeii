@@ -1,25 +1,22 @@
 package net.toyknight.aeii.screen.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.ResourceManager;
-import net.toyknight.aeii.renderer.FontRenderer;
+import net.toyknight.aeii.GameContext;
 
 /**
  * @author toyknight 9/7/2015.
  */
-public class MessageBoard extends Table {
+public class MessageBoard extends AEIITable {
 
-    private final int ts;
     private final Array<Message> messages;
 
     private boolean fading;
 
     private float alpha = 3f;
 
-    public MessageBoard(int ts) {
-        this.ts = ts;
+    public MessageBoard(GameContext context) {
+        super(context);
         this.fading = true;
         this.messages = new Array<Message>();
     }
@@ -65,25 +62,27 @@ public class MessageBoard extends Table {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        FontRenderer.setTextAlpha(getAlpha());
+        getContext().getFontRenderer().setTextAlpha(getAlpha());
         for (int i = 0; i < messages.size; i++) {
             Message message = messages.get(messages.size - i - 1);
-            float font_height = ResourceManager.getTextFont().getCapHeight();
+            float font_height = getResources().getTextFont().getCapHeight();
             float draw_y = (i * font_height * 2) + font_height;
             float cap_height = fading ? font_height * 8 : getHeight() - font_height * 2;
             if (draw_y <= cap_height) {
                 String username = message.getUsername();
                 String content = message.getMessage();
                 if (username == null) {
-                    FontRenderer.drawText(batch, ">" + content, getX() + ts / 2, getY() + draw_y + font_height);
+                    getContext().getFontRenderer().drawText(
+                            batch, ">" + content, getX() + ts / 2, getY() + draw_y + font_height);
                 } else {
-                    FontRenderer.drawText(batch, ">" + username + ": " + content, getX() + ts / 2, getY() + draw_y + font_height);
+                    getContext().getFontRenderer().drawText(
+                            batch, ">" + username + ": " + content, getX() + ts / 2, getY() + draw_y + font_height);
                 }
             } else {
                 break;
             }
         }
-        FontRenderer.setTextAlpha(1.0f);
+        getContext().getFontRenderer().setTextAlpha(1.0f);
         super.draw(batch, parentAlpha);
     }
 

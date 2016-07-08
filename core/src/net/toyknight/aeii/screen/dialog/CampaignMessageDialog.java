@@ -54,7 +54,7 @@ public class CampaignMessageDialog extends BasicDialog {
     protected void drawCustom(Batch batch, float parentAlpha) {
         int portrait = getContext().getGameManager().getCurrentCampaignMessage().getPortrait();
         if (portrait >= 0) {
-            batch.draw(ResourceManager.getPortraitTexture(portrait), 0, 5, ts * 85 / 24, ts * 85 / 24);
+            batch.draw(getResources().getPortraitTexture(portrait), 0, 5, ts * 85 / 24, ts * 85 / 24);
         }
     }
 

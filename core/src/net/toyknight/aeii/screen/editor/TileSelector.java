@@ -2,27 +2,25 @@ package net.toyknight.aeii.screen.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.manager.MapEditor;
-import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.screen.widgets.AEIIContainer;
 import net.toyknight.aeii.utils.TileFactory;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class TileSelector extends Container<ScrollPane> {
+public class TileSelector extends AEIIContainer {
 
-    private final int ts;
     private final MapEditor editor;
     private final ObjectMap<Short, TileButton> buttons;
 
-    public TileSelector(MapEditor editor, int ts) {
+    public TileSelector(GameContext context, MapEditor editor) {
+        super(context);
         this.editor = editor;
-        this.ts = ts;
         this.buttons = new ObjectMap<Short, TileButton>();
         this.initComponents();
     }
@@ -33,7 +31,7 @@ public class TileSelector extends Container<ScrollPane> {
         tile_table.padBottom(ts / 4);
         for (short i = 0; i < TileFactory.getTileCount(); i++) {
             if ((0 <= i && i <= 2) || (15 <= i && i <= 45) || (80 <= i && i < TileFactory.getTileCount())) {
-                TileButton t_btn = new TileButton(getEditor(), i, ts);
+                TileButton t_btn = new TileButton(getContext(), getEditor(), i);
                 switch (index % 3) {
                     case 0:
                     case 1:
@@ -61,9 +59,9 @@ public class TileSelector extends Container<ScrollPane> {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ResourceManager.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(getResources().getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
-        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+        getContext().getBorderRenderer().drawBorder(batch, getX(), getY(), getWidth(), getHeight());
     }
 
 }

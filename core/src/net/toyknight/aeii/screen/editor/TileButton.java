@@ -2,22 +2,21 @@ package net.toyknight.aeii.screen.editor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.manager.MapEditor;
+import net.toyknight.aeii.screen.widgets.AEIIButton;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class TileButton extends Button {
+public class TileButton extends AEIIButton {
 
-    private final int ts;
     private final short index;
     private final MapEditor editor;
 
-    public TileButton(MapEditor editor, short index, int ts) {
-        this.ts = ts;
+    public TileButton(GameContext context, MapEditor editor, short index) {
+        super(context);
         this.index = index;
         this.editor = editor;
         setStyle(new ButtonStyle());
@@ -51,12 +50,12 @@ public class TileButton extends Button {
     public void draw(Batch batch, float parentAlpha) {
         if (getEditor().getBrushType() == MapEditor.TYPE_TILE && getEditor().getSelectedTileIndex() == index) {
             batch.draw(
-                    ResourceManager.getMovePathColor(),
+                    getResources().getMovePathColor(),
                     getX() - ts / 24, getY() - ts / 24,
                     getWidth() + ts / 12, getHeight() + ts / 12);
         }
         batch.draw(
-                ResourceManager.getTileTexture(index),
+                getResources().getTileTexture(index),
                 getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
     }

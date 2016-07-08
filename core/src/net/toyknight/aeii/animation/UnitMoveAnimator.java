@@ -2,6 +2,7 @@ package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
 
@@ -18,7 +19,8 @@ public class UnitMoveAnimator extends UnitAnimator {
     private float x_offset;
     private float y_offset;
 
-    public UnitMoveAnimator(Unit unit, Array<Position> path) {
+    public UnitMoveAnimator(GameContext context, Unit unit, Array<Position> path) {
+        super(context);
         this.addUnit(unit, MOVER_KEY);
         this.path = path;
 
@@ -31,7 +33,7 @@ public class UnitMoveAnimator extends UnitAnimator {
     public void render(Batch batch) {
         if (path.size > 0) {
             Position current = path.get(current_location);
-            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
+            getCanvas().getRenderer().drawUnitWithInformation(batch, getUnit(MOVER_KEY), current.x, current.y, x_offset, y_offset);
         }
     }
 

@@ -1,6 +1,7 @@
 package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.UnitFactory;
 
@@ -17,7 +18,8 @@ public class UnitCarryAnimator extends UnitAnimator {
 
     private float offset = 0f;
 
-    public UnitCarryAnimator(Unit carrier, Unit target, int dest_x, int dest_y) {
+    public UnitCarryAnimator(GameContext context, Unit carrier, Unit target, int dest_x, int dest_y) {
+        super(context);
         this.carrier = UnitFactory.cloneUnit(carrier);
         this.target = UnitFactory.cloneUnit(target);
         this.dest_x = dest_x;
@@ -26,10 +28,10 @@ public class UnitCarryAnimator extends UnitAnimator {
 
     @Override
     public void render(Batch batch) {
-        getCanvas().getUnitRenderer().drawUnit(
+        getCanvas().getRenderer().drawUnit(
                 batch, target, carrier.getX(), carrier.getY(),
                 getCarrierOffsetX() + getTargetOffsetX(), getCarrierOffsetY() + getTargetOffsetY());
-        getCanvas().getUnitRenderer().drawUnit(
+        getCanvas().getRenderer().drawUnit(
                 batch, carrier, carrier.getX(), carrier.getY(), getCarrierOffsetX(), getCarrierOffsetY());
     }
 

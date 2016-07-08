@@ -3,9 +3,9 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.renderer.FontRenderer;
 
 import java.util.Random;
 
@@ -29,8 +29,9 @@ public class UnitAttackAnimator extends UnitAnimator {
 
     private final Animation attack_spark_animation;
 
-    public UnitAttackAnimator(Unit attacker, Unit target, int damage) {
-        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+    public UnitAttackAnimator(GameContext context, Unit attacker, Unit target, int damage) {
+        super(context);
+        Texture texture_attack_spark = getResources().getAttackSparkTexture();
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(attacker, ATTACKER_KEY);
         this.addUnit(target, TARGET_KEY);
@@ -39,8 +40,9 @@ public class UnitAttackAnimator extends UnitAnimator {
         this.damage = damage;
     }
 
-    public UnitAttackAnimator(Unit attacker, int target_x, int target_y) {
-        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+    public UnitAttackAnimator(GameContext context, Unit attacker, int target_x, int target_y) {
+        super(context);
+        Texture texture_attack_spark = getResources().getAttackSparkTexture();
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(attacker, ATTACKER_KEY);
         this.damage = -1;
@@ -48,8 +50,9 @@ public class UnitAttackAnimator extends UnitAnimator {
         this.target_y = target_y;
     }
 
-    public UnitAttackAnimator(Unit target, int damage) {
-        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+    public UnitAttackAnimator(GameContext context, Unit target, int damage) {
+        super(context);
+        Texture texture_attack_spark = getResources().getAttackSparkTexture();
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(target, TARGET_KEY);
         this.damage = damage;
@@ -57,8 +60,9 @@ public class UnitAttackAnimator extends UnitAnimator {
         this.target_y = target.getY();
     }
 
-    public UnitAttackAnimator(int target_x, int target_y) {
-        Texture texture_attack_spark = ResourceManager.getAttackSparkTexture();
+    public UnitAttackAnimator(GameContext context, int target_x, int target_y) {
+        super(context);
+        Texture texture_attack_spark = getResources().getAttackSparkTexture();
         this.attack_spark_animation = new Animation(1f / 30, ResourceManager.createFrames(texture_attack_spark, 6, 1));
         this.damage = -1;
         this.target_x = target_x;
@@ -73,13 +77,13 @@ public class UnitAttackAnimator extends UnitAnimator {
         int target_sy = getCanvas().getYOnScreen(target_y);
         //paint tile
         int tile_index = getCanvas().getMap().getTileIndex(target_x, target_y);
-        batch.draw(ResourceManager.getTileTexture(tile_index), target_sx, target_sy, ts(), ts());
+        batch.draw(getResources().getTileTexture(tile_index), target_sx, target_sy, ts(), ts());
         //paint units
         if (attacker != null) {
-            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
+            getCanvas().getRenderer().drawUnitWithInformation(batch, attacker, attacker.getX(), attacker.getY());
         }
         if (target != null) {
-            getCanvas().getUnitRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
+            getCanvas().getRenderer().drawUnitWithInformation(batch, target, target_x, target_y, target_dx, target_dy);
         }
         //paint spark
         int spark_size = ts() * 20 / 24;
@@ -91,8 +95,8 @@ public class UnitAttackAnimator extends UnitAnimator {
                 spark_size, spark_size);
         //paint damage
         if (damage >= 0) {
-            int damage_dx = (ts() - FontRenderer.getLNumberWidth(damage, true)) / 2;
-            FontRenderer.drawNegativeLNumber(batch, damage, target_sx + damage_dx, target_sy);
+            int damage_dx = (ts() - getContext().getFontRenderer().getLNumberWidth(damage, true)) / 2;
+            getContext().getFontRenderer().drawNegativeLNumber(batch, damage, target_sx + damage_dx, target_sy);
         }
         batch.flush();
     }

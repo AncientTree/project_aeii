@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 
 /**
@@ -14,8 +15,9 @@ public class AttackCursorAnimator extends MapAnimator {
 
     private final Animation attack_cursor_animation;
 
-    public AttackCursorAnimator() {
-        Texture attack_cursor_texture = ResourceManager.getAttackCursorTexture();
+    public AttackCursorAnimator(GameContext context) {
+        super(context);
+        Texture attack_cursor_texture = getResources().getAttackCursorTexture();
         this.attack_cursor_animation = ResourceManager.createAnimation(attack_cursor_texture, 3, 1, 0.3f);
     }
 

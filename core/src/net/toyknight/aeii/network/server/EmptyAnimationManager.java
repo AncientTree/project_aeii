@@ -8,11 +8,16 @@ import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.AnimationDispatcher;
 import net.toyknight.aeii.manager.AnimationListener;
+import net.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight 11/2/2015.
  */
 public class EmptyAnimationManager implements AnimationDispatcher {
+
+    @Override
+    public void setCanvas(MapCanvas canvas) {
+    }
 
     @Override
     public void setListener(AnimationListener listener) {

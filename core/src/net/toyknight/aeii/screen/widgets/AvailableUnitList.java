@@ -4,22 +4,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
-import net.toyknight.aeii.renderer.FontRenderer;
-import net.toyknight.aeii.renderer.UnitRenderer;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.UnitFactory;
 
 /**
  * @author toyknight 5/29/2015.
  */
-public class AvailableUnitList extends Widget implements Cullable {
+public class AvailableUnitList extends AEIIWidget implements Cullable {
 
-    private final int ts;
     private final int item_height;
 
     private final int big_circle_width;
@@ -39,8 +35,8 @@ public class AvailableUnitList extends Widget implements Cullable {
 
     private UnitListListener listener;
 
-    public AvailableUnitList(int ts) {
-        this.ts = ts;
+    public AvailableUnitList(GameContext context) {
+        super(context);
         this.item_height = ts / 2 * 3;
         this.big_circle_width = ts * 32 / 24;
         this.big_circle_height = ts * 33 / 24;
@@ -122,18 +118,18 @@ public class AvailableUnitList extends Widget implements Cullable {
         float itemY = getHeight();
         for (Integer unit_index : available_units) {
             if (index == selected_index) {
-                batch.draw(ResourceManager.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
+                batch.draw(getResources().getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
-            batch.draw(ResourceManager.getBigCircleTexture(0),
+            batch.draw(getResources().getBigCircleTexture(0),
                     x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
-            batch.draw(ResourceManager.getUnitTexture(current_team, unit_index, 0),
+            batch.draw(getResources().getUnitTexture(current_team, unit_index, 0),
                     x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
             if (UnitFactory.getCommanderIndex() == unit_index) {
-                UnitRenderer.drawHead(batch, getGame().getCommander(current_team).getHead(),
+                getContext().getCanvasRenderer().drawHead(batch, getGame().getCommander(current_team).getHead(),
                         x + unit_offset, y + itemY - item_height + unit_offset, 0, ts);
             }
             batch.flush();
-            FontRenderer.drawTextCenter(batch, Language.getUnitName(unit_index),
+            getContext().getFontRenderer().drawTextCenter(batch, Language.getUnitName(unit_index),
                     x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
             index++;
             itemY -= item_height;

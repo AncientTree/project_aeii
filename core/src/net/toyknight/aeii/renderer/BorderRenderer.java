@@ -3,6 +3,7 @@ package net.toyknight.aeii.renderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 
 /**
@@ -10,20 +11,32 @@ import net.toyknight.aeii.ResourceManager;
  */
 public class BorderRenderer {
 
-    private static int border_size;
-    private static TextureRegion[] borders;
+    private final GameContext context;
 
-    public static void initialize() {
+    private final int border_size;
+    private TextureRegion[] borders;
+
+    public BorderRenderer(GameContext context) {
+        this.context = context;
+
         borders = new TextureRegion[8];
-        Texture border_texture_sheet = ResourceManager.getBorderTexture();
+        Texture border_texture_sheet = getResources().getBorderTexture();
         int border_size = border_texture_sheet.getHeight();
         for (int i = 0; i < 8; i++) {
             borders[i] = new TextureRegion(border_texture_sheet, border_size * i, 0, border_size, border_size);
         }
-        BorderRenderer.border_size = ResourceManager.getBorderTexture().getHeight();
+        this.border_size = getResources().getBorderTexture().getHeight();
     }
 
-    public static void drawBorder(Batch batch, float x, float y, float width, float height) {
+    public GameContext getContext() {
+        return context;
+    }
+
+    public ResourceManager getResources() {
+        return getContext().getResources();
+    }
+
+    public void drawBorder(Batch batch, float x, float y, float width, float height) {
         batch.draw(borders[0], x, y + height - border_size, border_size, border_size);
         batch.draw(borders[1], x + border_size, y + height - border_size, width - border_size * 2, border_size);
         batch.draw(borders[2], x + width - border_size, y + height - border_size, border_size, border_size);
@@ -35,7 +48,7 @@ public class BorderRenderer {
         batch.flush();
     }
 
-    public static void drawTopBottomBorder(Batch batch, float x, float y, float width, float height) {
+    public void drawTopBottomBorder(Batch batch, float x, float y, float width, float height) {
         batch.draw(borders[1], x, y + height - border_size, width, border_size);
         batch.draw(borders[6], x, y, width, border_size);
         batch.flush();
