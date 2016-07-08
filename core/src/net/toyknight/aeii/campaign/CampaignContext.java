@@ -9,7 +9,6 @@ import net.toyknight.aeii.campaign.tutorial.TutorialCampaign;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -83,7 +82,7 @@ public class CampaignContext {
 
     public void onUnitMoved(Unit unit, int x, int y) {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-            getCurrentCampaign().getCurrentStage().onUnitMoved(new Unit(unit), x, y);
+            getCurrentCampaign().getCurrentStage().onUnitMoved(unit, x, y);
         }
     }
 
@@ -91,7 +90,7 @@ public class CampaignContext {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
             Unit unit = getContext().getGame().getMap().getUnit(x, y);
             if (unit != null) {
-                getCurrentCampaign().getCurrentStage().onUnitStandby(new Unit(unit));
+                getCurrentCampaign().getCurrentStage().onUnitStandby(unit);
             }
         }
     }
@@ -360,7 +359,7 @@ public class CampaignContext {
         }
 
         public Unit get_unit(int map_x, int map_y) {
-            return UnitFactory.cloneUnit(getContext().getGame().getMap().getUnit(map_x, map_y));
+            return getContext().getGame().getMap().getUnit(map_x, map_y);
         }
 
     }
