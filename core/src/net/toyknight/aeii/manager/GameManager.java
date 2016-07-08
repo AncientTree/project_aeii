@@ -514,7 +514,6 @@ public class GameManager implements GameEventListener, AnimationListener {
                 sample.setY(map_y);
                 getPositionGenerator().reset();
                 ObjectSet<Position> movable_positions = getPositionGenerator().createMovablePositions(sample);
-                System.out.println(movable_positions.size);
                 return price >= 0
                         && movable_positions.size > 0
                         && getGame().getCurrentPlayer().getGold() >= price

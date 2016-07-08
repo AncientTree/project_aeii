@@ -270,6 +270,65 @@ public class ResourceManager {
         return asset_manager.update();
     }
 
+    public void dispose() {
+        texture_tiles = null;
+        texture_top_tiles = null;
+        texture_small_tiles = null;
+        texture_tomb = null;
+        texture_alpha = null;
+        texture_normal_cursor = null;
+        texture_attack_cursor = null;
+        texture_move_target_cursor = null;
+        icons_unit_preview = null;
+
+        texture_units = null;
+        texture_heads = null;
+        texture_status = null;
+
+        texture_map_editor_icons.clear();
+
+        texture_border = null;
+
+        texture_big_circle = null;
+        texture_small_circle = null;
+
+        icons_arrow = null;
+        icons_action = null;
+        icons_hud_status = null;
+        icons_hud_battle = null;
+        icons_main_menu = null;
+
+        texture_dust = null;
+        texture_smoke = null;
+        texture_spark_attack = null;
+        texture_spark_white = null;
+        texture_portraits = null;
+
+        texture_main_menu_background = null;
+
+        bg_list_selected = null;
+        bg_list_unselected = null;
+        bg_panel = null;
+        bg_team = null;
+        bg_text = null;
+        color_move_path = null;
+        color_white = null;
+        color_border_dark = null;
+        color_border_light = null;
+
+        color_physical_attack = null;
+        color_magic_attack = null;
+
+        grayscale_shader = null;
+        color_filter_shader = null;
+
+        font_title = null;
+        font_text = null;
+        texture_chars_large = null;
+        texture_chars_small = null;
+        asset_manager.dispose();
+    }
+
     public Skin getSkin() {
         return asset_manager.get("skin/aeii_skin.json", Skin.class);
     }

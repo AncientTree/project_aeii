@@ -428,6 +428,8 @@ public class GameContext extends Game implements GameManagerListener {
 
     @Override
     public void dispose() {
+        super.dispose();
+        getResources().dispose();
     }
 
     public static void setButtonEnabled(Button button, boolean enabled) {
