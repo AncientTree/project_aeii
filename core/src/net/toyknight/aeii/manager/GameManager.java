@@ -231,8 +231,12 @@ public class GameManager implements GameEventListener, AnimationListener {
     }
 
     public boolean nextCampaignMessage() {
-        campaign_messages.pollFirst();
-        return campaign_messages.size() > 0;
+        if (campaign_messages.size() > 0) {
+            campaign_messages.removeFirst();
+            return campaign_messages.size() > 0;
+        } else {
+            return false;
+        }
     }
 
     public Message getCurrentCampaignMessage() {
