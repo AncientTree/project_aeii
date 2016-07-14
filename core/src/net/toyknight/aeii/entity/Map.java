@@ -16,8 +16,6 @@ import org.json.JSONObject;
  */
 public class Map implements Serializable {
 
-    public static final Object ITERATOR_LOCK = new Object();
-
     protected String author;
 
     protected final short[][] map_data;
@@ -61,25 +59,23 @@ public class Map implements Serializable {
 
     public Map(Map map) {
         this(map.getWidth(), map.getHeight());
-        synchronized (ITERATOR_LOCK) {
-            author = map.author;
-            System.arraycopy(map.team_access, 0, team_access, 0, 4);
-            for (int x = 0; x < map.getWidth(); x++) {
-                for (int y = 0; y < map.getHeight(); y++) {
-                    setTile(map.getTileIndex(x, y), x, y);
-                    Unit unit = map.upper_unit_layer[x][y];
-                    if (unit != null) {
-                        upper_unit_layer[x][y] = new Unit(unit);
-                    }
+        author = map.author;
+        System.arraycopy(map.team_access, 0, team_access, 0, 4);
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                setTile(map.getTileIndex(x, y), x, y);
+                Unit unit = map.upper_unit_layer[x][y];
+                if (unit != null) {
+                    upper_unit_layer[x][y] = new Unit(unit);
                 }
             }
-            for (Position position : map.getUnitPositions()) {
-                Unit unit = map.units.get(position);
-                units.put(position, new Unit(unit));
-            }
-            for (Tomb tomb : map.tombs) {
-                tombs.add(new Tomb(tomb));
-            }
+        }
+        for (Position position : map.getUnitPositions()) {
+            Unit unit = map.units.get(position);
+            units.put(position, new Unit(unit));
+        }
+        for (Tomb tomb : map.tombs) {
+            tombs.add(new Tomb(tomb));
         }
     }
 

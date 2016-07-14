@@ -3,6 +3,7 @@ package net.toyknight.aeii.robot;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.Operation;
@@ -582,7 +583,7 @@ public class Robot {
 
     private int getEnemyDistance(Position position) {
         int total_distance = 0;
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam())) {
                     int distance = getDistance(getGame().getMap().getPosition(unit), position);
@@ -613,7 +614,7 @@ public class Robot {
 
     private int getEnemyCountWithAbility(int ability) {
         int count = 0;
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam()) && unit.hasAbility(ability)) {
                     count++;
@@ -625,7 +626,7 @@ public class Robot {
 
     private int getUnhealthyAllyCount() {
         int count = 0;
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isAlly(team, unit.getTeam())
                         && (Status.isDebuff(unit.getStatus()) || unit.getCurrentHp() < unit.getMaxHp())) {
@@ -665,7 +666,7 @@ public class Robot {
     private int getEnemyAveragePhysicalDefence() {
         int enemy_number = 0;
         int enemy_total_physical_defence = 0;
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam())) {
                     enemy_number++;
@@ -683,7 +684,7 @@ public class Robot {
     private int getEnemyAverageMagicDefence() {
         int enemy_number = 0;
         int enemy_total_magic_defence = 0;
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam())) {
                     enemy_number++;
@@ -740,7 +741,7 @@ public class Robot {
 
     private ObjectSet<Unit> getEnemyCommanders() {
         ObjectSet<Unit> commanders = new ObjectSet<Unit>();
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (unit.isCommander() && getGame().isEnemy(team, unit.getTeam())) {
                     commanders.add(unit);
@@ -819,7 +820,7 @@ public class Robot {
     }
 
     private ObjectSet<Position> getTombPositionsWithinReach(Unit unit) {
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             ObjectSet<Position> reachable_positions = getManager().getPositionGenerator().createPositionsWithinReach(unit);
             for (Position position : reachable_positions) {
                 if (!getGame().getMap().isTomb(position)) {
@@ -832,7 +833,7 @@ public class Robot {
 
     private ObjectSet<Unit> getEnemyUnits() {
         ObjectSet<Unit> enemies = new ObjectSet<Unit>();
-        synchronized (Map.ITERATOR_LOCK) {
+        synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam())) {
                     enemies.add(unit);
