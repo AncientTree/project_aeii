@@ -82,17 +82,17 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         Image image_price = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(1), hs, hs));
         hud_pane.add(image_price);
         label_price = new Label("", getContext().getSkin());
-        hud_pane.add(label_price).width(ts);
+        hud_pane.add(label_price).width(ts).height(hs);
 
         Image image_attack_range = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(2), hs, hs));
         hud_pane.add(image_attack_range);
         label_attack_range = new Label("", getContext().getSkin());
-        hud_pane.add(label_attack_range).width(ts);
+        hud_pane.add(label_attack_range).width(ts).height(hs);
 
         Image image_occupancy = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(0), hs, hs));
         hud_pane.add(image_occupancy);
         label_occupancy = new Label("", getContext().getSkin());
-        hud_pane.add(label_occupancy).width(ts);
+        hud_pane.add(label_occupancy).width(ts).height(hs);
 
         information_pane.add(hud_pane).width(ts * 4 + ts / 2).padBottom(ts / 8).row();
 
