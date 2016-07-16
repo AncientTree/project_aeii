@@ -7,7 +7,7 @@ import org.json.JSONObject;
 /**
  * @author by toyknight 6/10/2016.
  */
-public class MapSnapshot implements Serializable {
+public class MapSnapshot implements Serializable, Comparable<MapSnapshot> {
 
     private final int capacity;
     private final String filename;
@@ -64,4 +64,14 @@ public class MapSnapshot implements Serializable {
         json.put("directory", directory);
         return json;
     }
+
+    @Override
+    public int compareTo(MapSnapshot snapshot) {
+        if (isDirectory()) {
+            return getAuthor().toLowerCase().compareTo(snapshot.getAuthor().toLowerCase());
+        } else {
+            return getFilename().toLowerCase().compareTo(snapshot.getFilename().toLowerCase());
+        }
+    }
+
 }

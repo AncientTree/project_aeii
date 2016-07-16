@@ -320,6 +320,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFinish(Array<MapSnapshot> map_list) {
                 closeDialog("message");
+                map_list.sort();
                 updateServerMapList(map_list);
             }
 
