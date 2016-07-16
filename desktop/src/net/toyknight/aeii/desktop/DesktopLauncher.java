@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 public class DesktopLauncher {
 
     private final Resolution[] RESOLUTION_PRESET =
-            new Resolution[]{new Resolution(848, 480), new Resolution(1280, 720), new Resolution(1440, 900)};
+            new Resolution[]{new Resolution(848, 480), new Resolution(1280, 720), new Resolution(1600, 900)};
 
     private final Integer[] FPS_PRESET = new Integer[]{30, 40, 50, 60};
 

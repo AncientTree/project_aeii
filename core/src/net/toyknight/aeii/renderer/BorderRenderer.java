@@ -19,13 +19,9 @@ public class BorderRenderer {
     public BorderRenderer(GameContext context) {
         this.context = context;
 
-        borders = new TextureRegion[8];
         Texture border_texture_sheet = getResources().getBorderTexture();
-        int border_size = border_texture_sheet.getHeight();
-        for (int i = 0; i < 8; i++) {
-            borders[i] = new TextureRegion(border_texture_sheet, border_size * i, 0, border_size, border_size);
-        }
-        this.border_size = getResources().getBorderTexture().getHeight();
+        borders = ResourceManager.createFrames(border_texture_sheet, 8, 1);
+        border_size = getResources().getBorderTexture().getHeight();
     }
 
     public GameContext getContext() {
