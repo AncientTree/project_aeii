@@ -267,7 +267,7 @@ public class OperationExecutor {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 change = getManager().getUnitToolkit().getTerrainHeal(unit, tile);
                 //the poison damage
-                if (unit.hasStatus(Status.POISONED) && unit.getStatus().getRemainingTurn() > 0) {
+                if (getGame().canBePoisoned(unit)) {
                     if (unit.hasAbility(Ability.UNDEAD)) {
                         change += Rule.POISON_DAMAGE;
                     } else {
@@ -285,8 +285,8 @@ public class OperationExecutor {
                     change = -50;
                 }
             }
-            change = UnitToolkit.validateHpChange(unit, change);
             if (change != 0) {
+                change = UnitToolkit.validateHpChange(unit, change);
                 JSONObject hp_change = new JSONObject();
                 hp_change.put("x", unit.getX());
                 hp_change.put("y", unit.getY());

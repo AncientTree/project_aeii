@@ -79,6 +79,10 @@ public class TileFactory {
             tile_list[index].setCastle(is_castle);
             boolean is_village = din.nextBoolean();
             tile_list[index].setVillage(is_village);
+            if (din.hasNextBoolean()) {
+                boolean is_temple = din.nextBoolean();
+                tile_list[index].setTemple(is_temple);
+            }
             din.close();
         } catch (java.util.NoSuchElementException ex) {
             throw new AEIIException("bad tile data file!");

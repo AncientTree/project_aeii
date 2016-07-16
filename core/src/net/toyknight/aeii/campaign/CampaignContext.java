@@ -13,6 +13,8 @@ import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 /**
  * @author toyknight 6/24/2016.
  */
@@ -72,6 +74,23 @@ public class CampaignContext {
             getCurrentCampaign().getCurrentStage().setCleared(false);
             getCurrentCampaign().getCurrentStage().setContext(new StageContext());
         }
+    }
+
+    public void loadCampaign(GameSave save) {
+        String campaign_code = save.getString("_code", "");
+        int stage_number = save.getInteger("_stage", 0);
+        setCurrentCampaign(campaign_code);
+        setCurrentStage(stage_number);
+
+        ObjectMap<String, Integer> attributes = new ObjectMap<String, Integer>();
+        Iterator<String> keys = save.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (!key.startsWith("_")) {
+                attributes.put(key, save.getInteger(key, 0));
+            }
+        }
+        getCurrentCampaign().setAttributes(attributes);
     }
 
     public void onGameStart() {

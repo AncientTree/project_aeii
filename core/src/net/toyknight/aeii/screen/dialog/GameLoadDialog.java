@@ -115,11 +115,18 @@ public class GameLoadDialog extends BasicDialog {
         } else {
             getContext().getGameManager().getGameRecorder().setEnabled(false);
             GameCore game = game_save.getGame();
-            for (int team = 0; team < 4; team++) {
-                Player player = game.getPlayer(team);
-                if (player != null && player.getType() == Player.REMOTE) {
-                    player.setType(Player.LOCAL);
-                }
+            switch (game.getType()) {
+                case GameCore.SKIRMISH:
+                    for (int team = 0; team < 4; team++) {
+                        Player player = game.getPlayer(team);
+                        if (player != null && player.getType() == Player.REMOTE) {
+                            player.setType(Player.LOCAL);
+                        }
+                    }
+                    break;
+                case GameCore.CAMPAIGN:
+                    getContext().getCampaignContext().loadCampaign(game_save);
+                    break;
             }
             getContext().gotoGameScreen(game_save);
         }

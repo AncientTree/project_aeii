@@ -530,6 +530,15 @@ public class GameCore implements Serializable {
         return unit == null || (unit.isCommander() && unit.getTeam() == team);
     }
 
+    public boolean canBePoisoned(Unit unit) {
+        if (unit == null) {
+            return false;
+        } else {
+            Tile tile = getMap().getTile(getMap().getPosition(unit));
+            return !tile.isTemple() && unit.hasStatus(Status.POISONED) && unit.getStatus().getRemainingTurn() > 0;
+        }
+    }
+
     public boolean isUnitAccessible(Unit unit) {
         return isUnitAlive(unit) && unit.getTeam() == getCurrentTeam() && !unit.isStandby();
     }

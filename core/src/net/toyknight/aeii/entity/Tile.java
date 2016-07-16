@@ -29,6 +29,7 @@ public class Tile implements Verifiable {
     private boolean is_animated = false;
     private boolean is_castle = false;
     private boolean is_village = false;
+    private boolean is_temple = false;
 
     private short[] captured_tile_list;
     private short destroyed_index;
@@ -149,6 +150,14 @@ public class Tile implements Verifiable {
 
     public boolean isVillage() {
         return is_village;
+    }
+
+    public void setTemple(boolean b) {
+        this.is_temple = b;
+    }
+
+    public boolean isTemple() {
+        return is_temple;
     }
 
     public void setCapturedTileList(short[] list) {

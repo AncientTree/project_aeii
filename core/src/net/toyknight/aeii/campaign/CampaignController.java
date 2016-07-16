@@ -20,13 +20,9 @@ public abstract class CampaignController {
         this.current_stage = 0;
     }
 
-    public final void resetAttributes() {
-        attributes.clear();
-    }
-
     public final void setAttributes(ObjectMap<String, Integer> attributes) {
-        resetAttributes();
-        attributes.putAll(attributes);
+        this.attributes.clear();
+        this.attributes.putAll(attributes);
     }
 
     public final ObjectMap<String, Integer> getAttributes() {

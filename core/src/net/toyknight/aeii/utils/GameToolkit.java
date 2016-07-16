@@ -2,6 +2,7 @@ package net.toyknight.aeii.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -51,23 +52,31 @@ public class GameToolkit {
         return game;
     }
 
-    public static void save(GameCore game) throws AEIIException {
-        String filename = createFilename(SAVE);
-        switch (game.getType()) {
-            case GameCore.SKIRMISH:
-                saveSkirmish(game, filename);
-                break;
-            case GameCore.CAMPAIGN:
-                break;
-            default:
-                //do nothing
+    public static void saveSkirmish(GameCore game) throws AEIIException {
+        try {
+            FileHandle save_file = FileProvider.getSaveFile("skirmish " + createFilename(SAVE));
+            GameSave game_save = new GameSave(new GameCore(game), game.getType());
+            Output output = new Output(save_file.write(false));
+            output.writeInt(SAVE);
+            output.writeString(game_save.toJson().toString());
+            output.flush();
+            output.close();
+        } catch (KryoException ex) {
+            throw new AEIIException("Cannot save the game", ex);
         }
     }
 
-    public static void saveSkirmish(GameCore game, String filename) throws AEIIException {
+    public static void saveCampaign(GameCore game, String code, int stage, ObjectMap<String, Integer> attributes)
+            throws AEIIException {
         try {
+            FileHandle save_file = FileProvider.getSaveFile("campaign " + createFilename(SAVE));
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
-            FileHandle save_file = FileProvider.getSaveFile("skirmish " + filename);
+            game_save.putString("_code", code);
+            game_save.putInteger("_stage", stage);
+            for (String key : attributes.keys()) {
+                game_save.putInteger(key, attributes.get(key));
+            }
+
             Output output = new Output(save_file.write(false));
             output.writeInt(SAVE);
             output.writeString(game_save.toJson().toString());

@@ -359,7 +359,11 @@ public class GameEventExecutor {
         getGame().nextTurn();
         for (Unit unit : getGame().getMap().getUnits()) {
             if (unit.getTeam() == getGame().getCurrentTeam()) {
-                unit.updateStatus();
+                if (getGame().getMap().getTile(unit).isTemple() && Status.isDebuff(unit.getStatus())) {
+                    unit.clearStatus();
+                } else {
+                    unit.updateStatus();
+                }
                 getGame().resetUnit(unit);
             }
         }

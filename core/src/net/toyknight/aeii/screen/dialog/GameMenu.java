@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.concurrent.AsyncTask;
@@ -112,7 +113,17 @@ public class GameMenu extends BasicDialog {
             @Override
             public Void doTask() throws AEIIException {
                 GameCore game = getOwner().getGame();
-                GameToolkit.save(game);
+                switch (game.getType()) {
+                    case GameCore.SKIRMISH:
+                        GameToolkit.saveSkirmish(game);
+                        break;
+                    case GameCore.CAMPAIGN:
+                        String code = getContext().getCampaignContext().getCurrentCampaign().getCode();
+                        int stage = getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+                        ObjectMap<String, Integer> attributes = getContext().getCampaignContext().getCurrentCampaign().getAttributes();
+                        GameToolkit.saveCampaign(game, code, stage, attributes);
+                        break;
+                }
                 return null;
             }
 
@@ -137,8 +148,7 @@ public class GameMenu extends BasicDialog {
     }
 
     private boolean canSave() {
-        return getContext().getGame().getType() == GameCore.SKIRMISH
-                && getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
+        return getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
     }
 

@@ -165,6 +165,10 @@ public class Map implements Serializable {
         }
     }
 
+    public Tile getTile(Unit unit) {
+        return getTile(unit.getX(), unit.getY());
+    }
+
     public Tile getTile(Position position) {
         return getTile(position.x, position.y);
     }
