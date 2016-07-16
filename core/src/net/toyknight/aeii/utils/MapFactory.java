@@ -177,7 +177,7 @@ public class MapFactory {
 
         @Override
         public String toString() {
-            return "(" + capacity + ") " + file.name();
+            return "(" + capacity + ") " + file.nameWithoutExtension();
         }
 
     }
