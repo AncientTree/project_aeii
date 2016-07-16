@@ -278,6 +278,9 @@ public class OperationExecutor {
                 if (unit.hasAbility(Ability.REHABILITATION)) {
                     change += unit.getMaxHp() / 4;
                 }
+                if (unit.getCurrentHp() > unit.getMaxHp()) {
+                    change -= unit.getCurrentHp() - unit.getMaxHp();
+                }
             } else {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 if (getGame().isEnemy(unit.getTeam(), next_team)
