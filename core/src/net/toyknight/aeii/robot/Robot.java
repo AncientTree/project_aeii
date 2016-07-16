@@ -132,21 +132,23 @@ public class Robot {
     }
 
     private boolean checkCastleOccupation() {
-        Unit commander = getGame().getCommander(team);
-        if (getGame().isCommanderAlive(team) && !commander.isStandby()) {
-            ObjectSet<Position> positions = getManager().getPositionGenerator().createMovablePositions(commander);
-            for (Position position : positions) {
-                Tile tile = getGame().getMap().getTile(position);
-                if (tile.isCastle() && (tile.getTeam() < 0 || getGame().isEnemy(team, tile.getTeam()))) {
-                    move_target = position;
-                    action_target = position;
-                    action_type = Operation.OCCUPY;
-                    getManager().doSelect(commander.getX(), commander.getY());
-                    return true;
+        synchronized (GameContext.RENDER_LOCK) {
+            Unit commander = getGame().getCommander(team);
+            if (getGame().isCommanderAlive(team) && !commander.isStandby()) {
+                ObjectSet<Position> positions = getManager().getPositionGenerator().createMovablePositions(commander);
+                for (Position position : positions) {
+                    Tile tile = getGame().getMap().getTile(position);
+                    if (tile.isCastle() && (tile.getTeam() < 0 || getGame().isEnemy(team, tile.getTeam()))) {
+                        move_target = position;
+                        action_target = position;
+                        action_type = Operation.OCCUPY;
+                        getManager().doSelect(commander.getX(), commander.getY());
+                        return true;
+                    }
                 }
             }
+            return false;
         }
-        return false;
     }
 
     private void recruit() {
@@ -561,29 +563,31 @@ public class Robot {
     }
 
     private Position getRecruitingCastlePosition() {
-        Position position = null;
-        int min_enemy_distance = Integer.MIN_VALUE;
-        for (Position cp : getGame().getMap().getCastlePositions(team)) {
-            Unit unit = getGame().getMap().getUnit(cp);
-            if (unit == null || (unit.isCommander() && unit.getTeam() == team)) {
-                if (position == null) {
-                    position = cp;
-                    min_enemy_distance = getEnemyDistance(cp);
-                } else {
-                    int distance = getEnemyDistance(cp);
-                    if (distance < min_enemy_distance) {
+        synchronized (GameContext.RENDER_LOCK) {
+            Position position = null;
+            int min_enemy_distance = Integer.MIN_VALUE;
+            for (Position cp : getGame().getMap().getCastlePositions(team)) {
+                Unit unit = getGame().getMap().getUnit(cp);
+                if (unit == null || (unit.isCommander() && unit.getTeam() == team)) {
+                    if (position == null) {
                         position = cp;
                         min_enemy_distance = getEnemyDistance(cp);
+                    } else {
+                        int distance = getEnemyDistance(cp);
+                        if (distance < min_enemy_distance) {
+                            position = cp;
+                            min_enemy_distance = getEnemyDistance(cp);
+                        }
                     }
                 }
             }
+            return position;
         }
-        return position;
     }
 
     private int getEnemyDistance(Position position) {
-        int total_distance = 0;
         synchronized (GameContext.RENDER_LOCK) {
+            int total_distance = 0;
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam())) {
                     int distance = getDistance(getGame().getMap().getPosition(unit), position);
@@ -593,48 +597,50 @@ public class Robot {
                     total_distance += distance;
                 }
             }
-        }
-        for (Position cp : getGame().getMap().getCastlePositions()) {
-            if (getGame().isEnemy(team, getGame().getMap().getTile(cp).getTeam())) {
-                total_distance += getDistance(cp, position);
+            for (Position cp : getGame().getMap().getCastlePositions()) {
+                if (getGame().isEnemy(team, getGame().getMap().getTile(cp).getTeam())) {
+                    total_distance += getDistance(cp, position);
+                }
             }
+            return total_distance;
         }
-        return total_distance;
     }
 
     private int getAllyCountWithAbility(int ability) {
-        int count = 0;
-        for (Unit unit : getGame().getMap().getUnits(team)) {
-            if (unit.hasAbility(ability)) {
-                count++;
+        synchronized (GameContext.RENDER_LOCK) {
+            int count = 0;
+            for (Unit unit : getGame().getMap().getUnits(team)) {
+                if (unit.hasAbility(ability)) {
+                    count++;
+                }
             }
+            return count;
         }
-        return count;
     }
 
     private int getEnemyCountWithAbility(int ability) {
-        int count = 0;
         synchronized (GameContext.RENDER_LOCK) {
+            int count = 0;
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam()) && unit.hasAbility(ability)) {
                     count++;
                 }
             }
+            return count;
         }
-        return count;
     }
 
     private int getUnhealthyAllyCount() {
-        int count = 0;
         synchronized (GameContext.RENDER_LOCK) {
+            int count = 0;
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isAlly(team, unit.getTeam())
                         && (Status.isDebuff(unit.getStatus()) || unit.getCurrentHp() < unit.getMaxHp())) {
                     count++;
                 }
             }
+            return count;
         }
-        return count;
     }
 
     private int getCheapestUnitIndexWithAbility(int ability) {
@@ -655,12 +661,14 @@ public class Robot {
     }
 
     private Unit getFirstUnitWithAbility(int ability) {
-        for (Unit unit : getGame().getMap().getUnits(team)) {
-            if (unit.hasAbility(ability)) {
-                return unit;
+        synchronized (GameContext.RENDER_LOCK) {
+            for (Unit unit : getGame().getMap().getUnits(team)) {
+                if (unit.hasAbility(ability)) {
+                    return unit;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     private int getEnemyAveragePhysicalDefence() {
@@ -740,37 +748,41 @@ public class Robot {
     }
 
     private ObjectSet<Unit> getEnemyCommanders() {
-        ObjectSet<Unit> commanders = new ObjectSet<Unit>();
         synchronized (GameContext.RENDER_LOCK) {
+            ObjectSet<Unit> commanders = new ObjectSet<Unit>();
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (unit.isCommander() && getGame().isEnemy(team, unit.getTeam())) {
                     commanders.add(unit);
                 }
             }
+            return commanders;
         }
-        return commanders;
     }
 
     private ObjectSet<Position> getEnemyCastlePositions() {
-        ObjectSet<Position> positions = new ObjectSet<Position>();
-        for (Position position : getGame().getMap().getCastlePositions()) {
-            Tile tile = getGame().getMap().getTile(position);
-            if (!getGame().isAlly(team, tile.getTeam())) {
-                positions.add(position);
+        synchronized (GameContext.RENDER_LOCK) {
+            ObjectSet<Position> positions = new ObjectSet<Position>();
+            for (Position position : getGame().getMap().getCastlePositions()) {
+                Tile tile = getGame().getMap().getTile(position);
+                if (!getGame().isAlly(team, tile.getTeam())) {
+                    positions.add(position);
+                }
             }
+            return positions;
         }
-        return positions;
     }
 
     private ObjectSet<Position> getEnemyVillagePositions() {
-        ObjectSet<Position> positions = new ObjectSet<Position>();
-        for (Position position : getGame().getMap().getVillagePositions()) {
-            Tile tile = getGame().getMap().getTile(position);
-            if (!getGame().isAlly(team, tile.getTeam())) {
-                positions.add(position);
+        synchronized (GameContext.RENDER_LOCK) {
+            ObjectSet<Position> positions = new ObjectSet<Position>();
+            for (Position position : getGame().getMap().getVillagePositions()) {
+                Tile tile = getGame().getMap().getTile(position);
+                if (!getGame().isAlly(team, tile.getTeam())) {
+                    positions.add(position);
+                }
             }
+            return positions;
         }
-        return positions;
     }
 
     private Position getNearestEnemyCastlePositionWithinReach(Unit unit, ObjectSet<Position> movable_positions) {
@@ -832,15 +844,15 @@ public class Robot {
     }
 
     private ObjectSet<Unit> getEnemyUnits() {
-        ObjectSet<Unit> enemies = new ObjectSet<Unit>();
         synchronized (GameContext.RENDER_LOCK) {
+            ObjectSet<Unit> enemies = new ObjectSet<Unit>();
             for (Unit unit : getGame().getMap().getUnits()) {
                 if (getGame().isEnemy(team, unit.getTeam())) {
                     enemies.add(unit);
                 }
             }
+            return enemies;
         }
-        return enemies;
     }
 
     private int getDistance(Position p1, Position p2) {
