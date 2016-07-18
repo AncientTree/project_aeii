@@ -29,7 +29,7 @@ Follow the steps below to contribute a new language support:
 # Compile & run the project
 
 This project is being developed using [IntellilJ IDEA](https://www.jetbrains.com/idea/), however if you're planning to use [Android Studio](https://developer.android.com/studio/index.html) it will also be fine.
-Check out the project from your Github repository. If you have already checked out the project using Github Desktop then simply import the project from your local repository.
+Check out the project from your Github repository after forking it. If you have already checked out the project using Github Desktop then simply import the project from your local repository.
 After gradle build is done go for `Build -> Make Project`. Then you can create launchers to launch the game.
 
 * Desktop Launcher **main class:** `net.toyknight.aeii.desktop.DesktopLauncher`, **module:** `desktop`, **working directory:** `<project directory>\project_aeii\android\assets`
