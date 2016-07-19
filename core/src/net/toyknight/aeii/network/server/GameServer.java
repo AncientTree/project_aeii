@@ -167,6 +167,9 @@ public class GameServer implements RoomListener {
             case NetworkConstants.CREATE_ROOM_SAVED:
                 doRespondCreateRoomSavedGame(player, request);
                 break;
+            case NetworkConstants.GAME_EVENT:
+                onSubmitGameEvent(player, request);
+                break;
             case NetworkConstants.LIST_MAPS:
                 doRespondListMaps(player, request);
                 break;
@@ -189,9 +192,9 @@ public class GameServer implements RoomListener {
             case NetworkConstants.UPDATE_ALLOCATION:
                 onAllocationUpdate(player, notification);
                 break;
-            case NetworkConstants.GAME_EVENT:
-                onSubmitGameEvent(player, notification);
-                break;
+//            case NetworkConstants.GAME_EVENT:
+//                onSubmitGameEvent(player, notification);
+//                break;
             case NetworkConstants.MESSAGE:
                 onSubmitMessage(player, notification);
                 break;
@@ -467,18 +470,20 @@ public class GameServer implements RoomListener {
         }
     }
 
-    public void onSubmitGameEvent(PlayerService submitter, JSONObject notification) {
-        JSONObject event = notification.getJSONObject("game_event");
+    public void onSubmitGameEvent(PlayerService submitter, JSONObject request) {
         try {
+            JSONObject event = request.getJSONObject("game_event");
             if (submitter.isAuthenticated()) {
                 Room room = getRoom(submitter.getRoomNumber());
                 if (!room.isOpen()) {
                     room.submitGameEvent(event, submitter.getID());
+                    JSONObject response = createResponse(request);
+                    submitter.sendTCP(response.toString());
                 }
             }
         } catch (JSONException ex) {
             String message = String.format(
-                    "Bad game event notification from %s@%s", submitter.getUsername(), submitter.getAddress());
+                    "Bad game event from %s@%s", submitter.getUsername(), submitter.getAddress());
             Log.error(TAG, message, ex);
         }
     }
@@ -619,7 +624,7 @@ public class GameServer implements RoomListener {
 
     public String getVerificationString() {
         String V_STRING =
-                TileFactory.getVerificationString() + UnitFactory.getVerificationString() + GameContext.VERSION;
+                TileFactory.getVerificationString() + UnitFactory.getVerificationString() + GameContext.INTERNAL_VERSION;
         return new Encryptor().encryptString(V_STRING);
     }
 

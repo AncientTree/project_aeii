@@ -58,7 +58,7 @@ public class MainMenuScreen extends StageScreen {
         this.btn_setting.setPosition(0, 0);
         this.addActor(btn_setting);
 
-        this.lb_version = new Label(getContext().getVersion(), getContext().getSkin());
+        this.lb_version = new Label(GameContext.EXTERNAL_VERSION, getContext().getSkin());
         this.lb_version.setPosition(Gdx.graphics.getWidth() - lb_version.getPrefWidth(), 0);
         this.addActor(lb_version);
     }

@@ -35,7 +35,8 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String VERSION = "1.1.5";
+    public static final String INTERNAL_VERSION = "12";
+    public static final String EXTERNAL_VERSION = "1.1.5";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -247,12 +248,8 @@ public class GameContext extends Game implements GameManagerListener {
         }
     }
 
-    public String getVersion() {
-        return VERSION;
-    }
-
     public String getVerificationString() {
-        String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + VERSION;
+        String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + INTERNAL_VERSION;
         return new Encryptor().encryptString(V_STRING);
     }
 

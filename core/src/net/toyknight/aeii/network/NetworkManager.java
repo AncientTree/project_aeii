@@ -364,14 +364,9 @@ public class NetworkManager {
     }
 
     public static void sendGameEvent(JSONObject event) throws JSONException {
-        JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
-        notification.put("game_event", event);
-        sendNotification(notification);
-        //TODO: Just try to ensure that events are received sequentially. To be improved in the future.
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException ignored) {
-        }
+        JSONObject request = createRequest(NetworkConstants.GAME_EVENT);
+        request.put("game_event", event);
+        sendRequest(request);
     }
 
     public static void sendMessage(String message) throws JSONException {
