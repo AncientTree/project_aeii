@@ -292,7 +292,9 @@ public class ResourceManager {
         texture_status = null;
         texture_level = null;
 
-        texture_map_editor_icons.clear();
+        if (texture_map_editor_icons != null) {
+            texture_map_editor_icons.clear();
+        }
 
         texture_border = null;
 
