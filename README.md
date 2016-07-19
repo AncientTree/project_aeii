@@ -5,6 +5,7 @@
 * New & renewed units
 * New abilities
 * New & renewed status
+* New campaigns
 * Map editor
 * Online map sharing
 * Online multiplayer mode
