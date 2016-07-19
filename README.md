@@ -10,6 +10,8 @@
 * Online map sharing
 * Online multiplayer mode
 
+Our [website](http://toyknight.net/aeii)
+
 # Licence
 
 The game's code is under GNU General Public License version 3. You can use the assets of this game without any permission or restriction.
