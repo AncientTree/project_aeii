@@ -296,24 +296,16 @@ public class GameEventExecutor {
                 }
             }
             if (!counter) {
-                getGameManager().getContext().getCampaignContext().onUnitAttacked(attacker, defender);
+                fireAttackEvent(attacker, defender);
             }
         } else {
-//            Unit attacker = getGame().getMap().getUnit(attacker_x, attacker_y);
-//            Unit defender = getGame().getMap().getUnit(target_x, target_y);
-//            if (attacker == null) {
-//                System.out.println(String.format("attacker null %d, %d", attacker_x, attacker_y));
-//                return;
-//            }
-//            if (defender == null) {
-//                System.out.println(String.format("defender null %d, %d", target_x, target_y));
-//                return;
-//            }
-//            System.out.println(String.format("attacker: index - %d (%d, %d) min_ar: %d max_ar: %d alliance: %d",
-//                    attacker.getIndex(), attacker_x, attacker_y, attacker.getMinAttackRange(), attacker.getMaxAttackRange(), getGame().getAlliance(attacker.getTeam())));
-//            System.out.println(String.format("defender: index - %d (%d, %d) min_ar: %d max_ar: %d alliance: %d",
-//                    defender.getIndex(), target_x, target_y, defender.getMinAttackRange(), defender.getMaxAttackRange(), getGame().getAlliance(defender.getTeam())));
             throw new CheatingException("attacking check failed!", getGame().getCurrentTeam());
+        }
+    }
+
+    private void fireAttackEvent(Unit attacker, Unit defender) {
+        if (getGameManager().getContext() != null) {
+            getGameManager().getContext().getCampaignContext().onUnitAttacked(attacker, defender);
         }
     }
 
@@ -409,9 +401,15 @@ public class GameEventExecutor {
             unit.setCurrentMovementPoint(movement_point);
             getAnimationDispatcher().submitUnitMoveAnimation(unit, path);
 
-            getGameManager().getContext().getCampaignContext().onUnitMoved(unit, target_x, target_y);
+            fireMoveEvent(unit, target_x, target_y);
         } else {
             throw new CheatingException("moving check failed!", getGame().getCurrentTeam());
+        }
+    }
+
+    private void fireMoveEvent(Unit unit, int target_x, int target_y) {
+        if (getGameManager().getContext() != null) {
+            getGameManager().getContext().getCampaignContext().onUnitMoved(unit, target_x, target_y);
         }
     }
 
@@ -437,9 +435,15 @@ public class GameEventExecutor {
 
             onCheckTeamDestroy(target_tile.getTeam());
 
-            getGameManager().getContext().getCampaignContext().onTileOccupied(target_x, target_y, team);
+            fireOccupyEvent(target_x, target_y, team);
         } else {
             throw new CheatingException("occupying check failed!", getGame().getCurrentTeam());
+        }
+    }
+
+    private void fireOccupyEvent(int target_x, int target_y, int team) {
+        if (getGameManager().getContext() != null) {
+            getGameManager().getContext().getCampaignContext().onTileOccupied(target_x, target_y, team);
         }
     }
 
@@ -456,9 +460,15 @@ public class GameEventExecutor {
             getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
             getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_REPAIRED"), 0.5f);
 
-            getGameManager().getContext().getCampaignContext().onTileRepaired(target_x, target_y);
+            fireRepairEvent(target_x, target_y);
         } else {
             throw new CheatingException("repairing check failed!", getGame().getCurrentTeam());
+        }
+    }
+
+    private void fireRepairEvent(int target_x, int target_y) {
+        if (getGameManager().getContext() != null) {
+            getGameManager().getContext().getCampaignContext().onTileRepaired(target_x, target_y);
         }
     }
 
@@ -593,9 +603,15 @@ public class GameEventExecutor {
 
             onCheckTeamDestroy(unit.getTeam());
 
-            getGameManager().getContext().getCampaignContext().onUnitDestroyed(unit);
+            fireUnitDestroyEvent(unit);
         } else {
             throw new CheatingException("unit destroying check failed", getGame().getCurrentTeam());
+        }
+    }
+
+    private void fireUnitDestroyEvent(Unit unit) {
+        if (getGameManager().getContext() != null) {
+            getGameManager().getContext().getCampaignContext().onUnitDestroyed(unit);
         }
     }
 

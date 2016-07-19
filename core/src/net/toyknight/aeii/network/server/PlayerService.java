@@ -8,6 +8,8 @@ import net.toyknight.aeii.network.entity.PlayerSnapshot;
  */
 public class PlayerService {
 
+    private final Object SENDING_LOCK = new Object();
+
     private final Connection connection;
 
     private boolean authenticated;
@@ -62,6 +64,12 @@ public class PlayerService {
 
     public PlayerSnapshot createSnapshot() {
         return new PlayerSnapshot(getID(), getUsername());
+    }
+
+    public void sendTCP(Object object) {
+        synchronized (SENDING_LOCK) {
+            getConnection().sendTCP(object);
+        }
     }
 
 }

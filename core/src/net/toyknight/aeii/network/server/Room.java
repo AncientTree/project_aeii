@@ -13,6 +13,9 @@ import net.toyknight.aeii.entity.Rule;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * @author toyknight
@@ -22,6 +25,10 @@ public class Room {
     public final Object GAME_LOCK = new Object();
 
     private final Object PLAYER_LOCK = new Object();
+
+    private final ExecutorService event_executor = Executors.newSingleThreadExecutor();
+
+    private final RoomListener listener;
 
     private final long room_number;
     private final String room_name;
@@ -41,15 +48,16 @@ public class Room {
 
     private String password = null;
 
-    public Room(long room_number, String room_name, GameCore game) {
-        this(room_number, room_name);
+    public Room(RoomListener listener, long room_number, String room_name, GameCore game) {
+        this(listener, room_number, room_name);
         manager = new GameManager();
         manager.getGameEventExecutor().setCheckEventValue(false);
         manager.setGame(game);
         start_gold = -1;
     }
 
-    public Room(long room_number, String room_name) {
+    public Room(RoomListener listener, long room_number, String room_name) {
+        this.listener = listener;
         this.room_number = room_number;
         this.room_name = room_name;
         this.game_started = false;
@@ -71,6 +79,10 @@ public class Room {
             manager.getGameEventExecutor().setCheckEventValue(false);
             manager.setGame(game);
         }
+    }
+
+    public RoomListener getListener() {
+        return listener;
     }
 
     public void setPassword(String password) {
@@ -267,13 +279,15 @@ public class Room {
         game_started = true;
     }
 
-    public void submitGameEvent(JSONObject event) throws CheatingException {
-        synchronized (GAME_LOCK) {
-            getManager().getGameEventExecutor().submitGameEvent(event);
-            while (!getGame().isGameOver() && getManager().getGameEventExecutor().isProcessing()) {
-                getManager().getGameEventExecutor().dispatchGameEvents();
-            }
+    public void submitGameEvent(JSONObject event, int player_id) {
+        try {
+            event_executor.submit(new GameEventExecuteTask(event, player_id));
+        } catch (RejectedExecutionException ignored) {
         }
+    }
+
+    public void dispose() {
+        event_executor.shutdown();
     }
 
     public boolean isOpen() {
@@ -290,6 +304,31 @@ public class Room {
         snapshot.capacity = getCapacity();
         snapshot.remaining = getRemaining();
         return snapshot;
+    }
+
+    private class GameEventExecuteTask implements Runnable {
+
+        private final JSONObject event;
+        private final int player_id;
+
+        public GameEventExecuteTask(JSONObject event, int player_id) {
+            this.event = event;
+            this.player_id = player_id;
+        }
+
+        @Override
+        public void run() {
+            try {
+                synchronized (GAME_LOCK) {
+                    getManager().getGameEventExecutor().submitGameEvent(event);
+                    getManager().getGameEventExecutor().dispatchGameEvents();
+                    getListener().onGameEventExecuted(Room.this, event, player_id);
+                }
+            } catch (CheatingException ex) {
+                getListener().onCheatingDetected(Room.this, player_id, ex);
+            }
+        }
+
     }
 
 }

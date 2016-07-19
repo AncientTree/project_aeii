@@ -11,7 +11,6 @@ import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
-import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
@@ -30,7 +29,7 @@ import java.util.concurrent.Executors;
 /**
  * @author toyknight 10/27/2015.
  */
-public class GameServer {
+public class GameServer implements RoomListener {
 
     private final String TAG = "Server";
 
@@ -218,7 +217,7 @@ public class GameServer {
                 response.put("approved", false);
                 Log.info(TAG, String.format("%s@%s authentication failed.", username, player.getAddress()));
             }
-            player.getConnection().sendTCP(response.toString());
+            player.sendTCP(response.toString());
         } catch (JSONException ex) {
             String message = String.format(
                     "Bad authentication request from %s@%s", player.getUsername(), player.getAddress());
@@ -235,7 +234,7 @@ public class GameServer {
                     rooms.put(snapshot.toJson());
                 }
                 response.put("rooms", rooms);
-                player.getConnection().sendTCP(response.toString());
+                player.sendTCP(response.toString());
             }
         } catch (JSONException ex) {
             String message = String.format(
@@ -248,7 +247,7 @@ public class GameServer {
         try {
             if (player.isAuthenticated()) {
                 JSONObject response = createResponse(request);
-                Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game");
+                Room room = new Room(this, System.currentTimeMillis(), player.getUsername() + "'s game");
                 room.initialize(new Map(request.getJSONObject("map")));
                 if (request.has("password")) {
                     room.setPassword(request.getString("password"));
@@ -269,7 +268,7 @@ public class GameServer {
                 Log.info(TAG, String.format(
                         "%s@%s creates room [%d]", player.getUsername(), player.getAddress(), room.getRoomNumber()));
 
-                player.getConnection().sendTCP(response.toString());
+                player.sendTCP(response.toString());
             }
         } catch (JSONException ex) {
             String message = String.format(
@@ -283,7 +282,7 @@ public class GameServer {
             if (player.isAuthenticated()) {
                 JSONObject response = createResponse(request);
                 GameCore game = new GameCore(request.getJSONObject("game"));
-                Room room = new Room(System.currentTimeMillis(), player.getUsername() + "'s game", game);
+                Room room = new Room(this, System.currentTimeMillis(), player.getUsername() + "'s game", game);
                 if (request.has("password")) {
                     room.setPassword(request.getString("password"));
                 }
@@ -301,7 +300,7 @@ public class GameServer {
                 Log.info(TAG, String.format(
                         "%s@%s creates room [%d]", player.getUsername(), player.getAddress(), room.getRoomNumber()));
 
-                player.getConnection().sendTCP(response.toString());
+                player.sendTCP(response.toString());
             }
         } catch (JSONException ex) {
             String message = String.format(
@@ -324,11 +323,11 @@ public class GameServer {
                     RoomSetting room_setting = createRoomSetting(room);
                     response.put("room_setting", room_setting.toJson());
                     response.put("approved", true);
-                    player.getConnection().sendTCP(response.toString());
+                    player.sendTCP(response.toString());
                     notifyPlayerJoin(room, player.getID(), player.getUsername());
                 } else {
                     response.put("approved", false);
-                    player.getConnection().sendTCP(response.toString());
+                    player.sendTCP(response.toString());
                 }
             }
         } catch (JSONException ex) {
@@ -350,7 +349,7 @@ public class GameServer {
                 } else {
                     response.put("approved", false);
                 }
-                player.getConnection().sendTCP(response.toString());
+                player.sendTCP(response.toString());
             }
         } catch (JSONException ex) {
             String message = String.format(
@@ -368,7 +367,7 @@ public class GameServer {
             } else {
                 response.put("maps", getMapManager().getSerializedAuthorList());
             }
-            player.getConnection().sendTCP(response.toString());
+            player.sendTCP(response.toString());
         } catch (JSONException ex) {
             String message = String.format("Bad map listing request from %s", player.getAddress());
             Log.error(TAG, message, ex);
@@ -388,7 +387,7 @@ public class GameServer {
                 approved = false;
             }
             response.put("approved", approved);
-            player.getConnection().sendTCP(response.toString());
+            player.sendTCP(response.toString());
         } catch (JSONException ex) {
             String message = String.format("Bad map uploading request from %s", player.getAddress());
             Log.error(TAG, message, ex);
@@ -410,7 +409,7 @@ public class GameServer {
                 approved = false;
             }
             response.put("approved", approved);
-            player.getConnection().sendTCP(response.toString());
+            player.sendTCP(response.toString());
         } catch (JSONException ex) {
             String message = String.format("Bad map downloading request from %s", player.getAddress());
             Log.error(TAG, message, ex);
@@ -427,6 +426,7 @@ public class GameServer {
                 Log.info(TAG, String.format(
                         "%s@%s leaves room [%d]", leaver.getUsername(), leaver.getAddress(), room_number));
                 if (room.getCapacity() == room.getRemaining()) {
+                    room.dispose();
                     removeRoom(room_number);
                 } else {
                     notifyPlayerLeave(room, leaver.getID(), leaver.getUsername(), room.getHostID());
@@ -468,18 +468,12 @@ public class GameServer {
     }
 
     public void onSubmitGameEvent(PlayerService submitter, JSONObject notification) {
+        JSONObject event = notification.getJSONObject("game_event");
         try {
             if (submitter.isAuthenticated()) {
-                JSONObject event = notification.getJSONObject("game_event");
                 Room room = getRoom(submitter.getRoomNumber());
                 if (!room.isOpen()) {
-                    notifyGameEvent(room, submitter.getID(), event);
-                    try {
-                        room.submitGameEvent(event);
-                    } catch (CheatingException e) {
-                        DisconnectingTask disconnecting_task = new DisconnectingTask(submitter, "/cheating");
-                        executor.submit(disconnecting_task);
-                    }
+                    room.submitGameEvent(event, submitter.getID());
                 }
             }
         } catch (JSONException ex) {
@@ -577,7 +571,7 @@ public class GameServer {
                 if (player != null && player_id != submitter_id) {
                     JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
                     notification.put("game_event", event);
-                    sendNotification(player, notification);
+                    player.sendTCP(notification.toString());
                 }
             }
         } catch (JSONException ex) {
@@ -601,8 +595,25 @@ public class GameServer {
         }
     }
 
+    @Override
+    public void onGameEventExecuted(Room room, JSONObject event, int player_id) {
+        notifyGameEvent(room, player_id, event);
+    }
+
+    @Override
+    public void onCheatingDetected(Room room, int player_id, Throwable cause) {
+        PlayerService player = getPlayer(player_id);
+        if (player != null) {
+            String message = String.format(
+                    "Player %s@%s was detected cheating", player.getUsername(), player.getAddress());
+            Log.info(TAG, message, cause);
+            DisconnectingTask disconnecting_task = new DisconnectingTask(player, "/cheating");
+            executor.submit(disconnecting_task);
+        }
+    }
+
     public void sendNotification(PlayerService player, JSONObject notification) {
-        NotificationTask task = new NotificationTask(player.getConnection(), notification);
+        NotificationTask task = new NotificationTask(player, notification);
         executor.submit(task);
     }
 
@@ -705,17 +716,17 @@ public class GameServer {
 
     private class NotificationTask implements Runnable {
 
-        private final Connection connection;
+        private final PlayerService player;
         private final JSONObject notification;
 
-        public NotificationTask(Connection connection, JSONObject notification) {
-            this.connection = connection;
+        public NotificationTask(PlayerService player, JSONObject notification) {
+            this.player = player;
             this.notification = notification;
         }
 
         @Override
         public void run() {
-            connection.sendTCP(notification.toString());
+            player.sendTCP(notification.toString());
         }
 
     }
@@ -735,7 +746,7 @@ public class GameServer {
             JSONObject notification = createNotification(NetworkConstants.MESSAGE);
             notification.put("username", "Server");
             notification.put("message", message);
-            player.getConnection().sendTCP(notification.toString());
+            player.sendTCP(notification.toString());
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ignored) {
