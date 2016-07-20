@@ -429,6 +429,15 @@ public class OperationExecutor {
             JSONArray hp_changes = new JSONArray();
             ObjectSet<Unit> destroyed_units = new ObjectSet<Unit>();
 
+            if (unit.getCurrentHp() > unit.getMaxHp()) {
+                int change = unit.getMaxHp() - unit.getCurrentHp();
+                JSONObject hp_change = new JSONObject();
+                hp_change.put("x", unit.getX());
+                hp_change.put("y", unit.getY());
+                hp_change.put("change", change);
+                hp_changes.put(hp_change);
+            }
+
             for (Position target_position : aura_positions) {
                 Unit target = getGame().getMap().getUnit(target_position);
                 if (unit.hasAbility(Ability.REFRESH_AURA) && getGame().canRefresh(unit, target)) {

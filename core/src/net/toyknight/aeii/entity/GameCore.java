@@ -507,7 +507,7 @@ public class GameCore implements Serializable {
     public boolean canRefresh(Unit refresher, Unit target) {
         return !(refresher == null || target == null)
                 && canHealReachTarget(refresher, target)
-                && target.getCurrentHp() <= target.getCurrentHp()
+                && target.getCurrentHp() <= target.getMaxHp()
                 && (!isEnemy(refresher, target) || target.hasAbility(Ability.UNDEAD));
     }
 
