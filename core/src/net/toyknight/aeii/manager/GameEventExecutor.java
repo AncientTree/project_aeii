@@ -521,7 +521,7 @@ public class GameEventExecutor {
             if (getGame().getMap().isTomb(unit.getX(), unit.getY())) {
                 getGame().getMap().removeTomb(unit.getX(), unit.getY());
                 if (!unit.hasAbility(Ability.NECROMANCER)) {
-                    unit.attachStatus(new Status(Status.POISONED, 3));
+                    unit.attachStatus(new Status(Status.POISONED, 1));
                 }
             }
 
