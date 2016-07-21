@@ -17,6 +17,7 @@ import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.screen.LobbyScreen;
+import net.toyknight.aeii.screen.widgets.NumberSpinner;
 import net.toyknight.aeii.screen.widgets.Spinner;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.entity.GameSave;
@@ -42,7 +43,7 @@ public class RoomCreateDialog extends BasicDialog {
     private Label lb_initial_gold;
     private Label lb_max_population;
 
-    private Spinner<Integer> spinner_capacity;
+    private NumberSpinner spinner_capacity;
     private Spinner<Integer> spinner_gold;
     private Spinner<Integer> spinner_population;
     private StringList<Object> object_list;
@@ -106,8 +107,7 @@ public class RoomCreateDialog extends BasicDialog {
 
         Label lb_capacity = new Label(Language.getText("LB_CAPACITY"), getContext().getSkin());
         setting_pane.add(lb_capacity).width(ts * 3).padBottom(ts / 4).row();
-        spinner_capacity = new Spinner<Integer>(getContext());
-        spinner_capacity.setItems(new Integer[]{2, 3, 4, 5, 6, 7, 8});
+        spinner_capacity = new NumberSpinner(getContext(), 2, 10, 1);
         setting_pane.add(spinner_capacity).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_initial_gold = new Label(Language.getText("LB_START_GOLD"), getContext().getSkin());
