@@ -423,6 +423,16 @@ public class Map implements Serializable {
         return count;
     }
 
+    public int getCommanderCount(int team) {
+        int count = 0;
+        for (Unit unit : getUnits()) {
+            if (unit.getTeam() == team && unit.isCommander()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public int getCastleCount(int team) {
         int count = 0;
         for (int x = 0; x < getWidth(); x++) {

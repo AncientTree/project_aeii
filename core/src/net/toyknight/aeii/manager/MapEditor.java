@@ -193,14 +193,26 @@ public class MapEditor {
         FileHandle map_file = FileProvider.getUserFile("map/" + filename + ".aem");
         try {
             MapFactory.createTeamAccess(map);
+            if (map.getPlayerCount() < 2) {
+                getListener().onError(Language.getText("EDITOR_ERROR_ATT"));
+                return;
+            }
+            for (int team = 0; team < 4; team++) {
+                if (map.getCommanderCount(team) > 1) {
+                    String message = String.format(
+                            Language.getText("EDITOR_ERROR_THOMC"), Language.getText("LB_TEAM_" + team));
+                    getListener().onError(message);
+                    return;
+                }
+            }
             if (map.getPlayerCount() >= 2) {
                 MapFactory.writeMap(map, map_file);
                 getListener().onMapSaved();
             } else {
-                getListener().onError(Language.getText("EDITOR_ERROR_1"));
+
             }
         } catch (IOException ex) {
-            getListener().onError(Language.getText("EDITOR_ERROR_2"));
+            getListener().onError(Language.getText("EDITOR_ERROR_FSM"));
         }
     }
 
