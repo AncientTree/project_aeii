@@ -122,7 +122,7 @@ public class Robot {
     private boolean checkCastleOccupation() {
         synchronized (GameContext.RENDER_LOCK) {
             Unit commander = getGame().getCommander(team);
-            if (getGame().isCommanderAlive(team) && !commander.isStandby()) {
+            if (getGame().isCommanderAlive(team) && !commander.isStandby() && commander.getCurrentHp() > 0) {
                 ObjectSet<Position> positions = getManager().getPositionGenerator().createMovablePositions(commander);
                 for (Position position : positions) {
                     Tile tile = getGame().getMap().getTile(position);
