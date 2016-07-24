@@ -173,8 +173,8 @@ public class MapManagementScreen extends StageScreen {
     private void back() {
         if (NetworkManager.isConnected()) {
             if (current_author == null) {
-                NetworkManager.disconnect();
                 getContext().gotoMainMenuScreen(false);
+                NetworkManager.disconnect();
             } else {
                 current_author = null;
                 refresh();
