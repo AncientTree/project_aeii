@@ -54,6 +54,7 @@ public class MapManagementScreen extends StageScreen {
     private final TextButton btn_delete;
 
     private String current_author;
+    private float last_scroll_position_server_author_list;
 
     public MapManagementScreen(GameContext context) {
         super(context);
@@ -170,14 +171,22 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void back() {
-        getContext().gotoMainMenuScreen(false);
         if (NetworkManager.isConnected()) {
-            NetworkManager.disconnect();
+            if (current_author == null) {
+                NetworkManager.disconnect();
+                getContext().gotoMainMenuScreen(false);
+            } else {
+                current_author = null;
+                refresh();
+            }
+        } else {
+            getContext().gotoMainMenuScreen(false);
         }
     }
 
     private void select(Object value) {
         if (value instanceof MapSnapshot && ((MapSnapshot) value).isDirectory()) {
+            last_scroll_position_server_author_list = sp_server_map_list.getScrollPercentY();
             current_author = ((MapSnapshot) value).getAuthor();
             refresh();
         }
@@ -335,6 +344,9 @@ public class MapManagementScreen extends StageScreen {
     private void updateServerMapList(Array<MapSnapshot> map_list) {
         if (current_author == null) {
             server_map_list.setItems(map_list);
+            server_map_list.layout();
+            sp_server_map_list.layout();
+            sp_server_map_list.setScrollPercentY(last_scroll_position_server_author_list);
         } else {
             Array<Object> list = new Array<Object>(map_list);
             list.insert(0, "/...");
@@ -392,6 +404,7 @@ public class MapManagementScreen extends StageScreen {
         local_map_list.clearItems();
         server_map_list.clearItems();
         setNetworkRelatedButtonsEnabled(true);
+        last_scroll_position_server_author_list = 0f;
         message_dialog.setMessage(Language.getText("LB_CONNECTING"));
         showDialog("message");
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
