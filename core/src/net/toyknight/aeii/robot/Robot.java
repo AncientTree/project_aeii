@@ -144,7 +144,11 @@ public class Robot {
         if (recruit_position == null) {
             select();
         } else {
-            if (!getGame().isCommanderAlive(team) && getGame().getCommander(team).getPrice() <= getGold()) {
+            boolean commander_alive;
+            synchronized (GameContext.RENDER_LOCK) {
+                commander_alive = getGame().isCommanderAlive(team);
+            }
+            if (!commander_alive && getGame().getCommander(team).getPrice() <= getGold()) {
                 getManager().doBuyUnit(UnitFactory.getCommanderIndex(), recruit_position.x, recruit_position.y);
             } else {
                 int index;
