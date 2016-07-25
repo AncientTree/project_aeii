@@ -473,7 +473,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                         showDialog("store");
                         return true;
                     }
-                    if (keyCode == Input.Keys.M) {
+                    if (keyCode == Input.Keys.G) {
                         getGameManager().beginMovePhase();
                         update();
                         return true;
@@ -485,12 +485,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                         update();
                         return true;
                     }
-                    if (keyCode == Input.Keys.O && action_button_bar.isButtonAvailable("occupy")) {
+                    if (keyCode == Input.Keys.C && action_button_bar.isButtonAvailable("occupy")) {
                         getGameManager().doOccupy();
                         update();
                         return true;
                     }
-                    if (keyCode == Input.Keys.R && action_button_bar.isButtonAvailable("repair")) {
+                    if (keyCode == Input.Keys.C && action_button_bar.isButtonAvailable("repair")) {
                         getGameManager().doRepair();
                         update();
                         return true;
