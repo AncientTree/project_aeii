@@ -29,12 +29,14 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
 
     private final ShapeRenderer shape_renderer;
 
+    private float margin_left;
+
     public ActionButtonBar(GameScreen screen) {
         super(screen.getContext());
         this.screen = screen;
-        this.PADDING_LEFT = getPlatform() == Platform.Desktop ? ts / 8 : ts / 4;
-        this.BUTTON_WIDTH = getPlatform() == Platform.Desktop ? ts / 24 * 20 : ts / 24 * 40;
-        this.BUTTON_HEIGHT = getPlatform() == Platform.Desktop ? ts / 24 * 21 : ts / 24 * 42;
+        this.PADDING_LEFT = Platform.isDesktop(getPlatform()) ? ts / 8 : ts / 4;
+        this.BUTTON_WIDTH = Platform.isDesktop(getPlatform()) ? ts / 24 * 20 : ts / 24 * 40;
+        this.BUTTON_HEIGHT = Platform.isDesktop(getPlatform()) ? ts / 24 * 21 : ts / 24 * 42;
         this.buttons = new HashMap<String, CircleButton>();
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
@@ -198,26 +200,28 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
     public void layout() {
         SnapshotArray<Actor> children = getChildren();
         int btn_count = children.size;
-//        int margin_left = (screen.getViewportWidth() - btn_count * BUTTON_WIDTH - (btn_count + 1) * PADDING_LEFT) / 2;
+        margin_left = (screen.getViewportWidth() - btn_count * BUTTON_WIDTH - (btn_count + 1) * PADDING_LEFT) / 2;
         for (int i = 0; i < btn_count; i++) {
             children.get(i).setBounds(
-                    PADDING_LEFT + i * (BUTTON_WIDTH + PADDING_LEFT), 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+                    margin_left + PADDING_LEFT + i * (BUTTON_WIDTH + PADDING_LEFT), 0, BUTTON_WIDTH, BUTTON_HEIGHT);
         }
     }
 
     @Override
     public void draw(Batch batch, float parent_alpha) {
         if (getChildren().size > 0) {
-            batch.end();
-            shape_renderer.begin(ShapeRenderer.ShapeType.Filled);
-            int btn_count = getChildren().size;
-            int background_width = btn_count * BUTTON_WIDTH + (btn_count + 1) * PADDING_LEFT;
-            int background_height = getPlatform() == Platform.Desktop ? ts / 3 : ts * 2 / 3;
-            int background_radius = getPlatform() == Platform.Desktop ? ts / 8 : ts / 4;
-            getContext().getBorderRenderer().drawRoundedBackground(
-                    shape_renderer, getX(), getY() - ts / 12, background_width, background_height, background_radius);
-            shape_renderer.end();
-            batch.begin();
+            if (Platform.isDesktop(getPlatform())) {
+                batch.end();
+                shape_renderer.begin(ShapeRenderer.ShapeType.Filled);
+                int btn_count = getChildren().size;
+                int background_width = btn_count * BUTTON_WIDTH + (btn_count + 1) * PADDING_LEFT;
+                int background_height = Platform.isDesktop(getPlatform()) ? ts / 2 : ts;
+                int background_radius = Platform.isDesktop(getPlatform()) ? ts / 8 : ts / 4;
+                getContext().getBorderRenderer().drawRoundedBackground(shape_renderer,
+                        getX() + margin_left, getY() - ts / 12, background_width, background_height, background_radius);
+                shape_renderer.end();
+                batch.begin();
+            }
             super.draw(batch, parent_alpha);
         }
     }
