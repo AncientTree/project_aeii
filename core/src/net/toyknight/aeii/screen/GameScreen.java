@@ -119,11 +119,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         });
         this.addActor(btn_message);
 
-        //message board
-        this.message_board = new MessageBoard(getContext());
-        this.message_board.setBounds(0, ts, viewport.width, viewport.height);
-        addActor(message_board);
-
         //action button bar
         this.action_button_bar = new ActionButtonBar(this);
         this.action_button_bar.setPosition(0, ts + action_button_bar.getButtonHeight() / 4);
@@ -146,6 +141,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 viewport.width - message_box.getWidth() - (viewport.height - message_box.getHeight()) / 2,
                 (viewport.height - message_box.getHeight()) / 2 + ts);
         this.addDialog("message", message_box);
+
+        //message board
+        this.message_board = new MessageBoard(getContext(), message_box.getX() - ts / 8);
+        this.message_board.setPosition(0, ts);
+        addActor(message_board);
 
         //mini map
         this.mini_map = new MiniMapDialog(this);
