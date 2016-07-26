@@ -68,7 +68,8 @@ public class UnitFactory {
         unit.setX(json.getInt("x_position"));
         unit.setY(json.getInt("y_position"));
         unit.setStandby(json.getBoolean("standby"));
-        unit.setHead(json.getInt("head"));
+        unit.setStatic(json.has("static") && json.getBoolean("static"));
+        unit.setHead(json.has("head") ? json.getInt("head") : 0);
         if (json.has("status")) {
             unit.setStatus(new Status(json.getJSONObject("status")));
         }

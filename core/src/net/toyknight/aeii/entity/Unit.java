@@ -53,6 +53,8 @@ public class Unit implements Serializable, Verifiable {
 
     private boolean is_standby;
 
+    private boolean is_static;
+
     private int head = 0;
 
     private Unit(int index, String unit_code) {
@@ -94,6 +96,7 @@ public class Unit implements Serializable, Verifiable {
         this.min_attack_range = unit.getMinAttackRange();
         this.abilities = new Array<Integer>(unit.getAbilities());
         this.status = unit.getStatus() == null ? null : new Status(unit.getStatus());
+        this.is_static = unit.isStatic();
         this.head = unit.getHead();
     }
 
@@ -372,6 +375,14 @@ public class Unit implements Serializable, Verifiable {
         }
     }
 
+    public void setStatic(boolean is_static) {
+        this.is_static = is_static;
+    }
+
+    public boolean isStatic() {
+        return is_static;
+    }
+
     public void setHead(int head) {
         this.head = head;
     }
@@ -412,6 +423,7 @@ public class Unit implements Serializable, Verifiable {
         json.put("x_position", getX());
         json.put("y_position", getY());
         json.put("standby", isStandby());
+        json.put("static", isStatic());
         json.put("head", getHead());
         if (getStatus() != null) {
             json.put("status", getStatus().toJson());

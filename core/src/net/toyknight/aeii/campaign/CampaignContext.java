@@ -373,8 +373,11 @@ public class CampaignContext {
             getContext().getGame().getMap().getUnit(x, y).setUnitCode(code);
         }
 
-        public void static_unit(String unit_code) {
-            getContext().getGameManager().getRobot().addStaticUnit(unit_code);
+        public void static_unit(int x, int y) {
+            Unit unit = getContext().getGame().getMap().getUnit(x, y);
+            if (unit != null) {
+                unit.setStatic(true);
+            }
         }
 
         public Unit get_unit(int map_x, int map_y) {

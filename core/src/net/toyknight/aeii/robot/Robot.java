@@ -21,8 +21,6 @@ public class Robot {
 
     private final GameManager manager;
 
-    private final ObjectSet<String> static_units;
-
     private final ObjectMap<String, Position> routes;
 
     private final ObjectMap<Integer, ObjectSet<Integer>> ability_map;
@@ -42,7 +40,6 @@ public class Robot {
     public Robot(GameManager manager) {
         this.manager = manager;
         this.random = new Random();
-        this.static_units = new ObjectSet<String>();
         this.routes = new ObjectMap<String, Position>();
         this.ability_map = new ObjectMap<Integer, ObjectSet<Integer>>();
     }
@@ -61,11 +58,6 @@ public class Robot {
                 }
             }
         }
-        static_units.clear();
-    }
-
-    public void addStaticUnit(String unit_code) {
-        static_units.add(unit_code);
     }
 
     public GameManager getManager() {
@@ -74,10 +66,6 @@ public class Robot {
 
     public GameCore getGame() {
         return getManager().getGame();
-    }
-
-    public ObjectSet<String> getStaticUnits() {
-        return static_units;
     }
 
     private int getGold() {
@@ -156,7 +144,11 @@ public class Robot {
         if (recruit_position == null) {
             select();
         } else {
-            if (!getGame().isCommanderAlive(team) && getGame().getCommander(team).getPrice() <= getGold()) {
+            boolean commander_alive;
+            synchronized (GameContext.RENDER_LOCK) {
+                commander_alive = getGame().isCommanderAlive(team);
+            }
+            if (!commander_alive && getGame().getCommander(team).getPrice() <= getGold()) {
                 getManager().doBuyUnit(UnitFactory.getCommanderIndex(), recruit_position.x, recruit_position.y);
             } else {
                 int index;
@@ -223,7 +215,7 @@ public class Robot {
 
     private void calculateMoveAndAction() {
         Unit selected_unit = getManager().getSelectedUnit();
-        if (getStaticUnits().contains(selected_unit.getUnitCode())) {
+        if (selected_unit.isStatic()) {
             Position standby_position = getGame().getMap().getPosition(selected_unit);
             if (getManager().hasEnemyWithinRange(selected_unit)) {
                 Position attack_target = null;

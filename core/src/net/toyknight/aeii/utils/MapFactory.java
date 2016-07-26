@@ -2,6 +2,7 @@ package net.toyknight.aeii.utils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.entity.Map;
@@ -21,8 +22,12 @@ public class MapFactory {
     }
 
     public static Map createMap(FileHandle map_file) throws AEIIException {
-        DataInputStream dis = new DataInputStream(map_file.read());
-        return createMap(dis);
+        try {
+            DataInputStream dis = new DataInputStream(map_file.read());
+            return createMap(dis);
+        } catch (GdxRuntimeException ex) {
+            throw new AEIIException("Error reading map file", ex);
+        }
     }
 
     public static Map createMap(DataInputStream dis) throws AEIIException {

@@ -142,6 +142,12 @@ public class Room {
         }
     }
 
+    public int getCurrentPlayerID() {
+        synchronized (GAME_LOCK) {
+            return allocation[getGame().getCurrentTeam()];
+        }
+    }
+
     public void setHostPlayer(int id) {
         host_player_id = id;
     }

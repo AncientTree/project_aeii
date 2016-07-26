@@ -297,7 +297,7 @@ public class GameCore implements Serializable {
 
     public void setCommander(int team, Unit commander) {
         commanders[team] = commander;
-        if (isCommanderAlive(team)) {
+        if (commander.getCurrentHp() > 0 && isCommanderAlive(team)) {
             getMap().addUnit(commanders[team], true);
         }
     }
