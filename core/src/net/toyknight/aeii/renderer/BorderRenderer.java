@@ -3,6 +3,7 @@ package net.toyknight.aeii.renderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
 
@@ -48,6 +49,26 @@ public class BorderRenderer {
         batch.draw(borders[1], x, y + height - border_size, width, border_size);
         batch.draw(borders[6], x, y, width, border_size);
         batch.flush();
+    }
+
+    public void drawRoundedBackground(
+            ShapeRenderer shape_renderer, float x, float y, float width, float height, float radius) {
+        // Central rectangle
+        shape_renderer.setColor(36 / 256f, 42 / 256f, 69 / 256f, 1f);
+
+        shape_renderer.rect(x + radius, y + radius, width - 2 * radius, height - 2 * radius);
+
+        // Four side rectangles, in clockwise order
+        shape_renderer.rect(x + radius, y, width - 2 * radius, radius);
+        shape_renderer.rect(x + width - radius, y + radius, radius, height - 2 * radius);
+        shape_renderer.rect(x + radius, y + height - radius, width - 2 * radius, radius);
+        shape_renderer.rect(x, y + radius, radius, height - 2 * radius);
+
+        // Four arches, clockwise too
+        shape_renderer.arc(x + radius, y + radius, radius, 180f, 90f);
+        shape_renderer.arc(x + width - radius, y + radius, radius, 270f, 90f);
+        shape_renderer.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
+        shape_renderer.arc(x + radius, y + height - radius, radius, 90f, 90f);
     }
 
 }

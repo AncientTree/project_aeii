@@ -119,9 +119,15 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         });
         this.addActor(btn_message);
 
+        this.message_box = new MessageBox(this);
+        this.message_box.setPosition(
+                viewport.width - message_box.getWidth() - (viewport.height - message_box.getHeight()) / 2,
+                (viewport.height - message_box.getHeight()) / 2 + ts);
+        this.addDialog("message", message_box);
+
         //message board
-        this.message_board = new MessageBoard(getContext());
-        this.message_board.setBounds(0, ts, viewport.width, viewport.height);
+        this.message_board = new MessageBoard(getContext(), message_box.getX() - ts / 8);
+        this.message_board.setPosition(0, ts);
         addActor(message_board);
 
         //action button bar
@@ -140,12 +146,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         //game menu
         this.menu = new GameMenu(this);
         this.addDialog("menu", menu);
-
-        this.message_box = new MessageBox(this);
-        this.message_box.setPosition(
-                viewport.width - message_box.getWidth() - (viewport.height - message_box.getHeight()) / 2,
-                (viewport.height - message_box.getHeight()) / 2 + ts);
-        this.addDialog("message", message_box);
 
         //mini map
         this.mini_map = new MiniMapDialog(this);
@@ -473,7 +473,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                         showDialog("store");
                         return true;
                     }
-                    if (keyCode == Input.Keys.M) {
+                    if (keyCode == Input.Keys.G) {
                         getGameManager().beginMovePhase();
                         update();
                         return true;
@@ -485,12 +485,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                         update();
                         return true;
                     }
-                    if (keyCode == Input.Keys.O && action_button_bar.isButtonAvailable("occupy")) {
+                    if (keyCode == Input.Keys.C && action_button_bar.isButtonAvailable("occupy")) {
                         getGameManager().doOccupy();
                         update();
                         return true;
                     }
-                    if (keyCode == Input.Keys.R && action_button_bar.isButtonAvailable("repair")) {
+                    if (keyCode == Input.Keys.C && action_button_bar.isButtonAvailable("repair")) {
                         getGameManager().doRepair();
                         update();
                         return true;

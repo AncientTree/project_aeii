@@ -222,8 +222,9 @@ CAMPAIGN_AEII_STAGE_8_MESSAGE_14=But the Crystals... They are still in there!
 CAMPAIGN_AEII_STAGE_8_MESSAGE_15=The only thing we can save now is ourselves!
 CAMPAIGN_AEII_STAGE_8_MESSAGE_16=You have served me well. Now move!
 
-EDITOR_ERROR_1=At least 2 teams!
-EDITOR_ERROR_2=Failed saving the map!
+EDITOR_ERROR_ATT=At least 2 teams!
+EDITOR_ERROR_THOMC=Team %s has more then one commander!
+EDITOR_ERROR_FSM=Failed saving the map!
 
 HAVENS_FURY_MESSAGE_1=TARGET AQUIRED...
 HAVENS_FURY_MESSAGE_2=HEAVEN'S FURY ACTIVATED
