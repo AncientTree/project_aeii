@@ -34,7 +34,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String INTERNAL_VERSION = "13";
+    public static final String INTERNAL_VERSION = "15";
     public static final String EXTERNAL_VERSION = "1.1.6";
     private static final String TAG = "Main";
 
