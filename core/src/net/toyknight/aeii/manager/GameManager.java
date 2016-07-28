@@ -80,14 +80,15 @@ public class GameManager implements GameEventListener, AnimationListener {
 
     public void setGame(GameCore game) {
         this.game = game;
-        this.unit_toolkit = new UnitToolkit(game);
         this.state = STATE_SELECT;
         getGameEventExecutor().reset();
         getOperationExecutor().reset();
         getAnimationDispatcher().reset();
         getPositionGenerator().reset();
-        getGameRecorder().prepare(getGame());
+
         getRobot().initialize();
+        getGameRecorder().prepare(getGame());
+        this.unit_toolkit = new UnitToolkit(game);
     }
 
     public GameCore getGame() {

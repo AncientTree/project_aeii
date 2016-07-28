@@ -399,7 +399,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void show() {
         super.show();
         allow_cheating = false;
-        getContext().getGameManager().getAnimationDispatcher().setCanvas(this);
 
         scale = 1.0f;
         Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());

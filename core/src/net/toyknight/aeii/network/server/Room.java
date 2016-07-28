@@ -281,6 +281,7 @@ public class Room {
         }
         if (!getGame().initialized()) {
             getGame().initialize();
+            getGame().gainIncome(getGame().getCurrentTeam());
         }
         game_started = true;
     }

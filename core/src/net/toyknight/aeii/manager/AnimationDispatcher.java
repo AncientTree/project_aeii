@@ -13,8 +13,6 @@ import net.toyknight.aeii.screen.MapCanvas;
  */
 public interface AnimationDispatcher {
 
-    void setCanvas(MapCanvas canvas);
-
     void setListener(AnimationListener listener);
 
     void submitHpChangeAnimation(ObjectMap<Position, Integer> change_map, ObjectSet<Unit> units);
