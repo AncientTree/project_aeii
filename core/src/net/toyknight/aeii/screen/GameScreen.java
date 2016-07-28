@@ -108,17 +108,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         });
         this.addActor(btn_end_turn);
 
-        this.btn_message = new CircleButton(getContext(), CircleButton.LARGE, getResources().getMenuIcon(7));
-        this.btn_message.setPosition(0, Gdx.graphics.getHeight() - btn_message.getPrefHeight());
-        this.btn_message.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                message_board.display();
-                showDialog("message");
-            }
-        });
-        this.addActor(btn_message);
-
         this.message_box = new MessageBox(this);
         this.message_box.setPosition(
                 viewport.width - message_box.getWidth() - (viewport.height - message_box.getHeight()) / 2,
@@ -129,6 +118,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.message_board = new MessageBoard(getContext(), message_box.getX() - ts / 8);
         this.message_board.setPosition(0, ts);
         addActor(message_board);
+
+        this.btn_message = new CircleButton(getContext(), CircleButton.LARGE, getResources().getMenuIcon(7));
+        this.btn_message.setPosition(0, Gdx.graphics.getHeight() - btn_message.getPrefHeight());
+        this.btn_message.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                message_board.display();
+                showDialog("message");
+            }
+        });
+        this.addActor(btn_message);
 
         //action button bar
         this.action_button_bar = new ActionButtonBar(this);

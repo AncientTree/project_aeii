@@ -2,6 +2,7 @@ package net.toyknight.aeii.screen.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import net.toyknight.aeii.GameContext;
 
@@ -18,8 +19,11 @@ public class MessageBoard extends AEIITable {
 
     public MessageBoard(GameContext context, float content_width) {
         super(context);
+        this.bottom();
         this.fading = true;
         this.content_width = content_width;
+        this.setSize(content_width, Gdx.graphics.getHeight() - ts * 57 / 24);
+        this.setCullingArea(new Rectangle(0, 0, getWidth(), getHeight()));
     }
 
     public void setFading(boolean fading) {
@@ -45,16 +49,7 @@ public class MessageBoard extends AEIITable {
         Label label_message = new Label(content, getContext().getSkin());
         label_message.setWrap(true);
         add(label_message).width(content_width).padLeft(ts / 8).padBottom(ts / 8);
-        validateHeight();
         display();
-    }
-
-    private void validateHeight() {
-        pack();
-        while (getHeight() > Gdx.graphics.getHeight() - ts * 57 / 24) {
-            removeActor(getChildren().first());
-            pack();
-        }
     }
 
     public void clearMessages() {
