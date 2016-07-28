@@ -53,6 +53,7 @@ public class AEIStage2 extends StageController {
             Message message6 = new Message(0, Language.getText("CAMPAIGN_AEI_STAGE_2_MESSAGE_6"));
             Message message7 = new Message(5, Language.getText("CAMPAIGN_AEI_STAGE_2_MESSAGE_7"));
             getContext().message(message5, message6, message7);
+            getContext().show_objectives();
         }
     }
 
@@ -62,7 +63,7 @@ public class AEIStage2 extends StageController {
 
     @Override
     public void onUnitDestroyed(Unit unit) {
-        if (unit.getTeam() == getPlayerTeam()) {
+        if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         }
         if (getContext().count_unit(1) == 0) {
@@ -118,7 +119,11 @@ public class AEIStage2 extends StageController {
 
     @Override
     public String[] getObjectives() {
-        return new String[]{Language.getText("CAMPAIGN_AEI_STAGE_2_OBJECTIVE")};
+        if (getContext().get("reported") == 0) {
+            return new String[]{Language.getText("CAMPAIGN_AEI_STAGE_2_OBJECTIVE_1")};
+        } else {
+            return new String[]{Language.getText("CAMPAIGN_AEI_STAGE_2_OBJECTIVE_2")};
+        }
     }
 
     @Override

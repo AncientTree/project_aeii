@@ -141,7 +141,8 @@ CAMPAIGN_AEI_STAGE_1_MESSAGE_5=Valadorn's army should be easy to spot with their
 CAMPAIGN_AEI_STAGE_1_MESSAGE_6=Spies!! Valadorn and his Red legion must know where we are! Quickly, protect the King!
 
 CAMPAIGN_AEI_STAGE_2_NAME=Friends & Enemies
-CAMPAIGN_AEI_STAGE_2_OBJECTIVE=Occupy the castle and at least one village, produce at least one new unit of troops.
+CAMPAIGN_AEI_STAGE_2_OBJECTIVE_1=Occupy the castle and at least one village, produce at least one new unit of troops.
+CAMPAIGN_AEI_STAGE_2_OBJECTIVE_2=Defeat all the wolves to help the Element Chief.
 CAMPAIGN_AEI_STAGE_2_MESSAGE_1=King Galamar has survived Valadorn's attack. However, before Galamar can try to reclaim his kingdom he must first travel north to seek new allies.
 CAMPAIGN_AEI_STAGE_2_MESSAGE_2=Forward, troops. But first, occupy these two buildings. We can rest once we reach the next village.
 CAMPAIGN_AEI_STAGE_2_MESSAGE_3=Sire, our scouts report that the element people of the north are under attack!
