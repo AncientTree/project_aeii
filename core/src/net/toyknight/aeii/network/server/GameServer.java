@@ -475,7 +475,7 @@ public class GameServer implements RoomListener {
             JSONObject event = request.getJSONObject("game_event");
             if (submitter.isAuthenticated()) {
                 Room room = getRoom(submitter.getRoomNumber());
-                if (!room.isOpen() && submitter.getID() == room.getCurrentPlayerID()) {
+                if (!room.isOpen()/* && submitter.getID() == room.getCurrentPlayerID()*/) {
                     room.submitGameEvent(event, submitter.getID());
                     JSONObject response = createResponse(request);
                     submitter.sendTCP(response.toString());

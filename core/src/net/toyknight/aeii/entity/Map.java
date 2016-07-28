@@ -112,6 +112,12 @@ public class Map implements Serializable {
         team_access[team] = access;
     }
 
+    public void resetTeamAccess() {
+        for (int i = 0; i < 4; i++) {
+            team_access[i] = false;
+        }
+    }
+
     public void setTeamAccess(boolean[] access_table) {
         if (access_table.length == 4) {
             for (int team = 0; team < 4; team++) {

@@ -122,11 +122,10 @@ public class Robot {
     private boolean checkCastleOccupation() {
         synchronized (GameContext.RENDER_LOCK) {
             Unit commander = getGame().getCommander(team);
-            if (getGame().isCommanderAlive(team) && !commander.isStandby() && commander.getCurrentHp() > 0) {
+            if (getGame().isCommanderAlive(team) && !commander.isStandby() && commander.getCurrentHp() > 0 && !commander.isStatic()) {
                 ObjectSet<Position> positions = getManager().getPositionGenerator().createMovablePositions(commander);
                 for (Position position : positions) {
-                    Tile tile = getGame().getMap().getTile(position);
-                    if (tile.isCastle() && (tile.getTeam() < 0 || getGame().isEnemy(team, tile.getTeam()))) {
+                    if (canOccupyCastle(commander, position)) {
                         move_target = position;
                         action_target = position;
                         action_type = Operation.OCCUPY;
@@ -137,6 +136,13 @@ public class Robot {
             }
             return false;
         }
+    }
+
+    private boolean canOccupyCastle(Unit commander, Position castle_position) {
+        Tile tile = getGame().getMap().getTile(castle_position);
+        return tile.isCastle()
+                && (!commander.isStatic() || commander.isAt(castle_position))
+                && (tile.getTeam() < 0 || getGame().isEnemy(team, tile.getTeam()));
     }
 
     private void recruit() {
@@ -270,11 +276,16 @@ public class Robot {
             }
         } else {
             Unit target_enemy;
+            Position preferred_target;
             Position attack_position;
-            if (enemies.size > 0
+            if (!selected_unit.hasAbility(Ability.HEAVY_MACHINE) && enemies.size > 0
                     && (target_enemy = getPreferredAttackTarget(selected_unit, enemies)) != null
                     && (attack_position = getPreferredAttackPosition(selected_unit, target_enemy, getManager().getMovablePositions())) != null) {
                 submitAction(attack_position, getGame().getMap().getPosition(target_enemy), Operation.ATTACK);
+            } else if ((selected_unit.hasAbility(Ability.HEAVY_MACHINE)
+                    && movable_positions.contains(getGame().getMap().getPosition(selected_unit))
+                    && (preferred_target = getPreferredTargetWithinRange(selected_unit)) != null)) {
+                submitAction(getGame().getMap().getPosition(selected_unit), preferred_target, Operation.ATTACK);
             } else {
                 ObjectSet<Unit> enemy_commanders = getEnemyCommanders();
                 if (selected_unit.isCommander()) {
@@ -327,6 +338,7 @@ public class Robot {
                 }
             }
         }
+
     }
 
     private void submitAction(Position move_position, Position action_target, int action_type) {
@@ -338,28 +350,28 @@ public class Robot {
         this.action_type = action_type;
         this.action_target = action_target;
         getManager().doMove(move_position.x, move_position.y);
-//        switch (action_type) {
-//            case Operation.ATTACK:
-//                System.out.print("attack");
-//                break;
-//            case Operation.HEAL:
-//                System.out.print("heal");
-//                break;
-//            case Operation.SUMMON:
-//                System.out.print("summon");
-//                break;
-//            case Operation.OCCUPY:
-//                System.out.print("occupy");
-//                break;
-//            case Operation.REPAIR:
-//                System.out.print("repair");
-//                break;
-//            case Operation.STANDBY:
-//                System.out.print("standby");
-//                break;
-//        }
-//        System.out.print(" ");
-//        System.out.println(action_target == null ? "null" : String.format("[%d, %d]", action_target.x, action_target.y));
+        switch (action_type) {
+            case Operation.ATTACK:
+                System.out.print("attack");
+                break;
+            case Operation.HEAL:
+                System.out.print("heal");
+                break;
+            case Operation.SUMMON:
+                System.out.print("summon");
+                break;
+            case Operation.OCCUPY:
+                System.out.print("occupy");
+                break;
+            case Operation.REPAIR:
+                System.out.print("repair");
+                break;
+            case Operation.STANDBY:
+                System.out.print("standby");
+                break;
+        }
+        System.out.print(" ");
+        System.out.println(action_target == null ? "null" : String.format("[%d, %d]", action_target.x, action_target.y));
     }
 
     private Unit getPreferredAttackTarget(Unit unit, ObjectSet<Unit> enemies) {
@@ -368,7 +380,7 @@ public class Robot {
         for (Unit enemy : enemies) {
             int damage = getManager().getUnitToolkit().getDamage(unit, enemy, false);
             int remaining_hp = enemy.getCurrentHp() - damage;
-            if (enemy.getCurrentHp() - damage <= 0) {
+            if (remaining_hp <= 0) {
                 return enemy;
             }
             if (unit.hasAbility(Ability.POISONER) || damage >= 10) {
@@ -385,6 +397,47 @@ public class Robot {
             }
         }
         return target;
+    }
+
+    private Position getPreferredTargetWithinRange(Unit unit) {
+        synchronized (GameContext.RENDER_LOCK) {
+            ObjectSet<Position> attackable_positions =
+                    getManager().getPositionGenerator().createAttackablePositions(unit, false);
+
+            Position target_position = null;
+            int min_remaining_hp = Integer.MAX_VALUE;
+            for (Position position : attackable_positions) {
+                Unit target = getGame().getMap().getUnit(position);
+                if (target == null) {
+                    Tile tile = getGame().getMap().getTile(position);
+                    if (unit.hasAbility(Ability.DESTROYER)
+                            && tile.isDestroyable() && getGame().isEnemy(unit.getTeam(), tile.getTeam())) {
+                        return position;
+                    }
+                } else {
+                    if (getGame().isEnemy(unit, target)) {
+                        int damage = getManager().getUnitToolkit().getDamage(unit, target, false);
+                        int remaining_hp = target.getCurrentHp() - damage;
+                        if (remaining_hp <= 0) {
+                            return position;
+                        }
+                        if (unit.hasAbility(Ability.POISONER) || damage >= 10) {
+                            if (target.isCrystal()) {
+                                return position;
+                            }
+                            if (target.isCommander() && damage >= 20) {
+                                return position;
+                            }
+                            if (remaining_hp < min_remaining_hp) {
+                                target_position = position;
+                                min_remaining_hp = remaining_hp;
+                            }
+                        }
+                    }
+                }
+            }
+            return target_position;
+        }
     }
 
     private Unit getPreferredHealTarget(Unit unit, ObjectSet<Unit> allies) {

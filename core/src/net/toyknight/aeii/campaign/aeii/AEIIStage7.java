@@ -49,7 +49,7 @@ public class AEIIStage7 extends StageController {
         Message message8 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_7_MESSAGE_8"));
         getContext().message(message6, message7, message8);
         getContext().reinforce(0, 13, 17,
-                new Reinforcement(9, 13, 16),
+                new Reinforcement(9, 2, 13, 16),
                 new Reinforcement(6, 12, 16),
                 new Reinforcement(8, 14, 16),
                 new Reinforcement(1, 12, 17),

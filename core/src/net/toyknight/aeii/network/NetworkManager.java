@@ -74,7 +74,7 @@ public class NetworkManager {
         });
         client.start();
         client.connect(5000, server.getAddress(), server.getPort());
-        return !(username != null && v_string != null) || requestAuthentication(username, v_string);
+        return (username == null || v_string == null) || requestAuthentication(username, v_string);
     }
 
     public static boolean connect(ServerConfiguration server) throws IOException, JSONException {

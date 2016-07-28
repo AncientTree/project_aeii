@@ -17,7 +17,7 @@ public class AEIIStage8 extends StageController {
         getContext().head(7, 4, 3);
         getContext().head(6, 15, 2);
         getContext().code(7, 4, "saeth");
-        getContext().static_unit(7, 4);
+        getContext().set_static(7, 4, true);
         getContext().focus(8, 15);
         Message message1 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_8_MESSAGE_1"));
         getContext().message(message1);

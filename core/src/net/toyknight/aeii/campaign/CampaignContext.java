@@ -3,6 +3,7 @@ package net.toyknight.aeii.campaign;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.campaign.aei.AEICampaign;
 import net.toyknight.aeii.campaign.aeii.AEIICampaign;
 import net.toyknight.aeii.campaign.challenge.ChallengeCampaign;
 import net.toyknight.aeii.campaign.tutorial.TutorialCampaign;
@@ -41,6 +42,10 @@ public class CampaignContext {
         CampaignController campaign_aeii = new AEIICampaign();
         campaign_aeii.initialize();
         campaigns.put(campaign_aeii.getCode(), campaign_aeii);
+
+        CampaignController campaign_aei = new AEICampaign();
+        campaign_aei.initialize();
+        campaigns.put(campaign_aei.getCode(), campaign_aei);
     }
 
     public GameContext getContext() {
@@ -168,17 +173,17 @@ public class CampaignContext {
         }
 
         public void reinforce(int team, int from_x, int from_y, Reinforcement... reinforcements) {
-            JSONArray index_array = new JSONArray();
-            JSONArray position_array = new JSONArray();
+            JSONArray json_reinforcements = new JSONArray();
             for (Reinforcement reinforcement : reinforcements) {
-                index_array.put(reinforcement.getIndex());
-                JSONObject json = new JSONObject();
-                json.put("x", reinforcement.getMapX());
-                json.put("y", reinforcement.getMapY());
-                position_array.put(json);
+                JSONObject json_reinforcement = new JSONObject();
+                json_reinforcement.put("index", reinforcement.getIndex());
+                json_reinforcement.put("head", reinforcement.getHead());
+                json_reinforcement.put("x", reinforcement.getMapX());
+                json_reinforcement.put("y", reinforcement.getMapY());
+                json_reinforcements.put(json_reinforcement);
             }
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(
-                    GameEvent.CAMPAIGN_REINFORCE, team, from_x, from_y, index_array, position_array);
+                    GameEvent.CAMPAIGN_REINFORCE, team, from_x, from_y, json_reinforcements);
         }
 
         public int count_unit(int team) {
@@ -187,6 +192,10 @@ public class CampaignContext {
 
         public int count_castle(int team) {
             return getContext().getGame().getMap().getCastlePositions(team).size;
+        }
+
+        public int count_village(int team) {
+            return getContext().getGame().getMap().getVillagePositions(team).size;
         }
 
         public void clear() {
@@ -247,6 +256,11 @@ public class CampaignContext {
 
         public void destroy_tile(int x, int y) {
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.TILE_DESTROY, x, y, -1);
+        }
+
+        public void destroy_tile(int x, int y, int destroyed_index) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_TILE_DESTROY, x, y, destroyed_index);
         }
 
         public void focus(int x, int y) {
@@ -373,10 +387,10 @@ public class CampaignContext {
             getContext().getGame().getMap().getUnit(x, y).setUnitCode(code);
         }
 
-        public void static_unit(int x, int y) {
+        public void set_static(int x, int y, boolean is_static) {
             Unit unit = getContext().getGame().getMap().getUnit(x, y);
             if (unit != null) {
-                unit.setStatic(true);
+                unit.setStatic(is_static);
             }
         }
 

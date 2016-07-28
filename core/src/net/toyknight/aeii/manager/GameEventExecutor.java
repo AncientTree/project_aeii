@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.utils.TileValidator;
 import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
@@ -188,9 +189,8 @@ public class GameEventExecutor {
                 team = event.getJSONArray("parameters").getInt(0);
                 int from_x = event.getJSONArray("parameters").getInt(1);
                 int from_y = event.getJSONArray("parameters").getInt(2);
-                JSONArray indexes = event.getJSONArray("parameters").getJSONArray(3);
-                JSONArray positions = event.getJSONArray("parameters").getJSONArray(4);
-                onCampaignReinforce(team, from_x, from_y, indexes, positions);
+                JSONArray reinforcements = event.getJSONArray("parameters").getJSONArray(3);
+                onCampaignReinforce(team, from_x, from_y, reinforcements);
                 break;
             case GameEvent.CAMPAIGN_MESSAGE:
                 JSONArray messages = event.getJSONArray("parameters").getJSONArray(0);
@@ -273,6 +273,12 @@ public class GameEventExecutor {
                 target_x = event.getJSONArray("parameters").getInt(0);
                 target_y = event.getJSONArray("parameters").getInt(1);
                 onCampaignHavensFury(target_x, target_y);
+                break;
+            case GameEvent.CAMPAIGN_TILE_DESTROY:
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
+                short destroyed_index = (short) event.getJSONArray("parameters").getInt(2);
+                onCampaignTileDestroy(target_x, target_y, destroyed_index);
                 break;
             default:
                 //do nothing
@@ -631,32 +637,34 @@ public class GameEventExecutor {
         }
     }
 
-    private void onCampaignReinforce(int team, int from_x, int from_y, JSONArray indexes, JSONArray positions)
-            throws JSONException {
-        Array<Unit> reinforcements = new Array<Unit>();
-        for (int i = 0; i < indexes.length(); i++) {
-            int index = indexes.getInt(i);
-            JSONObject position = positions.getJSONObject(i);
-            int map_x = position.getInt("x");
-            int map_y = position.getInt("y");
+    private void onCampaignReinforce(int team, int from_x, int from_y, JSONArray reinforcements) throws JSONException {
+        Array<Unit> reinforcement_units = new Array<Unit>();
+        for (int i = 0; i < reinforcements.length(); i++) {
+            JSONObject reinforcement = reinforcements.getJSONObject(i);
+            int index = reinforcement.getInt("index");
+            int head = reinforcement.getInt("head");
+            int map_x = reinforcement.getInt("x");
+            int map_y = reinforcement.getInt("y");
             if (getGame().getMap().getUnit(map_x, map_y) == null) {
                 if (index == UnitFactory.getCommanderIndex()) {
                     if (getGame().isCommanderAlive(team)) {
-                        Unit commander = getGame().createUnit(index, team, map_x, map_y);
-                        commander.setHead(2);
+                        getGame().createUnit(index, team, map_x, map_y);
                     } else {
                         getGame().restoreCommander(team, map_x, map_y);
                     }
                 } else {
                     getGame().createUnit(index, team, map_x, map_y);
                 }
-                reinforcements.add(getGame().getMap().getUnit(map_x, map_y));
+                if (head >= 0) {
+                    getGame().getMap().getUnit(map_x, map_y).setHead(head);
+                }
+                reinforcement_units.add(getGame().getMap().getUnit(map_x, map_y));
             }
         }
-        if (reinforcements.size > 0) {
-            Unit first_unit = reinforcements.first();
+        if (reinforcement_units.size > 0) {
+            Unit first_unit = reinforcement_units.first();
             getGameManager().fireMapFocusEvent(first_unit.getX(), first_unit.getY(), true);
-            getAnimationDispatcher().submitReinforceAnimation(reinforcements, from_x, from_y);
+            getAnimationDispatcher().submitReinforceAnimation(reinforcement_units, from_x, from_y);
         }
     }
 
@@ -777,6 +785,16 @@ public class GameEventExecutor {
                 getAnimationDispatcher().submitMessageAnimation(Language.getText("HAVENS_FURY_MESSAGE_2"), 1f);
                 getAnimationDispatcher().submitHavensFuryAnimation(target);
             }
+        }
+    }
+
+    private void onCampaignTileDestroy(int target_x, int target_y, short destroyed_index) {
+        if (getGame().getMap().isWithinMap(target_x, target_y)) {
+            getGameManager().fireMapFocusEvent(target_x, target_y, false);
+
+            getGame().setTile(destroyed_index, target_x, target_y);
+            TileValidator.validate(getGame().getMap(), target_x, target_y);
+            getAnimationDispatcher().submitDustAriseAnimation(target_x, target_y);
         }
     }
 

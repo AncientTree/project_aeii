@@ -459,6 +459,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 return true;
             }
             if (keyCode == Input.Keys.ENTER) {
+                message_board.display();
                 showDialog("message");
             }
             switch (getGameManager().getState()) {

@@ -395,6 +395,10 @@ public class Unit implements Serializable, Verifiable {
         return this.x_position == x && this.y_position == y;
     }
 
+    public boolean isAt(Position position) {
+        return isAt(position.x, position.y);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object instanceof Unit) {

@@ -39,6 +39,7 @@ public class GameEvent {
     public static final int CAMPAIGN_CARRY_UNIT = 0x28;
     public static final int CAMPAIGN_SHOW_OBJECTIVES = 0x29;
     public static final int CAMPAIGN_HAVENS_FURY = 0x30;
+    public static final int CAMPAIGN_TILE_DESTROY = 0x31;
 
     public static JSONObject create(int type, Object... params) throws JSONException {
         JSONObject event = new JSONObject();

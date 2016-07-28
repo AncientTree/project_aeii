@@ -78,7 +78,7 @@ public abstract class CampaignController {
         return new Snapshot(getCode(), getCampaignName(), getDifficulty());
     }
 
-    public class Snapshot {
+    public class Snapshot implements Comparable<Snapshot> {
 
         public final String code;
         public final String name;
@@ -95,6 +95,11 @@ public abstract class CampaignController {
             return name;
         }
 
+
+        @Override
+        public int compareTo(Snapshot snapshot) {
+            return name.compareTo(snapshot.name);
+        }
     }
 
 }

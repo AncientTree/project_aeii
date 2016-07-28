@@ -32,7 +32,7 @@ public class AEIICampaign extends CampaignController {
 
     @Override
     public int getDifficulty() {
-        return 1;
+        return 2;
     }
 
 }

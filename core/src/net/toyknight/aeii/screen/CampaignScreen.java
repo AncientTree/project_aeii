@@ -107,6 +107,7 @@ public class CampaignScreen extends StageScreen {
         for (String code : getContext().getCampaignContext().getCampaignCodes()) {
             snapshots.add(getContext().getCampaignContext().getCampaign(code).createSnapshot());
         }
+        snapshots.sort();
         scenario_list.setItems(snapshots);
     }
 
