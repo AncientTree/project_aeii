@@ -51,7 +51,7 @@ public class MessageBoard extends AEIITable {
 
     private void validateHeight() {
         pack();
-        while (getHeight() > Gdx.graphics.getHeight() - ts) {
+        while (getHeight() > Gdx.graphics.getHeight() - ts * 57 / 24) {
             removeActor(getChildren().first());
             pack();
         }

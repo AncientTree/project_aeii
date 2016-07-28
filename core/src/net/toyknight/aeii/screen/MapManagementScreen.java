@@ -171,16 +171,11 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void back() {
-        if (NetworkManager.isConnected()) {
-            if (current_author == null) {
-                getContext().gotoMainMenuScreen(false);
-                NetworkManager.disconnect();
-            } else {
-                current_author = null;
-                refresh();
-            }
-        } else {
+        if (current_author == null) {
             getContext().gotoMainMenuScreen(false);
+        } else {
+            current_author = null;
+            refresh();
         }
     }
 
@@ -196,6 +191,14 @@ public class MapManagementScreen extends StageScreen {
         }
     }
 
+    private boolean connect() {
+        try {
+            return NetworkManager.connect(map_server_configuration);
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
     private void downloadSelectedMap() {
         if (checkSelectedMap()) {
             final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
@@ -204,7 +207,13 @@ public class MapManagementScreen extends StageScreen {
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
-                    return NetworkManager.requestDownloadMap(filename);
+                    if (connect()) {
+                        Map map = NetworkManager.requestDownloadMap(filename);
+                        NetworkManager.disconnect();
+                        return map;
+                    } else {
+                        throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+                    }
                 }
 
                 @Override
@@ -220,7 +229,7 @@ public class MapManagementScreen extends StageScreen {
                 @Override
                 public void onFail(String message) {
                     closeDialog("message");
-                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                    showPrompt(message, null);
                 }
             });
         }
@@ -232,9 +241,15 @@ public class MapManagementScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
-                FileHandle map_file = local_map_list.getSelected().file;
-                Map map = MapFactory.createMap(map_file);
-                return NetworkManager.requestUploadMap(map, map_file.nameWithoutExtension());
+                if (connect()) {
+                    FileHandle map_file = local_map_list.getSelected().file;
+                    Map map = MapFactory.createMap(map_file);
+                    boolean success = NetworkManager.requestUploadMap(map, map_file.nameWithoutExtension());
+                    NetworkManager.disconnect();
+                    return success;
+                } else {
+                    throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+                }
             }
 
             @Override
@@ -250,7 +265,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFail(String message) {
                 closeDialog("message");
-                showPrompt(Language.getText("MSG_ERR_FUM"), null);
+                showPrompt(message, null);
             }
         });
     }
@@ -278,7 +293,13 @@ public class MapManagementScreen extends StageScreen {
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
-                    return NetworkManager.requestDownloadMap(filename);
+                    if (connect()) {
+                        Map map = NetworkManager.requestDownloadMap(filename);
+                        NetworkManager.disconnect();
+                        return map;
+                    } else {
+                        throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+                    }
                 }
 
                 @Override
@@ -294,7 +315,7 @@ public class MapManagementScreen extends StageScreen {
                 @Override
                 public void onFail(String message) {
                     closeDialog("message");
-                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                    showPrompt(message, null);
                 }
             });
         }
@@ -323,7 +344,13 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public Array<MapSnapshot> doTask() throws Exception {
                 refreshLocalMaps();
-                return NetworkManager.requestMapList(current_author);
+                if (connect()) {
+                    Array<MapSnapshot> map_list = NetworkManager.requestMapList(current_author);
+                    NetworkManager.disconnect();
+                    return map_list;
+                } else {
+                    throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+                }
             }
 
             @Override
@@ -336,7 +363,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFail(String message) {
                 closeDialog("message");
-                showPrompt(Language.getText("MSG_ERR_CNGML"), null);
+                showPrompt(message, null);
             }
         });
     }
@@ -405,42 +432,11 @@ public class MapManagementScreen extends StageScreen {
         server_map_list.clearItems();
         setNetworkRelatedButtonsEnabled(true);
         last_scroll_position_server_author_list = 0f;
-        message_dialog.setMessage(Language.getText("LB_CONNECTING"));
-        showDialog("message");
-        getContext().submitAsyncTask(new AsyncTask<Boolean>() {
-            @Override
-            public Boolean doTask() throws Exception {
-                return NetworkManager.connect(map_server_configuration);
-            }
+        refresh();
+    }
 
-            @Override
-            public void onFinish(Boolean success) {
-                closeDialog("message");
-                if (success) {
-                    refresh();
-                } else {
-                    setNetworkRelatedButtonsEnabled(false);
-                    showPrompt(Language.getText("MSG_ERR_CCS"), new Callable() {
-                        @Override
-                        public void call() {
-                            refreshLocalMaps();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFail(String message) {
-                closeDialog("message");
-                setNetworkRelatedButtonsEnabled(false);
-                showPrompt(Language.getText("MSG_ERR_CCS"), new Callable() {
-                    @Override
-                    public void call() {
-                        refreshLocalMaps();
-                    }
-                });
-            }
-        });
+    @Override
+    public void onDisconnect() {
     }
 
     private void setNetworkRelatedButtonsEnabled(boolean enabled) {

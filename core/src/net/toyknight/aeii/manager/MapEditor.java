@@ -205,12 +205,8 @@ public class MapEditor {
                     return;
                 }
             }
-            if (map.getPlayerCount() >= 2) {
-                MapFactory.writeMap(map, map_file);
-                getListener().onMapSaved();
-            } else {
-
-            }
+            MapFactory.writeMap(map, map_file);
+            getListener().onMapSaved();
         } catch (IOException ex) {
             getListener().onError(Language.getText("EDITOR_ERROR_FSM"));
         }
