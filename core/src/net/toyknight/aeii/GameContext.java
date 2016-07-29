@@ -16,7 +16,6 @@ import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.GameManagerListener;
 import net.toyknight.aeii.manager.RoomManager;
-import net.toyknight.aeii.record.GameRecord;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.CanvasRenderer;
@@ -35,7 +34,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String INTERNAL_VERSION = "13";
+    public static final String INTERNAL_VERSION = "15";
     public static final String EXTERNAL_VERSION = "1.1.6";
     private static final String TAG = "Main";
 
@@ -291,10 +290,19 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void gotoGameScreen(GameCore game) {
         AudioManager.playRandomBGM("bg_good.mp3");
-        if (!game.initialized()) {
+        if (game.initialized()) {
+            getGameManager().setGame(game);
+        } else {
             game.initialize();
+            getGameManager().setGame(game);
+            int income = game.gainIncome(game.getCurrentTeam());
+            if (game.getType() == GameCore.SKIRMISH) {
+                getGameManager().getAnimationDispatcher().submitMessageAnimation(
+                        Language.getText("LB_CURRENT_TURN") + ": " + game.getCurrentTurn(),
+                        Language.getText("LB_INCOME") + ": " + income,
+                        0.8f);
+            }
         }
-        getGameManager().setGame(game);
         gotoScreen(game_screen);
     }
 
@@ -313,19 +321,6 @@ public class GameContext extends Game implements GameManagerListener {
                 ((StageScreen) getScreen()).showPrompt(Language.getText("MSG_ERR_BMF"), null);
             }
         }
-    }
-
-    public void gotoGameScreen(GameSave save) {
-        AudioManager.playRandomBGM("bg_good.mp3");
-        getGameManager().setGame(save.getGame());
-        gotoScreen(game_screen);
-    }
-
-    public void gotoGameScreen(GameRecord record) {
-        AudioManager.playRandomBGM("bg_good.mp3");
-        getGameManager().setGame(record.getGame());
-        getRecordPlayer().setRecord(record);
-        gotoScreen(game_screen);
     }
 
     public void gotoLobbyScreen() {

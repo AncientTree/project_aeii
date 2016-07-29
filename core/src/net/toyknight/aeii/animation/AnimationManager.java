@@ -8,7 +8,6 @@ import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.AnimationDispatcher;
 import net.toyknight.aeii.manager.AnimationListener;
-import net.toyknight.aeii.screen.MapCanvas;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,8 +19,6 @@ public class AnimationManager implements AnimationDispatcher {
 
     private final GameContext context;
 
-    private MapCanvas canvas;
-
     private AnimationListener listener;
 
     private final Queue<Animator> animation_queue;
@@ -30,10 +27,6 @@ public class AnimationManager implements AnimationDispatcher {
     public AnimationManager(GameContext context) {
         this.context = context;
         this.animation_queue = new LinkedList<Animator>();
-    }
-
-    public void setCanvas(MapCanvas canvas) {
-        this.canvas = canvas;
     }
 
     @Override

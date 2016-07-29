@@ -128,7 +128,7 @@ public class GameLoadDialog extends BasicDialog {
                     getContext().getCampaignContext().loadCampaign(game_save);
                     break;
             }
-            getContext().gotoGameScreen(game_save);
+            getContext().gotoGameScreen(game_save.getGame());
         }
     }
 
@@ -145,7 +145,8 @@ public class GameLoadDialog extends BasicDialog {
                         player.setType(Player.RECORD);
                     }
                 }
-                getContext().gotoGameScreen(record);
+                getContext().getRecordPlayer().setRecord(record);
+                getContext().gotoGameScreen(record.getGame());
             } else {
                 getOwner().showPrompt(Language.getText("MSG_ERR_RVM"), null);
             }
