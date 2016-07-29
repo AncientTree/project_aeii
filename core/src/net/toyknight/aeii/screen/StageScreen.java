@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.ResourceManager;
@@ -169,10 +170,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         if (!prompt_dialog.isVisible()) {
             prompt_callback = callback;
 
-            //set the message and title
+            //set the message
             prompt_dialog.getContentTable().reset();
-            prompt_dialog.getContentTable().add(new Label(content, getContext().getSkin()));
-            prompt_dialog.setWidth(Math.max(ts * 6, getContext().getFontRenderer().getTextLayout(content).width + ts));
+            prompt_dialog.getContentTable().pad(ts / 4);
+            Label label_message = new Label(content, getContext().getSkin());
+            label_message.setAlignment(Align.center);
+            label_message.setWrap(true);
+            prompt_dialog.getContentTable().add(label_message).width(ts * 6);
+            prompt_dialog.getContentTable().pack();
 
             //set the button
             prompt_dialog.getButtonTable().reset();
@@ -185,6 +190,10 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
                 }
             });
 
+            prompt_dialog.pack();
+            prompt_dialog.setPosition(
+                    (Gdx.graphics.getWidth() - prompt_dialog.getWidth()) / 2,
+                    (Gdx.graphics.getHeight() - prompt_dialog.getHeight()) / 2);
             prompt_dialog.setVisible(true);
             Gdx.input.setInputProcessor(prompt_layer);
         }
