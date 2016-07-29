@@ -714,6 +714,8 @@ public class GameServer implements RoomListener {
                         "An error occurred while processing packet from %s@%s",
                         player.getUsername(), player.getAddress());
                 Log.error(TAG, message, ex);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
 
