@@ -127,9 +127,9 @@ public class CanvasRenderer {
                     //do nothing
             }
         }
-//        if (unit.getLevel() > 0) {
-//            batch.draw(getResources().getLevelTexture(unit.getLevel() - 1), screen_x + ts() - sw + offset_x, screen_y + ts() - sh + offset_y, sw, sh);
-//        }
+        if (unit.getLevel() > 0) {
+            batch.draw(getResources().getLevelTexture(unit.getLevel() - 1), screen_x + ts() - sw + offset_x, screen_y + ts() - sh + offset_y, sw, sh);
+        }
         batch.flush();
     }
 
