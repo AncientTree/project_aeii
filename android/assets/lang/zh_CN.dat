@@ -130,15 +130,15 @@ CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=胜利条件: 击败所有的敌军并占
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: 指挥官被击败
 CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=指挥官，这个小岛看起来十分的诡异，我们务必要小心！
 
-CAMPAIGN_AEI_NAME=Battle of Thorin Prequel
-CAMPAIGN_AEI_STAGE_1_NAME=Regroup
-CAMPAIGN_AEI_STAGE_1_OBJECTIVE=King Galamar must occupy castle, keep all troops alive.
-CAMPAIGN_AEI_STAGE_1_MESSAGE_1=The Kingdom of Thorin is divided. Betrayed by his own twin brother Valadorn, King Galamar has fled into the borderlands of the east.
-CAMPAIGN_AEI_STAGE_1_MESSAGE_2=Only the Blue guard, Galamar's personal troops, have remained loyal and stand ready to reclaim the land...
-CAMPAIGN_AEI_STAGE_1_MESSAGE_3=Sire, your troops are weary after last night's battle. It would be wise to regroup at the abandoned castle.
-CAMPAIGN_AEI_STAGE_1_MESSAGE_4=Sound advice, captain. Ready the troops - we should not let the enemy catch us unprepared.
-CAMPAIGN_AEI_STAGE_1_MESSAGE_5=Valadorn's army should be easy to spot with their red uniforms.
-CAMPAIGN_AEI_STAGE_1_MESSAGE_6=Spies!! Valadorn and his Red legion must know where we are! Quickly, protect the King!
+CAMPAIGN_AEI_NAME=索林战役前传
+CAMPAIGN_AEI_STAGE_1_NAME=重振旗鼓
+CAMPAIGN_AEI_STAGE_1_OBJECTIVE=格拉玛国王必须占领城堡，保证所有现有部队存活。
+CAMPAIGN_AEI_STAGE_1_MESSAGE_1=格拉玛国王遭到了他的双胞胎哥哥的背叛，如今，他的索林帝国四分五裂，形势所迫，他只得逃遁到帝国东面的边陲地带。
+CAMPAIGN_AEI_STAGE_1_MESSAGE_2=现在只有蓝色制服的护卫队--格拉玛国王的私人军队，还依然重新耿耿地守卫在格拉玛国王的左右，随时准备收复帝国河山……
+CAMPAIGN_AEI_STAGE_1_MESSAGE_3=陛下，经过昨夜一战，您的部队已经非常疲劳了，依我看在不远处的城堡里面休整重组一下军队，是一个明智的决定。
+CAMPAIGN_AEI_STAGE_1_MESSAGE_4=可以，队长，准备一下部队，我们不能被敌军打得措手不及。
+CAMPAIGN_AEI_STAGE_1_MESSAGE_5=沃拉顿的军队很好辨认，他们都身着红色制服。
+CAMPAIGN_AEI_STAGE_1_MESSAGE_6=有密探！！沃拉顿和他的红色军团必定已经知道我们所在！赶快， 保护好国王！
 
 CAMPAIGN_AEI_STAGE_2_NAME=Friends & Enemies
 CAMPAIGN_AEI_STAGE_2_OBJECTIVE=Occupy the castle and at least one village, produce at least one new unit of troops.
