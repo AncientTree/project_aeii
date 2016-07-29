@@ -80,7 +80,7 @@ public class CanvasRenderer {
 
     public void drawHead(Batch batch, int head_index, float screen_x, float screen_y, int frame, int ts) {
         batch.draw(getResources().getHeadTexture(head_index),
-                screen_x + ts / 24 * 7, screen_y + ts / 2 - frame * ts / 24, ts * 13 / 24, ts * 12 / 24);
+                screen_x + ts * 7 / 24, screen_y + ts / 2 - frame * ts / 24, ts * 13 / 24, ts * 12 / 24);
     }
 
     public void drawUnit(Batch batch, Unit unit, int map_x, int map_y) {
