@@ -213,8 +213,11 @@ public class NetworkManager {
         if (response == null) {
             return false;
         } else {
-            service_id = response.getInt("service_id");
-            return response.getBoolean("approved");
+            boolean approved = response.getBoolean("approved");
+            if (approved) {
+                service_id = response.getInt("service_id");
+            }
+            return approved;
         }
     }
 
