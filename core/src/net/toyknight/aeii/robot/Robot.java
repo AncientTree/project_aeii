@@ -192,23 +192,25 @@ public class Robot {
     }
 
     private void select() {
-        Unit refresher = getFirstUnitWithAbility(Ability.REFRESH_AURA);
-        if (refresher != null && !refresher.isStandby()) {
-            getManager().doSelect(refresher.getX(), refresher.getY());
-            return;
-        }
-        Unit healer = getFirstUnitWithAbility(Ability.HEALER);
-        if (healer != null && !healer.isStandby()) {
-            getManager().doSelect(healer.getX(), healer.getY());
-            return;
-        }
-        for (Unit unit : getGame().getMap().getUnits(team)) {
-            if (!unit.isStandby()) {
-                getManager().doSelect(unit.getX(), unit.getY());
+        synchronized (GameContext.RENDER_LOCK) {
+            Unit refresher = getFirstUnitWithAbility(Ability.REFRESH_AURA);
+            if (refresher != null && !refresher.isStandby()) {
+                getManager().doSelect(refresher.getX(), refresher.getY());
                 return;
             }
+            Unit healer = getFirstUnitWithAbility(Ability.HEALER);
+            if (healer != null && !healer.isStandby()) {
+                getManager().doSelect(healer.getX(), healer.getY());
+                return;
+            }
+            for (Unit unit : getGame().getMap().getUnits(team)) {
+                if (!unit.isStandby()) {
+                    getManager().doSelect(unit.getX(), unit.getY());
+                    return;
+                }
+            }
+            finish();
         }
-        finish();
     }
 
     private void move() {
