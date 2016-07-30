@@ -572,25 +572,27 @@ public class Robot {
     }
 
     private void act() {
-        switch (action_type) {
-            case Operation.OCCUPY:
-                getManager().doOccupy();
-                break;
-            case Operation.REPAIR:
-                getManager().doRepair();
-                break;
-            case Operation.ATTACK:
-                getManager().doAttack(action_target.x, action_target.y);
-                break;
-            case Operation.HEAL:
-                getManager().doHeal(action_target.x, action_target.y);
-                break;
-            case Operation.SUMMON:
-                getManager().doSummon(action_target.x, action_target.y);
-                break;
-            case Operation.STANDBY:
-            default:
-                getManager().doStandbySelectedUnit();
+        synchronized (GameContext.RENDER_LOCK) {
+            switch (action_type) {
+                case Operation.OCCUPY:
+                    getManager().doOccupy();
+                    break;
+                case Operation.REPAIR:
+                    getManager().doRepair();
+                    break;
+                case Operation.ATTACK:
+                    getManager().doAttack(action_target.x, action_target.y);
+                    break;
+                case Operation.HEAL:
+                    getManager().doHeal(action_target.x, action_target.y);
+                    break;
+                case Operation.SUMMON:
+                    getManager().doSummon(action_target.x, action_target.y);
+                    break;
+                case Operation.STANDBY:
+                default:
+                    getManager().doStandbySelectedUnit();
+            }
         }
     }
 
