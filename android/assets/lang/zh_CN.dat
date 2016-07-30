@@ -159,13 +159,13 @@ CAMPAIGN_AEI_STAGE_3_MESSAGE_3=陛下，桥被摧毁了！
 CAMPAIGN_AEI_STAGE_3_MESSAGE_4=沃拉顿一定在期待我们涉水……我们必须另寻途径，不能中了他们的陷阱。
 CAMPAIGN_AEI_STAGE_3_MESSAGE_5=战士们！振作起来，不惜一切代价保护水元素首领！
 
-CAMPAIGN_AEI_STAGE_4_NAME=Reinforcements
-CAMPAIGN_AEI_STAGE_4_OBJECTIVE=Save the city: destroy all enemy units!
-CAMPAIGN_AEI_STAGE_4_MESSAGE_1=Having reached the Grey Tower the High Wizard agrees to help Galamar. However, Galamar's troops have no time to rest, as a message arrives from the nearby city of Var Telan, telling of a surprise attack by Valadorn's Red legion.
-CAMPAIGN_AEI_STAGE_4_MESSAGE_2=Your majesty, the Red legion! Watch out for their long range catapult!
-CAMPAIGN_AEI_STAGE_4_MESSAGE_3=What is this treachery! The city has turned against us!
-CAMPAIGN_AEI_STAGE_4_MESSAGE_4=As predictable as ever, brother! I have you now!
-CAMPAIGN_AEI_STAGE_4_MESSAGE_5=Retreat!! Curse you Galamar! You won't be so lucky next time!
+CAMPAIGN_AEI_STAGE_4_NAME=进退维谷
+CAMPAIGN_AEI_STAGE_4_OBJECTIVE=保护城邦，摧毁所有敌方单位
+CAMPAIGN_AEI_STAGE_4_MESSAGE_1=格拉玛进军格雷塔之后，大魔法师同意了帮助他。然而，它的军队无暇休整，瓦特兰城传来消息，遭到了沃拉顿红色军团的突袭。
+CAMPAIGN_AEI_STAGE_4_MESSAGE_2=陛下，红色军团！！小心他们的长程投石车！
+CAMPAIGN_AEI_STAGE_4_MESSAGE_3=公然的叛变啊！这整个城市都变得仇视我们了！
+CAMPAIGN_AEI_STAGE_4_MESSAGE_4=如我所愿啊，我的弟弟，又让我找到你了。
+CAMPAIGN_AEI_STAGE_4_MESSAGE_5=撤退，可恶的格拉玛，下次你就不会这么幸运了！哼！
 
 CAMPAIGN_AEI_STAGE_5_NAME=Dragon Rescue!
 CAMPAIGN_AEI_STAGE_5_OBJECTIVE=Destroy enemy commander and free the dragons.
