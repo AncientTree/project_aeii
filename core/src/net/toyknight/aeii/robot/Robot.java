@@ -192,23 +192,25 @@ public class Robot {
     }
 
     private void select() {
-        Unit refresher = getFirstUnitWithAbility(Ability.REFRESH_AURA);
-        if (refresher != null && !refresher.isStandby()) {
-            getManager().doSelect(refresher.getX(), refresher.getY());
-            return;
-        }
-        Unit healer = getFirstUnitWithAbility(Ability.HEALER);
-        if (healer != null && !healer.isStandby()) {
-            getManager().doSelect(healer.getX(), healer.getY());
-            return;
-        }
-        for (Unit unit : getGame().getMap().getUnits(team)) {
-            if (!unit.isStandby()) {
-                getManager().doSelect(unit.getX(), unit.getY());
+        synchronized (GameContext.RENDER_LOCK) {
+            Unit refresher = getFirstUnitWithAbility(Ability.REFRESH_AURA);
+            if (refresher != null && !refresher.isStandby()) {
+                getManager().doSelect(refresher.getX(), refresher.getY());
                 return;
             }
+            Unit healer = getFirstUnitWithAbility(Ability.HEALER);
+            if (healer != null && !healer.isStandby()) {
+                getManager().doSelect(healer.getX(), healer.getY());
+                return;
+            }
+            for (Unit unit : getGame().getMap().getUnits(team)) {
+                if (!unit.isStandby()) {
+                    getManager().doSelect(unit.getX(), unit.getY());
+                    return;
+                }
+            }
+            finish();
         }
-        finish();
     }
 
     private void move() {
@@ -570,25 +572,27 @@ public class Robot {
     }
 
     private void act() {
-        switch (action_type) {
-            case Operation.OCCUPY:
-                getManager().doOccupy();
-                break;
-            case Operation.REPAIR:
-                getManager().doRepair();
-                break;
-            case Operation.ATTACK:
-                getManager().doAttack(action_target.x, action_target.y);
-                break;
-            case Operation.HEAL:
-                getManager().doHeal(action_target.x, action_target.y);
-                break;
-            case Operation.SUMMON:
-                getManager().doSummon(action_target.x, action_target.y);
-                break;
-            case Operation.STANDBY:
-            default:
-                getManager().doStandbySelectedUnit();
+        synchronized (GameContext.RENDER_LOCK) {
+            switch (action_type) {
+                case Operation.OCCUPY:
+                    getManager().doOccupy();
+                    break;
+                case Operation.REPAIR:
+                    getManager().doRepair();
+                    break;
+                case Operation.ATTACK:
+                    getManager().doAttack(action_target.x, action_target.y);
+                    break;
+                case Operation.HEAL:
+                    getManager().doHeal(action_target.x, action_target.y);
+                    break;
+                case Operation.SUMMON:
+                    getManager().doSummon(action_target.x, action_target.y);
+                    break;
+                case Operation.STANDBY:
+                default:
+                    getManager().doStandbySelectedUnit();
+            }
         }
     }
 

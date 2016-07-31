@@ -48,7 +48,7 @@ public class MessageBoard extends AEIITable {
         String content = username == null ? ">" + message : ">" + username + ": " + message;
         Label label_message = new Label(content, getContext().getSkin());
         label_message.setWrap(true);
-        add(label_message).width(content_width).padLeft(ts / 8).padBottom(ts / 8);
+        add(label_message).width(content_width).padLeft(ts / 8).padBottom(ts / 8).row();
         display();
     }
 
