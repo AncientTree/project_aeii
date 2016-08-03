@@ -712,7 +712,7 @@ public class Robot {
     private Unit getFirstUnitWithAbility(int ability) {
         synchronized (GameContext.RENDER_LOCK) {
             for (Unit unit : getGame().getMap().getUnits(team)) {
-                if (unit.hasAbility(ability)) {
+                if (!unit.isStandby() && unit.hasAbility(ability)) {
                     return unit;
                 }
             }

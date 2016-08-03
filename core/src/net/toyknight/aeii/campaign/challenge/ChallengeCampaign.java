@@ -19,6 +19,7 @@ public class ChallengeCampaign extends CampaignController {
         addStage(new ChallengeStage2());
         addStage(new ChallengeStage3());
         addStage(new ChallengeStage4());
+        addStage(new ChallengeStage5());
     }
 
     @Override
