@@ -48,7 +48,7 @@ public class ChallengeStage5 extends StageController {
             if (unit.getX() >= 8 && !unit.hasAbility(Ability.UNDEAD) && unit.getIndex() != 6) {
                 getContext().restore(1);
                 getContext().remove_tomb(unit.getX(), unit.getY());
-                getContext().create(6, 2, unit.getX(), unit.getY());
+                getContext().create(6, 1, unit.getX(), unit.getY());
             }
             if (getContext().count_unit(1) == 0) {
                 getContext().destroy_team(1);
