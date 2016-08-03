@@ -31,7 +31,7 @@ public class AudioManager {
         if (musicVolume > 0f) {
             String pathToFile = AUDIO_PATH + MUSIC_PATH + fileName;
 
-            stopMusic();
+            stopCurrentBGM();
 
             music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
             music.setVolume(musicVolume);
@@ -41,7 +41,7 @@ public class AudioManager {
                 @Override
                 public void onCompletion(Music music) {
                     if (!music.isLooping()) {
-                        music.dispose();
+                        stopCurrentBGM();
                     }
                 }
             });
@@ -53,9 +53,6 @@ public class AudioManager {
     /**
      * Play main theme music.
      */
-    public static void playMainTheme() {
-        playBGM(MAIN_THEME, false);
-    }
 
     public static void loopMainTheme() {
         playBGM(MAIN_THEME, true);
@@ -66,7 +63,9 @@ public class AudioManager {
      */
     public static void stopCurrentBGM() {
         if (music != null) {
-            music.stop();
+            if (music.isPlaying()) {
+                music.stop();
+            }
             music.dispose();
         }
     }
@@ -78,20 +77,18 @@ public class AudioManager {
      */
     public static void setMusicVolume(float volume) {
         musicVolume = volume;
-        if (music != null) {
+        if (music == null) {
+            if (volume > 0f) {
+                loopMainTheme();
+            }
+        } else {
             if (volume > 0f) {
                 music.setVolume(musicVolume);
             } else {
                 stopCurrentBGM();
                 music = null;
             }
-        } else {
-            loopMainTheme();
         }
-    }
-
-    public static float getMusicVolume() {
-        return musicVolume;
     }
 
     /**
@@ -103,16 +100,12 @@ public class AudioManager {
         seVolume = volume;
     }
 
-    public static float getSEVolume() {
-        return seVolume;
-    }
-
     /**
      * Play music randomly. All audio files are in "asset/music/" directory in project.
      */
     public static void playRandomBGM() {
         if (musicVolume > 0f) {
-            stopMusic();
+            stopCurrentBGM();
 
             String bgmPath = getRandomBgmPath();
             music = Gdx.audio.newMusic(FileProvider.getAssetsFile(bgmPath));
@@ -137,7 +130,7 @@ public class AudioManager {
         if (musicVolume > 0f) {
             String pathToFile = AUDIO_PATH + MUSIC_PATH + startBGM;
 
-            stopMusic();
+            stopCurrentBGM();
 
             music = Gdx.audio.newMusic(FileProvider.getAssetsFile(pathToFile));
             music.setVolume(musicVolume);
@@ -179,15 +172,6 @@ public class AudioManager {
      */
     public static void muteSE() {
         seVolume = 0.0f;
-    }
-
-    /**
-     * Stop current music without disposing.
-     */
-    private static void stopMusic() {
-        if (music != null) {
-            music.stop();
-        }
     }
 
     /**
