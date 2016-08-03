@@ -13,6 +13,13 @@ import net.toyknight.aeii.utils.Language;
  */
 public class ChallengeStage5 extends StageController {
 
+    private void checkClear() {
+        if (getContext().count_unit(3) == 0 && getContext().count_unit(1) == 0 && getContext().count_castle(3) == 0) {
+            getContext().clear();
+        }
+    }
+
+
     @Override
     public void onGameStart() {
         getContext().alliance(1, 0);
@@ -46,6 +53,7 @@ public class ChallengeStage5 extends StageController {
             if (getContext().count_unit(1) == 0) {
                 getContext().destroy_team(1);
             }
+            checkClear();
         }
     }
 
@@ -55,6 +63,9 @@ public class ChallengeStage5 extends StageController {
 
     @Override
     public void onTileOccupied(int x, int y, int team) {
+        if (team == getPlayerTeam()) {
+            checkClear();
+        }
     }
 
     @Override
