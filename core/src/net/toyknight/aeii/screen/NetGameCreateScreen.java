@@ -450,6 +450,8 @@ public class NetGameCreateScreen extends StageScreen {
 
         record_on = false;
 
+        message_pane.clearChildren();
+
         map_preview.setMap(getGame().getMap());
         map_preview.updateBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
