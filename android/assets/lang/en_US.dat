@@ -131,6 +131,12 @@ CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=VICTORY: Defeat all enemies and capture a
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Commander, this island looks strange, we should be careful!
 
+CAMPAIGN_CHALLENGE_STAGE_5_NAME=Rock Valley
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_3=DEFEAT: Turn number exceeds 200.
+CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, there's a bandit stronghold in the mountain, we need to eliminate them to protect the village!
+
 CAMPAIGN_AEI_NAME=Battle of Thorin Prequel
 CAMPAIGN_AEI_STAGE_1_NAME=Regroup
 CAMPAIGN_AEI_STAGE_1_OBJECTIVE=King Galamar must occupy castle, keep all troops alive.
