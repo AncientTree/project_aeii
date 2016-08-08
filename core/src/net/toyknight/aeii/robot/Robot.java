@@ -555,14 +555,17 @@ public class Robot {
 
     private Position getPreferredStandbyPosition(Unit unit, ObjectSet<Position> movable_positions) {
         Position preferred_position = movable_positions.first();
+        int max_hp_recovery = Integer.MIN_VALUE;
         int max_defence_bonus = Integer.MIN_VALUE;
         for (Position position : movable_positions) {
             Tile tile = getGame().getMap().getTile(position);
             if (unit.isCommander() || !tile.isCastle()) {
-                if (getManager().getUnitToolkit().getTerrainHeal(unit, tile) > 0) {
-                    return position;
+                int terrain_heal = getManager().getUnitToolkit().getTerrainHeal(unit, tile);
+                if (terrain_heal > max_hp_recovery) {
+                    preferred_position = position;
+                    max_hp_recovery = terrain_heal;
                 }
-                if (tile.getDefenceBonus() > max_defence_bonus) {
+                if (terrain_heal == max_hp_recovery && tile.getDefenceBonus() > max_defence_bonus) {
                     preferred_position = position;
                     max_defence_bonus = tile.getDefenceBonus();
                 }

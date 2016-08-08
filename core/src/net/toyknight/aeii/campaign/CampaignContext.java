@@ -398,6 +398,10 @@ public class CampaignContext {
             return getContext().getGame().getMap().getUnit(map_x, map_y);
         }
 
+        public int get_gold(int team) {
+            return getContext().getGame().getPlayer(team).getGold();
+        }
+
     }
 
 }

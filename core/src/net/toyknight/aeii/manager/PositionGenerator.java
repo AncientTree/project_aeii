@@ -287,9 +287,11 @@ public class PositionGenerator {
 
     public ObjectSet<Position> createPositionsWithinReach(Unit unit) {
         ObjectSet<Position> positions = new ObjectSet<Position>();
-        for (Position position : createMovablePositions(unit)) {
-            positions.addAll(createPositionsWithinRange(
-                    position.x, position.y, unit.getMinAttackRange(), unit.getMaxAttackRange()));
+        if (unit.getMaxAttackRange() > 0) {
+            for (Position position : createMovablePositions(unit)) {
+                positions.addAll(createPositionsWithinRange(
+                        position.x, position.y, unit.getMinAttackRange(), unit.getMaxAttackRange()));
+            }
         }
         return positions;
     }
