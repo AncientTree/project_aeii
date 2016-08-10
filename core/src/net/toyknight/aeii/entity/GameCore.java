@@ -207,6 +207,15 @@ public class GameCore implements Serializable {
                 && player.getPopulation() + population <= getRule().getInteger(MAX_POPULATION);
     }
 
+    public boolean canBuy(int index, int team) {
+        Unit sample = UnitFactory.cloneUnit(UnitFactory.getSample(index));
+        int price = getUnitPrice(index, team);
+        return price >= 0 &&
+                isTeamAlive(team) &&
+                getCurrentPlayer().getGold() >= price &&
+                (canAddPopulation(team, sample.getOccupancy()) || sample.isCommander());
+    }
+
     public void destroyTeam(int team) {
         getMap().removeTeam(team);
         setTeamDestroyed(team, true);

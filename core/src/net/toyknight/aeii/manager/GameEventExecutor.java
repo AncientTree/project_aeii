@@ -332,7 +332,7 @@ public class GameEventExecutor {
     }
 
     private void onBuy(int index, int team, int target_x, int target_y) throws CheatingException {
-        if (canBuy(index, team)) {
+        if (canBuy(index, team, target_x, target_y)) {
             getGameManager().fireMapFocusEvent(target_x, target_y, false);
             int price = getGame().getUnitPrice(index, team);
             getGame().getCurrentPlayer().changeGold(-price);
@@ -347,10 +347,12 @@ public class GameEventExecutor {
         }
     }
 
-    private boolean canBuy(int index, int team) {
-        return getGame().isTeamAlive(team)
-                && getGame().getPlayer(team).getGold() >= getGame().getUnitPrice(index, team)
-                && getGame().getPlayer(team).getPopulation() < getGame().getRule().getInteger(MAX_POPULATION);
+    private boolean canBuy(int index, int team, int map_x, int map_y) {
+        if (getGame().getCurrentPlayer().getType() == Player.REMOTE && check_event_value) {
+            return getGameManager().canBuy(index, team, map_x, map_y);
+        } else {
+            return getGame().canBuy(index, team);
+        }
     }
 
     private void onNextTurn() throws JSONException {
