@@ -73,7 +73,7 @@ public class MapManager {
 
     public void addSnapshot(MapSnapshot snapshot) {
         if (!maps.containsKey(snapshot.getAuthor())) {
-            maps.put(snapshot.getAuthor(), new ObjectSet<MapSnapshot>());
+            maps.put(snapshot.getAuthor().toLowerCase(), new ObjectSet<MapSnapshot>());
         }
         maps.get(snapshot.getAuthor()).add(snapshot);
     }
