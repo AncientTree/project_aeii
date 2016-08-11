@@ -72,10 +72,11 @@ public class MapManager {
     }
 
     public void addSnapshot(MapSnapshot snapshot) {
+        String author = snapshot.getAuthor().toLowerCase();
         if (!maps.containsKey(snapshot.getAuthor())) {
-            maps.put(snapshot.getAuthor().toLowerCase(), new ObjectSet<MapSnapshot>());
+            maps.put(author, new ObjectSet<MapSnapshot>());
         }
-        maps.get(snapshot.getAuthor()).add(snapshot);
+        maps.get(author).add(snapshot);
     }
 
     public JSONArray getSerializedAuthorList() {
