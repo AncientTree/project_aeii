@@ -1,4 +1,4 @@
-package net.toyknight.aeii.network.server;
+package net.toyknight.aeii.server;
 
 import static net.toyknight.aeii.entity.Rule.Entry.*;
 

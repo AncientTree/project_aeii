@@ -12,7 +12,6 @@ import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
-import net.toyknight.aeii.network.server.ServerConfiguration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

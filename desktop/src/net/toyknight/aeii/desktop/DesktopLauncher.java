@@ -6,7 +6,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.network.server.GameServer;
 import net.toyknight.aeii.utils.Platform;
 
 import javax.swing.*;
@@ -239,23 +238,19 @@ public class DesktopLauncher {
 
     public static void main(String[] args) {
         if (args.length > 0) {
-            if (args[0].equals("-server")) {
-                new GameServer().start();
-            } else {
-                if (args.length >= 5) {
-                    try {
-                        int ts = Integer.parseInt(args[0]);
-                        int width = Integer.parseInt(args[1]);
-                        int height = Integer.parseInt(args[2]);
-                        boolean fs = Boolean.parseBoolean(args[3]);
-                        int fps = Integer.parseInt(args[4]);
-                        new DesktopLauncher().launch(ts, width, height, fs, fps);
-                    } catch (NumberFormatException ex) {
-                        new DesktopLauncher().launch();
-                    }
-                } else {
+            if (args.length >= 5) {
+                try {
+                    int ts = Integer.parseInt(args[0]);
+                    int width = Integer.parseInt(args[1]);
+                    int height = Integer.parseInt(args[2]);
+                    boolean fs = Boolean.parseBoolean(args[3]);
+                    int fps = Integer.parseInt(args[4]);
+                    new DesktopLauncher().launch(ts, width, height, fs, fps);
+                } catch (NumberFormatException ex) {
                     new DesktopLauncher().launch();
                 }
+            } else {
+                new DesktopLauncher().launch();
             }
         } else {
             new DesktopLauncher().launch();

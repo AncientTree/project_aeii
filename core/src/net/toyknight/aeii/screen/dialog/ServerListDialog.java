@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.screen.MainMenuScreen;
-import net.toyknight.aeii.network.server.ServerConfiguration;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.Language;
 
