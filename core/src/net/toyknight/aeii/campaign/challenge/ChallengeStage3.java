@@ -89,10 +89,6 @@ public class ChallengeStage3 extends StageController {
     }
 
     @Override
-    public void onTurnEnd(int turn) {
-    }
-
-    @Override
     public String getMapName() {
         return "challenge_stage_3.aem";
     }

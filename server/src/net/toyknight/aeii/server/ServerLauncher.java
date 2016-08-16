@@ -1,5 +1,7 @@
 package net.toyknight.aeii.server;
 
+import net.toyknight.aeii.server.old.GameServer;
+
 /**
  * @author toyknight 8/12/2016.
  */

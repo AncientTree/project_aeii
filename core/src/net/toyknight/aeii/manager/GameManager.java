@@ -197,36 +197,6 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    public void fireGameOverEvent() {
-        if (getListener() != null) {
-            getListener().onGameOver();
-        }
-    }
-
-    public void fireStateChangeEvent() {
-        if (getListener() != null) {
-            getListener().onGameManagerStateChanged();
-        }
-    }
-
-    public void fireMapFocusEvent(int map_x, int map_y, boolean focus_viewport) {
-        if (getListener() != null) {
-            getListener().onMapFocusRequired(map_x, map_y, focus_viewport);
-        }
-    }
-
-    public void fireCampaignMessageSubmitEvent() {
-        if (getListener() != null) {
-            getListener().onCampaignMessageSubmitted();
-        }
-    }
-
-    public void fireCampaignObjectiveRequestEvent() {
-        if (getListener() != null) {
-            getListener().onCampaignObjectiveRequested();
-        }
-    }
-
     public void submitCampaignMessage(Message message) {
         campaign_messages.addLast(message);
     }
@@ -526,6 +496,78 @@ public class GameManager implements GameEventListener, AnimationListener {
             }
         } else {
             return false;
+        }
+    }
+
+    public void fireGameOverEvent() {
+        if (getListener() != null) {
+            getListener().onGameOver();
+        }
+    }
+
+    public void fireStateChangeEvent() {
+        if (getListener() != null) {
+            getListener().onGameManagerStateChanged();
+        }
+    }
+
+    public void fireMapFocusEvent(int map_x, int map_y, boolean focus_viewport) {
+        if (getListener() != null) {
+            getListener().onMapFocusRequired(map_x, map_y, focus_viewport);
+        }
+    }
+
+    public void fireCampaignMessageSubmitEvent() {
+        if (getListener() != null) {
+            getListener().onCampaignMessageSubmitted();
+        }
+    }
+
+    public void fireCampaignObjectiveRequestEvent() {
+        if (getListener() != null) {
+            getListener().onCampaignObjectiveRequested();
+        }
+    }
+
+    public void fireAttackEvent(Unit attacker, Unit defender) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitAttacked(attacker, defender);
+        }
+    }
+
+    public void fireMoveEvent(Unit unit, int target_x, int target_y) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitMoved(unit, target_x, target_y);
+        }
+    }
+
+    public void fireOccupyEvent(int target_x, int target_y, int team) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onTileOccupied(target_x, target_y, team);
+        }
+    }
+
+    public void fireRepairEvent(int target_x, int target_y) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onTileRepaired(target_x, target_y);
+        }
+    }
+
+    public void fireUnitDestroyEvent(Unit unit) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitDestroyed(unit);
+        }
+    }
+
+    public void fireUnitStandbyEvent(int target_x, int target_y) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitStandby(target_x, target_y);
+        }
+    }
+
+    public void fireTurnStartEvent(int turn) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onTurnStart(turn);
         }
     }
 

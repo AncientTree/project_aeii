@@ -53,8 +53,6 @@ public abstract class StageController {
 
     abstract public void onTurnStart(int turn);
 
-    abstract public void onTurnEnd(int turn);
-
     abstract public String getMapName();
 
     abstract public Rule getRule();

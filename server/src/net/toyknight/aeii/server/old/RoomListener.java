@@ -1,5 +1,6 @@
-package net.toyknight.aeii.server;
+package net.toyknight.aeii.server.old;
 
+import net.toyknight.aeii.server.entities.Room;
 import org.json.JSONObject;
 
 /**

@@ -1,4 +1,4 @@
-package net.toyknight.aeii.server;
+package net.toyknight.aeii.server.old;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;

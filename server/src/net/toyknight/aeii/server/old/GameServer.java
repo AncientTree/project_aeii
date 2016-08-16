@@ -1,4 +1,4 @@
-package net.toyknight.aeii.server;
+package net.toyknight.aeii.server.old;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -15,6 +15,7 @@ import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
+import net.toyknight.aeii.server.entities.Room;
 import net.toyknight.aeii.utils.Encryptor;
 import net.toyknight.aeii.utils.TileFactory;
 import net.toyknight.aeii.utils.UnitFactory;

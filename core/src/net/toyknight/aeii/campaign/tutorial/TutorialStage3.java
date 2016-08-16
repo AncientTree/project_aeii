@@ -71,10 +71,6 @@ public class TutorialStage3 extends StageController {
     }
 
     @Override
-    public void onTurnEnd(int turn) {
-    }
-
-    @Override
     public String getMapName() {
         return "tutorial_stage_3.aem";
     }

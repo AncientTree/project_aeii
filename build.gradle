@@ -4,7 +4,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.1'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         classpath 'org.robovm:robovm-gradle-plugin:1.0.0'
     }
 }
@@ -85,6 +85,7 @@ project(":server") {
 
     dependencies {
         compile project(":core")
+        compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.3'
         compile "com.esotericsoftware:kryonet:$kryonetVersion"
         compile "org.json:json:$jsonVersion"
     }

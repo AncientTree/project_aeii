@@ -1,4 +1,4 @@
-package net.toyknight.aeii.server;
+package net.toyknight.aeii.server.old;
 
 import com.esotericsoftware.kryonet.Connection;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;

@@ -322,12 +322,14 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void previewSelectedLocalMap() {
-        FileHandle map_file = local_map_list.getSelected().file;
-        try {
-            Map map = MapFactory.createMap(map_file);
-            preview(map);
-        } catch (AEIIException e) {
-            showPrompt(Language.getText("MSG_ERR_BMF"), null);
+        if (local_map_list.getSelected() != null) {
+            FileHandle map_file = local_map_list.getSelected().file;
+            try {
+                Map map = MapFactory.createMap(map_file);
+                preview(map);
+            } catch (AEIIException e) {
+                showPrompt(Language.getText("MSG_ERR_BMF"), null);
+            }
         }
     }
 

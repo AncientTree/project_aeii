@@ -93,10 +93,6 @@ public class AEIIStage2 extends StageController {
     }
 
     @Override
-    public void onTurnEnd(int turn) {
-    }
-
-    @Override
     public String getMapName() {
         return "aeii_c1.aem";
     }
