@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 public class RoomSetting implements Serializable {
 
-    public long room_number;
+    public long room_id;
 
     public int host;
 
@@ -32,7 +32,7 @@ public class RoomSetting implements Serializable {
     }
 
     public RoomSetting(JSONObject json) throws JSONException {
-        room_number = json.getLong("room_number");
+        room_id = json.getLong("room_id");
         host = json.getInt("host");
         started = json.getBoolean("started");
         players = new Array<PlayerSnapshot>();
@@ -51,7 +51,7 @@ public class RoomSetting implements Serializable {
     @Override
     public JSONObject toJson() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("room_number", room_number);
+        json.put("room_id", room_id);
         json.put("host", host);
         json.put("started", started);
         JSONArray players = new JSONArray();

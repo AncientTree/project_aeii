@@ -29,4 +29,6 @@ public class NetworkConstants {
     public static final int GAME_EVENT = 0x14;
     public static final int MESSAGE = 0x15;
 
+    public static final int UNDEFINED = 0x100;
+
 }

@@ -53,7 +53,7 @@ public class StatusBarRenderer {
     private void drawInformation(SpriteBatch batch) {
         int gold = getManager().getGame().getCurrentPlayer().getGold();
         int current_pop = getManager().getGame().getCurrentPlayer().getPopulation();
-        int max_pop = getManager().getGame().getRule().getInteger(MAX_POPULATION);
+        int max_pop = getManager().getGame().getRule().getInteger(UNIT_CAPACITY);
         //draw population
         batch.draw(getContext().getResources().getStatusHudIcon(0), ts + margin_left, margin_bottom, hud_size, hud_size);
         getContext().getFontRenderer().drawLFraction(batch, current_pop, max_pop, ts + margin_left + hud_size, margin_bottom);

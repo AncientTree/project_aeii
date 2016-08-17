@@ -78,7 +78,7 @@ public class ChallengeStage4 extends StageController {
     @Override
     public Rule getRule() {
         Rule rule = Rule.createDefault();
-        rule.setValue(Rule.Entry.MAX_POPULATION, 30);
+        rule.setValue(Rule.Entry.UNIT_CAPACITY, 30);
         return rule;
     }
 

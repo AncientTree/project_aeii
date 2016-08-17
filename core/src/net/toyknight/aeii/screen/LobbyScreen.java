@@ -198,7 +198,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
         btn_refresh.setText(Language.getText("LB_REFRESHING"));
         getContext().submitAsyncTask(new AsyncTask<Array<RoomSnapshot>>() {
             @Override
-            public Array<RoomSnapshot> doTask() {
+            public Array<RoomSnapshot> doTask() throws Exception {
                 return NetworkManager.requestRoomList();
             }
 
@@ -212,7 +212,6 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                     applySearch();
                 }
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
-
             }
 
             @Override

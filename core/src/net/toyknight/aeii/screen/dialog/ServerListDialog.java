@@ -91,7 +91,7 @@ public class ServerListDialog extends BasicDialog {
 
             getContext().submitAsyncTask(new AsyncTask<Boolean>() {
                 @Override
-                public Boolean doTask() throws IOException {
+                public Boolean doTask() throws Exception {
                     return NetworkManager.connect(
                             getSelectedServer(), getContext().getUsername(), getContext().getVerificationString());
                 }

@@ -249,7 +249,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public String getVerificationString() {
         String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + INTERNAL_VERSION;
-        return new Encryptor().encryptString(V_STRING);
+        return new MD5Converter().toMD5(V_STRING);
     }
 
     public Skin getSkin() {

@@ -194,7 +194,7 @@ public class MapManagementScreen extends StageScreen {
     private boolean connect() {
         try {
             return NetworkManager.connect(map_server_configuration);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             return false;
         }
     }

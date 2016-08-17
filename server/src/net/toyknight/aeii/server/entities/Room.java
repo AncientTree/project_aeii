@@ -2,6 +2,7 @@ package net.toyknight.aeii.server.entities;
 
 import static net.toyknight.aeii.entity.Rule.Entry.*;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
@@ -10,13 +11,12 @@ import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import net.toyknight.aeii.entity.Rule;
-import net.toyknight.aeii.server.old.RoomListener;
+import net.toyknight.aeii.server.RoomListener;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
 
 /**
  * @author toyknight
@@ -25,14 +25,15 @@ public class Room {
 
     public final Object GAME_LOCK = new Object();
 
-    private final Object PLAYER_LOCK = new Object();
+    public final Object PLAYER_LOCK = new Object();
 
     private final ExecutorService event_executor = Executors.newSingleThreadExecutor();
 
-    private final RoomListener listener;
-
-    private final long room_number;
+    private final long room_id;
     private final String room_name;
+    private final int start_gold;
+
+    private RoomListener listener;
 
     private boolean game_started;
 
@@ -45,41 +46,42 @@ public class Room {
     private GameManager manager;
 
     private String map_name;
-    private int start_gold = 1000;
+
 
     private String password = null;
 
-    public Room(RoomListener listener, long room_number, String room_name, GameCore game) {
-        this(listener, room_number, room_name);
-        manager = new GameManager();
-        manager.getGameEventExecutor().setCheckEventValue(false);
-        manager.setGame(game);
-        start_gold = -1;
+    public Room(long room_id, String room_name, GameCore game) {
+        this(room_id, room_name, -1);
+        setGame(game);
     }
 
-    public Room(RoomListener listener, long room_number, String room_name) {
-        this.listener = listener;
-        this.room_number = room_number;
+    public Room(long room_id, String room_name, Map map, int start_gold) {
+        this(room_id, room_name, start_gold);
+        Rule rule = Rule.createDefault();
+        GameCore game = new GameCore(map, rule, 0, GameCore.SKIRMISH);
+        for (int team = 0; team < 4; team++) {
+            game.getPlayer(team).setAlliance(team + 1);
+            game.getPlayer(team).setGold(start_gold);
+        }
+        setGame(game);
+    }
+
+    private Room(long room_id, String room_name, int start_gold) {
+        this.room_id = room_id;
         this.room_name = room_name;
+        this.start_gold = start_gold;
         this.game_started = false;
         this.players = new ObjectSet<Integer>();
         this.allocation = new int[4];
         Arrays.fill(allocation, -1);
         host_player_id = -1;
         game_started = false;
+        manager = new GameManager();
+        manager.getGameEventExecutor().setCheckEventValue(false);
     }
 
-    public void initialize(Map map) {
-        synchronized (PLAYER_LOCK) {
-            Rule rule = Rule.createDefault();
-            GameCore game = new GameCore(map, rule, 0, GameCore.SKIRMISH);
-            for (int team = 0; team < 4; team++) {
-                game.getPlayer(team).setAlliance(team + 1);
-            }
-            manager = new GameManager();
-            manager.getGameEventExecutor().setCheckEventValue(false);
-            manager.setGame(game);
-        }
+    public void setListener(RoomListener listener) {
+        this.listener = listener;
     }
 
     public RoomListener getListener() {
@@ -96,6 +98,10 @@ public class Room {
 
     public GameManager getManager() {
         return manager;
+    }
+
+    private void setGame(GameCore game) {
+        getManager().setGame(game);
     }
 
     public GameCore getGame() {
@@ -196,24 +202,24 @@ public class Room {
         return getGame().getPlayer(team).getAlliance();
     }
 
-    public long getRoomNumber() {
-        return room_number;
+    public long getRoomID() {
+        return room_id;
     }
 
     public String getRoomName() {
         return room_name;
     }
 
-    public void setCapacity(int capacity) {
+    public void setPlayerCapacity(int capacity) {
         this.capacity = capacity;
     }
 
-    public int getCapacity() {
+    public int getPlayerCapacity() {
         return capacity;
     }
 
     public int getRemaining() {
-        return getCapacity() - players.size;
+        return getPlayerCapacity() - players.size;
     }
 
     public void setMapName(String name) {
@@ -224,29 +230,19 @@ public class Room {
         return map_name;
     }
 
-    public void setStartGold(int gold) {
-        synchronized (GAME_LOCK) {
-            this.start_gold = gold;
-            for (int team = 0; team < 4; team++) {
-                Player player = getGame().getPlayer(team);
-                player.setGold(gold);
-            }
-        }
-    }
-
     public int getStartGold() {
         return start_gold;
     }
 
-    public void setMaxPopulation(int population) {
+    public void setUnitCapacity(int capacity) {
         synchronized (GAME_LOCK) {
-            getGame().getRule().setValue(MAX_POPULATION, population);
+            getGame().getRule().setValue(UNIT_CAPACITY, capacity);
         }
     }
 
-    public int getMaxPopulation() {
+    public int getUnitCapacity() {
         synchronized (GAME_LOCK) {
-            return getGame().getRule().getInteger(MAX_POPULATION);
+            return getGame().getRule().getInteger(UNIT_CAPACITY);
         }
     }
 
@@ -287,10 +283,9 @@ public class Room {
         game_started = true;
     }
 
-    public void submitGameEvent(JSONObject event, int player_id) {
-        try {
+    public void submitGameEvemt(Array<JSONObject> events, int player_id) {
+        for (JSONObject event : events) {
             event_executor.submit(new GameEventExecuteTask(event, player_id));
-        } catch (RejectedExecutionException ignored) {
         }
     }
 
@@ -304,12 +299,12 @@ public class Room {
 
     public RoomSnapshot createSnapshot() {
         RoomSnapshot snapshot = new RoomSnapshot();
-        snapshot.room_number = getRoomNumber();
+        snapshot.room_number = getRoomID();
         snapshot.open = isOpen();
         snapshot.requires_password = password != null;
         snapshot.room_name = getRoomName();
         snapshot.map_name = getMapName();
-        snapshot.capacity = getCapacity();
+        snapshot.capacity = getPlayerCapacity();
         snapshot.remaining = getRemaining();
         return snapshot;
     }

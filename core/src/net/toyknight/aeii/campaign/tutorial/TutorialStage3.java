@@ -84,7 +84,7 @@ public class TutorialStage3 extends StageController {
         available_units.add(2);
         available_units.add(3);
         rule.setAvailableUnits(available_units);
-        rule.setValue(Rule.Entry.MAX_POPULATION, 20);
+        rule.setValue(Rule.Entry.UNIT_CAPACITY, 20);
         return rule;
     }
 

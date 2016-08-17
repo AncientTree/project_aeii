@@ -41,7 +41,7 @@ public class Rule implements Serializable {
         setValue(ATTACK_EXPERIENCE, json.getInt(ATTACK_EXPERIENCE));
         setValue(COUNTER_EXPERIENCE, json.getInt(COUNTER_EXPERIENCE));
         setValue(COMMANDER_PRICE_STEP, json.getInt(COMMANDER_PRICE_STEP));
-        setValue(MAX_POPULATION, json.getInt(MAX_POPULATION));
+        setValue(UNIT_CAPACITY, json.getInt(UNIT_CAPACITY));
         setValue(ENEMY_CLEAR, json.getBoolean(ENEMY_CLEAR));
         setValue(CASTLE_CLEAR, json.getBoolean(CASTLE_CLEAR));
         JSONArray available_units = json.getJSONArray("available_units");
@@ -125,7 +125,7 @@ public class Rule implements Serializable {
         rule.setValue(Entry.ATTACK_EXPERIENCE, 30);
         rule.setValue(Entry.COUNTER_EXPERIENCE, 10);
         rule.setValue(Entry.COMMANDER_PRICE_STEP, 100);
-        rule.setValue(Entry.MAX_POPULATION, POPULATION_PRESET[0]);
+        rule.setValue(Entry.UNIT_CAPACITY, POPULATION_PRESET[0]);
         rule.setValue(Entry.ENEMY_CLEAR, true);
         rule.setValue(Entry.CASTLE_CLEAR, true);
 
@@ -167,7 +167,7 @@ public class Rule implements Serializable {
         json.put(ATTACK_EXPERIENCE, getInteger(ATTACK_EXPERIENCE));
         json.put(COUNTER_EXPERIENCE, getInteger(COUNTER_EXPERIENCE));
         json.put(COMMANDER_PRICE_STEP, getInteger(COMMANDER_PRICE_STEP));
-        json.put(MAX_POPULATION, getInteger(MAX_POPULATION));
+        json.put(UNIT_CAPACITY, getInteger(UNIT_CAPACITY));
         json.put(ENEMY_CLEAR, getBoolean(ENEMY_CLEAR));
         json.put(CASTLE_CLEAR, getBoolean(CASTLE_CLEAR));
         JSONArray available_units = new JSONArray();
@@ -187,7 +187,7 @@ public class Rule implements Serializable {
         public static final String ATTACK_EXPERIENCE = "ATTACK_EXPERIENCE";
         public static final String COUNTER_EXPERIENCE = "COUNTER_EXPERIENCE";
         public static final String COMMANDER_PRICE_STEP = "COMMANDER_PRICE_STEP";
-        public static final String MAX_POPULATION = "MAX_POPULATION";
+        public static final String UNIT_CAPACITY = "UNIT_CAPACITY";
         public static final String ENEMY_CLEAR = "ENEMY_CLEAR";
         public static final String CASTLE_CLEAR = "CASTLE_CLEAR";
 

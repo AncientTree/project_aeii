@@ -35,7 +35,7 @@ public class RoomManager {
     }
 
     public void initialize(RoomSetting setting) {
-        this.room_number = setting.room_number;
+        this.room_number = setting.room_id;
         this.started = setting.started;
         this.host = setting.host;
         this.game = setting.game;
@@ -155,7 +155,7 @@ public class RoomManager {
     }
 
     public void updateMaxPopulation(int max_population) {
-        getGame().getRule().setValue(Rule.Entry.MAX_POPULATION, max_population);
+        getGame().getRule().setValue(Rule.Entry.UNIT_CAPACITY, max_population);
     }
 
     public void trySubmitUpdates() throws JSONException {

@@ -194,7 +194,7 @@ public class GameCore implements Serializable {
     }
 
     public int getMaxPopulation() {
-        return getRule().getInteger(MAX_POPULATION);
+        return getRule().getInteger(UNIT_CAPACITY);
     }
 
     public int getPopulation(int team) {
@@ -204,7 +204,7 @@ public class GameCore implements Serializable {
     public boolean canAddPopulation(int team, int population) {
         Player player = getPlayer(team);
         return player.getType() != Player.NONE
-                && player.getPopulation() + population <= getRule().getInteger(MAX_POPULATION);
+                && player.getPopulation() + population <= getRule().getInteger(UNIT_CAPACITY);
     }
 
     public boolean canBuy(int index, int team) {

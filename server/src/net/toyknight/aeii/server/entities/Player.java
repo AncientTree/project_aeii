@@ -1,4 +1,4 @@
-package net.toyknight.aeii.server.old;
+package net.toyknight.aeii.server.entities;
 
 import com.esotericsoftware.kryonet.Connection;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
@@ -6,7 +6,7 @@ import net.toyknight.aeii.network.entity.PlayerSnapshot;
 /**
  * @author toyknight 10/27/2015.
  */
-public class PlayerService {
+public class Player {
 
     private final Object SENDING_LOCK = new Object();
 
@@ -19,7 +19,7 @@ public class PlayerService {
 
     private long room_number;
 
-    public PlayerService(Connection connection) {
+    public Player(Connection connection) {
         this.connection = connection;
         authenticated = false;
         room_number = -1;
@@ -54,11 +54,11 @@ public class PlayerService {
         return username;
     }
 
-    public void setRoomNumber(long number) {
+    public void setRoomID(long number) {
         room_number = number;
     }
 
-    public long getRoomNumber() {
+    public long getRoomID() {
         return room_number;
     }
 
@@ -68,8 +68,15 @@ public class PlayerService {
 
     public void sendTCP(Object object) {
         synchronized (SENDING_LOCK) {
-            getConnection().sendTCP(object);
+            if (getConnection().isConnected()) {
+                getConnection().sendTCP(object);
+            }
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s@%s", getUsername(), getAddress());
     }
 
 }

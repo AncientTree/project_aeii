@@ -91,7 +91,7 @@ public class AEIIStage4 extends StageController {
         }
         available_units.add(9);
         rule.setAvailableUnits(available_units);
-        rule.setValue(Rule.Entry.MAX_POPULATION, 25);
+        rule.setValue(Rule.Entry.UNIT_CAPACITY, 25);
         return rule;
     }
 

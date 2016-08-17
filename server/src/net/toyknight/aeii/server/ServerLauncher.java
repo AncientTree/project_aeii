@@ -1,6 +1,6 @@
 package net.toyknight.aeii.server;
 
-import net.toyknight.aeii.server.old.GameServer;
+import com.esotericsoftware.minlog.Log;
 
 /**
  * @author toyknight 8/12/2016.
@@ -8,7 +8,12 @@ import net.toyknight.aeii.server.old.GameServer;
 public class ServerLauncher {
 
     public static void main(String[] args) {
-        new GameServer().start();
+        try {
+            new ServerContext().start();
+        } catch (ServerException ex) {
+            Log.error(ex.getTag(), "Failed launching the server", ex);
+            System.exit(-1);
+        }
     }
 
 }
