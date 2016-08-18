@@ -32,7 +32,7 @@ ABILITY_DESCRIPTION_24=For units who have this ability, their melee attacks will
 ABILITY_DESCRIPTION_25=For units who have this ability, if the attacker is within 2 blocks away they can perform counter attacks.
 ABILITY_DESCRIPTION_26=For units who have this ability, their attacks will attach [Blinded] status to enemies. However units with this ability will not affect each other.
 ABILITY_DESCRIPTION_27=Units with this ability will recover 25% max HP at turn start, regardless of being [Poisoned] or not.
-ABILITY_DESCRIPTION_28=For units who have this ability, their attacks cannot be countered unless the target has [Counter Madness] ability. However units with this ability will not affect each other.
+ABILITY_DESCRIPTION_28=For units who have this ability, they receive 50% less damage from ranged attacks.
 
 ABILITY_NAME_0=Conqueror
 ABILITY_NAME_1=Fighter of the Water
@@ -62,7 +62,7 @@ ABILITY_NAME_24=Lord of Terror
 ABILITY_NAME_25=Counter Madness
 ABILITY_NAME_26=Blinding Attack
 ABILITY_NAME_27=Rehabilitation
-ABILITY_NAME_28=Ambush
+ABILITY_NAME_28=Hard Skin
 
 CAMPAIGN_TUTORIAL_NAME=Tutorial
 CAMPAIGN_TUTORIAL_STAGE_1_NAME=Move & Attack

@@ -1,6 +1,6 @@
 {
-"price": 400,
-"occupancy":2,
+"price": 250,
+"occupancy":1,
 "max_hp": 100,
 "attack": 50,
 "attack_type": 1,

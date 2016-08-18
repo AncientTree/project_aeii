@@ -32,7 +32,7 @@ ABILITY_DESCRIPTION_24=拥有该能力的单位近战攻击时会造成1.5倍的
 ABILITY_DESCRIPTION_25=拥有该能力的单位2格及以内都能反击。
 ABILITY_DESCRIPTION_26=拥有该能力的单位攻击时会给对方附加[致盲]状态持续1回合，同样拥有该能力的单位之间不会生效。
 ABILITY_DESCRIPTION_27=拥有该能力的单位在回合开始时会回复25%最大生命值，在[中毒]时依然有效。
-ABILITY_DESCRIPTION_28=拥有该能力的单位攻击对方时不会被反击，除非对方拥有[反击风暴]能力。同样拥有该能力的单位之间不会生效。
+ABILITY_DESCRIPTION_28=拥有该能力的单位受到的远程伤害减半。
 
 ABILITY_NAME_0=占领
 ABILITY_NAME_1=水之战士
@@ -62,7 +62,7 @@ ABILITY_NAME_24=恐惧之王
 ABILITY_NAME_25=反击风暴
 ABILITY_NAME_26=致盲
 ABILITY_NAME_27=复原
-ABILITY_NAME_28=伏击
+ABILITY_NAME_28=硬皮
 
 CAMPAIGN_TUTORIAL_NAME=教学
 CAMPAIGN_TUTORIAL_STAGE_1_NAME=移动和攻击

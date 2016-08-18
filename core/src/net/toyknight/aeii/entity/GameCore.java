@@ -429,12 +429,11 @@ public class GameCore implements Serializable {
     }
 
     public boolean canCounter(Unit attacker, Unit defender) {
-        if (isUnitAlive(defender) && isEnemy(defender, attacker) && UnitToolkit.isWithinRange(defender, attacker)) {
+        if (isUnitAlive(defender) && isEnemy(defender, attacker)) {
             if (defender.hasAbility(Ability.COUNTER_MADNESS)) {
                 return UnitToolkit.getRange(defender, attacker) <= 2;
             } else {
-                return UnitToolkit.getRange(defender, attacker) == 1
-                        && !(attacker.hasAbility(Ability.AMBUSH) && !defender.hasAbility(Ability.AMBUSH));
+                return UnitToolkit.isWithinRange(defender, attacker) && UnitToolkit.getRange(defender, attacker) == 1;
             }
         } else {
             return false;

@@ -63,7 +63,7 @@ ABILITY_DESCRIPTION_26=Đối với các đơn vị có khả năng này, các c
 
 ABILITY_DESCRIPTION_27=Các đơn vị có khả năng này sẽ phục hồi tối đa 25% HP khi đến lượt, bất kể là có [tẩm thuốc độc] hay không.
 
-ABILITY_DESCRIPTION_28=Đối với các đơn vị có khả năng này, các cuộc tấn công của họ không thể phản đòn lại trừ khi đối phương đã có khả năng [phản đòn điên cuồng] . Tuy nhiên các đơn vị có khả năng điều này sẽ không ảnh hưởng lẫn nhau.
+ABILITY_DESCRIPTION_28=For units who have this ability, they receive 50% less damage from ranged attacks.
 
 
 ABILITY_NAME_0=Chiếm Giữ 
@@ -122,7 +122,7 @@ ABILITY_NAME_26=Tấn Công mù lòa
 
 ABILITY_NAME_27=Sự Phục Hồi
 
-ABILITY_NAME_28=Mai Phục
+ABILITY_NAME_28=Hard Skin
 
 
 CAMPAIGN_TUTORIAL_NAME=Hướng Dẫn 

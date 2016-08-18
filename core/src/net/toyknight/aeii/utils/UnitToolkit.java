@@ -209,6 +209,9 @@ public class UnitToolkit {
                 && !defender.hasAbility(Ability.LORD_OF_TERROR)) {
             percentage_modifier += 0.5f;
         }
+        if (getRange(attacker, defender) > 1 && defender.hasAbility(Ability.HARD_SKIN)) {
+            percentage_modifier -= 0.5f;
+        }
         percentage_modifier = percentage_modifier >= 0f ? percentage_modifier : 0f;
         damage = (int) (damage * percentage_modifier);
         damage += offset;
