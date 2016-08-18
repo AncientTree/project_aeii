@@ -43,9 +43,14 @@ public class OperationExecutor {
 
     public void operate() throws CheatingException {
         synchronized (OPERATION_LOCK) {
-            Operation operation;
-            if ((operation = operation_queue.poll()) != null) {
-                executeOperation(operation);
+            if (operation_queue.size() > 0) {
+                Operation operation;
+                if ((operation = operation_queue.poll()) != null) {
+                    executeOperation(operation);
+                }
+                if (operation_queue.size() == 0) {
+                    getManager().onOperationFinished();
+                }
             }
         }
     }

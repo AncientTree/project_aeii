@@ -66,10 +66,12 @@ public class Player {
         return new PlayerSnapshot(getID(), getUsername());
     }
 
-    public void sendTCP(Object object) {
+    public int sendTCP(Object object) {
         synchronized (SENDING_LOCK) {
             if (getConnection().isConnected()) {
-                getConnection().sendTCP(object);
+                return getConnection().sendTCP(object);
+            } else {
+                return 0;
             }
         }
     }

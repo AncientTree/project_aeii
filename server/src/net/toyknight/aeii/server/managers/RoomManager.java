@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.esotericsoftware.minlog.Log;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
-import net.toyknight.aeii.network.NetworkConstants;
+import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
@@ -15,6 +15,7 @@ import net.toyknight.aeii.server.entities.Player;
 import net.toyknight.aeii.server.entities.Room;
 import net.toyknight.aeii.server.RoomListener;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -40,8 +41,12 @@ public class RoomManager implements RoomListener {
         return context;
     }
 
-    public boolean isRoomAvailable(Room room) {
+    public boolean canJoin(Room room) {
         return room != null && !room.isGameOver() && room.getRemaining() > 0 && room.getHostID() != -1;
+    }
+
+    public boolean canStart(Room room, int player_id) {
+        return room != null && room.isOpen() && room.isReadyForStart() && player_id == room.getHostID();
     }
 
     public Room getRoom(long room_id) {
@@ -67,31 +72,69 @@ public class RoomManager implements RoomListener {
             int start_gold,
             Player host) {
         synchronized (ROOM_LOCK) {
-            Room room = new Room(++current_room_id, username + "'s game", map, start_gold);
-            room.setPassword(password);
-            room.setMapName(map_name);
-            room.setPlayerCapacity(player_capacity);
-            room.setUnitCapacity(unit_capacity);
-            room.setHostPlayer(host.getID());
-            room.addPlayer(host.getID());
-            host.setRoomID(room.getRoomID());
-            rooms.put(room.getRoomID(), room);
-            return createRoomSetting(room);
+            if (host.getRoomID() < 0) {
+                Room room = new Room(++current_room_id, username + "'s game", map, start_gold);
+                room.setListener(this);
+                room.setPassword(password);
+                room.setMapName(map_name);
+                room.setPlayerCapacity(player_capacity);
+                room.setUnitCapacity(unit_capacity);
+                room.setHostPlayer(host.getID());
+                room.addPlayer(host.getID());
+                host.setRoomID(room.getRoomID());
+                rooms.put(room.getRoomID(), room);
+                return createRoomSetting(room);
+            } else {
+                return null;
+            }
         }
     }
 
     public RoomSetting createRoom(
             GameCore game, String username, String map_name, String password, int player_capacity, Player host) {
         synchronized (ROOM_LOCK) {
-            Room room = new Room(++current_room_id, username + "'s game", game);
-            room.setMapName(map_name);
-            room.setPassword(password);
-            room.setPlayerCapacity(player_capacity);
-            room.setHostPlayer(host.getID());
-            room.addPlayer(host.getID());
-            host.setRoomID(room.getRoomID());
-            rooms.put(room.getRoomID(), room);
-            return createRoomSetting(room);
+            if (host.getRoomID() < 0) {
+                Room room = new Room(++current_room_id, username + "'s game", game);
+                room.setListener(this);
+                room.setPassword(password);
+                room.setMapName(map_name);
+                room.setPlayerCapacity(player_capacity);
+                room.setHostPlayer(host.getID());
+                room.addPlayer(host.getID());
+                host.setRoomID(room.getRoomID());
+                rooms.put(room.getRoomID(), room);
+                return createRoomSetting(room);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public boolean tryStartGame(Player player) {
+        long room_id = player.getRoomID();
+        if (room_id >= 0) {
+            Room room = getRoom(room_id);
+            if (canStart(room, player.getID())) {
+                room.startGame();
+                getContext().getNotificationSender().notifyGameStarting(room);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public void submitGameEvents(Player player, JSONArray events) throws JSONException {
+        Room room = getRoom(player.getRoomID());
+        if (room != null && player.getID() == room.getCurrentPlayerID()) {
+            synchronized (room.GAME_LOCK) {
+                for (int i = 0; i < events.length(); i++) {
+                    JSONObject event = events.getJSONObject(i);
+                    room.submitGameEvent(event, player.getID());
+                }
+            }
         }
     }
 
@@ -116,6 +159,12 @@ public class RoomManager implements RoomListener {
         ObjectSet<Integer> players = room.getPlayers();
         room_setting.players = new Array<PlayerSnapshot>();
         room_setting.game = room.getGameCopy();
+        synchronized (room.GAME_LOCK) {
+            room_setting.manager_state = room.getManager().getState();
+            Unit selected_unit = room.getManager().getSelectedUnit();
+            room_setting.selected_unit_x = selected_unit == null ? -1 : selected_unit.getX();
+            room_setting.selected_unit_y = selected_unit == null ? -1 : selected_unit.getY();
+        }
         for (int id : players) {
             Player player = getContext().getPlayerManager().getPlayer(id);
             if (player != null) {
@@ -127,48 +176,6 @@ public class RoomManager implements RoomListener {
         return room_setting;
     }
 
-    public void notifyAllocationUpdate(
-            Room room, int updater, JSONArray alliance, JSONArray allocation, JSONArray types) {
-        JSONObject notification = getContext().createPacket(NetworkConstants.NOTIFICATION);
-        notification.put("operation", NetworkConstants.UPDATE_ALLOCATION);
-        notification.put("types", types);
-        notification.put("alliance", alliance);
-        notification.put("allocation", allocation);
-
-        for (int player_id : room.getPlayers()) {
-            if (player_id != updater) {
-                getContext().submitNotification(player_id, notification);
-            }
-        }
-    }
-
-    public void notifyPlayerJoin(Room room, int joiner, String username) {
-        JSONObject notification = getContext().createPacket(NetworkConstants.NOTIFICATION);
-        notification.put("operation", NetworkConstants.PLAYER_JOINING);
-        notification.put("player_id", joiner);
-        notification.put("username", username);
-
-        for (int player_id : room.getPlayers()) {
-            if (player_id != joiner) {
-                getContext().submitNotification(player_id, notification);
-            }
-        }
-    }
-
-    public void notifyPlayerLeave(Room room, int leaver, String username, int host_id) {
-        JSONObject notification = getContext().createPacket(NetworkConstants.NOTIFICATION);
-        notification.put("operation", NetworkConstants.PLAYER_LEAVING);
-        notification.put("player_id", leaver);
-        notification.put("username", username);
-        notification.put("host_id", host_id);
-
-        for (int player_id : room.getPlayers()) {
-            if (player_id != leaver) {
-                getContext().submitNotification(player_id, notification);
-            }
-        }
-    }
-
     public void onAllocationUpdate(Player updater, JSONArray types, JSONArray alliance, JSONArray allocation) {
         Room room = getRoom(updater.getRoomID());
         if (room != null && room.getHostID() == updater.getID()) {
@@ -177,16 +184,17 @@ public class RoomManager implements RoomListener {
                 room.setAlliance(team, alliance.getInt(team));
                 room.setAllocation(team, allocation.getInt(team));
             }
-            notifyAllocationUpdate(room, updater.getID(), alliance, allocation, types);
+            getContext().getNotificationSender().
+                    notifyAllocationUpdating(room, updater.getID(), alliance, allocation, types);
         }
     }
 
     public RoomSetting onPlayerJoinRoom(Player player, long room_id, String password) {
         Room room = getRoom(room_id);
-        if (isRoomAvailable(room) && player.getRoomID() < 0 && room.checkPassword(password)) {
+        if (canJoin(room) && player.getRoomID() < 0 && room.checkPassword(password)) {
             room.addPlayer(player.getID());
             player.setRoomID(room_id);
-            notifyPlayerJoin(room, player.getID(), player.getUsername());
+            getContext().getNotificationSender().notifyPlayerJoining(room, player.getID(), player.getUsername());
             return createRoomSetting(room);
         } else {
             return null;
@@ -205,16 +213,9 @@ public class RoomManager implements RoomListener {
                     room.dispose();
                     removeRoom(room_id);
                 } else {
-                    notifyPlayerLeave(room, player.getID(), player.getUsername(), room.getHostID());
-                    JSONArray types = new JSONArray();
-                    JSONArray alliance = new JSONArray();
-                    JSONArray allocation = new JSONArray();
-                    for (int team = 0; team < 4; team++) {
-                        types.put(room.getPlayerType(team));
-                        alliance.put(room.getAlliance(team));
-                        allocation.put(room.getAllocation(team));
-                    }
-                    notifyAllocationUpdate(room, -1, alliance, allocation, types);
+                    getContext().getNotificationSender().
+                            notifyPlayerLeaving(room, player.getID(), player.getUsername(), room.getHostID());
+                    getContext().getNotificationSender().notifyAllocationUpdating(room, -1);
                 }
             }
         }
@@ -224,7 +225,7 @@ public class RoomManager implements RoomListener {
     public void onGameEventExecuted(Room room, JSONObject event, int submitter) {
         for (int player_id : room.getPlayers()) {
             if (player_id != submitter) {
-                getContext().syncGameEvent(player_id, event);
+                getContext().getNotificationSender().syncGameEvent(player_id, event);
             }
         }
     }

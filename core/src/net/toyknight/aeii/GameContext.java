@@ -16,6 +16,7 @@ import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.GameManagerListener;
 import net.toyknight.aeii.manager.RoomManager;
+import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.CanvasRenderer;
@@ -290,6 +291,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void gotoGameScreen(GameCore game) {
         AudioManager.playRandomBGM("bg_good.mp3");
+        NetworkManager.resetEventQueue();
         if (game.initialized()) {
             getGameManager().setGame(game);
         } else {

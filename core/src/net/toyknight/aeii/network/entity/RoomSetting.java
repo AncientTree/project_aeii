@@ -22,6 +22,12 @@ public class RoomSetting implements Serializable {
 
     public GameCore game;
 
+    public int manager_state;
+
+    public int selected_unit_x;
+
+    public int selected_unit_y;
+
     public int[] allocation;
 
     public int start_gold;
@@ -40,6 +46,9 @@ public class RoomSetting implements Serializable {
             players.add(new PlayerSnapshot(json.getJSONArray("players").getJSONObject(i)));
         }
         game = new GameCore(json.getJSONObject("game"));
+        manager_state = json.getInt("manager_state");
+        selected_unit_x = json.getInt("selected_unit_x");
+        selected_unit_y = json.getInt("selected_unit_y");
         allocation = new int[4];
         for (int team = 0; team < 4; team++) {
             allocation[team] = json.getJSONArray("allocation").getInt(team);
@@ -60,6 +69,9 @@ public class RoomSetting implements Serializable {
         }
         json.put("players", players);
         json.put("game", game.toJson());
+        json.put("manager_state", manager_state);
+        json.put("selected_unit_x", selected_unit_x);
+        json.put("selected_unit_y", selected_unit_y);
         JSONArray allocation = new JSONArray();
         for (int team = 0; team < 4; team++) {
             allocation.put(this.allocation[team]);

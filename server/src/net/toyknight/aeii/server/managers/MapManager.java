@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.entity.MapSnapshot;
+import net.toyknight.aeii.server.ServerException;
 import net.toyknight.aeii.utils.MapFactory;
 import org.json.JSONArray;
 
@@ -15,20 +16,22 @@ import java.io.*;
  */
 public class MapManager {
 
+    private static final String TAG = "MAP MANAGER";
+
     private final Object MAP_LOCK = new Object();
 
     private final FileFilter map_file_filter = new MapFileFilter();
 
     private final ObjectMap<String, ObjectSet<MapSnapshot>> maps = new ObjectMap<String, ObjectSet<MapSnapshot>>();
 
-    public void initialize() throws AEIIException {
+    public void initialize() throws ServerException {
         File map_dir = new File("maps");
-        if (map_dir.exists()) {
+        if (map_dir.exists() && map_dir.isDirectory()) {
             loadMaps(map_dir);
         } else {
             boolean success = map_dir.mkdir();
             if (!success) {
-                throw new AEIIException("Cannot make map directory");
+                throw new ServerException(TAG, "Cannot make map directory");
             }
         }
     }

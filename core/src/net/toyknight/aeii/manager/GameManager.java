@@ -6,9 +6,9 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.animation.EmptyAnimationManager;
 import net.toyknight.aeii.campaign.Message;
+import net.toyknight.aeii.concurrent.GameEventSyncTask;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.concurrent.GameEventSendingTask;
 import net.toyknight.aeii.record.GameRecorder;
 import net.toyknight.aeii.robot.Robot;
 import net.toyknight.aeii.utils.UnitFactory;
@@ -20,7 +20,7 @@ import java.util.LinkedList;
 /**
  * @author toyknight  5/28/2015.
  */
-public class GameManager implements GameEventListener, AnimationListener {
+public class GameManager implements AnimationListener {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -166,27 +166,24 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    @Override
-    public void onGameEventSubmitted(JSONObject event) {
-        getGameRecorder().submit(event);
-        if (getContext() != null && NetworkManager.isConnected()) {
-            getContext().submitAsyncTask(new GameEventSendingTask(event) {
-                @Override
-                public void onFinish(Void result) {
-                }
-
-                @Override
-                public void onFail(String message) {
-                }
-            });
+    public void onGameEventExecuted(JSONObject event) {
+        if (NetworkManager.isConnected()) {
+            NetworkManager.submitGameEvent(event);
         }
+        getGameRecorder().submitGameEvent(event);
     }
 
-    @Override
     public void onGameEventFinished() {
+        if (!getOperationExecutor().isOperating()) {
+            syncGameEvent();
+        }
         if (!isAnimating()) {
             checkGameState();
         }
+    }
+
+    public void onOperationFinished() {
+        syncGameEvent();
     }
 
     private void checkGameState() {
@@ -496,6 +493,51 @@ public class GameManager implements GameEventListener, AnimationListener {
             }
         } else {
             return false;
+        }
+    }
+
+    public void syncState(int state, int selected_unit_x, int selected_unit_y) {
+        if (selected_unit_x >= 0 && selected_unit_y >= 0) {
+            setSelectedUnit(getGame().getMap().getUnit(selected_unit_x, selected_unit_y));
+        }
+        switch (state) {
+            case STATE_ACTION:
+            case STATE_BUY:
+            case STATE_PREVIEW:
+            case STATE_SELECT:
+                setState(state);
+                break;
+            case STATE_ATTACK:
+                beginAttackPhase();
+                break;
+            case STATE_HEAL:
+                beginHealPhase();
+                break;
+            case STATE_MOVE:
+                beginMovePhase();
+                break;
+            case STATE_REMOVE:
+                beginRemovePhase();
+                break;
+            case STATE_SUMMON:
+                beginSummonPhase();
+                break;
+            default:
+                //do nothing
+        }
+    }
+
+    public void syncGameEvent() {
+        if (getContext() != null && NetworkManager.isConnected()) {
+            getContext().submitAsyncTask(new GameEventSyncTask(getState()) {
+                @Override
+                public void onFinish(Void result) {
+                }
+
+                @Override
+                public void onFail(String message) {
+                }
+            });
         }
     }
 

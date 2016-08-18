@@ -63,8 +63,6 @@ public class GameEventExecutor {
     public void submitGameEvent(int type, Object... params) {
         JSONObject event = GameEvent.create(type, params);
         submitGameEvent(event);
-
-        getManager().onGameEventSubmitted(event);
     }
 
     public void dispatchGameEvents() throws CheatingException {
@@ -78,6 +76,7 @@ public class GameEventExecutor {
                         throw new CheatingException("Invalid game event!", getGame().getCurrentTeam());
                     } else {
                         executeGameEvent(event);
+                        getManager().onGameEventExecuted(event);
                     }
                 } catch (JSONException ex) {
                     throw new CheatingException("Invalid game event!", getGame().getCurrentTeam());
@@ -91,6 +90,10 @@ public class GameEventExecutor {
 
     public void executeGameEvent(JSONObject event) throws JSONException, CheatingException {
         switch (event.getInt("type")) {
+            case GameEvent.MANAGER_STATE_SYNC:
+                int manager_state = event.getJSONArray("parameters").getInt(0);
+                getManager().syncState(manager_state, -1, -1);
+                break;
             case GameEvent.ATTACK:
                 int attacker_x = event.getJSONArray("parameters").getInt(0);
                 int attacker_y = event.getJSONArray("parameters").getInt(1);

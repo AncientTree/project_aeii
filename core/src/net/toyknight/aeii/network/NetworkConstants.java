@@ -24,8 +24,8 @@ public class NetworkConstants {
     //Notifications
     public static final int PLAYER_JOINING = 0x10;
     public static final int PLAYER_LEAVING = 0x11;
-    public static final int UPDATE_ALLOCATION = 0x12;
-    public static final int GAME_START = 0x13;
+    public static final int ALLOCATION_UPDATING = 0x12;
+    public static final int GAME_STARTING = 0x13;
     public static final int GAME_EVENT = 0x14;
     public static final int MESSAGE = 0x15;
 

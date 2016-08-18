@@ -9,6 +9,7 @@ import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
+import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
@@ -25,13 +26,15 @@ public class NetworkManager {
 
     public static final String TAG = "Network";
 
+    private static NetworkListener listener;
+
+    private static Client client;
+
     private static final Object RESPONSE_LOCK = new Object();
 
     private static JSONObject response;
 
-    private static NetworkListener listener;
-
-    private static Client client;
+    private static JSONArray event_queue;
 
     private static int service_id;
 
@@ -134,7 +137,7 @@ public class NetworkManager {
                     }
                 }
                 break;
-            case NetworkConstants.UPDATE_ALLOCATION:
+            case NetworkConstants.ALLOCATION_UPDATING:
                 int[] types = new int[4];
                 int[] alliance = new int[4];
                 int[] allocation = new int[4];
@@ -149,7 +152,7 @@ public class NetworkManager {
                     }
                 }
                 break;
-            case NetworkConstants.GAME_START:
+            case NetworkConstants.GAME_STARTING:
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
                         listener.onGameStart();
@@ -158,6 +161,7 @@ public class NetworkManager {
                 break;
             case NetworkConstants.GAME_EVENT:
                 JSONObject event = notification.getJSONObject("game_event");
+                event.put("remote", true);
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
                         listener.onReceiveGameEvent(event);
@@ -345,7 +349,7 @@ public class NetworkManager {
     }
 
     public static void notifyAllocationUpdate(int[] alliance, int[] allocation, int[] types) throws JSONException {
-        JSONObject notification = createNotification(NetworkConstants.UPDATE_ALLOCATION);
+        JSONObject notification = createNotification(NetworkConstants.ALLOCATION_UPDATING);
         JSONArray types_json = new JSONArray();
         JSONArray alliance_json = new JSONArray();
         JSONArray allocation_json = new JSONArray();
@@ -360,10 +364,26 @@ public class NetworkManager {
         sendNotification(notification);
     }
 
-    public static void sendGameEvent(JSONObject event) throws JSONException {
-        JSONObject request = createRequest(NetworkConstants.GAME_EVENT);
-        request.put("game_event", event);
-        sendRequest(request);
+    public static void resetEventQueue() {
+        event_queue = new JSONArray();
+    }
+
+    public static void submitGameEvent(JSONObject event) {
+        boolean remote = event.has("remote") && event.getBoolean("remote");
+        if (!remote) {
+            event_queue.put(event);
+        }
+    }
+
+    public static void syncGameEvent(int manager_state) {
+        if (event_queue.length() > 0) {
+            JSONObject state_sync_event = GameEvent.create(GameEvent.MANAGER_STATE_SYNC, manager_state);
+            event_queue.put(state_sync_event);
+            JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
+            notification.put("events", event_queue);
+            sendNotification(notification);
+            event_queue = new JSONArray();
+        }
     }
 
     public static void sendMessage(String message) throws JSONException {

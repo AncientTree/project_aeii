@@ -8,16 +8,15 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.server.entities.Player;
 import net.toyknight.aeii.server.managers.MapManager;
+import net.toyknight.aeii.server.managers.NotificationSender;
 import net.toyknight.aeii.server.managers.PlayerManager;
 import net.toyknight.aeii.server.managers.RoomManager;
 import net.toyknight.aeii.utils.MD5Converter;
 import net.toyknight.aeii.utils.TileFactory;
 import net.toyknight.aeii.utils.UnitFactory;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileReader;
@@ -34,13 +33,15 @@ public class ServerContext {
 
     private boolean running;
 
-    private ExecutorService notification_executor;
+    private ExecutorService executor;
 
     private ObjectMap<String, String> configuration;
 
     private String verification_string;
 
     private Server server;
+
+    private NotificationSender notification_sender;
 
     private RequestHandler request_handler;
 
@@ -49,6 +50,10 @@ public class ServerContext {
     private RoomManager room_manager;
 
     private MapManager map_manager;
+
+    public NotificationSender getNotificationSender() {
+        return notification_sender;
+    }
 
     public RequestHandler getRequestHandler() {
         return request_handler;
@@ -62,21 +67,12 @@ public class ServerContext {
         return room_manager;
     }
 
-    public void submitNotification(int player_id, JSONObject notification) {
-        Player player = getPlayerManager().getPlayer(player_id);
-        if (player != null) {
-            notification_executor.submit(new NotificationTask(player, notification));
-        }
+    public MapManager getMapManager() {
+        return map_manager;
     }
 
-    public void syncGameEvent(int player_id, JSONObject event) {
-        Player player = getPlayerManager().getPlayer(player_id);
-        if (player != null) {
-            JSONObject notification = createPacket(NetworkConstants.NOTIFICATION);
-            notification.put("operation", NetworkConstants.GAME_EVENT);
-            notification.put("game_event", event);
-            player.sendTCP(notification);
-        }
+    public void submitTask(Runnable task) {
+        executor.submit(task);
     }
 
     public void onObjectReceived(Connection connection, Object object) {
@@ -88,12 +84,6 @@ public class ServerContext {
                 Log.error(TAG, String.format("Illegal request from %s [request format error]", player.toString()), ex);
             }
         }
-    }
-
-    public JSONObject createPacket(int type) {
-        JSONObject response = new JSONObject();
-        response.put("type", type);
-        return response;
     }
 
     public void loadConfiguration() throws IOException {
@@ -140,26 +130,39 @@ public class ServerContext {
             throw new ServerException(TAG, "Error initializing server [exception while loading game data]", ex);
         }
         //initialize managers
-        notification_executor = Executors.newFixedThreadPool(128);
+        executor = Executors.newFixedThreadPool(128);
+        notification_sender = new NotificationSender(this);
         request_handler = new RequestHandler(this);
         player_manager = new PlayerManager(this);
         room_manager = new RoomManager(this);
+        try {
+            map_manager = new MapManager();
+            map_manager.initialize();
+        } catch (ServerException ex) {
+            throw new ServerException(TAG, "Error initializing server [exception while initializing maps]", ex);
+        }
         //initialize server object
         server = new Server(90 * 1024, 90 * 1024);
         server.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-                getPlayerManager().onPlayerConnected(connection);
+                if (running) {
+                    getPlayerManager().onPlayerConnected(connection);
+                }
             }
 
             @Override
             public void disconnected(Connection connection) {
-                getPlayerManager().onPlayerDisconnected(connection);
+                if (running) {
+                    getPlayerManager().onPlayerDisconnected(connection);
+                }
             }
 
             @Override
             public void received(Connection connection, Object object) {
-                onObjectReceived(connection, object);
+                if (running) {
+                    onObjectReceived(connection, object);
+                }
             }
         });
     }
@@ -173,23 +176,6 @@ public class ServerContext {
         } catch (IOException ex) {
             throw new ServerException(TAG, "Error starting server [exception while binding port]", ex);
         }
-    }
-
-    private class NotificationTask implements Runnable {
-
-        private final Player player;
-        private final JSONObject notification;
-
-        public NotificationTask(Player player, JSONObject notification) {
-            this.player = player;
-            this.notification = notification;
-        }
-
-        @Override
-        public void run() {
-            player.sendTCP(notification.toString());
-        }
-
     }
 
 }

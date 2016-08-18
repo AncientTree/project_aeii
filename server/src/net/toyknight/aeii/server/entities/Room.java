@@ -2,12 +2,11 @@ package net.toyknight.aeii.server.entities;
 
 import static net.toyknight.aeii.entity.Rule.Entry.*;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Player;
-import net.toyknight.aeii.manager.CheatingException;
+import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import net.toyknight.aeii.entity.Rule;
@@ -246,7 +245,7 @@ public class Room {
         }
     }
 
-    public boolean isReady() {
+    public boolean isReadyForStart() {
         int player_count = 0;
         int alliance = -1;
         boolean alliance_ready = false;
@@ -283,9 +282,24 @@ public class Room {
         game_started = true;
     }
 
-    public void submitGameEvemt(Array<JSONObject> events, int player_id) {
-        for (JSONObject event : events) {
-            event_executor.submit(new GameEventExecuteTask(event, player_id));
+    public void submitGameEvent(JSONObject event, int player_id) {
+        event_executor.submit(new GameEventExecutingTask(event, player_id));
+    }
+
+    private void executeGameEvent(JSONObject event, int player_id) {
+        synchronized (GAME_LOCK) {
+            try {
+                if (event.getInt("type") == GameEvent.MANAGER_STATE_SYNC) {
+                    int state = event.getJSONArray("parameters").getInt(0);
+                    getManager().setState(state);
+                } else {
+                    getManager().getGameEventExecutor().submitGameEvent(event);
+                    getManager().getGameEventExecutor().dispatchGameEvents();
+                }
+                getListener().onGameEventExecuted(this, event, player_id);
+            } catch (Exception ex) {
+                getListener().onCheatingDetected(this, player_id, ex);
+            }
         }
     }
 
@@ -309,27 +323,19 @@ public class Room {
         return snapshot;
     }
 
-    private class GameEventExecuteTask implements Runnable {
+    private class GameEventExecutingTask implements Runnable {
 
         private final JSONObject event;
         private final int player_id;
 
-        public GameEventExecuteTask(JSONObject event, int player_id) {
+        public GameEventExecutingTask(JSONObject event, int player_id) {
             this.event = event;
             this.player_id = player_id;
         }
 
         @Override
         public void run() {
-            try {
-                synchronized (GAME_LOCK) {
-                    getManager().getGameEventExecutor().submitGameEvent(event);
-                    getManager().getGameEventExecutor().dispatchGameEvents();
-                    getListener().onGameEventExecuted(Room.this, event, player_id);
-                }
-            } catch (CheatingException ex) {
-                getListener().onCheatingDetected(Room.this, player_id, ex);
-            }
+            executeGameEvent(event, player_id);
         }
 
     }
