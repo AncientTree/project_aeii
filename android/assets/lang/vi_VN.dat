@@ -39,7 +39,7 @@ ABILITY_DESCRIPTION_14=Các đơn vị có khả năng này có thể di chuyể
 
 ABILITY_DESCRIPTION_15=Các đơn vị có khả năng này có thể di chuyển qua các địa hình núi, và khi họ đang ở trên núi ,khi đến lượt, họ được phục 10 HP
 
-ABILITY_DESCRIPTION_16=Các đơn vị có khả năng này có thể di chuyển tự do qua các địa hình đất,
+ABILITY_DESCRIPTION_16=Units with this ability can move through land terrains using 1 movement point.
 
 ABILITY_DESCRIPTION_17=Đối với các đơn vị có khả năng này, khi họ tấn công sẽ có trạng thái [Làm Chậm] kẻ thù và giảm 2 ô di chuyển của mục tiêu Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
 
@@ -49,7 +49,7 @@ ABILITY_DESCRIPTION_19=Đơn vị không thể hành động khi di chuyển và
 
 ABILITY_DESCRIPTION_20=Đối với các đơn vị có khả năng này, khi họ chờ họ sẽ đính kèm trạng thái [Cảm Hứng] cho các đồng minh trong vòng 2 ô
 
-ABILITY_DESCRIPTION_21=Đối với các đơn vị có khả năng này, mỗi kẻ địch trong vòng 2 ô sẽ cung cấp 10 tấn công và 5 thủ vật lý cho họ.
+ABILITY_DESCRIPTION_21=For units who have this ability, each enemy within 2 blocks will give 10 attack bonus and 5 physical defence bonus to them, but they cannot receive heals from terrains.
 
 ABILITY_DESCRIPTION_22=Đối với các đơn vị có khả năng này, khi về làng và lâu đài đồng minh , họ sẽ được 5 phòng thủ 
 
@@ -586,6 +586,8 @@ LB_CANCEL=Hủy Bỏ
 
 LB_CAPACITY=Người Chơi Tối Đa
 
+LB_CLEAR=Clear
+
 LB_CLOSE=Đóng
 
 LB_CONFIRM=Xác Nhận
@@ -639,6 +641,8 @@ LB_HEIGHT=Chiều Cao
 LB_HELP=Giúp
 
 LB_HP_RECOVERY=Hồi Phục HP
+
+LB_IDLE_PLAYERS=Idle Players
 
 LB_INCOME=Thu Nhập
 
@@ -921,6 +925,8 @@ UNIT_NAME_15=Pháp Sư Đen
 
 UNIT_NAME_16=Cung Thủ Cưỡi Sói
 
+UNIT_NAME_17=Ice Elemental
+
 
 UNIT_DESCRIPTION_0=Binh Lính có tài chiến đấu vững chắc, và họ có thể chiếm giữ hoặc sửa chữa ngôi làng để cung cấp cho bạn nhiều lợi ích.
 
@@ -954,7 +960,9 @@ UNIT_DESCRIPTION_14=bóng ma là những sinh vật bất tử thần thoại. H
 
 UNIT_DESCRIPTION_15=Pháp Sư Đen có kỹ năng sử dụng ma thuật đen tối. các cuộc tấn công của họ luôn mạnh mẽ chống lại những người có thủ phép thuật.
 
-UNIT_DESCRIPTION_16=<none>
+UNIT_DESCRIPTION_16=Wolfarchers are high mobility version of archers. They can strike almost anywhere you want them to attack.
+
+UNIT_DESCRIPTION_17=Ice elementals are mystical beings formed by pure ice. It seems they can fight well both in water and on land.
 
 
 UNIT_GUIDE_0=Binh lính rất hữu ích trong các trò chơi đầu tiên, họ có thể chiếm giữ hoặc bản sửa chữa để cung cấp cho bạn lợi thế. Mặc dù những người lính không chiến đấu mạnh mẽ, họ có thể đối phó một số thiệt hại khá đến kẻ thù với thủ vật lý thấp.
@@ -989,7 +997,9 @@ UNIT_GUIDE_14=Bóng Ma là những sinh vật bất tử, họ không sợ các 
 
 UNIT_GUIDE_15=Pháp Sư Đen không có khả năng, nhưng họ có phép thuật tấn công khá cao và làm cho chúng gây sát thương phép thuật tốt. Tuy nhiên pháp sư đen không phải là giỏi cận chiến nên cố gắng sử dụng chúng một cách khôn ngoan.
 
-UNIT_GUIDE_16=<unavailable>
+UNIT_GUIDE_16=Due to their long attack range and high mobility, you can use wolfarchers to destroy enemy air forces quite easily no matter they are in back line or front line. And with their ability to blind targets they are also good at silencing enemy high attack units.
+
+UNIT_GUIDE_17=Ice elementals have quite long attack range and have rehabilitation ability which means they will be very strong on the water. But even on land they are still good magic damage dealers.
 
 
 WIKI_OVERVIEW_P1=Những gì bạn nhìn thấy bây giờ là wiki trong game được thiết kế để giúp bạn tìm hiểu làm thế nào để chơi trò chơi này. Vui lòng kiểm tra các phần sau để biết thêm .Thông Tin Thêm : Bia Mộ có chất độc, hãy cẩn thận!

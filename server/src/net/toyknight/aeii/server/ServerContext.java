@@ -107,7 +107,7 @@ public class ServerContext {
     }
 
     public int getPort() {
-        return Integer.parseInt(configuration.get("PORT", "5438"));
+        return Integer.parseInt(getConfiguration().get("PORT", "5438"));
     }
 
     public String getAdministratorToken() {

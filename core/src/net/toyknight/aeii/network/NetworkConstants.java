@@ -20,6 +20,7 @@ public class NetworkConstants {
     public static final int LIST_MAPS = 0x91;
     public static final int UPLOAD_MAP = 0x92;
     public static final int DOWNLOAD_MAP = 0x93;
+    public static final int LIST_IDLE_PLAYERS = 0x94;
 
     //Notifications
     public static final int PLAYER_JOINING = 0x10;
@@ -28,7 +29,5 @@ public class NetworkConstants {
     public static final int GAME_STARTING = 0x13;
     public static final int GAME_EVENT = 0x14;
     public static final int MESSAGE = 0x15;
-
-    public static final int UNDEFINED = 0x100;
 
 }

@@ -232,7 +232,8 @@ public class RoomManager implements RoomListener {
 
     @Override
     public void onCheatingDetected(Room room, int player_id, Throwable cause) {
-
+        getContext().getPlayerManager().disconnectPlayer(player_id, "/cheating", 5000);
+        Log.info(TAG, String.format("Cheating detected in room [%d] by player [%d]", room.getRoomID(), player_id));
     }
 
 }

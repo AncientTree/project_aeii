@@ -11,6 +11,7 @@ import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.network.entity.MapSnapshot;
+import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import org.json.JSONArray;
@@ -55,7 +56,7 @@ public class NetworkManager {
 
     public static boolean connect(ServerConfiguration server, String username, String v_string)
             throws AEIIException, IOException, JSONException {
-        client = new Client(65536, 65536);
+        client = new Client(90 * 1024, 90 * 1024);
         client.addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
@@ -225,6 +226,20 @@ public class NetworkManager {
             Array<RoomSnapshot> snapshots = new Array<RoomSnapshot>();
             for (int i = 0; i < response.getJSONArray("rooms").length(); i++) {
                 snapshots.add(new RoomSnapshot(response.getJSONArray("rooms").getJSONObject(i)));
+            }
+            return snapshots;
+        }
+    }
+
+    public static Array<PlayerSnapshot> requestIdlePlayerList() throws JSONException, AEIIException {
+        JSONObject request = createRequest(NetworkConstants.LIST_IDLE_PLAYERS);
+        JSONObject response = sendRequest(request);
+        if (response == null) {
+            throw new AEIIException("Connection timeout");
+        } else {
+            Array<PlayerSnapshot> snapshots = new Array<PlayerSnapshot>();
+            for (int i = 0; i < response.getJSONArray("players").length(); i++) {
+                snapshots.add(new PlayerSnapshot(response.getJSONArray("players").getJSONObject(i)));
             }
             return snapshots;
         }

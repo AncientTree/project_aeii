@@ -8,6 +8,7 @@ import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import net.toyknight.aeii.server.entities.Player;
+import net.toyknight.aeii.server.entities.Room;
 import net.toyknight.aeii.server.utils.PacketBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +65,9 @@ public class RequestHandler {
                 case NetworkConstants.GAME_EVENT:
                     onGameEventSubmitted(player, request);
                     break;
+                case NetworkConstants.MESSAGE:
+                    onMessageSubmitted(player, request);
+                    break;
                 case NetworkConstants.LIST_MAPS:
                     onMapListRequested(player, request);
                     break;
@@ -72,6 +76,9 @@ public class RequestHandler {
                     break;
                 case NetworkConstants.DOWNLOAD_MAP:
                     onMapDownloadRequested(player, request);
+                    break;
+                case NetworkConstants.LIST_IDLE_PLAYERS:
+                    onIdlePlayerListRequested(player);
                     break;
                 default:
                     Log.error(TAG, String.format("Illegal request from %s [undefined operation]", player.toString()));
@@ -131,7 +138,6 @@ public class RequestHandler {
                 int start_gold = request.getInt("start_gold");
                 room_setting = getContext().getRoomManager().createRoom(
                         map, username, map_name, password, player_capacity, unit_capacity, start_gold, player);
-
             } else {
                 //create a saved game room
                 GameCore game = new GameCore(request.getJSONObject("game"));
@@ -180,6 +186,18 @@ public class RequestHandler {
         if (player.isAuthenticated()) {
             JSONArray events = request.getJSONArray("events");
             getContext().getRoomManager().submitGameEvents(player, events);
+        }
+    }
+
+    public void onMessageSubmitted(Player player, JSONObject request) {
+        if (player.isAuthenticated()) {
+            Room room = getContext().getRoomManager().getRoom(player.getRoomID());
+            String message = request.getString("message");
+            if (room == null) {
+                getContext().getNotificationSender().notifyLobbyMessage(player.getUsername(), message);
+            } else {
+                getContext().getNotificationSender().notifyRoomMessage(room, player.getUsername(), message);
+            }
         }
     }
 
@@ -233,6 +251,20 @@ public class RequestHandler {
         }
         response.put("approved", approved);
         player.sendTCP(response.toString());
+    }
+
+    public void onIdlePlayerListRequested(Player player) {
+        if (player.isAuthenticated()) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            JSONArray players = new JSONArray();
+            for (Player target : getContext().getPlayerManager().getPlayers()) {
+                if (target.isAuthenticated() && target.getRoomID() < 0) {
+                    players.put(target.createSnapshot().toJson());
+                }
+            }
+            response.put("players", players);
+            player.sendTCP(response.toString());
+        }
     }
 
     public void submitRequest(Player player, String request_content) throws JSONException {

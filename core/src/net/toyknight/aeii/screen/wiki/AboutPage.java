@@ -41,7 +41,7 @@ public class AboutPage extends AEIITable {
 
         addName("toyknight");
         addName("Majirefy");
-        addName("blackwave");
+        addName("blankwave");
 
         Label label_arts = new Label("[" + Language.getText("LB_ARTS") + "]", getWiki().getContext().getSkin());
         label_arts.setColor(90 / 256f, 150 / 256f, 77 / 256f, 1.0f);

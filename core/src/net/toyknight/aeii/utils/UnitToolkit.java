@@ -35,7 +35,7 @@ public class UnitToolkit {
             return 50;
         }
         int heal = 0;
-        if (!unit.hasAbility(Ability.CRAWLER)) {
+        if (!unit.hasAbility(Ability.BLOODTHIRSTY)) {
             if (tile.getTeam() == -1) {
                 heal += tile.getHpRecovery();
             } else {
@@ -170,7 +170,7 @@ public class UnitToolkit {
             attack_bonus += 10;
         }
         if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
-            attack_bonus += 10;
+            attack_bonus += 15;
         }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);

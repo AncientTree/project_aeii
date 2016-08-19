@@ -358,8 +358,12 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFinish(Array<MapSnapshot> map_list) {
                 closeDialog("message");
-                map_list.sort();
-                updateServerMapList(map_list);
+                if (map_list == null) {
+                    showPrompt(Language.getText("MSG_ERR_CCS"), null);
+                } else {
+                    map_list.sort();
+                    updateServerMapList(map_list);
+                }
             }
 
             @Override

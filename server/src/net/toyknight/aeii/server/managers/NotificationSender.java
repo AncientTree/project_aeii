@@ -82,8 +82,42 @@ public class NotificationSender {
         }
     }
 
+    public void notifyRoomMessage(Room room, String username, String message) {
+        for (int player_id : room.getPlayers()) {
+            JSONObject notification = PacketBuilder.create(NOTIFICATION, MESSAGE);
+            notification.put("username", username);
+            notification.put("message", message);
+            submitNotification(player_id, notification);
+        }
+    }
+
+    public void notifyLobbyMessage(String username, String message) {
+        for (Player player : getContext().getPlayerManager().getPlayers()) {
+            if (player.isAuthenticated() && player.getRoomID() < 0) {
+                JSONObject notification = PacketBuilder.create(NOTIFICATION, MESSAGE);
+                notification.put("username", username);
+                notification.put("message", message);
+                submitNotification(player, notification);
+            }
+        }
+    }
+
+    public void notifyGlobalMessage(String message) {
+        for (Player player : getContext().getPlayerManager().getPlayers()) {
+            if (player.isAuthenticated()) {
+                JSONObject notification = PacketBuilder.create(NOTIFICATION, MESSAGE);
+                notification.put("username", "System");
+                notification.put("message", message);
+                submitNotification(player, notification);
+            }
+        }
+    }
+
     public void submitNotification(int player_id, JSONObject notification) {
-        Player player = getContext().getPlayerManager().getPlayer(player_id);
+        submitNotification(getContext().getPlayerManager().getPlayer(player_id), notification);
+    }
+
+    public void submitNotification(Player player, JSONObject notification) {
         if (player != null) {
             getContext().submitTask(new NotificationTask(player, notification));
         }
