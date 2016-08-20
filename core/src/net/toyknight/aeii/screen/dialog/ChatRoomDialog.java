@@ -184,7 +184,7 @@ public class ChatRoomDialog extends BasicDialog {
                 if (result == null) {
                     getOwner().showPrompt(Language.getText("MSG_ERR_AEA"), null);
                 } else {
-                    getOwner().onFocus();
+                    getOwner().updateFocus();
                     updateIdlePlayerList(result);
                 }
                 btn_refresh.setText(Language.getText("LB_REFRESH"));

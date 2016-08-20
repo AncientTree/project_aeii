@@ -145,8 +145,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
                 @Override
                 public void keyTyped(TextField textField, char c) {
                     if (c == '\n' || c == '\r') {
-                        closeInput();
                         StageScreen.input_listener.input(input_field.getText());
+                        closeInput();
                     }
                 }
             });
@@ -154,8 +154,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
                 input_btn_ok.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        closeInput();
                         StageScreen.input_listener.input(input_field.getText());
+                        closeInput();
                     }
                 });
             }
@@ -163,8 +163,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
                 input_btn_cancel.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        closeInput();
                         StageScreen.input_listener.canceled();
+                        closeInput();
                     }
                 });
             }
@@ -180,12 +180,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public void closePrompt() {
         prompt_dialog.setVisible(false);
-        if (isDialogVisible()) {
-            Gdx.input.setInputProcessor(dialog_stage);
-        } else {
-            System.out.println("base screen gains input");
-            Gdx.input.setInputProcessor(this);
-        }
+        updateFocus();
         if (prompt_callback != null) {
             prompt_callback.call();
             prompt_callback = null;
@@ -194,11 +189,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public void closeInput() {
         input_dialog.setVisible(false);
-        if (isDialogVisible()) {
-            Gdx.input.setInputProcessor(dialog_stage);
-        } else {
-            Gdx.input.setInputProcessor(this);
-        }
+        updateFocus();
     }
 
     public GameContext getContext() {
@@ -209,7 +200,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         return getContext().getResources();
     }
 
-    public void onFocus() {
+    public void updateFocus() {
         if(isPromptVisible()) {
             Gdx.input.setInputProcessor(prompt_layer);
             return;
