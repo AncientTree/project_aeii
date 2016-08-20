@@ -80,8 +80,7 @@ public class FileProvider {
         return new Array<FileHandle>(save_dir.list(save_file_filter));
     }
 
-    public static FileHandle getLanguageFile() {
-        String locale = java.util.Locale.getDefault().toString();
+    public static FileHandle getLanguageFile(String locale) {
         FileHandle language_file = getAssetsFile("lang/" + locale + ".dat");
         if (language_file.exists() && !language_file.isDirectory()) {
             return language_file;

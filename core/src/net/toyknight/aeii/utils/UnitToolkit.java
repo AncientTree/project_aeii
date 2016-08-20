@@ -35,7 +35,7 @@ public class UnitToolkit {
             return 50;
         }
         int heal = 0;
-        if (!unit.hasAbility(Ability.CRAWLER)) {
+        if (!unit.hasAbility(Ability.BLOODTHIRSTY)) {
             if (tile.getTeam() == -1) {
                 heal += tile.getHpRecovery();
             } else {
@@ -170,7 +170,7 @@ public class UnitToolkit {
             attack_bonus += 10;
         }
         if (attacker.hasAbility(Ability.MARKSMAN) && defender.hasAbility(Ability.AIR_FORCE)) {
-            attack_bonus += 10;
+            attack_bonus += 15;
         }
         if (attacker.hasAbility(Ability.BLOODTHIRSTY)) {
             int enemy_count = getGame().getEnemyAroundCount(attacker, 2);
@@ -208,6 +208,9 @@ public class UnitToolkit {
                 && attacker.hasAbility(Ability.LORD_OF_TERROR)
                 && !defender.hasAbility(Ability.LORD_OF_TERROR)) {
             percentage_modifier += 0.5f;
+        }
+        if (getRange(attacker, defender) > 1 && defender.hasAbility(Ability.HARD_SKIN)) {
+            percentage_modifier -= 0.5f;
         }
         percentage_modifier = percentage_modifier >= 0f ? percentage_modifier : 0f;
         damage = (int) (damage * percentage_modifier);

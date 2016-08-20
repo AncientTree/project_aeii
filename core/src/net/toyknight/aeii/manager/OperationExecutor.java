@@ -43,9 +43,14 @@ public class OperationExecutor {
 
     public void operate() throws CheatingException {
         synchronized (OPERATION_LOCK) {
-            Operation operation;
-            if ((operation = operation_queue.poll()) != null) {
-                executeOperation(operation);
+            if (operation_queue.size() > 0) {
+                Operation operation;
+                if ((operation = operation_queue.poll()) != null) {
+                    executeOperation(operation);
+                }
+                if (operation_queue.size() == 0) {
+                    getManager().onOperationFinished();
+                }
             }
         }
     }
@@ -161,7 +166,7 @@ public class OperationExecutor {
                 break;
             case Operation.TURN_STARTED:
                 int current_turn = getGame().getCurrentTurn();
-                getManager().getContext().getCampaignContext().onTurnStart(current_turn);
+                getManager().fireTurnStartEvent(current_turn);
 
                 Position map_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
                 getManager().fireMapFocusEvent(map_focus.x, map_focus.y, true);
@@ -170,7 +175,7 @@ public class OperationExecutor {
             case Operation.AFTER_STANDBY:
                 unit_x = operation.getParameter(0);
                 unit_y = operation.getParameter(1);
-                getManager().getContext().getCampaignContext().onUnitStandby(unit_x, unit_y);
+                getManager().fireUnitStandbyEvent(unit_x, unit_y);
                 getManager().fireStateChangeEvent();
                 break;
             default:
@@ -252,7 +257,6 @@ public class OperationExecutor {
 
     private void onNextTurn() {
         getManager().setState(GameManager.STATE_SELECT);
-        getManager().getContext().getCampaignContext().onTurnEnd(getGame().getCurrentTurn());
         submitGameEvent(GameEvent.NEXT_TURN);
         //calculate hp change at turn start
         int next_team = getGame().getNextTeam();

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.AudioManager;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Player;
@@ -112,17 +113,19 @@ public class GameMenu extends BasicDialog {
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws AEIIException {
-                GameCore game = getOwner().getGame();
-                switch (game.getType()) {
-                    case GameCore.SKIRMISH:
-                        GameToolkit.saveSkirmish(game);
-                        break;
-                    case GameCore.CAMPAIGN:
-                        String code = getContext().getCampaignContext().getCurrentCampaign().getCode();
-                        int stage = getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
-                        ObjectMap<String, Integer> attributes = getContext().getCampaignContext().getCurrentCampaign().getAttributes();
-                        GameToolkit.saveCampaign(game, code, stage, attributes);
-                        break;
+                synchronized (GameContext.RENDER_LOCK) {
+                    GameCore game = getOwner().getGame();
+                    switch (game.getType()) {
+                        case GameCore.SKIRMISH:
+                            GameToolkit.saveSkirmish(game);
+                            break;
+                        case GameCore.CAMPAIGN:
+                            String code = getContext().getCampaignContext().getCurrentCampaign().getCode();
+                            int stage = getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+                            ObjectMap<String, Integer> attributes = getContext().getCampaignContext().getCurrentCampaign().getAttributes();
+                            GameToolkit.saveCampaign(game, code, stage, attributes);
+                            break;
+                    }
                 }
                 return null;
             }

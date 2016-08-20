@@ -45,14 +45,14 @@ public class MapFactory {
                 map.setAuthor(author_name);
                 for (int x = 0; x < width; x++) {
                     for (int y = 0; y < height; y++) {
-                        short tile_index = dis.readShort();
+                        short tile_index = checkTile(dis.readShort());
                         map.setTile(tile_index, x, y);
                     }
                 }
                 int unit_count = dis.readInt();
                 for (int i = 0; i < unit_count; i++) {
                     int team = dis.readInt();
-                    int index = dis.readInt();
+                    int index = checkUnit(dis.readInt());
                     int x = dis.readInt();
                     int y = dis.readInt();
                     Unit unit = UnitFactory.createUnit(index, team);
@@ -67,6 +67,22 @@ public class MapFactory {
                 throw new AEIIException("Invalid map size!");
             }
         } catch (IOException ex) {
+            throw new AEIIException("broken map file!");
+        }
+    }
+
+    private static short checkTile(short index) throws AEIIException {
+        if (0 <= index && index < TileFactory.getTileCount()) {
+            return index;
+        } else {
+            throw new AEIIException("broken map file!");
+        }
+    }
+
+    private static int checkUnit(int index) throws AEIIException {
+        if (0 <= index && index < UnitFactory.getUnitCount()) {
+            return index;
+        } else {
             throw new AEIIException("broken map file!");
         }
     }

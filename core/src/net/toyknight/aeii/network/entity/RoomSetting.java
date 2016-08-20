@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 public class RoomSetting implements Serializable {
 
-    public long room_number;
+    public long room_id;
 
     public int host;
 
@@ -21,6 +21,12 @@ public class RoomSetting implements Serializable {
     public Array<PlayerSnapshot> players;
 
     public GameCore game;
+
+    public int manager_state;
+
+    public int selected_unit_x;
+
+    public int selected_unit_y;
 
     public int[] allocation;
 
@@ -32,7 +38,7 @@ public class RoomSetting implements Serializable {
     }
 
     public RoomSetting(JSONObject json) throws JSONException {
-        room_number = json.getLong("room_number");
+        room_id = json.getLong("room_id");
         host = json.getInt("host");
         started = json.getBoolean("started");
         players = new Array<PlayerSnapshot>();
@@ -40,6 +46,9 @@ public class RoomSetting implements Serializable {
             players.add(new PlayerSnapshot(json.getJSONArray("players").getJSONObject(i)));
         }
         game = new GameCore(json.getJSONObject("game"));
+        manager_state = json.getInt("manager_state");
+        selected_unit_x = json.getInt("selected_unit_x");
+        selected_unit_y = json.getInt("selected_unit_y");
         allocation = new int[4];
         for (int team = 0; team < 4; team++) {
             allocation[team] = json.getJSONArray("allocation").getInt(team);
@@ -51,7 +60,7 @@ public class RoomSetting implements Serializable {
     @Override
     public JSONObject toJson() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("room_number", room_number);
+        json.put("room_id", room_id);
         json.put("host", host);
         json.put("started", started);
         JSONArray players = new JSONArray();
@@ -60,6 +69,9 @@ public class RoomSetting implements Serializable {
         }
         json.put("players", players);
         json.put("game", game.toJson());
+        json.put("manager_state", manager_state);
+        json.put("selected_unit_x", selected_unit_x);
+        json.put("selected_unit_y", selected_unit_y);
         JSONArray allocation = new JSONArray();
         for (int team = 0; team < 4; team++) {
             allocation.put(this.allocation[team]);

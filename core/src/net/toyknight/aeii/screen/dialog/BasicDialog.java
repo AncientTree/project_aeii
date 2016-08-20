@@ -15,6 +15,8 @@ public class BasicDialog extends Table {
     protected final int ts;
     private StageScreen owner;
 
+    private String name;
+
     private boolean top_bottom_border_enabled = false;
 
     public BasicDialog(StageScreen owner) {
@@ -43,6 +45,10 @@ public class BasicDialog extends Table {
     }
 
     public void display() {
+    }
+
+    public void close() {
+        getOwner().closeDialog(getName());
     }
 
     protected void drawCustom(Batch batch, float parentAlpha) {

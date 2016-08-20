@@ -41,7 +41,7 @@ public class AboutPage extends AEIITable {
 
         addName("toyknight");
         addName("Majirefy");
-        addName("blackwave");
+        addName("blankwave");
 
         Label label_arts = new Label("[" + Language.getText("LB_ARTS") + "]", getWiki().getContext().getSkin());
         label_arts.setColor(90 / 256f, 150 / 256f, 77 / 256f, 1.0f);
@@ -54,7 +54,7 @@ public class AboutPage extends AEIITable {
         label_balancing.setColor(90 / 256f, 150 / 256f, 77 / 256f, 1.0f);
         add(label_balancing).width(ts * 7).padBottom(ts / 8).padTop(ts / 8).row();
 
-        addName("blackwave");
+        addName("blankwave");
         addName("youxing");
         addName("td209");
         addName("Luke");
@@ -64,7 +64,8 @@ public class AboutPage extends AEIITable {
         label_translation.setColor(90 / 256f, 150 / 256f, 77 / 256f, 1.0f);
         add(label_translation).width(ts * 7).padBottom(ts / 8).padTop(ts / 8).row();
 
-        addName("AncientTree (zh_CN)");
+        addName("AncientTree (Chinese)");
+        addName("P. Thanh Huy (Vietnamese)");
     }
 
     private void addName(String name) {

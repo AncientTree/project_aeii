@@ -91,7 +91,7 @@ public class NetGameCreateScreen extends StageScreen {
         btn_message.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.input.getTextInput(message_input_listener, Language.getText("MSG_INFO_IM"), "", "");
+                sendMessage();
             }
         });
         addActor(btn_message);
@@ -227,6 +227,7 @@ public class NetGameCreateScreen extends StageScreen {
                 super.draw(batch, parentAlpha);
             }
         };
+        message_pane.top();
         sp_message = new ScrollPane(message_pane, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
@@ -248,6 +249,14 @@ public class NetGameCreateScreen extends StageScreen {
 
     public GameCore getGame() {
         return getRoomManager().getGame();
+    }
+
+    public void sendMessage() {
+        if (Language.getLocale().equals("zh_CN")) {
+            Gdx.input.getTextInput(message_input_listener, Language.getText("MSG_INFO_IM"), "", "");
+        } else {
+            showInput(Language.getText("MSG_INFO_IM"), 64, false, message_input_listener);
+        }
     }
 
     public void updateView() {
@@ -301,25 +310,6 @@ public class NetGameCreateScreen extends StageScreen {
         updateView();
     }
 
-    public void trySubmitUpdates() {
-        getContext().submitAsyncTask(new AsyncTask<Void>() {
-            @Override
-            public Void doTask() throws Exception {
-                getRoomManager().trySubmitUpdates();
-                return null;
-            }
-
-            @Override
-            public void onFinish(Void result) {
-            }
-
-            @Override
-            public void onFail(String message) {
-                showPrompt(message, null);
-            }
-        });
-    }
-
     public void updatePlayers() {
         player_list.setItems(getRoomManager().getPlayers());
     }
@@ -337,6 +327,25 @@ public class NetGameCreateScreen extends StageScreen {
         } else {
             btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_OFF"));
         }
+    }
+
+    public void trySubmitUpdates() {
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
+            @Override
+            public Void doTask() throws Exception {
+                getRoomManager().trySubmitUpdates();
+                return null;
+            }
+
+            @Override
+            public void onFinish(Void result) {
+            }
+
+            @Override
+            public void onFail(String message) {
+                showPrompt(message, null);
+            }
+        });
     }
 
     private void tryLeaveRoom() {
@@ -412,17 +421,23 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     private void appendMessage(String username, String message) {
-        Label label_username = new Label(username + ": ", getContext().getSkin());
-        label_username.setAlignment(Align.topRight);
-        Label label_message = new Label(message, getContext().getSkin());
+        String content = username == null ? ">" + message : ">" + username + ": " + message;
+        Label label_message = new Label(content, getContext().getSkin());
         label_message.setWrap(true);
-        float pad_top = message_pane.getChildren().size > 0 ? ts / 8 : 0;
-        message_pane.add(label_username).width(ts * 2 + ts / 2).padTop(pad_top).padBottom(ts / 8);
-        message_pane.add(label_message)
-                .width(message_pane.getWidth() - ts * 2 - ts / 2).padTop(pad_top).padBottom(ts / 8).row();
+        message_pane.add(label_message).width(message_pane.getWidth()).padTop(ts / 12).row();
         message_pane.layout();
         sp_message.layout();
         sp_message.setScrollPercentY(1.0f);
+    }
+
+    @Override
+    public boolean keyDown(int keyCode) {
+        if (keyCode == Input.Keys.ENTER) {
+            sendMessage();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

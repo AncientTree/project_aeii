@@ -110,14 +110,9 @@ public class AbilityPage extends AEIITable {
             case Ability.SON_OF_THE_FOREST:
             case Ability.SON_OF_THE_MOUNTAIN:
             case Ability.SON_OF_THE_SEA:
+            case Ability.HARD_SKIN:
                 content_references.add(new Label(Language.getText("LB_NONE"), getWiki().getContext().getSkin())).
                         width(ts * 7 - ts / 4);
-                break;
-            case Ability.AMBUSH:
-                ReferenceLabel reference_ability = new ReferenceLabel(
-                        getContext(), ReferenceLabel.TYPE_ABILITY, Ability.COUNTER_MADNESS);
-                reference_ability.addListener(content_reference_click_listener);
-                content_references.add(reference_ability).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.ATTACK_AURA:
                 ReferenceLabel reference_status = new ReferenceLabel(
@@ -132,7 +127,7 @@ public class AbilityPage extends AEIITable {
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.MARKSMAN:
-                reference_ability = new ReferenceLabel(
+                ReferenceLabel reference_ability = new ReferenceLabel(
                         getContext(), ReferenceLabel.TYPE_ABILITY, Ability.AIR_FORCE);
                 reference_ability.addListener(content_reference_click_listener);
                 content_references.add(reference_ability).width(ts * 7 - ts / 4).padBottom(ts / 8).row();

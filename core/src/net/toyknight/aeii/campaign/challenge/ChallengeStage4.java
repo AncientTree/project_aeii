@@ -44,6 +44,9 @@ public class ChallengeStage4 extends StageController {
             getContext().fail();
         } else {
             checkClear();
+            if (getContext().count_unit(2) == 0) {
+                getContext().destroy_team(2);
+            }
             if (!unit.hasAbility(Ability.UNDEAD) && !unit.isCommander()) {
                 getContext().restore(2);
                 getContext().remove_tomb(unit.getX(), unit.getY());
@@ -68,14 +71,6 @@ public class ChallengeStage4 extends StageController {
     }
 
     @Override
-    public void onTurnEnd(int turn) {
-        if (getContext().count_unit(2) == 0) {
-            getContext().destroy_team(2);
-
-        }
-    }
-
-    @Override
     public String getMapName() {
         return "challenge_stage_4.aem";
     }
@@ -83,7 +78,7 @@ public class ChallengeStage4 extends StageController {
     @Override
     public Rule getRule() {
         Rule rule = Rule.createDefault();
-        rule.setValue(Rule.Entry.MAX_POPULATION, 30);
+        rule.setValue(Rule.Entry.UNIT_CAPACITY, 30);
         return rule;
     }
 

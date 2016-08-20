@@ -1,5 +1,6 @@
-package net.toyknight.aeii.network.server;
+package net.toyknight.aeii.server;
 
+import net.toyknight.aeii.server.entities.Room;
 import org.json.JSONObject;
 
 /**
@@ -7,7 +8,7 @@ import org.json.JSONObject;
  */
 public interface RoomListener {
 
-    void onGameEventExecuted(Room room, JSONObject event, int player_id);
+    void onGameEventExecuted(Room room, JSONObject event, int submitter);
 
     void onCheatingDetected(Room room, int player_id, Throwable cause);
 

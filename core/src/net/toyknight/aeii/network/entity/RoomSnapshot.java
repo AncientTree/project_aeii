@@ -27,7 +27,7 @@ public class RoomSnapshot implements Serializable {
     }
 
     public RoomSnapshot(JSONObject json) throws JSONException {
-        room_number = json.getLong("room_number");
+        room_number = json.getLong("room_id");
         open = json.getBoolean("open");
         requires_password = json.getBoolean("requires_password");
         room_name = json.getString("room_name");
@@ -39,7 +39,7 @@ public class RoomSnapshot implements Serializable {
     @Override
     public JSONObject toJson() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("room_number", room_number);
+        json.put("room_id", room_number);
         json.put("open", open);
         json.put("requires_password", requires_password);
         json.put("room_name", room_name);

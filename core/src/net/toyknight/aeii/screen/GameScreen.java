@@ -370,6 +370,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         }
     }
 
+    public void onCheatingDetected(CheatingException ex) {
+        if (!allow_cheating && getGame().getCurrentPlayer().getType() == Player.REMOTE) {
+            int team = ex.getTeam();
+            String message = String.format(Language.getText("MSG_INFO_CD"), Language.getText("LB_TEAM_" + team));
+            String cause = String.format(" [%s]", ex.getMessage());
+            showConfirmDialog(message + cause, cheating_confirm_yes_callback, cheating_confirm_no_callback);
+        } else {
+            ex.printStackTrace();
+        }
+    }
+
     @Override
     public void act(float delta) {
         message_board.update(delta);
@@ -384,14 +395,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         try {
             getContext().getGameManager().update(delta);
         } catch (CheatingException ex) {
-            if (!allow_cheating && getGame().getCurrentPlayer().getType() == Player.REMOTE) {
-                int team = ex.getTeam();
-                String message = String.format(Language.getText("MSG_INFO_CD"), Language.getText("LB_TEAM_" + team));
-                String cause = String.format(" [%s]", ex.getMessage());
-                showConfirmDialog(message + cause, cheating_confirm_yes_callback, cheating_confirm_no_callback);
-            } else {
-                ex.printStackTrace();
-            }
+            onCheatingDetected(ex);
         }
     }
 
@@ -435,7 +439,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                     return false;
                 }
             case Input.Keys.ESCAPE:
-                if (isDialogShown()) {
+                if (isDialogVisible()) {
                     closeTopDialog();
                     update();
                     return true;

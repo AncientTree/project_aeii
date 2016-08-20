@@ -1,10 +1,11 @@
-package net.toyknight.aeii.network.server;
+package net.toyknight.aeii.server.managers;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.entity.MapSnapshot;
+import net.toyknight.aeii.server.ServerException;
 import net.toyknight.aeii.utils.MapFactory;
 import org.json.JSONArray;
 
@@ -15,20 +16,22 @@ import java.io.*;
  */
 public class MapManager {
 
-    private final Object MAP_LOCK = new Object();
+    private static final String TAG = "MAP MANAGER";
+
+    private final Object CHANGE_LOCK = new Object();
 
     private final FileFilter map_file_filter = new MapFileFilter();
 
     private final ObjectMap<String, ObjectSet<MapSnapshot>> maps = new ObjectMap<String, ObjectSet<MapSnapshot>>();
 
-    public void initialize() throws AEIIException {
+    public void initialize() throws ServerException {
         File map_dir = new File("maps");
-        if (map_dir.exists()) {
+        if (map_dir.exists() && map_dir.isDirectory()) {
             loadMaps(map_dir);
         } else {
             boolean success = map_dir.mkdir();
             if (!success) {
-                throw new AEIIException("Cannot make map directory");
+                throw new ServerException(TAG, "Cannot make map directory");
             }
         }
     }
@@ -50,10 +53,12 @@ public class MapManager {
     }
 
     public Map getMap(String filename) throws IOException, AEIIException {
-        File map_file = new File("maps/" + filename);
-        FileInputStream fis = new FileInputStream(map_file);
-        DataInputStream dis = new DataInputStream(fis);
-        return MapFactory.createMap(dis);
+        synchronized (CHANGE_LOCK) {
+            File map_file = new File("maps/" + filename);
+            FileInputStream fis = new FileInputStream(map_file);
+            DataInputStream dis = new DataInputStream(fis);
+            return MapFactory.createMap(dis);
+        }
     }
 
     public void addMap(Map map, String map_name) throws IOException {
@@ -66,21 +71,47 @@ public class MapManager {
         MapFactory.writeMap(map, dos);
 
         MapSnapshot snapshot = new MapSnapshot(getCapacity(map), map_file.getName(), map.getAuthor());
-        synchronized (MAP_LOCK) {
-            addSnapshot(snapshot);
+        addSnapshot(snapshot);
+    }
+
+    public boolean removeMap(String filename) {
+        try {
+            Map map = getMap(filename);
+            synchronized (CHANGE_LOCK) {
+                String author = map.getAuthor().trim().toLowerCase();
+                if (maps.containsKey(author)) {
+                    File map_file = new File("maps/" + filename);
+                    ObjectSet<MapSnapshot> snapshots = maps.get(author);
+                    MapSnapshot target_snapshot = null;
+                    for (MapSnapshot snapshot : snapshots) {
+                        if (snapshot.getFilename().equals(map_file.getName())) {
+                            target_snapshot = snapshot;
+                            break;
+                        }
+                    }
+                    return target_snapshot != null && snapshots.remove(target_snapshot) && map_file.delete();
+                } else {
+                    return false;
+                }
+            }
+        } catch (Exception ex) {
+            return false;
         }
     }
 
     public void addSnapshot(MapSnapshot snapshot) {
-        if (!maps.containsKey(snapshot.getAuthor())) {
-            maps.put(snapshot.getAuthor(), new ObjectSet<MapSnapshot>());
+        synchronized (CHANGE_LOCK) {
+            String author = snapshot.getAuthor().trim().toLowerCase();
+            if (!maps.containsKey(author)) {
+                maps.put(author, new ObjectSet<MapSnapshot>());
+            }
+            maps.get(author).add(snapshot);
         }
-        maps.get(snapshot.getAuthor()).add(snapshot);
     }
 
     public JSONArray getSerializedAuthorList() {
         JSONArray list = new JSONArray();
-        synchronized (MAP_LOCK) {
+        synchronized (CHANGE_LOCK) {
             for (String author : maps.keys()) {
                 MapSnapshot snapshot = new MapSnapshot(0, "null", author);
                 snapshot.setDirectory(true);
@@ -92,7 +123,7 @@ public class MapManager {
 
     public JSONArray getSerializedMapList(String author) {
         JSONArray list = new JSONArray();
-        synchronized (MAP_LOCK) {
+        synchronized (CHANGE_LOCK) {
             if (maps.containsKey(author)) {
                 for (MapSnapshot snapshot : maps.get(author)) {
                     list.put(snapshot.toJson());
@@ -118,6 +149,7 @@ public class MapManager {
         public boolean accept(File file) {
             return !file.isDirectory() && file.getName().endsWith(".aem");
         }
+
     }
 
 }
