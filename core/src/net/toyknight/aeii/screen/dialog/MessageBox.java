@@ -81,7 +81,11 @@ public class MessageBox extends BasicDialog {
     }
 
     public void sendMessage() {
-        Gdx.input.getTextInput(input_listener, Language.getText("MSG_INFO_IM"), "", "");
+        if (Language.getLocale().equals("zh_CN")) {
+            Gdx.input.getTextInput(input_listener, Language.getText("MSG_INFO_IM"), "", "");
+        } else {
+            getOwner().showInput(Language.getText("MSG_INFO_IM"), 128, false, input_listener);
+        }
     }
 
     public void sendMessage(String message) {

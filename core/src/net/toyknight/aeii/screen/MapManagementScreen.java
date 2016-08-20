@@ -17,8 +17,8 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.network.entity.MapSnapshot;
-import net.toyknight.aeii.network.server.ServerConfiguration;
 import net.toyknight.aeii.screen.dialog.MessageDialog;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
@@ -194,7 +194,7 @@ public class MapManagementScreen extends StageScreen {
     private boolean connect() {
         try {
             return NetworkManager.connect(map_server_configuration);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             return false;
         }
     }
@@ -322,12 +322,14 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void previewSelectedLocalMap() {
-        FileHandle map_file = local_map_list.getSelected().file;
-        try {
-            Map map = MapFactory.createMap(map_file);
-            preview(map);
-        } catch (AEIIException e) {
-            showPrompt(Language.getText("MSG_ERR_BMF"), null);
+        if (local_map_list.getSelected() != null) {
+            FileHandle map_file = local_map_list.getSelected().file;
+            try {
+                Map map = MapFactory.createMap(map_file);
+                preview(map);
+            } catch (AEIIException e) {
+                showPrompt(Language.getText("MSG_ERR_BMF"), null);
+            }
         }
     }
 
@@ -356,8 +358,12 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFinish(Array<MapSnapshot> map_list) {
                 closeDialog("message");
-                map_list.sort();
-                updateServerMapList(map_list);
+                if (map_list == null) {
+                    showPrompt(Language.getText("MSG_ERR_CCS"), null);
+                } else {
+                    map_list.sort();
+                    updateServerMapList(map_list);
+                }
             }
 
             @Override

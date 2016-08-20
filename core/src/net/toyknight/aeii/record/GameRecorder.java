@@ -13,8 +13,6 @@ import java.util.Queue;
  */
 public class GameRecorder {
 
-    private static final String TAG = "Recorder";
-
     private final GameContext context;
 
     private Queue<JSONObject> event_queue = new LinkedList<JSONObject>();
@@ -45,7 +43,7 @@ public class GameRecorder {
         }
     }
 
-    public void submit(JSONObject event) {
+    public void submitGameEvent(JSONObject event) {
         if (enabled) {
             event_queue.add(event);
         }

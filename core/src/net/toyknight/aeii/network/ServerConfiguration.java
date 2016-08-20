@@ -1,4 +1,4 @@
-package net.toyknight.aeii.network.server;
+package net.toyknight.aeii.network;
 
 /**
  * @author toyknight 8/24/2015.

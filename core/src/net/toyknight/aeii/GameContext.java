@@ -16,6 +16,7 @@ import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.GameManagerListener;
 import net.toyknight.aeii.manager.RoomManager;
+import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.CanvasRenderer;
@@ -34,8 +35,8 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String INTERNAL_VERSION = "15";
-    public static final String EXTERNAL_VERSION = "1.1.7";
+    public static final String INTERNAL_VERSION = "20";
+    public static final String EXTERNAL_VERSION = "1.1.8";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -249,7 +250,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public String getVerificationString() {
         String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + INTERNAL_VERSION;
-        return new Encryptor().encryptString(V_STRING);
+        return new MD5Converter().toMD5(V_STRING);
     }
 
     public Skin getSkin() {
@@ -290,6 +291,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void gotoGameScreen(GameCore game) {
         AudioManager.playRandomBGM("bg_good.mp3");
+        NetworkManager.resetEventQueue();
         if (game.initialized()) {
             getGameManager().setGame(game);
         } else {

@@ -149,12 +149,6 @@ public class CampaignContext {
         }
     }
 
-    public void onTurnEnd(int turn) {
-        if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-            getCurrentCampaign().getCurrentStage().onTurnEnd(turn);
-        }
-    }
-
     public class StageContext {
 
         public void message(Message... messages) {

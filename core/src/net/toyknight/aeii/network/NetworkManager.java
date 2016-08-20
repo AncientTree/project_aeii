@@ -2,17 +2,18 @@ package net.toyknight.aeii.network;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
+import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.network.entity.MapSnapshot;
+import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
-import net.toyknight.aeii.network.server.ServerConfiguration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,17 +27,17 @@ public class NetworkManager {
 
     public static final String TAG = "Network";
 
-    private static final Object RESPONSE_LOCK = new Object();
-
-    private static final ObjectMap<Long, JSONObject> responses = new ObjectMap<Long, JSONObject>();
-
     private static NetworkListener listener;
 
     private static Client client;
 
-    private static int service_id;
+    private static final Object RESPONSE_LOCK = new Object();
 
-    private static long current_request_id = 0;
+    private static JSONObject response;
+
+    private static JSONArray event_queue;
+
+    private static int service_id;
 
     private NetworkManager() {
     }
@@ -54,9 +55,8 @@ public class NetworkManager {
     }
 
     public static boolean connect(ServerConfiguration server, String username, String v_string)
-            throws IOException, JSONException {
-        responses.clear();
-        client = new Client(65536, 65536);
+            throws AEIIException, IOException, JSONException {
+        client = new Client(90 * 1024, 90 * 1024);
         client.addListener(new Listener() {
             @Override
             public void disconnected(Connection connection) {
@@ -77,7 +77,7 @@ public class NetworkManager {
         return (username == null || v_string == null) || requestAuthentication(username, v_string);
     }
 
-    public static boolean connect(ServerConfiguration server) throws IOException, JSONException {
+    public static boolean connect(ServerConfiguration server) throws AEIIException, IOException, JSONException {
         return connect(server, null, null);
     }
 
@@ -103,7 +103,7 @@ public class NetworkManager {
                 switch (packet.getInt("type")) {
                     case NetworkConstants.RESPONSE:
                         synchronized (RESPONSE_LOCK) {
-                            responses.put(packet.getLong("request_id"), packet);
+                            response = packet;
                             RESPONSE_LOCK.notifyAll();
                         }
                         break;
@@ -138,7 +138,7 @@ public class NetworkManager {
                     }
                 }
                 break;
-            case NetworkConstants.UPDATE_ALLOCATION:
+            case NetworkConstants.ALLOCATION_UPDATING:
                 int[] types = new int[4];
                 int[] alliance = new int[4];
                 int[] allocation = new int[4];
@@ -153,7 +153,7 @@ public class NetworkManager {
                     }
                 }
                 break;
-            case NetworkConstants.GAME_START:
+            case NetworkConstants.GAME_STARTING:
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
                         listener.onGameStart();
@@ -162,6 +162,7 @@ public class NetworkManager {
                 break;
             case NetworkConstants.GAME_EVENT:
                 JSONObject event = notification.getJSONObject("game_event");
+                event.put("remote", true);
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
                         listener.onReceiveGameEvent(event);
@@ -183,35 +184,30 @@ public class NetworkManager {
     }
 
     private static JSONObject sendRequest(JSONObject request) throws JSONException {
-        long id = request.getLong("request_id");
+        response = null;
         client.sendTCP(request.toString());
         synchronized (RESPONSE_LOCK) {
-            while (responses.get(id) == null && isConnected()) {
+            if (response == null) {
                 try {
-                    RESPONSE_LOCK.wait();
-                } catch (InterruptedException ex) {
-                    //do nothing
+                    RESPONSE_LOCK.wait(10000);
+                } catch (InterruptedException ignored) {
                 }
             }
-            if (isConnected()) {
-                return responses.get(id);
-            } else {
-                return null;
-            }
         }
+        return isConnected() ? response : null;
     }
 
     private static void sendNotification(JSONObject notification) throws JSONException {
         client.sendTCP(notification.toString());
     }
 
-    public static boolean requestAuthentication(String username, String v_string) throws JSONException {
+    public static boolean requestAuthentication(String username, String v_string) throws JSONException, AEIIException {
         JSONObject request = createRequest(NetworkConstants.AUTHENTICATION);
         request.put("username", username);
         request.put("v_string", v_string);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            return false;
+            throw new AEIIException("Connection timeout");
         } else {
             boolean approved = response.getBoolean("approved");
             if (approved) {
@@ -221,11 +217,11 @@ public class NetworkManager {
         }
     }
 
-    public static Array<RoomSnapshot> requestRoomList() throws JSONException {
+    public static Array<RoomSnapshot> requestRoomList() throws JSONException, AEIIException {
         JSONObject request = createRequest(NetworkConstants.LIST_ROOMS);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            return new Array<RoomSnapshot>();
+            throw new AEIIException("Connection timeout");
         } else {
             Array<RoomSnapshot> snapshots = new Array<RoomSnapshot>();
             for (int i = 0; i < response.getJSONArray("rooms").length(); i++) {
@@ -235,15 +231,30 @@ public class NetworkManager {
         }
     }
 
+    public static Array<PlayerSnapshot> requestIdlePlayerList() throws JSONException, AEIIException {
+        JSONObject request = createRequest(NetworkConstants.LIST_IDLE_PLAYERS);
+        JSONObject response = sendRequest(request);
+        if (response == null) {
+            throw new AEIIException("Connection timeout");
+        } else {
+            Array<PlayerSnapshot> snapshots = new Array<PlayerSnapshot>();
+            for (int i = 0; i < response.getJSONArray("players").length(); i++) {
+                snapshots.add(new PlayerSnapshot(response.getJSONArray("players").getJSONObject(i)));
+            }
+            return snapshots;
+        }
+    }
+
     public static RoomSetting requestCreateRoom(
-            String map_name, Map map, int capacity, int start_gold, int max_population, String password)
+            String map_name, Map map, int player_capacity, int start_gold, int unit_capacity, String password)
             throws JSONException {
         JSONObject request = createRequest(NetworkConstants.CREATE_ROOM);
+        request.put("new_game", true);
         request.put("map_name", map_name);
         request.put("map", map.toJson());
-        request.put("capacity", capacity);
+        request.put("player_capacity", player_capacity);
+        request.put("unit_capacity", unit_capacity);
         request.put("start_gold", start_gold);
-        request.put("max_population", max_population);
         if (password.length() > 0) {
             request.put("password", password);
         }
@@ -259,13 +270,15 @@ public class NetworkManager {
         }
     }
 
-    public static RoomSetting requestCreateRoom(GameCore game, int capacity, String password) throws JSONException {
+    public static RoomSetting requestCreateRoom(
+            GameCore game, int player_capacity, String password) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.CREATE_ROOM_SAVED);
         int player_count = game.getMap().getPlayerCount();
         String save_name = String.format("(%d) saved game", player_count);
-        request.put("save_name", save_name);
+        request.put("new_game", false);
         request.put("game", game.toJson());
-        request.put("capacity", capacity);
+        request.put("save_name", save_name);
+        request.put("player_capacity", player_capacity);
         if (password.length() > 0) {
             request.put("password", password);
         }
@@ -283,7 +296,7 @@ public class NetworkManager {
 
     public static RoomSetting requestJoinRoom(long room_number, String password) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.JOIN_ROOM);
-        request.put("room_number", room_number);
+        request.put("room_id", room_number);
         request.put("password", password);
         JSONObject response = sendRequest(request);
         if (response == null) {
@@ -351,7 +364,7 @@ public class NetworkManager {
     }
 
     public static void notifyAllocationUpdate(int[] alliance, int[] allocation, int[] types) throws JSONException {
-        JSONObject notification = createNotification(NetworkConstants.UPDATE_ALLOCATION);
+        JSONObject notification = createNotification(NetworkConstants.ALLOCATION_UPDATING);
         JSONArray types_json = new JSONArray();
         JSONArray alliance_json = new JSONArray();
         JSONArray allocation_json = new JSONArray();
@@ -366,10 +379,26 @@ public class NetworkManager {
         sendNotification(notification);
     }
 
-    public static void sendGameEvent(JSONObject event) throws JSONException {
-        JSONObject request = createRequest(NetworkConstants.GAME_EVENT);
-        request.put("game_event", event);
-        sendRequest(request);
+    public static void resetEventQueue() {
+        event_queue = new JSONArray();
+    }
+
+    public static void submitGameEvent(JSONObject event) {
+        boolean remote = event.has("remote") && event.getBoolean("remote");
+        if (!remote) {
+            event_queue.put(event);
+        }
+    }
+
+    public static void syncGameEvent(int manager_state) {
+        if (event_queue.length() > 0) {
+            JSONObject state_sync_event = GameEvent.create(GameEvent.MANAGER_STATE_SYNC, manager_state);
+            event_queue.put(state_sync_event);
+            JSONObject notification = createNotification(NetworkConstants.GAME_EVENT);
+            notification.put("events", event_queue);
+            sendNotification(notification);
+            event_queue = new JSONArray();
+        }
     }
 
     public static void sendMessage(String message) throws JSONException {
@@ -380,7 +409,6 @@ public class NetworkManager {
 
     private static JSONObject createRequest(int operation) throws JSONException {
         JSONObject packet = new JSONObject();
-        packet.put("request_id", current_request_id++);
         packet.put("type", NetworkConstants.REQUEST);
         packet.put("operation", operation);
         return packet;

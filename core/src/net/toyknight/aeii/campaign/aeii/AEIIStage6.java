@@ -68,10 +68,6 @@ public class AEIIStage6 extends StageController {
     }
 
     @Override
-    public void onTurnEnd(int turn) {
-    }
-
-    @Override
     public String getMapName() {
         return "aeii_c5.aem";
     }
@@ -85,7 +81,7 @@ public class AEIIStage6 extends StageController {
         }
         available_units.add(9);
         rule.setAvailableUnits(available_units);
-        rule.setValue(Rule.Entry.MAX_POPULATION, 30);
+        rule.setValue(Rule.Entry.UNIT_CAPACITY, 30);
         return rule;
     }
 

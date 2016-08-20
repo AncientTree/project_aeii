@@ -181,12 +181,13 @@ public class Robot {
                         index = getRandomAffordableUnitIndexWithAttackType(Unit.ATTACK_PHYSICAL);
                     }
                 }
-                if (index >= 0 && getManager().canBuy(index, team, recruit_position.x, recruit_position.y)) {
-                    getManager().doBuyUnit(index, recruit_position.x, recruit_position.y);
-                } else {
-                    select();
+                synchronized (GameContext.RENDER_LOCK) {
+                    if (index >= 0 && getManager().canBuy(index, team, recruit_position.x, recruit_position.y)) {
+                        getManager().doBuyUnit(index, recruit_position.x, recruit_position.y);
+                    } else {
+                        select();
+                    }
                 }
-
             }
         }
     }

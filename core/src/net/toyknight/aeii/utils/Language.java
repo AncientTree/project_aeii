@@ -13,16 +13,23 @@ import java.io.InputStreamReader;
  */
 public class Language {
 
+    private static String locale;
+
     private static ObjectMap<String, String> languageMap = new ObjectMap<String, String>();
 
     public static void initialize() throws AEIIException {
         try {
-            FileHandle languageFile = FileProvider.getLanguageFile();
+            locale = java.util.Locale.getDefault().toString();
+            FileHandle languageFile = FileProvider.getLanguageFile(locale);
             InputStreamReader reader = new InputStreamReader(languageFile.read(), "UTF8");
             PropertiesUtils.load(languageMap, reader);
         } catch (IOException ex) {
             throw new AEIIException(ex.getClass() + ": " + ex.getMessage());
         }
+    }
+
+    public static String getLocale() {
+        return locale;
     }
 
     public static String getFontFilename() {

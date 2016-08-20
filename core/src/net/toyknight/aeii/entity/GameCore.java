@@ -194,7 +194,7 @@ public class GameCore implements Serializable {
     }
 
     public int getMaxPopulation() {
-        return getRule().getInteger(MAX_POPULATION);
+        return getRule().getInteger(UNIT_CAPACITY);
     }
 
     public int getPopulation(int team) {
@@ -204,7 +204,16 @@ public class GameCore implements Serializable {
     public boolean canAddPopulation(int team, int population) {
         Player player = getPlayer(team);
         return player.getType() != Player.NONE
-                && player.getPopulation() + population <= getRule().getInteger(MAX_POPULATION);
+                && player.getPopulation() + population <= getRule().getInteger(UNIT_CAPACITY);
+    }
+
+    public boolean canBuy(int index, int team) {
+        Unit sample = UnitFactory.cloneUnit(UnitFactory.getSample(index));
+        int price = getUnitPrice(index, team);
+        return price >= 0 &&
+                isTeamAlive(team) &&
+                getCurrentPlayer().getGold() >= price &&
+                (canAddPopulation(team, sample.getOccupancy()) || sample.isCommander());
     }
 
     public void destroyTeam(int team) {
@@ -420,12 +429,11 @@ public class GameCore implements Serializable {
     }
 
     public boolean canCounter(Unit attacker, Unit defender) {
-        if (isUnitAlive(defender) && isEnemy(defender, attacker) && UnitToolkit.isWithinRange(defender, attacker)) {
+        if (isUnitAlive(defender) && isEnemy(defender, attacker)) {
             if (defender.hasAbility(Ability.COUNTER_MADNESS)) {
                 return UnitToolkit.getRange(defender, attacker) <= 2;
             } else {
-                return UnitToolkit.getRange(defender, attacker) == 1
-                        && !(attacker.hasAbility(Ability.AMBUSH) && !defender.hasAbility(Ability.AMBUSH));
+                return UnitToolkit.isWithinRange(defender, attacker) && UnitToolkit.getRange(defender, attacker) == 1;
             }
         } else {
             return false;

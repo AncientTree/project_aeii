@@ -4,11 +4,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.animation.Animator;
+import net.toyknight.aeii.animation.EmptyAnimationManager;
 import net.toyknight.aeii.campaign.Message;
+import net.toyknight.aeii.concurrent.GameEventSyncTask;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.network.server.EmptyAnimationManager;
-import net.toyknight.aeii.concurrent.GameEventSendingTask;
 import net.toyknight.aeii.record.GameRecorder;
 import net.toyknight.aeii.robot.Robot;
 import net.toyknight.aeii.utils.UnitFactory;
@@ -20,7 +20,7 @@ import java.util.LinkedList;
 /**
  * @author toyknight  5/28/2015.
  */
-public class GameManager implements GameEventListener, AnimationListener {
+public class GameManager implements AnimationListener {
 
     public static final int STATE_SELECT = 0x1;
     public static final int STATE_MOVE = 0x2;
@@ -166,27 +166,24 @@ public class GameManager implements GameEventListener, AnimationListener {
         }
     }
 
-    @Override
-    public void onGameEventSubmitted(JSONObject event) {
-        getGameRecorder().submit(event);
-        if (getContext() != null && NetworkManager.isConnected()) {
-            getContext().submitAsyncTask(new GameEventSendingTask(event) {
-                @Override
-                public void onFinish(Void result) {
-                }
-
-                @Override
-                public void onFail(String message) {
-                }
-            });
+    public void onGameEventExecuted(JSONObject event) {
+        if (NetworkManager.isConnected()) {
+            NetworkManager.submitGameEvent(event);
         }
+        getGameRecorder().submitGameEvent(event);
     }
 
-    @Override
     public void onGameEventFinished() {
+        if (!getOperationExecutor().isOperating()) {
+            syncGameEvent();
+        }
         if (!isAnimating()) {
             checkGameState();
         }
+    }
+
+    public void onOperationFinished() {
+        syncGameEvent();
     }
 
     private void checkGameState() {
@@ -194,36 +191,6 @@ public class GameManager implements GameEventListener, AnimationListener {
             fireGameOverEvent();
         } else {
             fireStateChangeEvent();
-        }
-    }
-
-    public void fireGameOverEvent() {
-        if (getListener() != null) {
-            getListener().onGameOver();
-        }
-    }
-
-    public void fireStateChangeEvent() {
-        if (getListener() != null) {
-            getListener().onGameManagerStateChanged();
-        }
-    }
-
-    public void fireMapFocusEvent(int map_x, int map_y, boolean focus_viewport) {
-        if (getListener() != null) {
-            getListener().onMapFocusRequired(map_x, map_y, focus_viewport);
-        }
-    }
-
-    public void fireCampaignMessageSubmitEvent() {
-        if (getListener() != null) {
-            getListener().onCampaignMessageSubmitted();
-        }
-    }
-
-    public void fireCampaignObjectiveRequestEvent() {
-        if (getListener() != null) {
-            getListener().onCampaignObjectiveRequested();
         }
     }
 
@@ -510,24 +477,139 @@ public class GameManager implements GameEventListener, AnimationListener {
             Tile tile = getGame().getMap().getTile(map_x, map_y);
             Unit unit = getGame().getMap().getUnit(map_x, map_y);
             if (getGame().isCastleAccessible(tile, team) && getGame().canBuyUponUnit(unit, team)) {
-                Unit sample = UnitFactory.cloneUnit(UnitFactory.getSample(index));
-                int price = getGame().getUnitPrice(index, team);
-                int movement_point = sample.getMovementPoint();
-                sample.setCurrentMovementPoint(movement_point);
+                Unit sample = index == UnitFactory.getCommanderIndex() ?
+                        UnitFactory.cloneUnit(getGame().getCommander(team)) :
+                        UnitFactory.cloneUnit(UnitFactory.getSample(index));
+                sample.clearStatus();
                 sample.setTeam(team);
                 sample.setX(map_x);
                 sample.setY(map_y);
+                getGame().resetUnit(sample);
                 getPositionGenerator().reset();
                 ObjectSet<Position> movable_positions = getPositionGenerator().createMovablePositions(sample);
-                return price >= 0
-                        && movable_positions.size > 0
-                        && getGame().getCurrentPlayer().getGold() >= price
-                        && (getGame().canAddPopulation(team, sample.getOccupancy()) || sample.isCommander());
+                return movable_positions.size > 0 && getGame().canBuy(index, team);
             } else {
                 return false;
             }
         } else {
             return false;
+        }
+    }
+
+    public void syncState(int state, int selected_unit_x, int selected_unit_y) {
+        if (selected_unit_x >= 0 && selected_unit_y >= 0) {
+            setSelectedUnit(getGame().getMap().getUnit(selected_unit_x, selected_unit_y));
+        }
+        switch (state) {
+            case STATE_ACTION:
+            case STATE_BUY:
+            case STATE_PREVIEW:
+            case STATE_SELECT:
+                setState(state);
+                break;
+            case STATE_ATTACK:
+                beginAttackPhase();
+                break;
+            case STATE_HEAL:
+                beginHealPhase();
+                break;
+            case STATE_MOVE:
+                beginMovePhase();
+                break;
+            case STATE_REMOVE:
+                beginRemovePhase();
+                break;
+            case STATE_SUMMON:
+                beginSummonPhase();
+                break;
+            default:
+                //do nothing
+        }
+    }
+
+    public void syncGameEvent() {
+        if (getContext() != null && NetworkManager.isConnected()) {
+            getContext().submitAsyncTask(new GameEventSyncTask(getState()) {
+                @Override
+                public void onFinish(Void result) {
+                }
+
+                @Override
+                public void onFail(String message) {
+                }
+            });
+        }
+    }
+
+    public void fireGameOverEvent() {
+        if (getListener() != null) {
+            getListener().onGameOver();
+        }
+    }
+
+    public void fireStateChangeEvent() {
+        if (getListener() != null) {
+            getListener().onGameManagerStateChanged();
+        }
+    }
+
+    public void fireMapFocusEvent(int map_x, int map_y, boolean focus_viewport) {
+        if (getListener() != null) {
+            getListener().onMapFocusRequired(map_x, map_y, focus_viewport);
+        }
+    }
+
+    public void fireCampaignMessageSubmitEvent() {
+        if (getListener() != null) {
+            getListener().onCampaignMessageSubmitted();
+        }
+    }
+
+    public void fireCampaignObjectiveRequestEvent() {
+        if (getListener() != null) {
+            getListener().onCampaignObjectiveRequested();
+        }
+    }
+
+    public void fireAttackEvent(Unit attacker, Unit defender) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitAttacked(attacker, defender);
+        }
+    }
+
+    public void fireMoveEvent(Unit unit, int target_x, int target_y) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitMoved(unit, target_x, target_y);
+        }
+    }
+
+    public void fireOccupyEvent(int target_x, int target_y, int team) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onTileOccupied(target_x, target_y, team);
+        }
+    }
+
+    public void fireRepairEvent(int target_x, int target_y) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onTileRepaired(target_x, target_y);
+        }
+    }
+
+    public void fireUnitDestroyEvent(Unit unit) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitDestroyed(unit);
+        }
+    }
+
+    public void fireUnitStandbyEvent(int target_x, int target_y) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onUnitStandby(target_x, target_y);
+        }
+    }
+
+    public void fireTurnStartEvent(int turn) {
+        if (getContext() != null) {
+            getContext().getCampaignContext().onTurnStart(turn);
         }
     }
 
