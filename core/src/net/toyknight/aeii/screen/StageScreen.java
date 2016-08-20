@@ -200,7 +200,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         return getContext().getResources();
     }
 
-    public void updateFocus() {
+    public final void updateFocus() {
         if(isPromptVisible()) {
             Gdx.input.setInputProcessor(prompt_layer);
             return;
