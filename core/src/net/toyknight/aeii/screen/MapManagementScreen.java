@@ -12,14 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.AEIIException;
-import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.network.entity.MapSnapshot;
-import net.toyknight.aeii.screen.dialog.MessageDialog;
+import net.toyknight.aeii.screen.dialog.ConfirmDialog;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.FileProvider;
@@ -37,7 +36,6 @@ public class MapManagementScreen extends StageScreen {
 //            new ServerConfiguration("127.0.0.1", 5438, "aeii server - NA");
             new ServerConfiguration("45.56.93.69", 5438, "aeii server - NA");
 
-    private final MessageDialog message_dialog;
     private final MiniMapDialog map_preview_dialog;
 
     private final StringList<Object> server_map_list;
@@ -157,9 +155,6 @@ public class MapManagementScreen extends StageScreen {
         });
         addActor(btn_delete);
 
-        message_dialog = new MessageDialog(this);
-        addDialog("message", message_dialog);
-
         map_preview_dialog = new MiniMapDialog(this);
         map_preview_dialog.addClickListener(new ClickListener() {
             @Override
@@ -202,33 +197,29 @@ public class MapManagementScreen extends StageScreen {
     private void downloadSelectedMap() {
         if (checkSelectedMap()) {
             final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
-            message_dialog.setMessage(Language.getText("LB_DOWNLOADING"));
-            showDialog("message");
-            getContext().submitAsyncTask(new AsyncTask<Map>() {
+            showPlaceholder(Language.getText("LB_DOWNLOADING"));
+            getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
-                public Map doTask() throws Exception {
+                public Void doTask() throws Exception {
                     if (connect()) {
                         Map map = NetworkManager.requestDownloadMap(filename);
                         NetworkManager.disconnect();
-                        return map;
+                        tryWriteMap(map, filename);
+                        return null;
                     } else {
                         throw new AEIIException(Language.getText("MSG_ERR_CCS"));
                     }
                 }
 
                 @Override
-                public void onFinish(Map map) {
-                    closeDialog("message");
-                    if (map == null) {
-                        showPrompt(Language.getText("MSG_ERR_FDM"), null);
-                    } else {
-                        tryWriteMap(map, filename);
-                    }
+                public void onFinish(Void map) {
+                    closePlaceholder();
+                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
                 }
 
                 @Override
                 public void onFail(String message) {
-                    closeDialog("message");
+                    closePlaceholder();
                     showPrompt(message, null);
                 }
             });
@@ -236,8 +227,7 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void uploadSelectedMap() {
-        message_dialog.setMessage(Language.getText("LB_UPLOADING"));
-        showDialog("message");
+        showPlaceholder(Language.getText("LB_UPLOADING"));
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
@@ -254,7 +244,7 @@ public class MapManagementScreen extends StageScreen {
 
             @Override
             public void onFinish(Boolean success) {
-                closeDialog("message");
+                closePlaceholder();
                 if (success) {
                     showPrompt(Language.getText("MSG_INFO_MU"), null);
                 } else {
@@ -264,7 +254,7 @@ public class MapManagementScreen extends StageScreen {
 
             @Override
             public void onFail(String message) {
-                closeDialog("message");
+                closePlaceholder();
                 showPrompt(message, null);
             }
         });
@@ -288,8 +278,7 @@ public class MapManagementScreen extends StageScreen {
     private void previewSelectedServerMap() {
         if (checkSelectedMap()) {
             final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
-            message_dialog.setMessage(Language.getText("LB_DOWNLOADING"));
-            showDialog("message");
+            showPlaceholder(Language.getText("LB_DOWNLOADING"));
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
@@ -304,7 +293,7 @@ public class MapManagementScreen extends StageScreen {
 
                 @Override
                 public void onFinish(Map map) {
-                    closeDialog("message");
+                    closePlaceholder();
                     if (map == null) {
                         showPrompt(Language.getText("MSG_ERR_FDM"), null);
                     } else {
@@ -314,7 +303,7 @@ public class MapManagementScreen extends StageScreen {
 
                 @Override
                 public void onFail(String message) {
-                    closeDialog("message");
+                    closePlaceholder();
                     showPrompt(message, null);
                 }
             });
@@ -340,8 +329,7 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void refresh() {
-        message_dialog.setMessage(Language.getText("LB_REFRESHING"));
-        showDialog("message");
+        showPlaceholder(Language.getText("LB_REFRESHING"));
         getContext().submitAsyncTask(new AsyncTask<Array<MapSnapshot>>() {
             @Override
             public Array<MapSnapshot> doTask() throws Exception {
@@ -357,7 +345,7 @@ public class MapManagementScreen extends StageScreen {
 
             @Override
             public void onFinish(Array<MapSnapshot> map_list) {
-                closeDialog("message");
+                closePlaceholder();
                 if (map_list == null) {
                     showPrompt(Language.getText("MSG_ERR_CCS"), null);
                 } else {
@@ -368,7 +356,7 @@ public class MapManagementScreen extends StageScreen {
 
             @Override
             public void onFail(String message) {
-                closeDialog("message");
+                closePlaceholder();
                 showPrompt(message, null);
             }
         });
@@ -393,7 +381,17 @@ public class MapManagementScreen extends StageScreen {
 
     private void delete() {
         if (local_map_list.getSelected() != null) {
-            showConfirmDialog(Language.getText("MSG_INFO_DSM"), delete_map_yes_callback, delete_map_no_callback);
+            showConfirm(Language.getText("MSG_INFO_DSM"), new ConfirmDialog.ConfirmDialogListener() {
+                @Override
+                public void confirmed() {
+                    deleteSelectedMap();
+                    refreshLocalMaps();
+                }
+
+                @Override
+                public void canceled() {
+                }
+            });
         }
     }
 
@@ -451,21 +449,5 @@ public class MapManagementScreen extends StageScreen {
         GameContext.setButtonEnabled(btn_preview_server, enabled);
         GameContext.setButtonEnabled(btn_refresh, enabled);
     }
-
-    private final Callable delete_map_yes_callback = new Callable() {
-        @Override
-        public void call() {
-            closeConfirmDialog();
-            deleteSelectedMap();
-            refreshLocalMaps();
-        }
-    };
-
-    private final Callable delete_map_no_callback = new Callable() {
-        @Override
-        public void call() {
-            closeConfirmDialog();
-        }
-    };
 
 }

@@ -375,7 +375,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             int team = ex.getTeam();
             String message = String.format(Language.getText("MSG_INFO_CD"), Language.getText("LB_TEAM_" + team));
             String cause = String.format(" [%s]", ex.getMessage());
-            showConfirmDialog(message + cause, cheating_confirm_yes_callback, cheating_confirm_no_callback);
+            showConfirm(message + cause, new ConfirmDialog.ConfirmDialogListener() {
+                @Override
+                public void confirmed() {
+                    getContext().gotoStatisticsScreen(getGame());
+                }
+
+                @Override
+                public void canceled() {
+                    allow_cheating = true;
+                }
+            });
         } else {
             ex.printStackTrace();
         }
@@ -962,16 +972,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     private final Callable cheating_confirm_yes_callback = new Callable() {
         @Override
         public void call() {
-            closeConfirmDialog();
-            getContext().gotoStatisticsScreen(getGame());
+
         }
     };
 
     private final Callable cheating_confirm_no_callback = new Callable() {
         @Override
         public void call() {
-            closeConfirmDialog();
-            allow_cheating = true;
+
         }
     };
 

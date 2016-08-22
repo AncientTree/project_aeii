@@ -128,7 +128,6 @@ public class GameContext extends Game implements GameManagerListener {
 
                 room_manager = new RoomManager();
 
-                StageScreen.initializePrompt(getSkin(), TILE_SIZE);
                 main_menu_screen = new MainMenuScreen(this);
                 map_editor_screen = new MapEditorScreen(this);
                 lobby_screen = new LobbyScreen(this);
@@ -416,9 +415,6 @@ public class GameContext extends Game implements GameManagerListener {
         synchronized (RENDER_LOCK) {
             Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            if (getScreen() instanceof StageScreen) {
-                ((StageScreen) getScreen()).updateFocus();
-            }
             super.render();
         }
     }

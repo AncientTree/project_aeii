@@ -73,7 +73,7 @@ public class ChallengeStage5 extends StageController {
         if (turn > 200) {
             getContext().fail();
         } else {
-            if (turn % 10 == 0) {
+            if (turn % 20 == 0) {
                 getContext().restore(1);
                 getContext().reinforce(1,
                         new Reinforcement(7, 14, 3),

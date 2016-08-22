@@ -4,18 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.NetworkListener;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.screen.dialog.BasicDialog;
-import net.toyknight.aeii.screen.dialog.ConfirmDialog;
+import net.toyknight.aeii.screen.dialog.*;
 import net.toyknight.aeii.utils.Language;
 import org.json.JSONObject;
 
@@ -37,21 +32,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     private final HashMap<String, BasicDialog> dialogs;
     private final LinkedList<String> dialog_layer;
 
-    private final ConfirmDialog confirm_dialog;
-
-    private static Stage prompt_layer;
-
-    private static Dialog prompt_dialog;
-    private static Label prompt_message;
-    private static TextButton prompt_btn_ok;
-    private static Callable prompt_callback;
-
-    private static Dialog input_dialog;
-    private static Label input_message;
-    private static TextField input_field;
-    private static TextButton input_btn_ok;
-    private static TextButton input_btn_cancel;
-    private static Input.TextInputListener input_listener;
+    private Stage prompt_layer;
+    private PromptDialog prompt_dialog;
+    private InputDialog input_dialog;
+    private ConfirmDialog confirm_dialog;
+    private PlaceholderDialog placeholder;
 
     public StageScreen(GameContext context) {
         this.context = context;
@@ -68,112 +53,38 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         this.dialog_layer = new LinkedList<String>();
         this.dialog_shown = false;
 
-        this.confirm_dialog = new ConfirmDialog(this);
-        this.addDialog("confirm", confirm_dialog);
+        initializePrompts();
     }
 
-    public static void initializePrompt(Skin skin, int ts) {
+    private void initializePrompts() {
         prompt_layer = new Stage();
 
         //initialize prompt dialog
-        int pdw = ts * 6;
-        int pdh = ts / 2 * 5;
-        prompt_dialog = new Dialog("", skin);
-        prompt_dialog.setBounds((Gdx.graphics.getWidth() - pdw) / 2, (Gdx.graphics.getHeight() - pdh) / 2, pdw, pdh);
-        //set the message
-        prompt_dialog.getContentTable().pad(ts / 4);
-        prompt_message = new Label("", skin);
-        prompt_message.setAlignment(Align.center);
-        prompt_message.setWrap(true);
-        prompt_dialog.getContentTable().add(prompt_message).width(ts * 6);
-        //set the button
-        prompt_btn_ok = new TextButton(Language.getText("LB_OK"), skin);
-        prompt_dialog.getButtonTable().add(prompt_btn_ok).size(ts / 2 * 5, ts / 3 * 2);
+        prompt_dialog = new PromptDialog(this);
         prompt_dialog.setVisible(false);
         prompt_layer.addActor(prompt_dialog);
 
         //initialize input dialog
-        int idw = ts * 8;
-        int idh = ts / 2 * 7;
-        input_dialog = new Dialog("", skin);
-        input_dialog.setBounds((Gdx.graphics.getWidth() - idw) / 2, (Gdx.graphics.getHeight() - idh) / 2, idw, idh);
-        input_message = new Label("", skin);
-        input_message.setWrap(true);
-        input_dialog.getContentTable().add(input_message).width(idw - ts / 2).pad(ts / 4).padBottom(ts / 12).row();
-        input_field = new TextField("", skin);
-        input_field.setFocusTraversal(false);
-        input_dialog.getContentTable().add(input_field).size(idw - ts / 2, ts / 2 + ts / 8);
-        input_btn_ok = new TextButton(Language.getText("LB_OK"), skin);
-        input_dialog.getButtonTable().add(input_btn_ok).size(ts * 3, ts / 3 * 2).pad(ts / 4).padTop(ts / 8);
-        input_btn_cancel = new TextButton(Language.getText("LB_CANCEL"), skin);
-        input_dialog.getButtonTable().add(input_btn_cancel).size(ts * 3, ts / 3 * 2).pad(ts / 4).padTop(ts / 8);
+        input_dialog = new InputDialog(this);
         input_dialog.setVisible(false);
         prompt_layer.addActor(input_dialog);
+
+        //initialize confirm dialog
+        confirm_dialog = new ConfirmDialog(this);
+        confirm_dialog.setVisible(false);
+        prompt_layer.addActor(confirm_dialog);
+
+        //initialize placeholder
+        placeholder = new PlaceholderDialog(this);
+        placeholder.setVisible(false);
+        prompt_layer.addActor(placeholder);
     }
 
     public void showPrompt(String message, Callable callback) {
         input_dialog.setVisible(false);
+        placeholder.setVisible(false);
         if (!prompt_dialog.isVisible()) {
-            prompt_callback = callback;
-            prompt_message.setText(message);
-            if (prompt_btn_ok.getListeners().size <= 1) {
-                prompt_btn_ok.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        closePrompt();
-                    }
-                });
-            }
-            prompt_dialog.getContentTable().pack();
-            prompt_dialog.pack();
-            prompt_dialog.setPosition(
-                    (Gdx.graphics.getWidth() - prompt_dialog.getWidth()) / 2,
-                    (Gdx.graphics.getHeight() - prompt_dialog.getHeight()) / 2);
-            prompt_dialog.setVisible(true);
-            Gdx.input.setInputProcessor(prompt_layer);
-        }
-    }
-
-    public void showInput(String message, int max_length, boolean password, Input.TextInputListener input_listener) {
-        if (!isPromptVisible()) {
-            StageScreen.input_listener = input_listener;
-            input_message.setText(message);
-            input_field.setText("");
-            input_field.setMaxLength(max_length);
-            input_field.setAlignment(password ? Align.center : Align.left);
-            input_field.setTextFieldListener(new TextField.TextFieldListener() {
-                @Override
-                public void keyTyped(TextField textField, char c) {
-                    if (c == '\n' || c == '\r') {
-                        StageScreen.input_listener.input(input_field.getText());
-                        closeInput();
-                    }
-                }
-            });
-            if (input_btn_ok.getListeners().size <= 1) {
-                input_btn_ok.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        StageScreen.input_listener.input(input_field.getText());
-                        closeInput();
-                    }
-                });
-            }
-            if (input_btn_cancel.getListeners().size <= 1) {
-                input_btn_cancel.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        StageScreen.input_listener.canceled();
-                        closeInput();
-                    }
-                });
-            }
-            input_dialog.getContentTable().pack();
-            input_dialog.pack();
-            input_dialog.setPosition(
-                    (Gdx.graphics.getWidth() - input_dialog.getWidth()) / 2,
-                    (Gdx.graphics.getHeight() - input_dialog.getHeight()) / 2);
-            input_dialog.setVisible(true);
+            prompt_dialog.display(message, callback);
             Gdx.input.setInputProcessor(prompt_layer);
         }
     }
@@ -181,15 +92,59 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     public void closePrompt() {
         prompt_dialog.setVisible(false);
         updateFocus();
-        if (prompt_callback != null) {
-            prompt_callback.call();
-            prompt_callback = null;
+    }
+
+    public void showInput(String message, int max_length, boolean password, Input.TextInputListener input_listener) {
+        if (!isPromptVisible()) {
+            input_dialog.display(message, max_length, password, input_listener);
+            Gdx.input.setInputProcessor(prompt_layer);
         }
     }
 
     public void closeInput() {
         input_dialog.setVisible(false);
         updateFocus();
+    }
+
+    public void showConfirm(String message, ConfirmDialog.ConfirmDialogListener listener) {
+        if (!isPromptVisible()) {
+            confirm_dialog.display(message, listener);
+            Gdx.input.setInputProcessor(prompt_layer);
+        }
+    }
+
+    public void closeConfirm() {
+        confirm_dialog.setVisible(false);
+        updateFocus();
+    }
+
+    public void showPlaceholder(String message) {
+        if (!isPromptVisible()) {
+            placeholder.setMessage(message);
+            placeholder.setVisible(true);
+            Gdx.input.setInputProcessor(prompt_layer);
+        }
+    }
+
+    public void closePlaceholder() {
+        placeholder.setVisible(false);
+        updateFocus();
+    }
+
+    public final void updateFocus() {
+        if (isPromptVisible()) {
+            Gdx.input.setInputProcessor(prompt_layer);
+            return;
+        }
+        if (isDialogVisible()) {
+            Gdx.input.setInputProcessor(dialog_stage);
+            return;
+        }
+        Gdx.input.setInputProcessor(this);
+    }
+
+    public boolean isPromptVisible() {
+        return input_dialog.isVisible() || prompt_dialog.isVisible() || confirm_dialog.isVisible() || placeholder.isVisible();
     }
 
     public GameContext getContext() {
@@ -200,34 +155,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         return getContext().getResources();
     }
 
-    public final void updateFocus() {
-        if(isPromptVisible()) {
-            Gdx.input.setInputProcessor(prompt_layer);
-            return;
-        }
-        if(isDialogVisible()) {
-            Gdx.input.setInputProcessor(dialog_stage);
-            return;
-        }
-        Gdx.input.setInputProcessor(this);
-    }
-
     public void addDialog(String name, BasicDialog dialog) {
         dialog.setName(name);
         dialog_stage.addActor(dialog);
         dialogs.put(name, dialog);
         dialog.setVisible(false);
-    }
-
-    public void showConfirmDialog(String message, Callable yes_callback, Callable no_callback) {
-        confirm_dialog.setMessage(message);
-        confirm_dialog.setYesCallback(yes_callback);
-        confirm_dialog.setNoCallable(no_callback);
-        showDialog("confirm");
-    }
-
-    public void closeConfirmDialog() {
-        closeDialog("confirm");
     }
 
     public void showWiki() {
@@ -283,10 +215,6 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
             Gdx.input.setInputProcessor(this);
             dialog_shown = false;
         }
-    }
-
-    public boolean isPromptVisible() {
-        return input_dialog.isVisible() || prompt_dialog.isVisible();
     }
 
     public boolean isDialogVisible() {
