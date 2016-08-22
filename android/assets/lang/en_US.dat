@@ -137,13 +137,6 @@ CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_3=DEFEAT: Turn number exceeds 200.
 CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, there's a bandit stronghold in the mountain, we need to eliminate them to protect the village!
 
-CAMPAIGN_CHALLENGE_STAGE_6_NAME=Forest Shrine
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Capture the castle under the shrine..
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, we are approching the shrine of elf, they would kill anyone who pass through the forest!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_3=Capture the shrine to win!!!
-
 CAMPAIGN_AEI_NAME=Battle of Thorin Prequel
 CAMPAIGN_AEI_STAGE_1_NAME=Regroup
 CAMPAIGN_AEI_STAGE_1_OBJECTIVE=King Galamar must occupy castle, keep all troops alive.
