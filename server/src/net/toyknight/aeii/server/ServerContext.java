@@ -1,7 +1,5 @@
 package net.toyknight.aeii.server;
 
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.PropertiesUtils;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -18,8 +16,6 @@ import net.toyknight.aeii.utils.TileFactory;
 import net.toyknight.aeii.utils.UnitFactory;
 import org.json.JSONException;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +31,7 @@ public class ServerContext {
 
     private ExecutorService executor;
 
-    private ObjectMap<String, String> configuration;
+    private ServerConfiguration configuration;
 
     private String verification_string;
 
@@ -86,14 +82,7 @@ public class ServerContext {
         }
     }
 
-    public void loadConfiguration() throws IOException {
-        File configuration_file = new File("server.cfg");
-        FileReader configuration_reader = new FileReader(configuration_file);
-        configuration = new ObjectMap<String, String>();
-        PropertiesUtils.load(configuration, configuration_reader);
-    }
-
-    public ObjectMap<String, String> getConfiguration() {
+    public ServerConfiguration getConfiguration() {
         return configuration;
     }
 
@@ -106,19 +95,12 @@ public class ServerContext {
         return verification_string;
     }
 
-    public int getPort() {
-        return Integer.parseInt(getConfiguration().get("PORT", "5438"));
-    }
-
-    public String getAdministratorToken() {
-        return configuration.get("ADMIN_TOKEN", "123456");
-    }
-
     public void initialize() throws ServerException {
         //load server configuration
         try {
-            loadConfiguration();
-        } catch (IOException ex) {
+            configuration = new ServerConfiguration();
+            configuration.initialize();
+        } catch (Exception ex) {
             throw new ServerException(TAG, "Error initializing server [exception while loading configuration]", ex);
         }
         //load game data and create verification string
@@ -135,11 +117,13 @@ public class ServerContext {
         request_handler = new RequestHandler(this);
         player_manager = new PlayerManager(this);
         room_manager = new RoomManager(this);
-        try {
-            map_manager = new MapManager();
-            map_manager.initialize();
-        } catch (ServerException ex) {
-            throw new ServerException(TAG, "Error initializing server [exception while initializing maps]", ex);
+        if (getConfiguration().isMapManagerEnabled()) {
+            try {
+                map_manager = new MapManager();
+                map_manager.initialize();
+            } catch (ServerException ex) {
+                throw new ServerException(TAG, "Error initializing server [exception while initializing maps]", ex);
+            }
         }
         //initialize server object
         server = new Server(90 * 1024, 90 * 1024);
@@ -171,7 +155,7 @@ public class ServerContext {
         initialize();
         try {
             server.start();
-            server.bind(getPort());
+            server.bind(getConfiguration().getPort());
             running = true;
         } catch (IOException ex) {
             throw new ServerException(TAG, "Error starting server [exception while binding port]", ex);
