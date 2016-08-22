@@ -369,7 +369,7 @@ public class GameCore implements Serializable {
     }
 
     public void resetUnit(Unit unit) {
-        unit.setCurrentMovementPoint(unit.getMovementPoint());
+        unit.resetMovementPoint();
         unit.setStandby(false);
     }
 

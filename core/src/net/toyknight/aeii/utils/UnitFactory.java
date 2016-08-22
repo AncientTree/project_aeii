@@ -86,8 +86,8 @@ public class UnitFactory {
         unit.setTeam(team);
         unit.setHead(team);
         unit.setStandby(false);
+        unit.resetMovementPoint();
         unit.setCurrentHp(unit.getMaxHp());
-        unit.setCurrentMovementPoint(unit.getMovementPoint());
         return unit;
     }
 
