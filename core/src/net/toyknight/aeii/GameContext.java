@@ -319,7 +319,7 @@ public class GameContext extends Game implements GameManagerListener {
             getCampaignContext().getCurrentCampaign().getCurrentStage().getContext().show_objectives();
         } catch (AEIIException ex) {
             if (getScreen() instanceof StageScreen) {
-                ((StageScreen) getScreen()).showPrompt(Language.getText("MSG_ERR_BMF"), null);
+                ((StageScreen) getScreen()).showNotification(Language.getText("MSG_ERR_BMF"), null);
             }
         }
     }

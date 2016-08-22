@@ -78,7 +78,7 @@ public class MapOpenDialog extends BasicDialog {
                 getEditor().setMap(map, snapshot.file.nameWithoutExtension());
                 getOwner().closeDialog("open");
             } catch (AEIIException ex) {
-                getOwner().showPrompt(Language.getText("MSG_ERR_BMF"), null);
+                getOwner().showNotification(Language.getText("MSG_ERR_BMF"), null);
             }
         }
     }

@@ -182,7 +182,7 @@ public class ChatRoomDialog extends BasicDialog {
             @Override
             public void onFinish(Array<PlayerSnapshot> result) {
                 if (result == null) {
-                    getOwner().showPrompt(Language.getText("MSG_ERR_AEA"), null);
+                    getOwner().showNotification(Language.getText("MSG_ERR_AEA"), null);
                 } else {
                     updateIdlePlayerList(result);
                 }
@@ -192,7 +192,7 @@ public class ChatRoomDialog extends BasicDialog {
             @Override
             public void onFail(String message) {
                 getOwner().closePlaceholder();
-                getOwner().showPrompt(Language.getText("MSG_ERR_AEA"), null);
+                getOwner().showNotification(Language.getText("MSG_ERR_AEA"), null);
             }
         });
     }

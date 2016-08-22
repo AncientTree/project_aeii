@@ -214,13 +214,13 @@ public class MapManagementScreen extends StageScreen {
                 @Override
                 public void onFinish(Void map) {
                     closePlaceholder();
-                    showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                    showNotification(Language.getText("MSG_ERR_FDM"), null);
                 }
 
                 @Override
                 public void onFail(String message) {
                     closePlaceholder();
-                    showPrompt(message, null);
+                    showNotification(message, null);
                 }
             });
         }
@@ -246,16 +246,16 @@ public class MapManagementScreen extends StageScreen {
             public void onFinish(Boolean success) {
                 closePlaceholder();
                 if (success) {
-                    showPrompt(Language.getText("MSG_INFO_MU"), null);
+                    showNotification(Language.getText("MSG_INFO_MU"), null);
                 } else {
-                    showPrompt(Language.getText("MSG_ERR_FUM"), null);
+                    showNotification(Language.getText("MSG_ERR_FUM"), null);
                 }
             }
 
             @Override
             public void onFail(String message) {
                 closePlaceholder();
-                showPrompt(message, null);
+                showNotification(message, null);
             }
         });
     }
@@ -263,14 +263,14 @@ public class MapManagementScreen extends StageScreen {
     private void tryWriteMap(Map map, String filename) {
         FileHandle map_file = FileProvider.getUserFile("map/" + filename);
         if (map_file.exists()) {
-            showPrompt(Language.getText("MSG_ERR_MAE"), null);
+            showNotification(Language.getText("MSG_ERR_MAE"), null);
         } else {
             try {
                 MapFactory.writeMap(map, map_file);
                 refreshLocalMaps();
-                showPrompt(Language.getText("MSG_INFO_MD"), null);
+                showNotification(Language.getText("MSG_INFO_MD"), null);
             } catch (IOException e) {
-                showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                showNotification(Language.getText("MSG_ERR_FDM"), null);
             }
         }
     }
@@ -295,7 +295,7 @@ public class MapManagementScreen extends StageScreen {
                 public void onFinish(Map map) {
                     closePlaceholder();
                     if (map == null) {
-                        showPrompt(Language.getText("MSG_ERR_FDM"), null);
+                        showNotification(Language.getText("MSG_ERR_FDM"), null);
                     } else {
                         preview(map);
                     }
@@ -304,7 +304,7 @@ public class MapManagementScreen extends StageScreen {
                 @Override
                 public void onFail(String message) {
                     closePlaceholder();
-                    showPrompt(message, null);
+                    showNotification(message, null);
                 }
             });
         }
@@ -317,7 +317,7 @@ public class MapManagementScreen extends StageScreen {
                 Map map = MapFactory.createMap(map_file);
                 preview(map);
             } catch (AEIIException e) {
-                showPrompt(Language.getText("MSG_ERR_BMF"), null);
+                showNotification(Language.getText("MSG_ERR_BMF"), null);
             }
         }
     }
@@ -347,7 +347,7 @@ public class MapManagementScreen extends StageScreen {
             public void onFinish(Array<MapSnapshot> map_list) {
                 closePlaceholder();
                 if (map_list == null) {
-                    showPrompt(Language.getText("MSG_ERR_CCS"), null);
+                    showNotification(Language.getText("MSG_ERR_CCS"), null);
                 } else {
                     map_list.sort();
                     updateServerMapList(map_list);
@@ -357,7 +357,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public void onFail(String message) {
                 closePlaceholder();
-                showPrompt(message, null);
+                showNotification(message, null);
             }
         });
     }

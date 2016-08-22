@@ -15,7 +15,7 @@ import net.toyknight.aeii.utils.Language;
 /**
  * @author toyknight 8/22/2016.
  */
-public class PromptDialog extends Dialog {
+public class NotificationDialog extends Dialog {
 
     private final int ts;
 
@@ -26,7 +26,7 @@ public class PromptDialog extends Dialog {
 
     private Callable prompt_callback;
 
-    public PromptDialog(StageScreen owner) {
+    public NotificationDialog(StageScreen owner) {
         super("", owner.getContext().getSkin());
         this.owner = owner;
         this.ts = owner.getContext().getTileSize();
@@ -45,7 +45,7 @@ public class PromptDialog extends Dialog {
         prompt_btn_ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().closePrompt();
+                close();
                 fireCallback();
             }
         });
@@ -74,6 +74,11 @@ public class PromptDialog extends Dialog {
         pack();
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2, (Gdx.graphics.getHeight() - getHeight()) / 2);
         setVisible(true);
+    }
+
+    public void close() {
+        setVisible(false);
+        getOwner().updateFocus();
     }
 
 }

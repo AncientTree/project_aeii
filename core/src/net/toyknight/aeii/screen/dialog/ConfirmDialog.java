@@ -45,7 +45,7 @@ public class ConfirmDialog extends Dialog {
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().closeConfirm();
+                close();
                 fireConfirmEvent();
             }
         });
@@ -54,7 +54,7 @@ public class ConfirmDialog extends Dialog {
         btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().closeConfirm();
+                close();
                 fireCancelEvent();
             }
         });
@@ -88,6 +88,11 @@ public class ConfirmDialog extends Dialog {
         pack();
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2, (Gdx.graphics.getHeight() - getHeight()) / 2);
         setVisible(true);
+    }
+
+    public void close() {
+        setVisible(false);
+        getOwner().updateFocus();
     }
 
     public interface ConfirmDialogListener {

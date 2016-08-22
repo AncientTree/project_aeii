@@ -43,7 +43,7 @@ public class InputDialog extends Dialog {
             @Override
             public void keyTyped(TextField textField, char c) {
                 if (c == '\n' || c == '\r') {
-                    getOwner().closeInput();
+                    close();
                     fireInputEvent(input_field.getText());
                 }
             }
@@ -53,7 +53,7 @@ public class InputDialog extends Dialog {
         input_btn_ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().closeInput();
+                close();
                 fireInputEvent(input_field.getText());
             }
         });
@@ -62,7 +62,7 @@ public class InputDialog extends Dialog {
         input_btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getOwner().closeInput();
+                close();
                 fireCancelEvent();
             }
         });
@@ -99,6 +99,11 @@ public class InputDialog extends Dialog {
         pack();
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2, (Gdx.graphics.getHeight() - getHeight()) / 2);
         setVisible(true);
+    }
+
+    public void close() {
+        setVisible(false);
+        getOwner().updateFocus();
     }
 
 }

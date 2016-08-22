@@ -178,7 +178,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
             }
         } catch (AEIIException ex) {
             selected_map = null;
-            showPrompt(Language.getText("MSG_ERR_BMF"), null);
+            showNotification(Language.getText("MSG_ERR_BMF"), null);
         }
     }
 
@@ -251,7 +251,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         if (selected_map != null && canStart()) {
             getContext().gotoGameScreen(getContext().getRoomManager().getArrangedGame());
         } else {
-            showPrompt(Language.getText("MSG_ERR_CNSG"), null);
+            showNotification(Language.getText("MSG_ERR_CNSG"), null);
         }
     }
 

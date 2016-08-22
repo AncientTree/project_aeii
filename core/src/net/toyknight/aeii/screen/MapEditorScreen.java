@@ -184,7 +184,7 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
 
     @Override
     public void onError(String message) {
-        showPrompt(message, null);
+        showNotification(message, null);
     }
 
     @Override

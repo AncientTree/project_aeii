@@ -33,10 +33,10 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     private final LinkedList<String> dialog_layer;
 
     private Stage prompt_layer;
-    private PromptDialog prompt_dialog;
-    private InputDialog input_dialog;
-    private ConfirmDialog confirm_dialog;
+    private NotificationDialog notification_dialog;
     private PlaceholderDialog placeholder;
+    private ConfirmDialog confirm_dialog;
+    private InputDialog input_dialog;
 
     public StageScreen(GameContext context) {
         this.context = context;
@@ -60,9 +60,9 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         prompt_layer = new Stage();
 
         //initialize prompt dialog
-        prompt_dialog = new PromptDialog(this);
-        prompt_dialog.setVisible(false);
-        prompt_layer.addActor(prompt_dialog);
+        notification_dialog = new NotificationDialog(this);
+        notification_dialog.setVisible(false);
+        prompt_layer.addActor(notification_dialog);
 
         //initialize input dialog
         input_dialog = new InputDialog(this);
@@ -80,18 +80,14 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         prompt_layer.addActor(placeholder);
     }
 
-    public void showPrompt(String message, Callable callback) {
+    public void showNotification(String message, Callable callback) {
         input_dialog.setVisible(false);
+        confirm_dialog.setVisible(false);
         placeholder.setVisible(false);
-        if (!prompt_dialog.isVisible()) {
-            prompt_dialog.display(message, callback);
+        if (!notification_dialog.isVisible()) {
+            notification_dialog.display(message, callback);
             Gdx.input.setInputProcessor(prompt_layer);
         }
-    }
-
-    public void closePrompt() {
-        prompt_dialog.setVisible(false);
-        updateFocus();
     }
 
     public void showInput(String message, int max_length, boolean password, Input.TextInputListener input_listener) {
@@ -101,21 +97,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
         }
     }
 
-    public void closeInput() {
-        input_dialog.setVisible(false);
-        updateFocus();
-    }
-
     public void showConfirm(String message, ConfirmDialog.ConfirmDialogListener listener) {
         if (!isPromptVisible()) {
             confirm_dialog.display(message, listener);
             Gdx.input.setInputProcessor(prompt_layer);
         }
-    }
-
-    public void closeConfirm() {
-        confirm_dialog.setVisible(false);
-        updateFocus();
     }
 
     public void showPlaceholder(String message) {
@@ -144,7 +130,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public boolean isPromptVisible() {
-        return input_dialog.isVisible() || prompt_dialog.isVisible() || confirm_dialog.isVisible() || placeholder.isVisible();
+        return input_dialog.isVisible() || notification_dialog.isVisible() || confirm_dialog.isVisible() || placeholder.isVisible();
     }
 
     public GameContext getContext() {
@@ -228,7 +214,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     @Override
     public void show() {
         NetworkManager.setNetworkListener(this);
-        if (prompt_dialog.isVisible()) {
+        if (notification_dialog.isVisible()) {
             Gdx.input.setInputProcessor(prompt_layer);
         } else {
             if (isDialogVisible()) {
@@ -271,7 +257,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onDisconnect() {
-        showPrompt(Language.getText("MSG_ERR_DFS"), new Callable() {
+        showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
                 getContext().gotoMainMenuScreen(true);
