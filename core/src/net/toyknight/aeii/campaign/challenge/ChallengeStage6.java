@@ -3,7 +3,6 @@ package net.toyknight.aeii.campaign.challenge;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
-import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
@@ -20,14 +19,15 @@ public class ChallengeStage6 extends StageController {
         }
     }
 
-
     @Override
     public void onGameStart() {
+        getContext().head(0, 1);
+        getContext().head(1, 0);
         getContext().alliance(0, 1);
         getContext().alliance(1, 0);
         getContext().alliance(2, 1);
         getContext().alliance(3, 1);
-        getContext().focus(12, 5);
+        getContext().focus(7, 1);
         Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1"));
         getContext().message(message);
         getContext().focus(1, 9);
@@ -450,9 +450,6 @@ public class ChallengeStage6 extends StageController {
                     new Reinforcement(1, 7, 9),
                     new Reinforcement(1, 6, 10));
         }
-    }
-
-    public void onTurnEnd(int turn) {
     }
 
     @Override
