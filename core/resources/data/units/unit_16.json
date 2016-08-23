@@ -1,8 +1,8 @@
 {
-"price": 700,
+"price": 600,
 "occupancy":4,
 "max_hp": 100,
-"attack": 50,
+"attack": 55,
 "attack_type": 0,
 "physical_defence": 10,
 "magic_defence": 10,
