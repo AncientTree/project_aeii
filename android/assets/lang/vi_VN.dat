@@ -269,6 +269,13 @@ CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, we are approching the shrine 
 CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
 CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_3=Capture the shrine to win!!!
 
+CAMPAIGN_CHALLENGE_STAGE_7_NAME=Long March
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
+CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
+CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_2=(Defeat other teams to save turns)
+
 CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần1)
 
 CAMPAIGN_AEI_STAGE_1_NAME=Tập Hợp Lại.
