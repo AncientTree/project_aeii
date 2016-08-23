@@ -7,11 +7,11 @@ import net.toyknight.aeii.screen.StageScreen;
 /**
  * @author toyknight 6/10/2016.
  */
-public class MessageDialog extends BasicDialog {
+public class PlaceholderDialog extends BasicDialog {
 
     private Label label_message;
 
-    public MessageDialog(StageScreen owner) {
+    public PlaceholderDialog(StageScreen owner) {
         super(owner);
         label_message = new Label("", getContext().getSkin());
         add(label_message).pad(ts / 2);

@@ -161,7 +161,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
 
     @Override
     public void onDisconnect() {
-        showPrompt(Language.getText("MSG_ERR_DFS"), new Callable() {
+        showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
                 getContext().gotoMainMenuScreen(false);
@@ -174,7 +174,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             Map map = MapFactory.createMap(snapshot.file);
             showMapPreview(map);
         } catch (AEIIException ex) {
-            showPrompt(Language.getText("MSG_ERR_BMF"), new Callable() {
+            showNotification(Language.getText("MSG_ERR_BMF"), new Callable() {
                 @Override
                 public void call() {
                     showDialog("create");
@@ -202,7 +202,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             @Override
             public void onFinish(Array<RoomSnapshot> result) {
                 if (result == null) {
-                    showPrompt(Language.getText("MSG_ERR_AEA"), null);
+                    showNotification(Language.getText("MSG_ERR_AEA"), null);
                 } else {
                     Gdx.input.setInputProcessor(LobbyScreen.this);
                     all_rooms = result;
@@ -214,7 +214,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
             @Override
             public void onFail(String message) {
                 btn_refresh.setText(Language.getText("LB_REFRESH"));
-                showPrompt(Language.getText("MSG_ERR_AEA"), null);
+                showNotification(Language.getText("MSG_ERR_AEA"), null);
             }
         });
     }
@@ -267,7 +267,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                 public void onFinish(RoomSetting setting) {
                     btn_join.setText(Language.getText("LB_JOIN"));
                     if (setting == null) {
-                        showPrompt(Language.getText("MSG_ERR_CNJR"), null);
+                        showNotification(Language.getText("MSG_ERR_CNJR"), null);
                     } else {
                         getContext().getRoomManager().initialize(setting);
                         if (setting.started) {
@@ -283,7 +283,7 @@ public class LobbyScreen extends StageScreen implements NetworkListener {
                 @Override
                 public void onFail(String message) {
                     btn_join.setText(Language.getText("LB_JOIN"));
-                    showPrompt(message, null);
+                    showNotification(message, null);
                 }
             });
         }

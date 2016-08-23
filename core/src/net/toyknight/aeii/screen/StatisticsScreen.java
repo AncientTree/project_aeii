@@ -117,7 +117,7 @@ public class StatisticsScreen extends StageScreen {
                 @Override
                 public void onFail(String message) {
                     btn_leave.setText(Language.getText("LB_LEAVE"));
-                    showPrompt(message, null);
+                    showNotification(message, null);
                 }
             });
         } else {

@@ -211,46 +211,52 @@ public class RequestHandler {
     }
 
     public void onMapListRequested(Player player, JSONObject request) {
-        JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
-        if (request.has("author")) {
-            String author = request.getString("author");
-            response.put("maps", getContext().getMapManager().getSerializedMapList(author));
-        } else {
-            response.put("maps", getContext().getMapManager().getSerializedAuthorList());
+        if (getContext().getConfiguration().isMapManagerEnabled()) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            if (request.has("author")) {
+                String author = request.getString("author");
+                response.put("maps", getContext().getMapManager().getSerializedMapList(author));
+            } else {
+                response.put("maps", getContext().getMapManager().getSerializedAuthorList());
+            }
+            player.sendTCP(response.toString());
         }
-        player.sendTCP(response.toString());
     }
 
     public void onMapUploadRequest(Player player, JSONObject request) {
-        JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
-        Map map = new Map(request.getJSONObject("map"));
-        String map_name = request.getString("map_name");
-        boolean approved;
-        try {
-            getContext().getMapManager().addMap(map, map_name);
-            approved = true;
-        } catch (IOException ex) {
-            approved = false;
+        if (getContext().getConfiguration().isMapManagerEnabled()) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            Map map = new Map(request.getJSONObject("map"));
+            String map_name = request.getString("map_name");
+            boolean approved;
+            try {
+                getContext().getMapManager().addMap(map, map_name);
+                approved = true;
+            } catch (IOException ex) {
+                approved = false;
+            }
+            response.put("approved", approved);
+            player.sendTCP(response.toString());
         }
-        response.put("approved", approved);
-        player.sendTCP(response.toString());
     }
 
     public void onMapDownloadRequested(Player player, JSONObject request) {
-        JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
-        String filename = request.getString("filename");
-        boolean approved;
-        try {
-            Map map = getContext().getMapManager().getMap(filename);
-            response.put("map", map.toJson());
-            approved = true;
-        } catch (IOException ex) {
-            approved = false;
-        } catch (AEIIException ex) {
-            approved = false;
+        if (getContext().getConfiguration().isMapManagerEnabled()) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            String filename = request.getString("filename");
+            boolean approved;
+            try {
+                Map map = getContext().getMapManager().getMap(filename);
+                response.put("map", map.toJson());
+                approved = true;
+            } catch (IOException ex) {
+                approved = false;
+            } catch (AEIIException ex) {
+                approved = false;
+            }
+            response.put("approved", approved);
+            player.sendTCP(response.toString());
         }
-        response.put("approved", approved);
-        player.sendTCP(response.toString());
     }
 
     public void onIdlePlayerListRequested(Player player) {

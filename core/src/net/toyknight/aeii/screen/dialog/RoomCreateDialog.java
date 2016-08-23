@@ -161,7 +161,7 @@ public class RoomCreateDialog extends BasicDialog {
                 FileHandle save_file = (FileHandle) object_list.getSelected();
                 GameSave save = GameToolkit.loadGame(save_file);
                 if (save == null) {
-                    getOwner().showPrompt(Language.getText("MSG_ERR_BSF"), null);
+                    getOwner().showNotification(Language.getText("MSG_ERR_BSF"), null);
                 } else {
                     getOwner().showMapPreview(save.getGame().getMap());
                 }
@@ -184,7 +184,7 @@ public class RoomCreateDialog extends BasicDialog {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
                     if (setting == null) {
-                        getOwner().showPrompt(Language.getText("MSG_ERR_CNCR"), null);
+                        getOwner().showNotification(Language.getText("MSG_ERR_CNCR"), null);
                     } else {
                         getContext().getRoomManager().initialize(setting);
                         getContext().gotoNetGameCreateScreen();
@@ -195,7 +195,7 @@ public class RoomCreateDialog extends BasicDialog {
                 public void onFail(String message) {
                     setEnabled(true);
                     btn_create.setText(Language.getText("LB_CREATE"));
-                    getOwner().showPrompt(Language.getText("MSG_ERR_CNCR"), null);
+                    getOwner().showNotification(Language.getText("MSG_ERR_CNCR"), null);
                 }
             });
         }

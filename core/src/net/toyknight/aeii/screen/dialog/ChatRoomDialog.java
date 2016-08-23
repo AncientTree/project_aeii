@@ -172,7 +172,7 @@ public class ChatRoomDialog extends BasicDialog {
 
     private void tryRefreshIdlePlayerList() {
         Gdx.input.setInputProcessor(null);
-        btn_refresh.setText(Language.getText("LB_REFRESHING"));
+        getOwner().showPlaceholder(Language.getText("LB_REFRESHING"));
         getContext().submitAsyncTask(new AsyncTask<Array<PlayerSnapshot>>() {
             @Override
             public Array<PlayerSnapshot> doTask() throws Exception {
@@ -182,18 +182,17 @@ public class ChatRoomDialog extends BasicDialog {
             @Override
             public void onFinish(Array<PlayerSnapshot> result) {
                 if (result == null) {
-                    getOwner().showPrompt(Language.getText("MSG_ERR_AEA"), null);
+                    getOwner().showNotification(Language.getText("MSG_ERR_AEA"), null);
                 } else {
-                    getOwner().onFocus();
                     updateIdlePlayerList(result);
                 }
-                btn_refresh.setText(Language.getText("LB_REFRESH"));
+                getOwner().closePlaceholder();
             }
 
             @Override
             public void onFail(String message) {
-                btn_refresh.setText(Language.getText("LB_REFRESH"));
-                getOwner().showPrompt(Language.getText("MSG_ERR_AEA"), null);
+                getOwner().closePlaceholder();
+                getOwner().showNotification(Language.getText("MSG_ERR_AEA"), null);
             }
         });
     }

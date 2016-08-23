@@ -2,70 +2,104 @@ package net.toyknight.aeii.screen.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import net.toyknight.aeii.Callable;
+import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.screen.StageScreen;
 import net.toyknight.aeii.utils.Language;
 
 /**
- * @author toyknight 6/10/2016.
+ * @author toyknight 8/22/2016.
  */
-public class ConfirmDialog extends BasicDialog {
+public class ConfirmDialog extends Dialog {
 
-    private final Label label_message;
+    private final int ts;
 
-    private final TextButton btn_yes;
-    private final TextButton btn_no;
+    private final StageScreen owner;
 
-    private Callable yes_callable;
-    private Callable no_callable;
+    private final Label confirm_message;
+    private final TextButton btn_confirm;
+    private final TextButton btn_cancel;
+
+    private ConfirmDialogListener listener;
 
     public ConfirmDialog(StageScreen owner) {
-        super(owner);
+        super("", owner.getContext().getSkin());
+        this.owner = owner;
+        this.ts = owner.getContext().getTileSize();
 
-        label_message = new Label("", getContext().getSkin());
-        label_message.setAlignment(Align.center);
-        label_message.setWrap(true);
-        add(label_message).size(ts * 6 + ts / 2, ts + ts / 2).row();
-
-        Table button_bar = new Table();
-        btn_yes = new TextButton(Language.getText("LB_YES"), getContext().getSkin());
-        btn_yes.addListener(new ClickListener() {
+        int cdw = ts * 6;
+        int cdh = ts / 2 * 5;
+        setBounds((Gdx.graphics.getWidth() - cdw) / 2, (Gdx.graphics.getHeight() - cdh) / 2, cdw, cdh);
+        //set the message
+        getContentTable().pad(ts / 4);
+        confirm_message = new Label("", getContext().getSkin());
+        confirm_message.setAlignment(Align.center);
+        confirm_message.setWrap(true);
+        getContentTable().add(confirm_message).width(ts * 6);
+        //set the button
+        btn_confirm = new TextButton(Language.getText("LB_YES"), getContext().getSkin());
+        btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                yes_callable.call();
+                close();
+                fireConfirmEvent();
             }
         });
-        button_bar.add(btn_yes).size(ts * 3, ts).padBottom(ts / 2);
-        btn_no = new TextButton(Language.getText("LB_NO"), getContext().getSkin());
-        btn_no.addListener(new ClickListener() {
+        getButtonTable().add(btn_confirm).size(ts * 2, ts / 3 * 2).padRight(ts / 2).padBottom(ts / 8);
+        btn_cancel = new TextButton(Language.getText("LB_NO"), getContext().getSkin());
+        btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                no_callable.call();
+                close();
+                fireCancelEvent();
             }
         });
-        button_bar.add(btn_no).size(ts * 3, ts).padLeft(ts / 2).padBottom(ts / 2);
-        add(button_bar).size(ts * 6 + ts / 2, ts + ts / 2);
-
-        int width = ts * 7 + ts / 2;
-        int height = ts * 3;
-        setBounds((Gdx.graphics.getWidth() - width) / 2, (Gdx.graphics.getHeight() - height) / 2, width, height);
+        getButtonTable().add(btn_cancel).size(ts * 2, ts / 3 * 2).padBottom(ts / 8);
     }
 
-    public void setMessage(String message) {
-        label_message.setText(message);
+    private void fireConfirmEvent() {
+        if (listener != null) {
+            listener.confirmed();
+        }
     }
 
-    public void setYesCallback(Callable callable) {
-        this.yes_callable = callable;
+    private void fireCancelEvent() {
+        if (listener != null) {
+            listener.canceled();
+        }
     }
 
-    public void setNoCallable(Callable callable) {
-        this.no_callable = callable;
+    public StageScreen getOwner() {
+        return owner;
+    }
+
+    public GameContext getContext() {
+        return getOwner().getContext();
+    }
+
+    public void display(String message, ConfirmDialogListener listener) {
+        this.listener = listener;
+        confirm_message.setText(message);
+        getContentTable().pack();
+        pack();
+        setPosition((Gdx.graphics.getWidth() - getWidth()) / 2, (Gdx.graphics.getHeight() - getHeight()) / 2);
+        setVisible(true);
+    }
+
+    public void close() {
+        setVisible(false);
+        getOwner().updateFocus();
+    }
+
+    public interface ConfirmDialogListener {
+
+        void confirmed();
+
+        void canceled();
     }
 
 }

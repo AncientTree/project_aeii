@@ -156,10 +156,6 @@ public class Unit implements Serializable, Verifiable {
         return level;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
     public void setUnitCode(String unit_code) {
         this.unit_code = unit_code;
     }
@@ -222,6 +218,10 @@ public class Unit implements Serializable, Verifiable {
 
     public void setCurrentMovementPoint(int current_movement_point) {
         this.current_movement_point = current_movement_point;
+    }
+
+    public void resetMovementPoint() {
+        current_movement_point = getMovementPoint();
     }
 
     public boolean hasAbility(int ability) {
@@ -353,6 +353,7 @@ public class Unit implements Serializable, Verifiable {
 
     public void clearStatus() {
         this.status = null;
+        resetMovementPoint();
     }
 
     public void attachStatus(Status status) {

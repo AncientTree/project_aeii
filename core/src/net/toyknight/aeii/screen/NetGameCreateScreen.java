@@ -343,7 +343,7 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFail(String message) {
-                showPrompt(message, null);
+                showNotification(message, null);
             }
         });
     }
@@ -367,7 +367,7 @@ public class NetGameCreateScreen extends StageScreen {
             @Override
             public void onFail(String message) {
                 btn_leave.setText(Language.getText("LB_LEAVE"));
-                showPrompt(message, null);
+                showNotification(message, null);
             }
         });
     }
@@ -402,14 +402,14 @@ public class NetGameCreateScreen extends StageScreen {
                 if (success) {
                     createGame();
                 } else {
-                    showPrompt(Language.getText("MSG_ERR_CNSG"), null);
+                    showNotification(Language.getText("MSG_ERR_CNSG"), null);
                 }
             }
 
             @Override
             public void onFail(String message) {
                 btn_start.setText(Language.getText("LB_START"));
-                showPrompt(message, null);
+                showNotification(message, null);
             }
         });
     }
