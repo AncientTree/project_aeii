@@ -163,9 +163,8 @@ public class Robot {
                     int preferred_attack_type = enemy_average_physical_defence <= enemy_average_magic_defence ?
                             Unit.ATTACK_PHYSICAL : Unit.ATTACK_MAGIC;
                     int preferred_ability = getPreferredAbility();
-                    int unit_index =
-                            getPreferredRecruitment(preferred_attack_type, preferred_ability, enemy_average_mobility);
-                    System.out.println(String.format("index: %d, pat: %d, p_ability: %d, p_amob: %d", unit_index, preferred_attack_type, preferred_ability, enemy_average_mobility));
+                    int unit_index = getPreferredRecruitment(
+                            recruit_position, preferred_attack_type, preferred_ability, enemy_average_mobility);
                     if (unit_index >= 0 &&
                             getManager().canBuy(unit_index, team, recruit_position.x, recruit_position.y)) {
                         getManager().doBuyUnit(unit_index, recruit_position.x, recruit_position.y);
@@ -296,6 +295,11 @@ public class Robot {
                     Unit target = getGame().getMap().getUnit(target_position);
                     if (isEnemy(target)) {
                         actions.add(new Action(position, target_position, Operation.ATTACK));
+                    } else {
+                        Tile tile = getGame().getMap().getTile(target_position);
+                        if (target == null && selected_unit.hasAbility(Ability.DESTROYER) && isEnemyVillage(tile)) {
+                            actions.add(new Action(position, target_position, Operation.ATTACK));
+                        }
                     }
                     if (isAlly(target)) {
                         temp_selected_unit.setX(position.x);
@@ -384,6 +388,9 @@ public class Robot {
 
     private void submitAction(Action action) {
         this.action = action;
+        if (action.getType() == Operation.REPAIR) {
+            assigned_positions.add(action.getPosition());
+        }
         System.out.println("go to " + "[" + action.getPosition().x + ", " + action.getPosition().y + "]");
         switch (action.getType()) {
             case Operation.ATTACK:
@@ -461,7 +468,12 @@ public class Robot {
                     if (isEnemy(target)) {
                         score += target.getPrice() / 20 + getAttackScore(selected_unit, target);
                     } else {
-                        score += 0;
+                        tile = getGame().getMap().getTile(action.getTarget());
+                        if (target == null && isEnemyVillage(tile)) {
+                            score += 5000;
+                        } else {
+                            score += 0;
+                        }
                     }
                     break;
                 default:
@@ -534,7 +546,7 @@ public class Robot {
         return score;
     }
 
-    private int getAverateAllyDistance(Position position) {
+    private int getAverageAllyDistance(Position position) {
         int ally_count = 0;
         int total_distance = 0;
         for (Unit unit : getGame().getMap().getUnits()) {
@@ -714,7 +726,12 @@ public class Robot {
         return preferred_action;
     }
 
-    private int getPreferredRecruitment(int preferred_attack_type, int preferred_ability, int preferred_mobility) {
+    private int getPreferredRecruitment(
+            Position recruit_position, int preferred_attack_type, int preferred_ability, int preferred_mobility) {
+        if (getGame().getMap().getUnit(recruit_position) == null
+                && isThreatened(recruit_position) && getGold() < getSecondExpensiveUnitPrice()) {
+            return getGame().getRule().getAvailableUnits().first();
+        }
         if (preferred_ability >= 0 && ability_map.containsKey(preferred_ability)) {
             int preferred_index = -1;
             boolean mobility_reached = false;
@@ -781,10 +798,22 @@ public class Robot {
         return standby_position;
     }
 
+    private int getSecondExpensiveUnitPrice() {
+        if (getGame().getRule().getAvailableUnits().size >= 2) {
+            return getGame().getUnitPrice(getGame().getRule().getAvailableUnits().get(1), team);
+        } else {
+            return getGame().getUnitPrice(getGame().getRule().getAvailableUnits().get(0), team);
+        }
+    }
+
+    private int getCheapestUnitPrice() {
+        return getGame().getUnitPrice(getGame().getRule().getAvailableUnits().get(0), team);
+    }
+
     private int getStandbyScore(Unit unit, Position standby_position) {
         int score = 0;
         score += getAverageEnemyDistance(standby_position) * 20;
-        score -= getAverateAllyDistance(standby_position) * 10;
+        score -= getAverageAllyDistance(standby_position) * 10;
         score += getManager().getUnitToolkit().getTileDefenceBonus(
                 unit, getGame().getMap().getTileIndex(standby_position)) * 5;
         Tile tile = getGame().getMap().getTile(standby_position);
@@ -804,7 +833,7 @@ public class Robot {
             score -= 5000;
         }
         if (isThreatened(standby_position)) {
-            if (tile.isCastle()) {
+            if (tile.isCastle() && getGold() < getCheapestUnitPrice()) {
                 score += 20000;
             }
             if (tile.isVillage()) {
@@ -877,6 +906,10 @@ public class Robot {
 
     private boolean isEnemyCommander(Unit unit) {
         return isEnemy(unit) && unit.isCommander();
+    }
+
+    private boolean isEnemyVillage(Tile tile) {
+        return tile != null && tile.isVillage() && getGame().isEnemy(team, tile.getTeam());
     }
 
     private boolean isMyCastle(Tile tile) {
