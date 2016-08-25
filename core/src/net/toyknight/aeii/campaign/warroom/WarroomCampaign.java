@@ -4,7 +4,7 @@ import net.toyknight.aeii.campaign.CampaignController;
 import net.toyknight.aeii.utils.Language;
 
 /**
- * @author toyknight 6/26/2016.
+ * @author blackwave 08/25/2016.
  */
 public class WarroomCampaign extends CampaignController {
 

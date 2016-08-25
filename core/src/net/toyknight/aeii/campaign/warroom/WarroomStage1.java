@@ -8,7 +8,7 @@ import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
 
 /**
- * @author toyknight 7/3/2016.
+ * @author blackwave 08/25/2016.
  */
 public class WarroomStage1 extends StageController {
 

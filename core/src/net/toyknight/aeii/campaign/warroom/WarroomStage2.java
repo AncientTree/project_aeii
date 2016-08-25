@@ -9,11 +9,9 @@ import net.toyknight.aeii.utils.Language;
 import java.util.Random;
 
 /**
- * @author by toyknight 8/2/2016.
+ * @author blackwave 8/25/2016.
  */
 public class WarroomStage2 extends StageController {
-
-
 
     private void checkClear() {
         if (getContext().tile(13, 13).getTeam() == 1) {
