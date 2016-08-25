@@ -416,9 +416,13 @@ public class Robot {
     }
 
     private boolean canOccupy(Position position, Unit unit) {
-        Unit target = getGame().getMap().getUnit(position);
-        return getGame().canOccupy(unit, position.x, position.y)
-                && (target == null || UnitToolkit.isTheSameUnit(unit, target));
+        if (!getGame().isAlly(team, getGame().getMap().getTile(position).getTeam())) {
+            Unit target = getGame().getMap().getUnit(position);
+            return getGame().canOccupy(unit, position.x, position.y)
+                    && (target == null || UnitToolkit.isTheSameUnit(unit, target));
+        } else {
+            return false;
+        }
     }
 
     private int getActionScore(Action action) {
