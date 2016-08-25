@@ -3,6 +3,7 @@ package net.toyknight.aeii.entity;
 import static net.toyknight.aeii.entity.Rule.Entry.*;
 
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.Serializable;
 import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
@@ -387,6 +388,26 @@ public class GameCore implements Serializable {
 
     public boolean isAlly(int team_a, int team_b) {
         return team_a >= 0 && team_b >= 0 && getAlliance(team_a) == getAlliance(team_b);
+    }
+
+    public ObjectSet<Unit> getEnemyUnits(int team) {
+        ObjectSet<Unit> enemy_units = new ObjectSet<Unit>();
+        for (Unit unit : getMap().getUnits()) {
+            if (isEnemy(team, unit.getTeam())) {
+                enemy_units.add(unit);
+            }
+        }
+        return enemy_units;
+    }
+
+    public ObjectSet<Unit> getAllyUnits(int team) {
+        ObjectSet<Unit> ally_units = new ObjectSet<Unit>();
+        for (Unit unit : getMap().getUnits()) {
+            if (isAlly(team, unit.getTeam())) {
+                ally_units.add(unit);
+            }
+        }
+        return ally_units;
     }
 
     public int getEnemyAroundCount(Unit unit, int range) {

@@ -400,7 +400,7 @@ public class GameManager implements AnimationListener {
 
     public void createMovablePositions() {
         movable_positions.clear();
-        movable_positions.addAll(getPositionGenerator().createMovablePositions(getSelectedUnit()));
+        movable_positions.addAll(getPositionGenerator().createMovablePositions(getSelectedUnit(), true));
     }
 
     public ObjectSet<Position> getMovablePositions() {
@@ -477,7 +477,7 @@ public class GameManager implements AnimationListener {
             Tile tile = getGame().getMap().getTile(map_x, map_y);
             Unit unit = getGame().getMap().getUnit(map_x, map_y);
             if (getGame().isCastleAccessible(tile, team) && getGame().canBuyUponUnit(unit, team)) {
-                Unit sample = index == UnitFactory.getCommanderIndex() ?
+                Unit sample = UnitFactory.isCommander(index) ?
                         UnitFactory.cloneUnit(getGame().getCommander(team)) :
                         UnitFactory.cloneUnit(UnitFactory.getSample(index));
                 sample.clearStatus();

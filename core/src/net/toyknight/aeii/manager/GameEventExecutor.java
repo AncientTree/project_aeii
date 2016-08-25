@@ -332,7 +332,7 @@ public class GameEventExecutor {
             int price = getGame().getUnitPrice(index, team);
             getGame().getCurrentPlayer().changeGold(-price);
 
-            if (index == UnitFactory.getCommanderIndex()) {
+            if (UnitFactory.isCommander(index)) {
                 getGame().restoreCommander(team, target_x, target_y);
             } else {
                 getGame().createUnit(index, team, target_x, target_y);
@@ -619,7 +619,7 @@ public class GameEventExecutor {
             int map_x = reinforcement.getInt("x");
             int map_y = reinforcement.getInt("y");
             if (getGame().getMap().getUnit(map_x, map_y) == null) {
-                if (index == UnitFactory.getCommanderIndex()) {
+                if (UnitFactory.isCommander(index)) {
                     if (getGame().isCommanderAlive(team)) {
                         getGame().createUnit(index, team, map_x, map_y);
                     } else {
@@ -687,7 +687,7 @@ public class GameEventExecutor {
 
     private void onCampaignCreateUnit(int index, int team, int map_x, int map_y) {
         if (getGame().getMap().getUnit(map_x, map_y) == null) {
-            if (index == UnitFactory.getCommanderIndex()) {
+            if (UnitFactory.isCommander(index)) {
                 getGame().restoreCommander(team, map_x, map_y);
             } else {
                 getGame().createUnit(index, team, map_x, map_y);

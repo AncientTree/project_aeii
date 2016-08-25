@@ -114,7 +114,7 @@ public class Wiki extends BasicDialog {
         RootNode node_units = RootNode.create(RootNode.UNITS, getContext().getSkin());
         unit_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-            if (index != UnitFactory.getCrystalIndex()) {
+            if (!UnitFactory.isCrystal(index)) {
                 Tree.Node node = EntryNode.create(EntryNode.TYPE_UNIT, index, ts, getContext());
                 unit_nodes.put(index, node);
                 node_units.add(node);

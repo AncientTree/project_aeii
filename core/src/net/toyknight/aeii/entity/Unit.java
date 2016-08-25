@@ -125,15 +125,15 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public boolean isCommander() {
-        return getIndex() == UnitFactory.getCommanderIndex();
+        return UnitFactory.isCommander(getIndex());
     }
 
     public boolean isCrystal() {
-        return getIndex() == UnitFactory.getCrystalIndex();
+        return UnitFactory.isCrystal(getIndex());
     }
 
     public boolean isSkeleton() {
-        return getIndex() == UnitFactory.getSkeletonIndex();
+        return UnitFactory.isSkeleton(getIndex());
     }
 
     public int getPrice() {

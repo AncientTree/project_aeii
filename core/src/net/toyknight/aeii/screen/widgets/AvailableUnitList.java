@@ -124,7 +124,7 @@ public class AvailableUnitList extends AEIIWidget implements Cullable {
                     x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
             batch.draw(getResources().getUnitTexture(current_team, unit_index, 0),
                     x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
-            if (UnitFactory.getCommanderIndex() == unit_index) {
+            if (UnitFactory.isCommander(unit_index)) {
                 getContext().getCanvasRenderer().drawHead(batch, getGame().getCommander(current_team).getHead(),
                         x + unit_offset, y + itemY - item_height + unit_offset, 0, ts);
             }

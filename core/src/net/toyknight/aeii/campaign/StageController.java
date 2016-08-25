@@ -26,7 +26,7 @@ public abstract class StageController {
     }
 
     protected boolean isCrystal(Unit unit, int team) {
-        return unit.getTeam() == team && unit.getIndex() == UnitFactory.getCrystalIndex();
+        return unit.getTeam() == team && UnitFactory.isCrystal(unit.getIndex());
     }
 
     public final void setCleared(boolean cleared) {
