@@ -242,39 +242,36 @@ CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn
 
 CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=Chết tiệt, các thành phố của kẻ thù đã nhận thấy chúng tôi! Các hoạt động phục kích đã thất bại, chúng ta phải đấu tranh với họ phía trước. Chiếm giữ tất cả các lâu đài của kẻ thù!
 
-
-CAMPAIGN_CHALLENGE_STAGE_4_NAME=Hòn đảo ma
+CAMPAIGN_CHALLENGE_STAGE_4_NAME=Thung lũng rung chuyển
 
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
 
-CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Chỉ huy, hòn đảo này có vẻ kỳ lạ, chúng ta nên cẩn thận!
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=DEFEAT: Số lượt vượt quá 200
 
+CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Tâu bệ hạ, có một thành trì tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
 
-CAMPAIGN_CHALLENGE_STAGE_5_NAME=Thung lũng rung chuyển
+CAMPAIGN_WARROOM_NAME=BW's Warroom
 
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
+CAMPAIGN_WARROOM_STAGE_1_NAME=Hòn đảo ma
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1=Commander, Chỉ huy, hòn đảo này có vẻ kỳ lạ, chúng ta nên cẩn thận!
 
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống 
+CAMPAIGN_WARROOM_STAGE_2_NAME=Forest Shrine
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1=VICTORY: Capture the castle under the shrine..
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1=Your majesty, we are approching the shrine of elf, they would kill anyone who pass through the forest!
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3=Capture the shrine to win!!!
 
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_3=DEFEAT: Số lượt vượt quá 200
-
-CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Tâu bệ hạ, có một thành trì tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
-
-CAMPAIGN_CHALLENGE_STAGE_6_NAME=Forest Shrine
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Capture the castle under the shrine..
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, we are approching the shrine of elf, they would kill anyone who pass through the forest!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_3=Capture the shrine to win!!!
-
-CAMPAIGN_CHALLENGE_STAGE_7_NAME=Long March
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=VICTORY: Defeat the red team to win..
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_2=(Defeat other teams to save turns)
+CAMPAIGN_WARROOM_STAGE_3_NAME=Long March
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=(Defeat other teams to save turns)
 
 CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần1)
 

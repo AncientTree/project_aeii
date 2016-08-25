@@ -126,30 +126,32 @@ CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_1=VICTORY: Capture all enemy castles.
 CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=Damn, the enemy cities have noticed us! The ambush operation has failed, we must fight them head on. Capture all their castles!
 
-CAMPAIGN_CHALLENGE_STAGE_4_NAME=Ghost Island
+CAMPAIGN_CHALLENGE_STAGE_4_NAME=Rock Valley
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Commander, this island looks strange, we should be careful!
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=DEFEAT: Turn number exceeds 200.
+CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Your majesty, there's a bandit stronghold in the mountain, we need to eliminate them to protect the village!
 
-CAMPAIGN_CHALLENGE_STAGE_5_NAME=Rock Valley
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_3=DEFEAT: Turn number exceeds 200.
-CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, there's a bandit stronghold in the mountain, we need to eliminate them to protect the village!
+CAMPAIGN_WARROOM_NAME=BW's Warroom
 
-CAMPAIGN_CHALLENGE_STAGE_6_NAME=Forest Shrine
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Capture the castle under the shrine..
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, we are approching the shrine of elf, they would kill anyone who pass through the forest!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_3=Capture the shrine to win!!!
+CAMPAIGN_WARROOM_STAGE_1_NAME=Ghost Island
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1=Commander, this island looks strange, we should be careful!
 
-CAMPAIGN_CHALLENGE_STAGE_7_NAME=Long March
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=VICTORY: Defeat the red team to win..
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_2=(Defeat other teams to save turns)
+CAMPAIGN_WARROOM_STAGE_2_NAME=Forest Shrine
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1=VICTORY: Capture the castle under the shrine..
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1=Your majesty, we are approching the shrine of elf, they would kill anyone who pass through the forest!
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3=Capture the shrine to win!!!
+
+CAMPAIGN_WARROOM_STAGE_3_NAME=Long March
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=(Defeat other teams to save turns)
 
 CAMPAIGN_AEI_NAME=Battle of Thorin Prequel
 CAMPAIGN_AEI_STAGE_1_NAME=Regroup
