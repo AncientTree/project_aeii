@@ -336,7 +336,7 @@ public class Robot {
             }
         } else {
             synchronized (GameContext.RENDER_LOCK) {
-                if (isThreatened(current_position)) {
+                if (isThreatened(current_position) && movable_positions.contains(current_position)) {
                     submitAction(new Action(current_position, current_position, Operation.STANDBY));
                     return;
                 }
