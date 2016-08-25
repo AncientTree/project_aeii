@@ -447,7 +447,7 @@ public class Robot {
                 case Operation.HEAL:
                     Unit target = getGame().getMap().getUnit(action.getTarget());
                     if (isAlly(target)) {
-                        score += 10 * target.getAttack() * target.getCurrentHp() / target.getMaxHp();
+                        score += 10 * (target.getAttack() * target.getCurrentHp() / target.getMaxHp() + getMobility(target) * 5);
                     } else {
                         score += 0;
                     }
