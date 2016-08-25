@@ -13,6 +13,8 @@ import java.util.Random;
  */
 public class ChallengeStage6 extends StageController {
 
+
+
     private void checkClear() {
         if (getContext().tile(13, 13).getTeam() == 1) {
             getContext().clear();
@@ -491,5 +493,6 @@ public class ChallengeStage6 extends StageController {
     public String getStageName() {
         return Language.getText("CAMPAIGN_CHALLENGE_STAGE_6_NAME");
     }
+
 
 }
