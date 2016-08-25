@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.toyknight.aeii.android"
     android:versionCode="22"
-    android:versionName="1.1.9 beta" >
+    android:versionName="1.1.9" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="23" />
     <uses-permission android:name="android.permission.INTERNET" />
