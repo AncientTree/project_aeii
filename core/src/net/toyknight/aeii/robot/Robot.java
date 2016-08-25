@@ -719,15 +719,17 @@ public class Robot {
             int preferred_index = -1;
             boolean mobility_reached = false;
             for (int index : ability_map.get(preferred_ability)) {
-                Unit sample =
-                        UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
-                if (preferred_index < 0) {
-                    preferred_index = index;
-                    mobility_reached = getMobility(sample) >= preferred_mobility;
-                } else {
-                    if (!mobility_reached && getMobility(sample) >= preferred_mobility) {
+                if (!UnitFactory.isCommander(index) || !getGame().isCommanderAlive(team)) {
+                    Unit sample =
+                            UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
+                    if (preferred_index < 0) {
                         preferred_index = index;
-                        mobility_reached = true;
+                        mobility_reached = getMobility(sample) >= preferred_mobility;
+                    } else {
+                        if (!mobility_reached && getMobility(sample) >= preferred_mobility) {
+                            preferred_index = index;
+                            mobility_reached = true;
+                        }
                     }
                 }
             }
@@ -736,12 +738,14 @@ public class Robot {
             int preferred_index = -1;
             int max_price = Integer.MIN_VALUE;
             for (Integer index : getGame().getRule().getAvailableUnits()) {
-                Unit sample =
-                        UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
-                if (sample.getAttackType() == preferred_attack_type && sample.getPrice() <= getGold()
-                        && getMobility(sample) >= preferred_mobility && sample.getPrice() > max_price) {
-                    max_price = sample.getPrice();
-                    preferred_index = index;
+                if (!UnitFactory.isCommander(index) || !getGame().isCommanderAlive(team)) {
+                    Unit sample =
+                            UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
+                    if (sample.getAttackType() == preferred_attack_type && sample.getPrice() <= getGold()
+                            && getMobility(sample) >= preferred_mobility && sample.getPrice() > max_price) {
+                        max_price = sample.getPrice();
+                        preferred_index = index;
+                    }
                 }
             }
             return preferred_index;
