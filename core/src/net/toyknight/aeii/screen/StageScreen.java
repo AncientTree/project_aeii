@@ -214,15 +214,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     @Override
     public void show() {
         NetworkManager.setNetworkListener(this);
-        if (notification_dialog.isVisible()) {
-            Gdx.input.setInputProcessor(prompt_layer);
-        } else {
-            if (isDialogVisible()) {
-                Gdx.input.setInputProcessor(dialog_stage);
-            } else {
-                Gdx.input.setInputProcessor(this);
-            }
-        }
+        updateFocus();
     }
 
     @Override
