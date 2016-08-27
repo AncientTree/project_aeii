@@ -47,6 +47,7 @@ public class RoomCreateDialog extends BasicDialog {
     private Spinner<Integer> spinner_gold;
     private Spinner<Integer> spinner_population;
     private StringList<Object> object_list;
+    private ScrollPane sp_object_list;
     private TextField input_password;
 
     public RoomCreateDialog(LobbyScreen lobby_screen) {
@@ -58,7 +59,7 @@ public class RoomCreateDialog extends BasicDialog {
 
     private void initComponents() {
         object_list = new StringList<Object>(getContext(), ts);
-        ScrollPane sp_map_list = new ScrollPane(object_list, getContext().getSkin()) {
+        sp_object_list = new ScrollPane(object_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
@@ -67,11 +68,11 @@ public class RoomCreateDialog extends BasicDialog {
                 super.draw(batch, parentAlpha);
             }
         };
-        sp_map_list.getStyle().background =
+        sp_object_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
-        sp_map_list.setScrollingDisabled(true, false);
-        sp_map_list.setBounds(ts / 2, ts * 2, ts * 6 + ts / 2, getHeight() - ts * 2 - ts / 2);
-        addActor(sp_map_list);
+        sp_object_list.setScrollingDisabled(true, false);
+        sp_object_list.setBounds(ts / 2, ts * 2, ts * 6 + ts / 2, getHeight() - ts * 2 - ts / 2);
+        addActor(sp_object_list);
 
         btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
         btn_back.addListener(new ClickListener() {
@@ -250,11 +251,13 @@ public class RoomCreateDialog extends BasicDialog {
     public void updateMaps() {
         Array<MapFactory.MapSnapshot> maps = MapFactory.getAllMapSnapshots();
         object_list.setItems(maps);
+        sp_object_list.layout();
     }
 
     public void updateSaveFiles() {
         Array<FileHandle> save_files = FileProvider.getSaveFiles();
         object_list.setItems(save_files);
+        sp_object_list.layout();
     }
 
 }

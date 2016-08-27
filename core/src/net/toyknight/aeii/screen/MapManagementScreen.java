@@ -365,18 +365,19 @@ public class MapManagementScreen extends StageScreen {
     private void updateServerMapList(Array<MapSnapshot> map_list) {
         if (current_author == null) {
             server_map_list.setItems(map_list);
-            server_map_list.layout();
             sp_server_map_list.layout();
             sp_server_map_list.setScrollPercentY(last_scroll_position_server_author_list);
         } else {
             Array<Object> list = new Array<Object>(map_list);
             list.insert(0, "/...");
             server_map_list.setItems(list);
+            sp_server_map_list.layout();
         }
     }
 
     private void refreshLocalMaps() {
         local_map_list.setItems(MapFactory.getUserMapSnapshots());
+        sp_local_map_list.layout();
     }
 
     private void delete() {
