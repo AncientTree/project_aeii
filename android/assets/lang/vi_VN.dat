@@ -182,7 +182,7 @@ ABILITY_NAME_26=Tấn Công Mù Lòa
 ABILITY_NAME_27=Sự Phục Hồi
 
 
-ABILITY_NAME_28=Da Cứng
+ABILITY_NAME_28=Absorptive Skin
 
 
 
@@ -1413,6 +1413,8 @@ UNIT_NAME_16=Cung Cưỡi Sói
 UNIT_NAME_17=Nguyên Tố Băng
 
 
+UNIT_NAME_18=Slime
+
 
 UNIT_DESCRIPTION_0=TÀI NĂNG BINH LÍNH : (1) sữa chữa ngôi làng...(2) chiếm giữ ngôi làng.
 
@@ -1466,6 +1468,9 @@ UNIT_DESCRIPTION_16=TÀI NĂNG CUNG THỦ CƯỠI SÓI : (1) làm trạng thái 
 
 
 UNIT_DESCRIPTION_17=TÀI NĂNG NGUYÊN TỐ BĂNG : (1) địa hình nào cũng được hồi HP...(2) tấn công xa 1 đến 3 ô
+
+
+UNIT_DESCRIPTION_18=<unavailable>
 
 
 
@@ -1522,6 +1527,8 @@ UNIT_GUIDE_16=Do phạm vi tấn công dài của họ và di chuyển lượng 
 
 UNIT_GUIDE_17=Nguyên tố băng có phạm vi tấn công khá dài và có khả năng phục hồi chức năng có nghĩa là họ sẽ rất mạnh mẽ trên mặt nước. Nhưng ngay cả trên đất họ vẫn còn gây sát thương phép thuật tốt.
 
+
+UNIT_GUIDE_18=<unavailable>
 
 
 WIKI_OVERVIEW_P1=Bia Mộ có chất độc, hãy cẩn thận! vật lý màu đỏ, phép thuật màu xanh!!! đây là 1 wiki lập ra để hướng dẫn các game thủ để làm quen trò chơi.
