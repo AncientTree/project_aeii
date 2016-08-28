@@ -153,6 +153,18 @@ CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
 CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
 CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=(Defeat other teams to save turns)
 
+CAMPAIGN_WARROOM_STAGE_4_NAME=Dilemma
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1=Your majesty, we have arrived the north. Most of lords have surrendered, we are going to have our final battle!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2=Enemy Attack!!!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3=Enemy captured our castle! We must defense!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4=Your majesty, we can try capture the castle ahead.
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5=Or we can retreated to get our castle back!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=But noted that winter is coming, the longer we stay here, the more damage we will suffer!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=Your majesty, storm is coming! Take cover!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=It's time! Kill them all!
+
 CAMPAIGN_AEI_NAME=Battle of Thorin Prequel
 CAMPAIGN_AEI_STAGE_1_NAME=Regroup
 CAMPAIGN_AEI_STAGE_1_OBJECTIVE=King Galamar must occupy castle, keep all troops alive.

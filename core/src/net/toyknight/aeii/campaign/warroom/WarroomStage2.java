@@ -57,161 +57,138 @@ public class WarroomStage2 extends StageController {
                             new Reinforcement(randomUnit, 10, 2));
                     break;
                 }
-                else randomNum++;
                 case 1: if(getContext().get_unit(11, 2) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 2));
                     break;
                 }
-                else randomNum++;
                 case 2: if(getContext().get_unit(9, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 9, 3));
                     break;
                 }
-                else randomNum++;
                 case 3: if(getContext().get_unit(10, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 10, 3));
                     break;
                 }
-                else randomNum++;
                 case 4: if(getContext().get_unit(11, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 3));
                     break;
                 }
-                else randomNum++;
                 case 5: if(getContext().get_unit(12, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 3));
                     break;
                 }
-                else randomNum++;
                 case 6: if(getContext().get_unit(12, 4) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 4));
                     break;
                 }
-                else randomNum++;
                 case 7: if(getContext().get_unit(13, 5) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 5));
                     break;
                 }
-                else randomNum++;
                 case 8: if(getContext().get_unit(14, 5) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 5));
                     break;
                 }
-                else randomNum++;
                 case 9: if(getContext().get_unit(12, 6) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 6));
                     break;
                 }
-                else randomNum++;
                 case 10: if(getContext().get_unit(13, 6) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 6));
                     break;
                 }
-                else randomNum++;
                 case 11: if(getContext().get_unit(14, 6) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 6));
                     break;
                 }
-                else randomNum++;
                 case 12: if(getContext().get_unit(12, 7) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 7));
                     break;
                 }
-                else randomNum++;
                 case 13: if(getContext().get_unit(13, 7) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 7));
                     break;
                 }
-                else randomNum++;
                 case 14: if(getContext().get_unit(14, 7) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 7));
                     break;
                 }
-                else randomNum++;
                 case 15: if(getContext().get_unit(10, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 10, 8));
                     break;
                 }
-                else randomNum++;
                 case 16: if(getContext().get_unit(11, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 8));
                     break;
                 }
-                else randomNum++;
                 case 17: if(getContext().get_unit(12, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 8));
                     break;
                 }
-                else randomNum++;
                 case 18: if(getContext().get_unit(13, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 8));
                     break;
                 }
-                else randomNum++;
                 case 19: if(getContext().get_unit(14, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 8));
                     break;
                 }
-                else randomNum++;
                 case 20: if(getContext().get_unit(11, 9) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 9));
                     break;
                 }
-                else randomNum++;
                 case 21: if(getContext().get_unit(12, 9) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 9));
                     break;
                 }
-                else randomNum++;
                 case 22: if(getContext().get_unit(13, 9) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 9));
                     break;
                 }
-                else randomNum++;
                 case 23: if(getContext().get_unit(14, 9) == null)
                 {
                     getContext().reinforce(2,
@@ -240,161 +217,138 @@ public class WarroomStage2 extends StageController {
                             new Reinforcement(randomUnit, 10, 2));
                     break;
                 }
-                else;
                 case 1: if(getContext().get_unit(11, 2) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 2));
                     break;
                 }
-                else;
                 case 2: if(getContext().get_unit(9, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 9, 3));
                     break;
                 }
-                else;
                 case 3: if(getContext().get_unit(10, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 10, 3));
                     break;
                 }
-                else;
                 case 4: if(getContext().get_unit(11, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 3));
                     break;
                 }
-                else;
                 case 5: if(getContext().get_unit(12, 3) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 3));
                     break;
                 }
-                else;
                 case 6: if(getContext().get_unit(12, 4) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 4));
                     break;
                 }
-                else;
                 case 7: if(getContext().get_unit(13, 5) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 5));
                     break;
                 }
-                else;
                 case 8: if(getContext().get_unit(14, 5) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 5));
                     break;
                 }
-                else;
                 case 9: if(getContext().get_unit(12, 6) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 6));
                     break;
                 }
-                else;
                 case 10: if(getContext().get_unit(13, 6) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 6));
                     break;
                 }
-                else;
                 case 11: if(getContext().get_unit(14, 6) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 6));
                     break;
                 }
-                else;
                 case 12: if(getContext().get_unit(12, 7) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 7));
                     break;
                 }
-                else;
                 case 13: if(getContext().get_unit(13, 7) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 7));
                     break;
                 }
-                else;
                 case 14: if(getContext().get_unit(14, 7) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 7));
                     break;
                 }
-                else;
                 case 15: if(getContext().get_unit(10, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 10, 8));
                     break;
                 }
-                else;
                 case 16: if(getContext().get_unit(11, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 8));
                     break;
                 }
-                else;
                 case 17: if(getContext().get_unit(12, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 8));
                     break;
                 }
-                else;
                 case 18: if(getContext().get_unit(13, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 8));
                     break;
                 }
-                else;
                 case 19: if(getContext().get_unit(14, 8) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 14, 8));
                     break;
                 }
-                else;
                 case 20: if(getContext().get_unit(11, 9) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 11, 9));
                     break;
                 }
-                else;
                 case 21: if(getContext().get_unit(12, 9) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 12, 9));
                     break;
                 }
-                else;
                 case 22: if(getContext().get_unit(13, 9) == null)
                 {
                     getContext().reinforce(2,
                             new Reinforcement(randomUnit, 13, 9));
                     break;
                 }
-                else;
                 case 23: if(getContext().get_unit(14, 9) == null)
                 {
                     getContext().reinforce(2,
@@ -417,11 +371,9 @@ public class WarroomStage2 extends StageController {
             if (getContext().count_unit(2) == 0 && getContext().count_castle(2) == 0) {
                 getContext().destroy_team(2);
             }
-            else ;
             if (getContext().count_unit(3) == 0 && getContext().count_castle(3) == 0) {
                 getContext().destroy_team(3);
             }
-            else ;
             if(unit.getTeam() == 3) {
                 getContext().gold(3, (getContext().get_gold(3) + unit.getPrice()));
             }
@@ -445,9 +397,9 @@ public class WarroomStage2 extends StageController {
     public void onTurnStart(int turn) {
         if(turn % 4 == 3) {
             getContext().reinforce(2,
-                    new Reinforcement(1, 6, 8),
+                    new Reinforcement(0, 6, 8),
                     new Reinforcement(1, 5, 9),
-                    new Reinforcement(1, 7, 9),
+                    new Reinforcement(0, 7, 9),
                     new Reinforcement(1, 6, 10));
         }
     }

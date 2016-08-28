@@ -412,6 +412,19 @@ CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=Tâu bệ hạ, mục tiêu của chúng tôi
 CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=(Đánh bại các đội khác để lưu lượt)
 
 
+CAMPAIGN_WARROOM_STAGE_4_NAME=Dilemma
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1=Your majesty, we have arrived the north. Most of lords have surrendered, we are going to have our final battle!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2=Enemy Attack!!!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3=Enemy captured our castle! We must defense!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4=Your majesty, we can try capture the castle ahead.
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5=Or we can retreated to get our castle back!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=But noted that winter is coming, the longer we stay here, the more damage we will suffer!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=Your majesty, storm is coming! Take cover!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=It's time! Kill them all!
+
+
 CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần 1)
 
 
