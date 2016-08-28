@@ -414,11 +414,11 @@ public class WarroomStage2 extends StageController {
             getContext().fail();
         }
         else {
-            if (getContext().count_unit(2) == 0) {
+            if (getContext().count_unit(2) == 0 && getContext().count_castle(2) == 0) {
                 getContext().destroy_team(2);
             }
             else ;
-            if (getContext().count_unit(3) == 0) {
+            if (getContext().count_unit(3) == 0 && getContext().count_castle(3) == 0) {
                 getContext().destroy_team(3);
             }
             else ;
