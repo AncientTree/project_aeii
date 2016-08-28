@@ -397,6 +397,10 @@ public class CampaignContext {
             return getContext().getGame().getMap().getUnit(map_x, map_y);
         }
 
+        public ObjectSet<Unit> get_units(int team) {
+            return getContext().getGameManager().getGame().getMap().getUnits(team);
+        }
+
         public int get_gold(int team) {
             return getContext().getGame().getPlayer(team).getGold();
         }
