@@ -13,6 +13,6 @@
 "physical_defence_growth": 5,
 "magic_defence_growth": 5,
 "movement_growth": 0,
-"max_attack_range": 3,
+"max_attack_range": 1,
 "min_attack_range": 1
 }
