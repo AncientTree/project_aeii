@@ -128,14 +128,17 @@ public class UnitToolkit {
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_FOREST)) {
                     defence_bonus += 10;
                 }
+                break;
             case Tile.TYPE_MOUNTAIN:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN)) {
                     defence_bonus += 10;
                 }
+                break;
             case Tile.TYPE_WATER:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_SEA)) {
                     defence_bonus += 10;
                 }
+                break;
             default:
                 //do nothing
         }
