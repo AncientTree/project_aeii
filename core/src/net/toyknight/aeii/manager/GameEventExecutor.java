@@ -90,6 +90,12 @@ public class GameEventExecutor {
 
     public void executeGameEvent(JSONObject event) throws JSONException, CheatingException {
         switch (event.getInt("type")) {
+            case GameEvent.STANDBY_FINISH:
+                int target_x = event.getJSONArray("parameters").getInt(0);
+                int target_y = event.getJSONArray("parameters").getInt(1);
+                getManager().fireUnitStandbyEvent(target_x, target_y);
+                getManager().fireStateChangeEvent();
+                break;
             case GameEvent.MANAGER_STATE_SYNC:
                 int manager_state = event.getJSONArray("parameters").getInt(0);
                 getManager().syncState(manager_state, -1, -1);
@@ -97,8 +103,8 @@ public class GameEventExecutor {
             case GameEvent.ATTACK:
                 int attacker_x = event.getJSONArray("parameters").getInt(0);
                 int attacker_y = event.getJSONArray("parameters").getInt(1);
-                int target_x = event.getJSONArray("parameters").getInt(2);
-                int target_y = event.getJSONArray("parameters").getInt(3);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
                 int attack_damage = event.getJSONArray("parameters").getInt(4);
                 boolean counter = event.getJSONArray("parameters").getBoolean(5);
                 onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage, counter);

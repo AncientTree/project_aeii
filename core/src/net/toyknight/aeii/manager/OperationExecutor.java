@@ -172,12 +172,6 @@ public class OperationExecutor {
                 getManager().fireMapFocusEvent(map_focus.x, map_focus.y, true);
                 getManager().fireStateChangeEvent();
                 break;
-            case Operation.AFTER_STANDBY:
-                unit_x = operation.getParameter(0);
-                unit_y = operation.getParameter(1);
-                getManager().fireUnitStandbyEvent(unit_x, unit_y);
-                getManager().fireStateChangeEvent();
-                break;
             default:
                 //do nothing
         }
@@ -467,6 +461,7 @@ public class OperationExecutor {
             if (experience > 0) {
                 submitGameEvent(GameEvent.GAIN_EXPERIENCE, unit_x, unit_y, experience);
             }
+            submitGameEvent(GameEvent.STANDBY_FINISH, unit_x, unit_y);
             getManager().setState(GameManager.STATE_SELECT);
         }
     }

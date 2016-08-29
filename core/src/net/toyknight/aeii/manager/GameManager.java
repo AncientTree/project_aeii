@@ -174,7 +174,7 @@ public class GameManager implements AnimationListener {
     }
 
     public void onGameEventFinished() {
-        if (!getOperationExecutor().isOperating()) {
+        if (!isProcessing()) {
             syncGameEvent();
         }
         if (!isAnimating()) {
@@ -183,7 +183,9 @@ public class GameManager implements AnimationListener {
     }
 
     public void onOperationFinished() {
-        syncGameEvent();
+        if (!isProcessing()) {
+            syncGameEvent();
+        }
     }
 
     private void checkGameState() {
@@ -389,7 +391,6 @@ public class GameManager implements AnimationListener {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit)) {
             getOperationExecutor().submitOperation(Operation.STANDBY, unit.getX(), unit.getY());
-            getOperationExecutor().submitOperation(Operation.AFTER_STANDBY, unit.getX(), unit.getY());
         }
     }
 

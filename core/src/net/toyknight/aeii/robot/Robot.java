@@ -62,6 +62,10 @@ public class Robot {
         return getManager().getGame();
     }
 
+    private Action getAction() {
+        return action;
+    }
+
     private int getGold() {
         return getGame().getPlayer(team).getGold();
     }
@@ -178,36 +182,42 @@ public class Robot {
     }
 
     private void move() {
-        if (action == null) {
+        if (getAction() == null) {
             calculateAction();
         } else {
-            Position action_position = action.getPosition();
-            getManager().doMove(action_position.x, action_position.y);
+            if (!getAction().isMoved()) {
+                Position action_position = action.getPosition();
+                getManager().doMove(action_position.x, action_position.y);
+                getAction().setMoved(true);
+            }
         }
     }
 
     private void act() {
         synchronized (GameContext.RENDER_LOCK) {
-            Position target = action.getTarget();
-            switch (action.getType()) {
-                case Operation.OCCUPY:
-                    getManager().doOccupy();
-                    break;
-                case Operation.REPAIR:
-                    getManager().doRepair();
-                    break;
-                case Operation.ATTACK:
-                    getManager().doAttack(target.x, target.y);
-                    break;
-                case Operation.HEAL:
-                    getManager().doHeal(target.x, target.y);
-                    break;
-                case Operation.SUMMON:
-                    getManager().doSummon(target.x, target.y);
-                    break;
-                case Operation.STANDBY:
-                default:
-                    getManager().doStandbySelectedUnit();
+            if (!getAction().isActed()) {
+                Position target = getAction().getTarget();
+                switch (getAction().getType()) {
+                    case Operation.OCCUPY:
+                        getManager().doOccupy();
+                        break;
+                    case Operation.REPAIR:
+                        getManager().doRepair();
+                        break;
+                    case Operation.ATTACK:
+                        getManager().doAttack(target.x, target.y);
+                        break;
+                    case Operation.HEAL:
+                        getManager().doHeal(target.x, target.y);
+                        break;
+                    case Operation.SUMMON:
+                        getManager().doSummon(target.x, target.y);
+                        break;
+                    case Operation.STANDBY:
+                    default:
+                        getManager().doStandbySelectedUnit();
+                }
+                getAction().setActed(true);
             }
         }
     }

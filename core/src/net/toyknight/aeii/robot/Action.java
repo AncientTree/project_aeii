@@ -13,6 +13,9 @@ public class Action {
 
     private final int type;
 
+    private boolean moved = false;
+    private boolean acted = false;
+
     public Action(Position position, Position target, int type) {
         this.position = position;
         this.target = target;
@@ -29,6 +32,22 @@ public class Action {
 
     public int getType() {
         return type;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+
+    public boolean isMoved() {
+        return moved;
+    }
+
+    public void setActed(boolean acted) {
+        this.acted = acted;
+    }
+
+    public boolean isActed() {
+        return acted;
     }
 
 }
