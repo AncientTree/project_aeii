@@ -12,6 +12,16 @@ import net.toyknight.aeii.utils.Language;
  */
 public class ChallengeStage1 extends StageController {
 
+    private void checkReinforcementPositions() {
+        for (Unit unit : getContext().get_units(getPlayerTeam())) {
+            int x = unit.getX();
+            int y = unit.getY();
+            if (x == 0 || x == 16 || y == 0 || y == 16) {
+                getContext().team(x, y, 1);
+            }
+        }
+    }
+
     @Override
     public void onGameStart() {
         Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_1_MESSAGE_1"));
@@ -51,46 +61,45 @@ public class ChallengeStage1 extends StageController {
 
     @Override
     public void onTurnStart(int turn) {
+        checkReinforcementPositions();
         switch (turn) {
             case 2:
-                getContext().reinforce(1,
-                        new Reinforcement(4, 0, 1),
-                        new Reinforcement(2, 0, 0),
-                        new Reinforcement(4, 1, 0));
-                getContext().reinforce(1,
-                        new Reinforcement(4, 15, 16),
-                        new Reinforcement(2, 16, 16),
-                        new Reinforcement(4, 16, 15));
+                getContext().reinforce(1, new Reinforcement(14, 0, 0));
+                getContext().reinforce(1, new Reinforcement(14, 16, 0));
+                getContext().reinforce(1, new Reinforcement(14, 0, 16));
+                getContext().reinforce(1, new Reinforcement(14, 16, 16));
                 break;
             case 4:
                 getContext().reinforce(1,
-                        new Reinforcement(13, 0, 7),
+                        new Reinforcement(1, 0, 7),
                         new Reinforcement(3, 0, 8),
-                        new Reinforcement(13, 0, 9));
+                        new Reinforcement(1, 0, 9));
                 getContext().reinforce(1,
-                        new Reinforcement(13, 16, 7),
+                        new Reinforcement(1, 16, 7),
                         new Reinforcement(3, 16, 8),
-                        new Reinforcement(13, 16, 9));
+                        new Reinforcement(1, 16, 9));
                 break;
             case 6:
-                getContext().reinforce(1,
-                        new Reinforcement(5, 7, 0),
-                        new Reinforcement(6, 8, 0),
-                        new Reinforcement(5, 9, 0));
-                getContext().reinforce(1,
-                        new Reinforcement(5, 7, 16),
-                        new Reinforcement(6, 8, 16),
-                        new Reinforcement(5, 9, 16));
+                getContext().reinforce(1, new Reinforcement(4, 0, 0));
+                getContext().reinforce(1, new Reinforcement(4, 16, 0));
+                getContext().reinforce(1, new Reinforcement(4, 0, 16));
+                getContext().reinforce(1, new Reinforcement(4, 16, 16));
                 break;
             case 8:
                 getContext().reinforce(1,
-                        new Reinforcement(16, 0, 7),
-                        new Reinforcement(8, 0, 8),
-                        new Reinforcement(16, 0, 9));
+                        new Reinforcement(15, 7, 0),
+                        new Reinforcement(12, 8, 0),
+                        new Reinforcement(15, 9, 0));
                 getContext().reinforce(1,
-                        new Reinforcement(16, 16, 7),
-                        new Reinforcement(8, 16, 8),
-                        new Reinforcement(16, 16, 9));
+                        new Reinforcement(15, 7, 16),
+                        new Reinforcement(12, 8, 16),
+                        new Reinforcement(15, 9, 16));
+                break;
+            case 10:
+                getContext().reinforce(1, new Reinforcement(8, 0, 0));
+                getContext().reinforce(1, new Reinforcement(8, 16, 0));
+                getContext().reinforce(1, new Reinforcement(8, 0, 16));
+                getContext().reinforce(1, new Reinforcement(8, 16, 16));
                 break;
         }
     }

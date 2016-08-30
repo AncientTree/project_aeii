@@ -730,6 +730,7 @@ public class GameEventExecutor {
     private void onCampaignChangeTeam(int unit_x, int unit_y, int team) {
         Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
         if (unit != null) {
+            getManager().fireMapFocusEvent(unit_x, unit_y, false);
             unit.setTeam(team);
             getAnimationDispatcher().submitUnitSparkAnimation(unit);
         }
