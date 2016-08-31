@@ -54,12 +54,27 @@ public class MapManager {
         }
     }
 
+    private void writeMap(File map_file, Map map) throws IOException {
+        FileOutputStream fos = new FileOutputStream(map_file);
+        DataOutputStream dos = new DataOutputStream(fos);
+        MapFactory.writeMap(map, dos);
+        dos.close();
+        fos.close();
+    }
+
+    private Map readMap(File map_file) throws IOException, AEIIException {
+        FileInputStream fis = new FileInputStream(map_file);
+        DataInputStream dis = new DataInputStream(fis);
+        Map map = MapFactory.createMap(dis);
+        dis.close();
+        fis.close();
+        return map;
+    }
+
     public Map getMap(int map_id) throws IOException, AEIIException {
         synchronized (CHANGE_LOCK) {
             File map_file = new File("maps/m" + map_id);
-            FileInputStream fis = new FileInputStream(map_file);
-            DataInputStream dis = new DataInputStream(fis);
-            return MapFactory.createMap(dis);
+            return readMap(map_file);
         }
     }
 
@@ -72,9 +87,7 @@ public class MapManager {
                 int map_id = getContext().getDatabaseManager().addMap(
                         getCapacity(map), filename, map.getAuthor().trim().toLowerCase(), MapFactory.isSymmetric(map));
                 File map_file = new File("maps/m" + map_id);
-                FileOutputStream fos = new FileOutputStream(map_file);
-                DataOutputStream dos = new DataOutputStream(fos);
-                MapFactory.writeMap(map, dos);
+                writeMap(map_file, map);
             }
         }
     }
@@ -83,6 +96,27 @@ public class MapManager {
         synchronized (CHANGE_LOCK) {
             File map_file = new File("maps/m" + map_id);
             return getContext().getDatabaseManager().removeMap(map_id) && map_file.delete();
+        }
+    }
+
+    public boolean updateMap(int map_id, String author, String filename) throws IOException, AEIIException {
+        synchronized (CHANGE_LOCK) {
+            File map_file = new File("maps/m" + map_id);
+            try {
+                if (author != null) {
+                    Map map = readMap(map_file);
+                    map.setAuthor(author);
+                    writeMap(map_file, map);
+                    author = author.trim().toLowerCase();
+                    getContext().getDatabaseManager().changeMapAuthor(map_id, author);
+                }
+                if (filename != null) {
+                    getContext().getDatabaseManager().changeMapFilename(map_id, filename);
+                }
+                return true;
+            } catch (SQLException ex) {
+                return false;
+            }
         }
     }
 

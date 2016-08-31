@@ -45,6 +45,20 @@ public class DatabaseManager {
         return statement.executeUpdate() > 0;
     }
 
+    public boolean changeMapAuthor(int map_id, String author) throws SQLException {
+        PreparedStatement statement = getConnection().prepareStatement("UPDATE maps SET author = ? WHERE map_id = ?");
+        statement.setString(1, author);
+        statement.setInt(2, map_id);
+        return statement.executeUpdate() > 0;
+    }
+
+    public boolean changeMapFilename(int map_id, String filename) throws SQLException {
+        PreparedStatement statement = getConnection().prepareStatement("UPDATE maps SET filename = ? WHERE map_id = ?");
+        statement.setString(1, filename);
+        statement.setInt(2, map_id);
+        return statement.executeUpdate() > 0;
+    }
+
     public ObjectSet<MapSnapshot> getMapSnapshots(String author, boolean symmetric) throws SQLException {
         String sql = symmetric ?
                 "SELECT * FROM maps WHERE author = ? AND symmetric = 1" :
@@ -65,7 +79,7 @@ public class DatabaseManager {
 
     public ObjectSet<String> getAuthors(boolean symmetric) throws SQLException {
         String sql = symmetric ?
-                "SELECT DISTINCT author FROM (SELECT * FROM maps WHERE symmetric = 1) as symmetric_maps" :
+                "SELECT DISTINCT author FROM (SELECT * FROM maps WHERE symmetric = 1) AS symmetric_maps" :
                 "SELECT DISTINCT author FROM maps";
         PreparedStatement statement = getConnection().prepareStatement(sql);
         ResultSet result = statement.executeQuery();

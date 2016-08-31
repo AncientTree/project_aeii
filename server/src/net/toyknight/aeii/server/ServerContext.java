@@ -89,6 +89,10 @@ public class ServerContext {
         return configuration;
     }
 
+    public boolean verifyAdminToken(String token) {
+        return token != null && getConfiguration().getAdministratorToken().equals(token);
+    }
+
     public void createVerificationString() {
         verification_string = new MD5Converter().toMD5(
                 TileFactory.getVerificationString() + UnitFactory.getVerificationString() + GameContext.INTERNAL_VERSION);

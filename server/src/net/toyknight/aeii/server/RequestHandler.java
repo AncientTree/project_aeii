@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -80,6 +81,12 @@ public class RequestHandler {
                     break;
                 case NetworkConstants.LIST_IDLE_PLAYERS:
                     onIdlePlayerListRequested(player);
+                    break;
+                case NetworkConstants.DELETE_MAP:
+                    onMapDeleteRequested(player, request);
+                    break;
+                case NetworkConstants.UPDATE_MAP:
+                    onMapUpdateRequested(player, request);
                     break;
                 default:
                     Log.error(TAG, String.format("Illegal request from %s [undefined operation]", player.toString()));
@@ -271,6 +278,38 @@ public class RequestHandler {
                 }
             }
             response.put("players", players);
+            player.sendTCP(response.toString());
+        }
+    }
+
+    public void onMapDeleteRequested(Player player, JSONObject request) {
+        String token = request.getString("token");
+        if (getContext().verifyAdminToken(token)) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            int map_id = request.getInt("id");
+            try {
+                boolean success = getContext().getMapManager().removeMap(map_id);
+                response.put("success", success);
+            } catch (SQLException e) {
+                response.put("success", false);
+            }
+            player.sendTCP(response.toString());
+        }
+    }
+
+    public void onMapUpdateRequested(Player player, JSONObject request) {
+        String token = request.getString("token");
+        if (getContext().verifyAdminToken(token)) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            int map_id = request.getInt("id");
+            String author = request.has("author") ? request.getString("author") : null;
+            String filename = request.has("filename") ? request.getString("filename") : null;
+            try {
+                boolean success = getContext().getMapManager().updateMap(map_id, author, filename);
+                response.put("success", success);
+            } catch (Exception e) {
+                response.put("success", false);
+            }
             player.sendTCP(response.toString());
         }
     }
