@@ -26,7 +26,7 @@ public class WarroomStage2 extends StageController {
         getContext().alliance(0, 1);
         getContext().alliance(1, 0);
         getContext().alliance(2, 1);
-        getContext().alliance(3, 1);
+        getContext().alliance(3, 2);
         getContext().focus(7, 1);
         Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1"));
         getContext().message(message);
@@ -44,323 +44,13 @@ public class WarroomStage2 extends StageController {
 
     @Override
     public void onUnitStandby(Unit unit) {
-        if(unit.getX() > 11 && unit.getY() > 4 && unit.getY() < 10 && unit.getTeam() == 1)
-        {
-            Random rand = new Random();
-            int randomNum = rand.nextInt((24));
-            int randomUnit = rand.nextInt((18));
-            switch (randomNum)
-            {
-                case 0: if(getContext().get_unit(10, 2) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 10, 2));
-                    break;
-                }
-                case 1: if(getContext().get_unit(11, 2) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 2));
-                    break;
-                }
-                case 2: if(getContext().get_unit(9, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 9, 3));
-                    break;
-                }
-                case 3: if(getContext().get_unit(10, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 10, 3));
-                    break;
-                }
-                case 4: if(getContext().get_unit(11, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 3));
-                    break;
-                }
-                case 5: if(getContext().get_unit(12, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 3));
-                    break;
-                }
-                case 6: if(getContext().get_unit(12, 4) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 4));
-                    break;
-                }
-                case 7: if(getContext().get_unit(13, 5) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 5));
-                    break;
-                }
-                case 8: if(getContext().get_unit(14, 5) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 5));
-                    break;
-                }
-                case 9: if(getContext().get_unit(12, 6) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 6));
-                    break;
-                }
-                case 10: if(getContext().get_unit(13, 6) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 6));
-                    break;
-                }
-                case 11: if(getContext().get_unit(14, 6) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 6));
-                    break;
-                }
-                case 12: if(getContext().get_unit(12, 7) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 7));
-                    break;
-                }
-                case 13: if(getContext().get_unit(13, 7) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 7));
-                    break;
-                }
-                case 14: if(getContext().get_unit(14, 7) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 7));
-                    break;
-                }
-                case 15: if(getContext().get_unit(10, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 10, 8));
-                    break;
-                }
-                case 16: if(getContext().get_unit(11, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 8));
-                    break;
-                }
-                case 17: if(getContext().get_unit(12, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 8));
-                    break;
-                }
-                case 18: if(getContext().get_unit(13, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 8));
-                    break;
-                }
-                case 19: if(getContext().get_unit(14, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 8));
-                    break;
-                }
-                case 20: if(getContext().get_unit(11, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 9));
-                    break;
-                }
-                case 21: if(getContext().get_unit(12, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 9));
-                    break;
-                }
-                case 22: if(getContext().get_unit(13, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 9));
-                    break;
-                }
-                case 23: if(getContext().get_unit(14, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 9));
-                    break;
-                }
-                else break;
-                default: break;
-            }
 
-        }
     }
 
     @Override
     public void onUnitAttacked(Unit attacker, Unit defender) {
-        if(attacker.getX() > 11 && attacker.getY() > 4 && attacker.getY() < 10 && attacker.getTeam() == 1)
-        {
-            Random rand = new Random();
-            int randomNum = rand.nextInt((24));
-            int randomUnit = rand.nextInt((18));
-            switch (randomNum)
-            {
-                case 0: if(getContext().get_unit(10, 2) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 10, 2));
-                    break;
-                }
-                case 1: if(getContext().get_unit(11, 2) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 2));
-                    break;
-                }
-                case 2: if(getContext().get_unit(9, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 9, 3));
-                    break;
-                }
-                case 3: if(getContext().get_unit(10, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 10, 3));
-                    break;
-                }
-                case 4: if(getContext().get_unit(11, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 3));
-                    break;
-                }
-                case 5: if(getContext().get_unit(12, 3) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 3));
-                    break;
-                }
-                case 6: if(getContext().get_unit(12, 4) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 4));
-                    break;
-                }
-                case 7: if(getContext().get_unit(13, 5) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 5));
-                    break;
-                }
-                case 8: if(getContext().get_unit(14, 5) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 5));
-                    break;
-                }
-                case 9: if(getContext().get_unit(12, 6) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 6));
-                    break;
-                }
-                case 10: if(getContext().get_unit(13, 6) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 6));
-                    break;
-                }
-                case 11: if(getContext().get_unit(14, 6) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 6));
-                    break;
-                }
-                case 12: if(getContext().get_unit(12, 7) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 7));
-                    break;
-                }
-                case 13: if(getContext().get_unit(13, 7) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 7));
-                    break;
-                }
-                case 14: if(getContext().get_unit(14, 7) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 7));
-                    break;
-                }
-                case 15: if(getContext().get_unit(10, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 10, 8));
-                    break;
-                }
-                case 16: if(getContext().get_unit(11, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 8));
-                    break;
-                }
-                case 17: if(getContext().get_unit(12, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 8));
-                    break;
-                }
-                case 18: if(getContext().get_unit(13, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 8));
-                    break;
-                }
-                case 19: if(getContext().get_unit(14, 8) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 8));
-                    break;
-                }
-                case 20: if(getContext().get_unit(11, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 11, 9));
-                    break;
-                }
-                case 21: if(getContext().get_unit(12, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 12, 9));
-                    break;
-                }
-                case 22: if(getContext().get_unit(13, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 13, 9));
-                    break;
-                }
-                case 23: if(getContext().get_unit(14, 9) == null)
-                {
-                    getContext().reinforce(2,
-                            new Reinforcement(randomUnit, 14, 9));
-                    break;
-                }
-                else break;
-                default: break;
-            }
-
-        }
     }
+
 
     @Override
     public void onUnitDestroyed(Unit unit) {
@@ -380,6 +70,7 @@ public class WarroomStage2 extends StageController {
             checkClear();
         }
 
+
     }
 
     @Override
@@ -395,13 +86,21 @@ public class WarroomStage2 extends StageController {
 
     @Override
     public void onTurnStart(int turn) {
+
         if(turn % 4 == 3) {
             getContext().reinforce(2,
-                    new Reinforcement(0, 6, 8),
-                    new Reinforcement(1, 5, 9),
-                    new Reinforcement(0, 7, 9),
-                    new Reinforcement(1, 6, 10));
+                    new Reinforcement(1, 12, 6),
+                    new Reinforcement(1, 14, 6),
+                    new Reinforcement(1, 13, 5),
+                    new Reinforcement(1, 13, 7));
         }
+        for (Unit unit : getContext().get_units(1)) {
+            if(unit.getX() > 9 && unit.getY() > 2 && unit.getY() < 10)
+            {
+                getContext().gold(2, getContext().get_gold(2) + unit.getPrice() / 10);
+            }
+        }
+
     }
 
     @Override

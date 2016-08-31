@@ -373,6 +373,11 @@ CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 
 
 CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Tâu bệ hạ, có một thành trì tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
 
+CAMPAIGN_CHALLENGE_STAGE_5_NAME=Endless Trail
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, our enemy get power from the evil ritual, how do we defeat them?
+
 
 CAMPAIGN_WARROOM_NAME=Són Đen, Làng Chiến Tranh
 
