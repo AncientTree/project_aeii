@@ -316,11 +316,12 @@ public class NetworkManager {
         return response != null && response.getBoolean("approved");
     }
 
-    public static Array<MapSnapshot> requestMapList(String author) throws JSONException {
+    public static Array<MapSnapshot> requestMapList(String author, boolean symmetric) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.LIST_MAPS);
         if (author != null) {
             request.put("author", author);
         }
+        request.put("symmetric", symmetric);
         JSONObject response = sendRequest(request);
         if (response == null) {
             return null;
@@ -335,9 +336,9 @@ public class NetworkManager {
         }
     }
 
-    public static Map requestDownloadMap(String filename) throws JSONException {
+    public static Map requestDownloadMap(int map_id) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.DOWNLOAD_MAP);
-        request.put("filename", filename);
+        request.put("id", map_id);
         JSONObject response = sendRequest(request);
         if (response == null) {
             return null;
@@ -350,12 +351,12 @@ public class NetworkManager {
         }
     }
 
-    public static boolean requestUploadMap(Map map, String map_name) throws JSONException {
+    public static int requestUploadMap(Map map, String map_name) throws JSONException {
         JSONObject request = createRequest(NetworkConstants.UPLOAD_MAP);
         request.put("map", map.toJson());
         request.put("map_name", map_name);
         JSONObject response = sendRequest(request);
-        return response != null && response.getBoolean("approved");
+        return response == null ? NetworkConstants.CODE_NETWORK_ERROR : response.getInt("code");
     }
 
     public static void notifyLeaveRoom() throws JSONException {

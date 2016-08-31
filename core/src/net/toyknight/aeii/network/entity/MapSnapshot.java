@@ -9,6 +9,7 @@ import org.json.JSONObject;
  */
 public class MapSnapshot implements Serializable, Comparable<MapSnapshot> {
 
+    private final int id;
     private final int capacity;
     private final String filename;
     private final String author;
@@ -16,13 +17,18 @@ public class MapSnapshot implements Serializable, Comparable<MapSnapshot> {
     private boolean directory = false;
 
     public MapSnapshot(int capacity, String filename, String author) {
+        this(-1, capacity, filename, author);
+    }
+
+    public MapSnapshot(int id, int capacity, String filename, String author) {
+        this.id = id;
         this.capacity = capacity;
         this.filename = filename;
         this.author = author;
     }
 
     public MapSnapshot(JSONObject json) throws JSONException {
-        this(json.getInt("capacity"), json.getString("filename"), json.getString("author"));
+        this(json.getInt("id"), json.getInt("capacity"), json.getString("filename"), json.getString("author"));
         setDirectory(json.getBoolean("directory"));
     }
 
@@ -32,6 +38,10 @@ public class MapSnapshot implements Serializable, Comparable<MapSnapshot> {
 
     public boolean isDirectory() {
         return directory;
+    }
+
+    public int getID() {
+        return id;
     }
 
     public int getCapacity() {
@@ -58,6 +68,7 @@ public class MapSnapshot implements Serializable, Comparable<MapSnapshot> {
     @Override
     public JSONObject toJson() throws JSONException {
         JSONObject json = new JSONObject();
+        json.put("id", id);
         json.put("capacity", capacity);
         json.put("filename", filename);
         json.put("author", author);

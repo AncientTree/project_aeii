@@ -9,6 +9,7 @@ import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import net.toyknight.aeii.server.entities.Player;
 import net.toyknight.aeii.server.entities.Room;
+import net.toyknight.aeii.server.managers.MapManager;
 import net.toyknight.aeii.server.utils.PacketBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -213,11 +214,12 @@ public class RequestHandler {
     public void onMapListRequested(Player player, JSONObject request) {
         if (getContext().getConfiguration().isMapManagerEnabled()) {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            boolean symmetric = request.has("symmetric") && request.getBoolean("symmetric");
             if (request.has("author")) {
                 String author = request.getString("author");
-                response.put("maps", getContext().getMapManager().getSerializedMapList(author));
+                response.put("maps", getContext().getMapManager().getSerializedMapList(author, symmetric));
             } else {
-                response.put("maps", getContext().getMapManager().getSerializedAuthorList());
+                response.put("maps", getContext().getMapManager().getSerializedAuthorList(symmetric));
             }
             player.sendTCP(response.toString());
         }
@@ -228,14 +230,14 @@ public class RequestHandler {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
             Map map = new Map(request.getJSONObject("map"));
             String map_name = request.getString("map_name");
-            boolean approved;
             try {
                 getContext().getMapManager().addMap(map, map_name);
-                approved = true;
-            } catch (IOException ex) {
-                approved = false;
+                request.put("code", NetworkConstants.CODE_OK);
+            } catch (MapManager.MapExistingException ex) {
+                request.put("code", NetworkConstants.CODE_MAP_EXISTING);
+            } catch (Exception ex) {
+                request.put("code", NetworkConstants.CODE_SERVER_ERROR);
             }
-            response.put("approved", approved);
             player.sendTCP(response.toString());
         }
     }
@@ -243,10 +245,10 @@ public class RequestHandler {
     public void onMapDownloadRequested(Player player, JSONObject request) {
         if (getContext().getConfiguration().isMapManagerEnabled()) {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
-            String filename = request.getString("filename");
+            int map_id = request.getInt("id");
             boolean approved;
             try {
-                Map map = getContext().getMapManager().getMap(filename);
+                Map map = getContext().getMapManager().getMap(map_id);
                 response.put("map", map.toJson());
                 approved = true;
             } catch (IOException ex) {

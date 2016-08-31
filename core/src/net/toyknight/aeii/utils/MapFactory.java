@@ -191,6 +191,63 @@ public class MapFactory {
         return system_maps;
     }
 
+    public static boolean isBilaterallySymmetric(Map map) {
+        int map_width = map.getWidth();
+        for (int x = 0; x < map_width / 2; x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                if (!isEquivalent(map.getTileIndex(x, y), map.getTileIndex(map_width - x - 1, y))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isLongitudinallySymmetric(Map map) {
+        int map_height = map.getHeight();
+        for (int y = 0; y < map_height / 2; y++) {
+            for (int x = 0; x < map.getWidth(); x++) {
+                if (!isEquivalent(map.getTileIndex(x, y), map.getTileIndex(x, map_height - y - 1))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isCentrosymmetric(Map map) {
+        int map_width = map.getWidth();
+        int map_height = map.getHeight();
+        for (int x = 0; x < map_width / 2; x++) {
+            for (int y = 0; y < map_height; y++) {
+                if (!isEquivalent(
+                        map.getTileIndex(x, y), map.getTileIndex(map_width - x - 1, map_height - y - 1))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isSymmetric(Map map) {
+        return isBilaterallySymmetric(map) || isLongitudinallySymmetric(map) || isCentrosymmetric(map);
+    }
+
+    public static boolean isEquivalent(int tile_index_a, int tile_index_b) {
+        if ((32 <= tile_index_a && tile_index_a <= 35) || (32 <= tile_index_b && tile_index_b <= 35)) {
+            return tile_index_a == tile_index_b;
+        }
+        Tile tile_a = TileFactory.getTile(tile_index_a);
+        Tile tile_b = TileFactory.getTile(tile_index_b);
+        return tile_a.isCastle() && tile_b.isCastle()
+                || tile_a.isVillage() && tile_b.isVillage()
+                || tile_a.isTemple() && tile_b.isTemple()
+                || (tile_a.getType() == tile_b.getType()
+                && tile_a.getStepCost() == tile_b.getStepCost()
+                && tile_a.getHpRecovery() == tile_b.getHpRecovery()
+                && tile_a.getDefenceBonus() == tile_b.getDefenceBonus());
+    }
+
     public static class MapSnapshot {
 
         public FileHandle file;

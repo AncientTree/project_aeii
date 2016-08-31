@@ -89,6 +89,10 @@ public class InputDialog extends Dialog {
         return getOwner().getContext();
     }
 
+    public void setFilter(TextField.TextFieldFilter filter) {
+        input_field.setTextFieldFilter(filter);
+    }
+
     public void display(String message, int max_length, boolean password, Input.TextInputListener input_listener) {
         this.input_listener = input_listener;
         input_message.setText(message);

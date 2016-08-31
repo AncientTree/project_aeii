@@ -7,10 +7,7 @@ import com.esotericsoftware.minlog.Log;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.server.entities.Player;
-import net.toyknight.aeii.server.managers.MapManager;
-import net.toyknight.aeii.server.managers.NotificationSender;
-import net.toyknight.aeii.server.managers.PlayerManager;
-import net.toyknight.aeii.server.managers.RoomManager;
+import net.toyknight.aeii.server.managers.*;
 import net.toyknight.aeii.utils.MD5Converter;
 import net.toyknight.aeii.utils.TileFactory;
 import net.toyknight.aeii.utils.UnitFactory;
@@ -47,6 +44,8 @@ public class ServerContext {
 
     private MapManager map_manager;
 
+    private DatabaseManager database_manager;
+
     public NotificationSender getNotificationSender() {
         return notification_sender;
     }
@@ -65,6 +64,10 @@ public class ServerContext {
 
     public MapManager getMapManager() {
         return map_manager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return database_manager;
     }
 
     public void submitTask(Runnable task) {
@@ -119,11 +122,16 @@ public class ServerContext {
         room_manager = new RoomManager(this);
         if (getConfiguration().isMapManagerEnabled()) {
             try {
-                map_manager = new MapManager();
-                map_manager.initialize();
-            } catch (ServerException ex) {
-                throw new ServerException(TAG, "Error initializing server [exception while initializing maps]", ex);
+                database_manager = new DatabaseManager();
+                database_manager.connect(
+                        getConfiguration().getDatabaseHost(),
+                        getConfiguration().getDatabaseName(),
+                        getConfiguration().getDatabaseUsername(),
+                        getConfiguration().getDatabasePassword());
+            } catch (Exception ex) {
+                throw new ServerException(TAG, "Error initializing server [exception while connecting to DB]", ex);
             }
+            map_manager = new MapManager(this);
         }
         //initialize server object
         server = new Server(90 * 1024, 90 * 1024);
@@ -149,6 +157,36 @@ public class ServerContext {
                 }
             }
         });
+    }
+
+    public void index() throws ServerException {
+        //load server configuration
+        try {
+            configuration = new ServerConfiguration();
+            configuration.initialize();
+        } catch (Exception ex) {
+            throw new ServerException(TAG, "Error indexing [exception while loading configuration]", ex);
+        }
+        //load game data and create verification string
+        try {
+            UnitFactory.loadUnitData();
+            TileFactory.loadTileData();
+            createVerificationString();
+        } catch (AEIIException ex) {
+            throw new ServerException(TAG, "Error indexing [exception while loading game data]", ex);
+        }
+        try {
+            database_manager = new DatabaseManager();
+            database_manager.connect(
+                    getConfiguration().getDatabaseHost(),
+                    getConfiguration().getDatabaseName(),
+                    getConfiguration().getDatabaseUsername(),
+                    getConfiguration().getDatabasePassword());
+        } catch (Exception ex) {
+            throw new ServerException(TAG, "Error indexing [exception while connecting to DB]", ex);
+        }
+        map_manager = new MapManager(this);
+        map_manager.index();
     }
 
     public void start() throws ServerException {

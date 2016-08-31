@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.ResourceManager;
@@ -91,7 +92,13 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public void showInput(String message, int max_length, boolean password, Input.TextInputListener input_listener) {
+        showInput(message, max_length, password, null, input_listener);
+    }
+
+    public void showInput(String message, int max_length, boolean password,
+                          TextField.TextFieldFilter filter, Input.TextInputListener input_listener) {
         if (!isPromptVisible()) {
+            input_dialog.setFilter(filter);
             input_dialog.display(message, max_length, password, input_listener);
             Gdx.input.setInputProcessor(prompt_layer);
         }
