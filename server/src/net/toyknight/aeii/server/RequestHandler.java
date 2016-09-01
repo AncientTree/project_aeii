@@ -82,6 +82,9 @@ public class RequestHandler {
                 case NetworkConstants.LIST_IDLE_PLAYERS:
                     onIdlePlayerListRequested(player);
                     break;
+                case NetworkConstants.GLOBAL_MESSAGE:
+                    onGlobalMessageSubmitted(request);
+                    break;
                 case NetworkConstants.DELETE_MAP:
                     onMapDeleteRequested(player, request);
                     break;
@@ -279,6 +282,14 @@ public class RequestHandler {
             }
             response.put("players", players);
             player.sendTCP(response.toString());
+        }
+    }
+
+    public void onGlobalMessageSubmitted(JSONObject request) {
+        String token = request.getString("token");
+        if (getContext().verifyAdminToken(token)) {
+            String message = request.getString("message");
+            getContext().getNotificationSender().notifyGlobalMessage(message);
         }
     }
 

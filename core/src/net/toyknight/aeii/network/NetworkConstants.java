@@ -31,7 +31,7 @@ public class NetworkConstants {
     public static final int MESSAGE = 0x15;
 
     //Admin operations
-    public static final int SHUTDOWN = 0x100;
+    public static final int GLOBAL_MESSAGE = 0x100;
     public static final int DELETE_MAP = 0x101;
     public static final int UPDATE_MAP = 0x102;
 
