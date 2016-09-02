@@ -1113,7 +1113,7 @@ LB_REFRESH=Làm Mới
 LB_REFRESHING=Đang Làm Mới...
 
 
-LB_RENAME=Rename
+LB_RENAME=Đổi tên
 
 
 LB_RESUME=Tiếp Tục Chơi
@@ -1252,7 +1252,7 @@ MSG_ERR_CNSG=Không thể bắt đầu trò chơi
 MSG_ERR_DFS=Mất kết nối từ máy chủ
 
 
-MSG_ERR_FAE=File name already exists
+MSG_ERR_FAE=Tên tập tin đã tồn tại
 
 
 MSG_ERR_FCMF=không thể tạo mục bản đồ :(
@@ -1294,7 +1294,7 @@ MSG_INFO_DSM=Xóa bản đồ đã chọn?
 MSG_INFO_GTC=Bạn được giao cho đội %s.
 
 
-MSG_INFO_IF=Input filename
+MSG_INFO_IF=tên tập tin đầu vào
 
 
 MSG_INFO_IM=Nhập tin nhắn
