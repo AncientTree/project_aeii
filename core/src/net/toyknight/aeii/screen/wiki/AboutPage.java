@@ -66,7 +66,7 @@ public class AboutPage extends AEIITable {
 
         addName("AncientTree (Chinese)");
         addName("P. Thanh Huy (Vietnamese)");
-        addName("Dan (Portuguese)");
+        addName("Dandandandaann (Portuguese)");
     }
 
     private void addName(String name) {
