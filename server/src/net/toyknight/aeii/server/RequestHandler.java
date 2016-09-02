@@ -242,11 +242,11 @@ public class RequestHandler {
             String map_name = request.getString("map_name");
             try {
                 getContext().getMapManager().addMap(map, map_name);
-                request.put("code", NetworkConstants.CODE_OK);
+                response.put("code", NetworkConstants.CODE_OK);
             } catch (MapManager.MapExistingException ex) {
-                request.put("code", NetworkConstants.CODE_MAP_EXISTING);
+                response.put("code", NetworkConstants.CODE_MAP_EXISTING);
             } catch (Exception ex) {
-                request.put("code", NetworkConstants.CODE_SERVER_ERROR);
+                response.put("code", NetworkConstants.CODE_SERVER_ERROR);
             }
             player.sendTCP(response.toString());
         }
