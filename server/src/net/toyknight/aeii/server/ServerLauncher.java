@@ -9,17 +9,7 @@ public class ServerLauncher {
 
     public static void main(String[] args) {
         try {
-            switch (args.length) {
-                case 0:
-                    new ServerContext().start();
-                    break;
-                case 1:
-                    if (args[0].equals("-index")) {
-                        new ServerContext().index();
-                        System.exit(-1);
-                    }
-                    break;
-            }
+            new ServerContext().start();
         } catch (ServerException ex) {
             Log.error(ex.getTag(), "Failed launching the server", ex);
             System.exit(-1);

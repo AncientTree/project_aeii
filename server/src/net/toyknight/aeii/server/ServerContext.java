@@ -163,36 +163,6 @@ public class ServerContext {
         });
     }
 
-    public void index() throws ServerException {
-        //load server configuration
-        try {
-            configuration = new ServerConfiguration();
-            configuration.initialize();
-        } catch (Exception ex) {
-            throw new ServerException(TAG, "Error indexing [exception while loading configuration]", ex);
-        }
-        //load game data and create verification string
-        try {
-            UnitFactory.loadUnitData();
-            TileFactory.loadTileData();
-            createVerificationString();
-        } catch (AEIIException ex) {
-            throw new ServerException(TAG, "Error indexing [exception while loading game data]", ex);
-        }
-        try {
-            database_manager = new DatabaseManager();
-            database_manager.connect(
-                    getConfiguration().getDatabaseHost(),
-                    getConfiguration().getDatabaseName(),
-                    getConfiguration().getDatabaseUsername(),
-                    getConfiguration().getDatabasePassword());
-        } catch (Exception ex) {
-            throw new ServerException(TAG, "Error indexing [exception while connecting to DB]", ex);
-        }
-        map_manager = new MapManager(this);
-        map_manager.index();
-    }
-
     public void start() throws ServerException {
         initialize();
         try {
