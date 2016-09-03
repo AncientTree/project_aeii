@@ -163,6 +163,10 @@ public class Map implements Serializable {
         }
     }
 
+    public short getTileIndex(Position position) {
+        return getTileIndex(position.x, position.y);
+    }
+
     public Tile getTile(int x, int y) {
         if (isWithinMap(x, y)) {
             return TileFactory.getTile(map_data[x][y]);

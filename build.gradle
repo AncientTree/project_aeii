@@ -13,7 +13,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.1.8'
+    version = '1.2.0'
     ext {
         appName = 'project_aeii'
         gdxVersion = '1.9.3'
@@ -85,6 +85,7 @@ project(":server") {
 
     dependencies {
         compile project(":core")
+        compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.38'
         compile "com.esotericsoftware:kryonet:$kryonetVersion"
         compile "org.json:json:$jsonVersion"
     }

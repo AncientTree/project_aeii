@@ -62,7 +62,7 @@ ABILITY_NAME_24=恐惧之王
 ABILITY_NAME_25=反击风暴
 ABILITY_NAME_26=致盲
 ABILITY_NAME_27=复原
-ABILITY_NAME_28=硬皮
+ABILITY_NAME_28=吸收
 
 CAMPAIGN_TUTORIAL_NAME=教学
 CAMPAIGN_TUTORIAL_STAGE_1_NAME=移动和攻击
@@ -125,30 +125,49 @@ CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_1=胜利条件：占领所有的敌军城�
 CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=失败条件: 指挥官被击败
 CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=可恶，我们的部队被敌方城市发现了！伏击计划已失败，我们必须与敌军迎面战斗了。占领他们所有的城堡！
 
-CAMPAIGN_CHALLENGE_STAGE_4_NAME=幽灵岛
+CAMPAIGN_CHALLENGE_STAGE_4_NAME=岩石峡谷
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=失败条件: 指挥官被击败
-CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=指挥官，这个小岛看起来十分的诡异，我们务必要小心！
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=失败条件: 回合数超过200
+CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=陛下，在这个山里有一个山贼的据点，我们需要剿灭他们来保护这个小镇！
 
-CAMPAIGN_CHALLENGE_STAGE_5_NAME=岩石峡谷
+CAMPAIGN_CHALLENGE_STAGE_5_NAME=俄罗斯套娃
 CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
 CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=失败条件: 指挥官被击败
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_3=失败条件: 回合数超过200
-CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=陛下，在这个山里有一个山贼的据点，我们需要剿灭他们来保护这个小镇！
+CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=陛下，我们的敌人从俄罗斯套娃中获得了启发，我们必须通过一次次击败来彻底消灭敌人！
 
-CAMPAIGN_CHALLENGE_STAGE_6_NAME=精灵圣坛
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=胜利条件: 占领圣坛
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=失败条件: 指挥官被击败
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=陛下，我们正在接近精灵族的圣坛，他们会潜伏在树林里并伏击任何试图接近圣坛的敌人！
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_2=我们的哨兵发现在西边有一个亡灵的据点，他们是不可阻挡的！
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_3=占领圣坛我们就赢了，出发吧，指挥官！！！
+CAMPAIGN_WARROOM_NAME=黑波的战术学堂
+CAMPAIGN_WARROOM_STAGE_1_NAME=幽灵岛
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2=失败条件: 指挥官被击败
+CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1=指挥官，这个小岛看起来十分的诡异，我们务必要小心！
 
-CAMPAIGN_CHALLENGE_STAGE_7_NAME=远征
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=胜利条件: 击败红队
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=失败条件: 指挥官被击败
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_3=失败条件: 回合数超过50
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=陛下，我们的目标是击败红色队伍，但是我们只有50回合
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_2=（我们可以通过击败其他队伍来节省时间）
+CAMPAIGN_WARROOM_STAGE_2_NAME=精灵圣坛
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1=胜利条件: 占领圣坛
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2=失败条件: 指挥官被击败
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1=陛下，我们正在接近精灵族的圣坛，他们会潜伏在树林里并伏击任何试图接近圣坛的敌人！
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2=我们的哨兵发现在西边有一个亡灵的据点，他们是不可击败的！
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3=占领圣坛边上的城堡我们就赢了，出发吧，指挥官！！！
+
+CAMPAIGN_WARROOM_STAGE_3_NAME=远征
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1=胜利条件: 击败红队
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2=失败条件: 指挥官被击败
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=失败条件: 回合数超过50
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=陛下，我们的目标是击败红色队伍，但是我们只有50回合
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=（我们可以通过击败其他队伍来节省时间）
+
+CAMPAIGN_WARROOM_STAGE_4_NAME=进退两难
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1=VICTORY:.胜利条件: 击败红队
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_2=DEFEAT: 失败条件: 指挥官被击败
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1=陛下，我们来到了北境，大部分敌方领主都投降了，我们即将跟他们决战!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2=敌袭!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3=敌军从背后偷袭，占领了我们的城堡，我们必须夺回城堡
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4=陛下，我们现在可以尝试攻占前方的城堡
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5=或者撤退去占回我们的城堡
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=但是凛冬将至，我们在这里停留的越久，损失就会越大
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=陛下，暴风雪就要来了，做好准备
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=时机到了，杀光他们
+
 
 CAMPAIGN_AEI_NAME=索林战役前传
 CAMPAIGN_AEI_STAGE_1_NAME=重振旗鼓
@@ -394,6 +413,7 @@ LB_RECRUIT=招募
 LB_REFERENCES=引用
 LB_REFRESH=刷新
 LB_REFRESHING=刷新中...
+LB_RENAME=重命名
 LB_REPAIRED=修复
 LB_RESUME=继续游戏
 LB_ROBOT=电脑
@@ -440,8 +460,10 @@ MSG_ERR_CNJR=无法加入这个房与间 :(
 MSG_ERR_CNRTS=重新连接至服务器失败
 MSG_ERR_CNSG=无法开始游戏
 MSG_ERR_DFS=服务器断开连接
+MSG_ERR_FAE=文件名已存在
 MSG_ERR_FCMF=创建地图文件失败 :(
 MSG_ERR_FDM=下载地图失败 :(
+MSG_ERR_FRM=重命名地图失败 :(
 MSG_ERR_FUM=上传地图失败 :(
 MSG_ERR_HPD=房主断开了连接
 MSG_ERR_MAE=地图已存在
@@ -452,6 +474,7 @@ MSG_INFO_CD=%s 队被检测到作弊，离开游戏？
 MSG_INFO_CDCN=你被检测到作弊，服务器将在5秒之后断开你的连接。
 MSG_INFO_DSM=删除选中的地图?
 MSG_INFO_GTC=你被分配至 %s 队
+MSG_INFO_IF=输入文件名
 MSG_INFO_IM=输入要发送的消息
 MSG_INFO_IYUN=输入你的用户名
 MSG_INFO_LTC=你失去了 %s 队的控制权
@@ -499,6 +522,7 @@ UNIT_NAME_14=幽灵
 UNIT_NAME_15=黑魔法师
 UNIT_NAME_16=狼骑射手
 UNIT_NAME_17=冰元素
+UNIT_NAME_18=史莱姆
 
 UNIT_DESCRIPTION_0=战士是全能的单位，他们能占领或是修复城镇来增加玩家的收入。
 UNIT_DESCRIPTION_1=弓箭手可以从远处攻击敌人，并且擅长击杀空军单位。
@@ -518,6 +542,7 @@ UNIT_DESCRIPTION_14=幽灵是迷之亡灵族，他们的攻击会让对手致盲
 UNIT_DESCRIPTION_15=黑魔法师擅长使用黑暗系法术，他们的攻击对那些魔法防御较低的单位一直都是很致命的。
 UNIT_DESCRIPTION_16=狼骑射手是高机动性版的弓箭手，它几乎可以对你希望的任何地方进行打击。
 UNIT_DESCRIPTION_17=神秘莫测的冰元素由纯冰组成，它似乎是一个优秀的两栖战士。
+UNIT_DESCRIPTION_18=Mystic creatures. It seems their soft body can absorb a lot of damages.
 
 UNIT_GUIDE_0=战士在前期是十分有用的单位，他们可以占领或是修复城镇来给玩家带来优势。战士虽然不是强力的作战单位，但是他们在面对物理防御不是很高的对手时，也能造成可观的伤害。
 UNIT_GUIDE_1=弓箭手的初始攻击力不是很高，但是因为他们可以从远处攻击敌人，所以比战士更容易升级；当弓箭手的等级提升之后，他们的攻击将变得更加致命。同时弓箭手对空军单位有伤害加成。
@@ -537,6 +562,7 @@ UNIT_GUIDE_14=由于幽灵是亡灵，他们根本不畏惧中毒。并且因为
 UNIT_GUIDE_15=黑魔法师没有特殊能力，不过他们拥有较高的魔法攻击所以是可靠的法系输出。当然黑魔法师的近战能力并不是很强，所以玩家需要合理的使用他们。
 UNIT_GUIDE_16=狼骑射手拥有着很高的机动性与较大的射程，你可以用它来攻击敌方的空军单位，无论目标是在前线还是在后方。同时，它拥有致盲敌人的能力，你可以用狼骑射手来使敌方高攻击力的单位无法攻击。
 UNIT_GUIDE_17=冰元素有相当长的攻击距离，并且拥有复原能力，这意味着它在水中会非常强大，而即使是在陆地上，它同样可以打出可观的魔法伤害。
+UNIT_GUIDE_18=Slimes are best against ranged attacks, but they are weak in melee battle so try to use them wisely.
 
 WIKI_OVERVIEW_P1=您现在看到的是游戏内的百科，它是为了帮助您学习如何游戏而设计，请继续查看获取更多信息。
 

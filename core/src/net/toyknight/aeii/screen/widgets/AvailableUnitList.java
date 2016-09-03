@@ -1,10 +1,8 @@
 package net.toyknight.aeii.screen.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
@@ -14,7 +12,7 @@ import net.toyknight.aeii.utils.UnitFactory;
 /**
  * @author toyknight 5/29/2015.
  */
-public class AvailableUnitList extends AEIIWidget implements Cullable {
+public class AvailableUnitList extends AEIIWidget {
 
     private final int item_height;
 
@@ -29,7 +27,6 @@ public class AvailableUnitList extends AEIIWidget implements Cullable {
 
     private float prefWidth;
     private float prefHeight;
-    private Rectangle cullingArea;
 
     private int selected_index = 0;
 
@@ -91,11 +88,7 @@ public class AvailableUnitList extends AEIIWidget implements Cullable {
         this.updateSelection();
         this.prefWidth = getWidth();
         this.prefHeight = available_units.size * item_height;
-    }
-
-    @Override
-    public void setCullingArea(Rectangle cullingArea) {
-        this.cullingArea = cullingArea;
+        invalidateHierarchy();
     }
 
     @Override
@@ -124,7 +117,7 @@ public class AvailableUnitList extends AEIIWidget implements Cullable {
                     x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
             batch.draw(getResources().getUnitTexture(current_team, unit_index, 0),
                     x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
-            if (UnitFactory.getCommanderIndex() == unit_index) {
+            if (UnitFactory.isCommander(unit_index)) {
                 getContext().getCanvasRenderer().drawHead(batch, getGame().getCommander(current_team).getHead(),
                         x + unit_offset, y + itemY - item_height + unit_offset, 0, ts);
             }
@@ -134,7 +127,6 @@ public class AvailableUnitList extends AEIIWidget implements Cullable {
             index++;
             itemY -= item_height;
         }
-        //batch.draw(ResourceManager.getMenuIcon(0), x, y + height - 800, width, 800);
         super.draw(batch, parentAlpha);
     }
 

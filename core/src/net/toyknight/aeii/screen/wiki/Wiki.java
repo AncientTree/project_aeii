@@ -64,23 +64,24 @@ public class Wiki extends BasicDialog {
 
         content_list = new Tree(getContext().getSkin());
         content_list.setPadding(ts / 4);
-        content_list.setYSpacing(ts / 2);
+        content_list.setYSpacing(ts / 3 * 2);
         content_list.getSelection().setMultiple(false);
         content_list.getSelection().setRequired(true);
+        content_list.getListeners().clear();
+        content_list.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Tree.Node node = content_list.getNodeAt(y);
+                if (node == null || !node.isSelectable()) return;
+                content_list.getSelection().choose(node);
+                if (node.getChildren().size > 0) {
+                    node.setExpanded(!node.isExpanded());
+                }
+            }
+        });
         content_list.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 onNodeSelected(content_list.getSelection().first());
-            }
-        });
-        content_list.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                Tree.Node node = content_list.getNodeAt(y);
-                if (node == null) return;
-                if (node != content_list.getNodeAt(getTouchDownY())) return;
-                if (node.getChildren().size > 0) {
-                    node.setExpanded(!node.isExpanded());
-                }
             }
         });
         content_list.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
@@ -114,7 +115,7 @@ public class Wiki extends BasicDialog {
         RootNode node_units = RootNode.create(RootNode.UNITS, getContext().getSkin());
         unit_nodes = new ObjectMap<Integer, Tree.Node>();
         for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-            if (index != UnitFactory.getCrystalIndex()) {
+            if (!UnitFactory.isCrystal(index)) {
                 Tree.Node node = EntryNode.create(EntryNode.TYPE_UNIT, index, ts, getContext());
                 unit_nodes.put(index, node);
                 node_units.add(node);

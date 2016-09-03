@@ -174,7 +174,7 @@ public class GameManager implements AnimationListener {
     }
 
     public void onGameEventFinished() {
-        if (!getOperationExecutor().isOperating()) {
+        if (!isProcessing()) {
             syncGameEvent();
         }
         if (!isAnimating()) {
@@ -183,7 +183,9 @@ public class GameManager implements AnimationListener {
     }
 
     public void onOperationFinished() {
-        syncGameEvent();
+        if (!isProcessing()) {
+            syncGameEvent();
+        }
     }
 
     private void checkGameState() {
@@ -260,7 +262,7 @@ public class GameManager implements AnimationListener {
 
     public void beginPreviewPhase(Unit target) {
         this.selected_unit = target;
-        createMovablePositions();
+        createMovablePositions(true);
         setState(STATE_PREVIEW);
     }
 
@@ -269,7 +271,7 @@ public class GameManager implements AnimationListener {
     }
 
     public void beginMovePhase() {
-        createMovablePositions();
+        createMovablePositions(false);
         setState(STATE_MOVE);
         move_path.clear();
     }
@@ -297,7 +299,7 @@ public class GameManager implements AnimationListener {
     }
 
     public void beginRemovePhase() {
-        createMovablePositions();
+        createMovablePositions(false);
         setState(STATE_REMOVE);
         move_path.clear();
     }
@@ -389,7 +391,6 @@ public class GameManager implements AnimationListener {
         Unit unit = getSelectedUnit();
         if (getGame().isUnitAccessible(unit)) {
             getOperationExecutor().submitOperation(Operation.STANDBY, unit.getX(), unit.getY());
-            getOperationExecutor().submitOperation(Operation.AFTER_STANDBY, unit.getX(), unit.getY());
         }
     }
 
@@ -398,9 +399,9 @@ public class GameManager implements AnimationListener {
         getOperationExecutor().submitOperation(Operation.TURN_STARTED);
     }
 
-    public void createMovablePositions() {
+    public void createMovablePositions(boolean preview) {
         movable_positions.clear();
-        movable_positions.addAll(getPositionGenerator().createMovablePositions(getSelectedUnit()));
+        movable_positions.addAll(getPositionGenerator().createMovablePositions(getSelectedUnit(), preview));
     }
 
     public ObjectSet<Position> getMovablePositions() {
@@ -477,7 +478,7 @@ public class GameManager implements AnimationListener {
             Tile tile = getGame().getMap().getTile(map_x, map_y);
             Unit unit = getGame().getMap().getUnit(map_x, map_y);
             if (getGame().isCastleAccessible(tile, team) && getGame().canBuyUponUnit(unit, team)) {
-                Unit sample = index == UnitFactory.getCommanderIndex() ?
+                Unit sample = UnitFactory.isCommander(index) ?
                         UnitFactory.cloneUnit(getGame().getCommander(team)) :
                         UnitFactory.cloneUnit(UnitFactory.getSample(index));
                 sample.clearStatus();

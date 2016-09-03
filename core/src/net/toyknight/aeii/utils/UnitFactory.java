@@ -36,6 +36,10 @@ public class UnitFactory {
         }
     }
 
+    public static boolean isCommander(int index) {
+        return index == getCommanderIndex();
+    }
+
     public static int getCommanderIndex() {
         return unit_config.commander_index;
     }
@@ -44,8 +48,16 @@ public class UnitFactory {
         return unit_config.skeleton_index;
     }
 
+    public static boolean isSkeleton(int index) {
+        return index == getSkeletonIndex();
+    }
+
     public static int getCrystalIndex() {
         return unit_config.crystal_index;
+    }
+
+    public static boolean isCrystal(int index) {
+        return index == getCrystalIndex();
     }
 
     public static int getUnitCount() {
@@ -92,7 +104,7 @@ public class UnitFactory {
     }
 
     public static Unit createCommander(int team) {
-        return createUnit(getCommanderIndex(), team);
+        return createUnit(unit_config.commander_index, team);
     }
 
     public static Unit cloneUnit(Unit unit) {

@@ -63,18 +63,22 @@ public class PositionGenerator {
     }
 
     public ObjectSet<Position> createMovablePositions(Unit unit) {
+        return createMovablePositions(unit, false);
+    }
+
+    public ObjectSet<Position> createMovablePositions(Unit unit, boolean preview) {
         movable_positions.clear();
         if (unit == null) {
             return new ObjectSet<Position>(movable_positions);
         } else {
             current_unit = UnitFactory.cloneUnit(unit);
             initializeMoveMarkMap();
-            createMovablePositions(createStartStep(unit), unit);
+            createMovablePositions(createStartStep(unit), unit, preview);
             return new ObjectSet<Position>(movable_positions);
         }
     }
 
-    private void createMovablePositions(Queue<Step> current_steps, Unit unit) {
+    private void createMovablePositions(Queue<Step> current_steps, Unit unit, boolean preview) {
         Queue<Step> next_steps = new LinkedList<Step>();
         while (!current_steps.isEmpty()) {
             Step current_step = current_steps.poll();
@@ -83,7 +87,7 @@ public class PositionGenerator {
             int current_movement_point = current_step.getMovementPoint();
             if (current_movement_point > move_mark_map[step_x][step_y]) {
                 move_mark_map[step_x][step_y] = current_movement_point;
-                if (getGame().canUnitMove(unit, step_x, step_y)) {
+                if (preview || getGame().canUnitMove(unit, step_x, step_y)) {
                     movable_positions.add(current_step.getPosition());
                 }
             }
@@ -98,7 +102,7 @@ public class PositionGenerator {
                     if (movement_point_cost <= current_movement_point
                             && movement_point_left > move_mark_map[next_x][next_y]) {
                         Unit target_unit = getGame().getMap().getUnit(next_x, next_y);
-                        if (getGame().canMoveThrough(unit, target_unit)) {
+                        if (preview || getGame().canMoveThrough(unit, target_unit)) {
                             Step next_step = new Step(next_position, movement_point_left);
                             next_steps.add(next_step);
                         }
@@ -107,7 +111,7 @@ public class PositionGenerator {
             }
         }
         if (!next_steps.isEmpty()) {
-            createMovablePositions(next_steps, unit);
+            createMovablePositions(next_steps, unit, preview);
         }
     }
 
@@ -280,17 +284,6 @@ public class PositionGenerator {
                 if (dy != 0 && getGame().getMap().isWithinMap(x + dx, y - dy)) {
                     positions.add(getGame().getMap().getPosition(x + dx, y - dy));
                 }
-            }
-        }
-        return positions;
-    }
-
-    public ObjectSet<Position> createPositionsWithinReach(Unit unit) {
-        ObjectSet<Position> positions = new ObjectSet<Position>();
-        if (unit.getMaxAttackRange() > 0) {
-            for (Position position : createMovablePositions(unit)) {
-                positions.addAll(createPositionsWithinRange(
-                        position.x, position.y, unit.getMinAttackRange(), unit.getMaxAttackRange()));
             }
         }
         return positions;

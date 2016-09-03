@@ -30,4 +30,15 @@ public class NetworkConstants {
     public static final int GAME_EVENT = 0x14;
     public static final int MESSAGE = 0x15;
 
+    //Admin operations
+    public static final int GLOBAL_MESSAGE = 0x100;
+    public static final int DELETE_MAP = 0x101;
+    public static final int UPDATE_MAP = 0x102;
+
+    //Response codes
+    public static final int CODE_NETWORK_ERROR = -1;
+    public static final int CODE_SERVER_ERROR = 0x0;
+    public static final int CODE_OK = 0x1;
+    public static final int CODE_MAP_EXISTING = 0x10;
+
 }

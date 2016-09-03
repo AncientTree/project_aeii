@@ -28,15 +28,14 @@ import net.toyknight.aeii.utils.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String INTERNAL_VERSION = "20";
-    public static final String EXTERNAL_VERSION = "1.1.8";
+    public static final String INTERNAL_VERSION = "23";
+    public static final String EXTERNAL_VERSION = "1.2.0";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -44,7 +43,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     private boolean initialized = false;
 
-    private ExecutorService executor;
+    private ThreadPoolExecutor executor;
 
     private Skin skin;
 
@@ -86,7 +85,9 @@ public class GameContext extends Game implements GameManagerListener {
     @Override
     public void create() {
         try {
-            executor = Executors.newSingleThreadExecutor();
+            executor = new ThreadPoolExecutor(1, 1,
+                    0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>());
             FileProvider.setPlatform(PLATFORM);
             Language.initialize();
             TileFactory.loadTileData();
@@ -361,6 +362,10 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void submitAsyncTask(AsyncTask task) {
         executor.submit(task);
+    }
+
+    public void clearAsyncTasks() {
+        executor.getQueue().clear();
     }
 
     @Override

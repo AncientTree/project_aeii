@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.screen.MainMenuScreen;
 import net.toyknight.aeii.screen.widgets.NumberSpinner;
+import net.toyknight.aeii.utils.InputFilter;
 import net.toyknight.aeii.utils.Language;
 
 /**
@@ -43,12 +44,7 @@ public class SettingDialog extends BasicDialog {
         setting_bar.add(lb_username).width(ts * 3);
 
         input_username = new TextField("", getContext().getSkin());
-        input_username.setTextFieldFilter(new TextField.TextFieldFilter() {
-            @Override
-            public boolean acceptChar(TextField textField, char c) {
-                return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9') || c == '_';
-            }
-        });
+        input_username.setTextFieldFilter(new InputFilter());
         input_username.setMaxLength(10);
         setting_bar.add(input_username).width(ts * 3).padLeft(ts / 2).row();
 
@@ -90,7 +86,7 @@ public class SettingDialog extends BasicDialog {
     }
 
     private void save() {
-        String username = input_username.getText();
+        String username = input_username.getText().trim();
         if (username.length() > 0) {
             getContext().updateConfiguration("username", username);
         } else {

@@ -168,10 +168,9 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         this.castle_x = getOwner().getCursorMapX();
         this.castle_y = getOwner().getCursorMapY();
         this.unit_list.setGame(getGame());
-        GameManager manager = getManager();
-        Array<Integer> available_units = manager.getGame().getRule().getAvailableUnits();
+        Array<Integer> available_units = getManager().getGame().getRule().getAvailableUnits();
         unit_list.setAvailableUnits(available_units);
-        sp_unit_list.setScrollPercentY(0f);
+        sp_unit_list.layout();
     }
 
     @Override

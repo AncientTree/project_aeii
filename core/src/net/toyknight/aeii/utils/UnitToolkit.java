@@ -76,8 +76,7 @@ public class UnitToolkit {
         if (unit.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile_type == Tile.TYPE_MOUNTAIN) {
             mp_cost = 1;
         }
-        if (unit.getIndex() == UnitFactory.getCrystalIndex() &&
-                tile.getType() == Tile.TYPE_MOUNTAIN && tile.getStepCost() >= 3) {
+        if (UnitFactory.isCrystal(unit.getIndex()) && tile.getType() == Tile.TYPE_MOUNTAIN && tile.getStepCost() >= 3) {
             mp_cost = 99;
         }
         return mp_cost;
@@ -129,14 +128,17 @@ public class UnitToolkit {
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_FOREST)) {
                     defence_bonus += 10;
                 }
+                break;
             case Tile.TYPE_MOUNTAIN:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN)) {
                     defence_bonus += 10;
                 }
+                break;
             case Tile.TYPE_WATER:
                 if (unit.hasAbility(Ability.FIGHTER_OF_THE_SEA)) {
                     defence_bonus += 10;
                 }
+                break;
             default:
                 //do nothing
         }

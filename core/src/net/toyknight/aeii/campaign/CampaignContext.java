@@ -7,6 +7,7 @@ import net.toyknight.aeii.campaign.aei.AEICampaign;
 import net.toyknight.aeii.campaign.aeii.AEIICampaign;
 import net.toyknight.aeii.campaign.challenge.ChallengeCampaign;
 import net.toyknight.aeii.campaign.tutorial.TutorialCampaign;
+import net.toyknight.aeii.campaign.warroom.WarroomCampaign;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
@@ -46,6 +47,10 @@ public class CampaignContext {
         CampaignController campaign_aei = new AEICampaign();
         campaign_aei.initialize();
         campaigns.put(campaign_aei.getCode(), campaign_aei);
+
+        CampaignController campaign_warroom = new WarroomCampaign();
+        campaign_warroom.initialize();
+        campaigns.put(campaign_warroom.getCode(), campaign_warroom);
     }
 
     public GameContext getContext() {
@@ -390,6 +395,10 @@ public class CampaignContext {
 
         public Unit get_unit(int map_x, int map_y) {
             return getContext().getGame().getMap().getUnit(map_x, map_y);
+        }
+
+        public ObjectSet<Unit> get_units(int team) {
+            return getContext().getGameManager().getGame().getMap().getUnits(team);
         }
 
         public int get_gold(int team) {

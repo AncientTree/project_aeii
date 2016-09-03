@@ -1,15 +1,15 @@
 package net.toyknight.aeii.server.managers;
 
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.esotericsoftware.minlog.Log;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.entity.MapSnapshot;
-import net.toyknight.aeii.server.ServerException;
+import net.toyknight.aeii.server.ServerContext;
 import net.toyknight.aeii.utils.MapFactory;
 import org.json.JSONArray;
 
 import java.io.*;
+import java.sql.SQLException;
 
 /**
  * @author by toyknight 6/10/2016.
@@ -18,117 +18,128 @@ public class MapManager {
 
     private static final String TAG = "MAP MANAGER";
 
+    private final ServerContext context;
+
     private final Object CHANGE_LOCK = new Object();
 
-    private final FileFilter map_file_filter = new MapFileFilter();
-
-    private final ObjectMap<String, ObjectSet<MapSnapshot>> maps = new ObjectMap<String, ObjectSet<MapSnapshot>>();
-
-    public void initialize() throws ServerException {
-        File map_dir = new File("maps");
-        if (map_dir.exists() && map_dir.isDirectory()) {
-            loadMaps(map_dir);
-        } else {
-            boolean success = map_dir.mkdir();
-            if (!success) {
-                throw new ServerException(TAG, "Cannot make map directory");
-            }
-        }
+    public MapManager(ServerContext context) {
+        this.context = context;
     }
 
-    public void loadMaps(File map_dir) {
-        File[] map_files = map_dir.listFiles(map_file_filter);
+    public ServerContext getContext() {
+        return context;
+    }
+
+    public void index() {
+        File map_dir = new File("maps");
+        File[] map_files = map_dir.listFiles(new MapFileFilter());
         for (File map_file : map_files) {
             try {
                 FileInputStream fis = new FileInputStream(map_file);
                 DataInputStream dis = new DataInputStream(fis);
                 Map map = MapFactory.createMap(dis);
 
-                MapSnapshot snapshot = new MapSnapshot(getCapacity(map), map_file.getName(), map.getAuthor());
-                addSnapshot(snapshot);
-            } catch (IOException ignored) {
-            } catch (AEIIException ignored) {
+                dis.close();
+                fis.close();
+
+                int id = getContext().getDatabaseManager().addMap(
+                        getCapacity(map), map_file.getName(), map.getAuthor().trim().toLowerCase(), MapFactory.isSymmetric(map));
+                boolean success = map_file.renameTo(new File("maps-temp/m" + id));
+                if (!success) {
+                    Log.error(TAG, "Failed renaming map file: " + map_file.getName());
+                }
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
             }
         }
     }
 
-    public Map getMap(String filename) throws IOException, AEIIException {
-        synchronized (CHANGE_LOCK) {
-            File map_file = new File("maps/" + filename);
-            FileInputStream fis = new FileInputStream(map_file);
-            DataInputStream dis = new DataInputStream(fis);
-            return MapFactory.createMap(dis);
-        }
-    }
-
-    public void addMap(Map map, String map_name) throws IOException {
-        File map_file = new File("maps/" + map_name + ".aem");
-        if (map_file.exists()) {
-            throw new IOException("Map " + map_file.getName() + " already exists!");
-        }
+    private void writeMap(File map_file, Map map) throws IOException {
         FileOutputStream fos = new FileOutputStream(map_file);
         DataOutputStream dos = new DataOutputStream(fos);
         MapFactory.writeMap(map, dos);
-
-        MapSnapshot snapshot = new MapSnapshot(getCapacity(map), map_file.getName(), map.getAuthor());
-        addSnapshot(snapshot);
+        dos.close();
+        fos.close();
     }
 
-    public boolean removeMap(String filename) {
-        try {
-            Map map = getMap(filename);
-            synchronized (CHANGE_LOCK) {
-                String author = map.getAuthor().trim().toLowerCase();
-                if (maps.containsKey(author)) {
-                    File map_file = new File("maps/" + filename);
-                    ObjectSet<MapSnapshot> snapshots = maps.get(author);
-                    MapSnapshot target_snapshot = null;
-                    for (MapSnapshot snapshot : snapshots) {
-                        if (snapshot.getFilename().equals(map_file.getName())) {
-                            target_snapshot = snapshot;
-                            break;
-                        }
-                    }
-                    return target_snapshot != null && snapshots.remove(target_snapshot) && map_file.delete();
-                } else {
-                    return false;
+    private Map readMap(File map_file) throws IOException, AEIIException {
+        FileInputStream fis = new FileInputStream(map_file);
+        DataInputStream dis = new DataInputStream(fis);
+        Map map = MapFactory.createMap(dis);
+        dis.close();
+        fis.close();
+        return map;
+    }
+
+    public Map getMap(int map_id) throws IOException, AEIIException {
+        synchronized (CHANGE_LOCK) {
+            File map_file = new File("maps/m" + map_id);
+            return readMap(map_file);
+        }
+    }
+
+    public void addMap(Map map, String map_name) throws IOException, SQLException, MapExistingException {
+        synchronized (CHANGE_LOCK) {
+            String filename = map_name + ".aem";
+            if (getContext().getDatabaseManager().isMapExisting(filename, map.getAuthor())) {
+                throw new MapExistingException();
+            } else {
+                int map_id = getContext().getDatabaseManager().addMap(
+                        getCapacity(map), filename, map.getAuthor().trim().toLowerCase(), MapFactory.isSymmetric(map));
+                File map_file = new File("maps/m" + map_id);
+                writeMap(map_file, map);
+            }
+        }
+    }
+
+    public boolean removeMap(int map_id) throws SQLException {
+        synchronized (CHANGE_LOCK) {
+            File map_file = new File("maps/m" + map_id);
+            return getContext().getDatabaseManager().removeMap(map_id) && map_file.delete();
+        }
+    }
+
+    public boolean updateMap(int map_id, String author, String filename) throws IOException, AEIIException {
+        synchronized (CHANGE_LOCK) {
+            File map_file = new File("maps/m" + map_id);
+            try {
+                if (author != null) {
+                    Map map = readMap(map_file);
+                    map.setAuthor(author);
+                    writeMap(map_file, map);
+                    author = author.trim().toLowerCase();
+                    getContext().getDatabaseManager().changeMapAuthor(map_id, author);
                 }
+                if (filename != null) {
+                    getContext().getDatabaseManager().changeMapFilename(map_id, filename);
+                }
+                return true;
+            } catch (SQLException ex) {
+                return false;
             }
-        } catch (Exception ex) {
-            return false;
         }
     }
 
-    public void addSnapshot(MapSnapshot snapshot) {
-        synchronized (CHANGE_LOCK) {
-            String author = snapshot.getAuthor().trim().toLowerCase();
-            if (!maps.containsKey(author)) {
-                maps.put(author, new ObjectSet<MapSnapshot>());
-            }
-            maps.get(author).add(snapshot);
-        }
-    }
-
-    public JSONArray getSerializedAuthorList() {
+    public JSONArray getSerializedAuthorList(boolean symmetric) {
         JSONArray list = new JSONArray();
-        synchronized (CHANGE_LOCK) {
-            for (String author : maps.keys()) {
+        try {
+            for (String author : getContext().getDatabaseManager().getAuthors(symmetric)) {
                 MapSnapshot snapshot = new MapSnapshot(0, "null", author);
                 snapshot.setDirectory(true);
                 list.put(snapshot.toJson());
             }
+        } catch (SQLException ignored) {
         }
         return list;
     }
 
-    public JSONArray getSerializedMapList(String author) {
+    public JSONArray getSerializedMapList(String author, boolean symmetric) {
         JSONArray list = new JSONArray();
-        synchronized (CHANGE_LOCK) {
-            if (maps.containsKey(author)) {
-                for (MapSnapshot snapshot : maps.get(author)) {
-                    list.put(snapshot.toJson());
-                }
+        try {
+            for (MapSnapshot snapshot : getContext().getDatabaseManager().getMapSnapshots(author, symmetric)) {
+                list.put(snapshot.toJson());
             }
+        } catch (SQLException ignored) {
         }
         return list;
     }
@@ -150,6 +161,9 @@ public class MapManager {
             return !file.isDirectory() && file.getName().endsWith(".aem");
         }
 
+    }
+
+    public class MapExistingException extends Exception {
     }
 
 }

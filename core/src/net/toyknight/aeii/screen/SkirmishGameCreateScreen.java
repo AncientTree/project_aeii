@@ -29,6 +29,7 @@ import net.toyknight.aeii.utils.MapFactory;
 public class SkirmishGameCreateScreen extends StageScreen implements StringList.SelectionListener {
 
     private final StringList<MapFactory.MapSnapshot> map_list;
+    private final ScrollPane sp_map_list;
     private final MiniMapDialog map_preview;
 
     private final Table team_setting_pane;
@@ -74,7 +75,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
 
         this.map_list = new StringList<MapFactory.MapSnapshot>(getContext(), ts);
         this.map_list.setListener(this);
-        ScrollPane sp_map_list = new ScrollPane(map_list, getContext().getSkin()) {
+        sp_map_list = new ScrollPane(map_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
@@ -285,6 +286,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         super.show();
         Array<MapFactory.MapSnapshot> maps = MapFactory.getAllMapSnapshots();
         map_list.setItems(maps);
+        sp_map_list.layout();
         if (maps.size > 0) {
             onChange(0, map_list.getSelected());
         }

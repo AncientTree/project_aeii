@@ -1,4 +1,4 @@
-package net.toyknight.aeii.campaign.challenge;
+package net.toyknight.aeii.campaign.warroom;
 
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.Reinforcement;
@@ -9,9 +9,9 @@ import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
 
 /**
- * @author by toyknight 8/2/2016.
+ * @author blackwave 8/25/2016.
  */
-public class ChallengeStage7 extends StageController {
+public class WarroomStage3 extends StageController {
 
     private void checkClear() {
         if (getContext().count_unit(1) == 0 && getContext().count_castle(1) == 0) {
@@ -27,9 +27,9 @@ public class ChallengeStage7 extends StageController {
         getContext().alliance(2, 1);
         getContext().alliance(3, 1);
         getContext().focus(2, 6);
-        Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1"));
+        Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1"));
         getContext().message(message);
-        Message message1 = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_2"));
+        Message message1 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2"));
         getContext().message(message1);
     }
 
@@ -88,7 +88,7 @@ public class ChallengeStage7 extends StageController {
 
     @Override
     public String getMapName() {
-        return "challenge_stage_7.aem";
+        return "warroom_stage_3.aem";
     }
 
     @Override
@@ -111,20 +111,20 @@ public class ChallengeStage7 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1"),
-                Language.getText("CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2"),
-                Language.getText("CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_3"),
+                Language.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1"),
+                Language.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2"),
+                Language.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3"),
         };
     }
 
     @Override
     public int getStageNumber() {
-        return 6;
+        return 2;
     }
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_CHALLENGE_STAGE_7_NAME");
+        return Language.getText("CAMPAIGN_WARROOM_STAGE_3_NAME");
     }
 
 }

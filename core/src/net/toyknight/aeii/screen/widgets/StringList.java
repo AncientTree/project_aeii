@@ -83,6 +83,10 @@ public class StringList<T> extends AEIIWidget {
         selection.setDisabled(!b);
     }
 
+    public ArraySelection<T> getSelection() {
+        return selection;
+    }
+
     public T getSelected() {
         return selection.first();
     }

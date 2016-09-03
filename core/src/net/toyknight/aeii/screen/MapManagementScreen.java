@@ -1,20 +1,25 @@
 package net.toyknight.aeii.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.Map;
+import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.network.entity.MapSnapshot;
@@ -22,6 +27,7 @@ import net.toyknight.aeii.screen.dialog.ConfirmDialog;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.FileProvider;
+import net.toyknight.aeii.utils.InputFilter;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.MapFactory;
 
@@ -44,13 +50,14 @@ public class MapManagementScreen extends StageScreen {
     private final ScrollPane sp_local_map_list;
 
     private final TextButton btn_download;
-    private final TextButton btn_preview_server;
+    private final TextButton btn_preview;
     private final TextButton btn_back;
     private final TextButton btn_refresh;
     private final TextButton btn_upload;
-    private final TextButton btn_preview_local;
+    private final TextButton btn_rename;
     private final TextButton btn_delete;
 
+    private boolean symmetric;
     private String current_author;
     private float last_scroll_position_server_author_list;
 
@@ -79,6 +86,8 @@ public class MapManagementScreen extends StageScreen {
 
             @Override
             public void onChange(int index, Object value) {
+                local_map_list.getSelection().clear();
+                update();
             }
         });
         addActor(sp_server_map_list);
@@ -89,62 +98,83 @@ public class MapManagementScreen extends StageScreen {
         sp_local_map_list.setScrollBarPositions(true, true);
         sp_local_map_list.setBounds(
                 Gdx.graphics.getWidth() - ts * 8 - ts / 2, ts * 2, ts * 8, Gdx.graphics.getHeight() - ts * 3);
+        local_map_list.setListener(new StringList.SelectionListener() {
+            @Override
+            public void onSelect(int index, Object value) {
+            }
+
+            @Override
+            public void onChange(int index, Object value) {
+                server_map_list.getSelection().clear();
+                update();
+            }
+        });
         addActor(sp_local_map_list);
 
-        btn_download = new TextButton(Language.getText("LB_DOWNLOAD"), getContext().getSkin());
-        btn_download.setBounds(ts / 2, ts / 2, ts * 2, ts);
-        btn_download.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                downloadSelectedMap();
-            }
-        });
-        addActor(btn_download);
-        btn_preview_server = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
-        btn_preview_server.setBounds(ts * 3, ts / 2, ts * 2, ts);
-        btn_preview_server.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                previewSelectedServerMap();
-            }
-        });
-        addActor(btn_preview_server);
+        Table button_bar = new Table();
+        button_bar.setBounds(ts / 2, ts / 2, Gdx.graphics.getWidth() - ts, ts);
+        addActor(button_bar);
+
+        int padding = (Gdx.graphics.getWidth() - ts * 15) / 6;
+
         btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
-        btn_back.setBounds(ts * 5 + ts / 2, ts / 2, ts * 2, ts);
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 back();
             }
         });
-        addActor(btn_back);
+        button_bar.add(btn_back).size(ts * 2, ts);
+
         btn_refresh = new TextButton(Language.getText("LB_REFRESH"), getContext().getSkin());
-        btn_refresh.setBounds((Gdx.graphics.getWidth() - ts * 2) / 2, ts / 2, ts * 2, ts);
         btn_refresh.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 refresh();
             }
         });
-        addActor(btn_refresh);
+        button_bar.add(btn_refresh).size(ts * 2, ts).padLeft(padding);
+
+        btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
+        btn_preview.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (local_map_list.getSelected() == null) {
+                    previewSelectedServerMap();
+                } else {
+                    previewSelectedLocalMap();
+                }
+            }
+        });
+        button_bar.add(btn_preview).size(ts * 2, ts).padLeft(padding);
+
+        btn_download = new TextButton(Language.getText("LB_DOWNLOAD"), getContext().getSkin());
+        btn_download.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                downloadSelectedMap();
+            }
+        });
+        button_bar.add(btn_download).size(ts * 2, ts).padLeft(padding);
+
         btn_upload = new TextButton(Language.getText("LB_UPLOAD"), getContext().getSkin());
-        btn_upload.setBounds(Gdx.graphics.getWidth() - ts * 2 - ts / 2, ts / 2, ts * 2, ts);
         btn_upload.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 uploadSelectedMap();
             }
         });
-        addActor(btn_upload);
-        btn_preview_local = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
-        btn_preview_local.setBounds(Gdx.graphics.getWidth() - ts * 5, ts / 2, ts * 2, ts);
-        btn_preview_local.addListener(new ClickListener() {
+        button_bar.add(btn_upload).size(ts * 2, ts).padLeft(padding);
+
+        btn_rename = new TextButton(Language.getText("LB_RENAME"), getContext().getSkin());
+        btn_rename.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                previewSelectedLocalMap();
+                rename();
             }
         });
-        addActor(btn_preview_local);
+        button_bar.add(btn_rename).size(ts * 2, ts).padLeft(padding);
+
         btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
         btn_delete.setBounds(Gdx.graphics.getWidth() - ts * 7 - ts / 2, ts / 2, ts * 2, ts);
         btn_delete.addListener(new ClickListener() {
@@ -153,7 +183,7 @@ public class MapManagementScreen extends StageScreen {
                 delete();
             }
         });
-        addActor(btn_delete);
+        button_bar.add(btn_delete).size(ts * 2, ts).padLeft(padding);
 
         map_preview_dialog = new MiniMapDialog(this);
         map_preview_dialog.addClickListener(new ClickListener() {
@@ -163,6 +193,18 @@ public class MapManagementScreen extends StageScreen {
             }
         });
         addDialog("preview", map_preview_dialog);
+    }
+
+    private void update() {
+        Object server_selected = server_map_list.getSelected();
+        MapFactory.MapSnapshot local_selected = local_map_list.getSelected();
+        btn_preview.setVisible(local_selected != null ||
+                (server_selected instanceof MapSnapshot && !((MapSnapshot) server_selected).isDirectory()));
+        btn_download.setVisible(
+                server_selected instanceof MapSnapshot && !((MapSnapshot) server_selected).isDirectory());
+        btn_upload.setVisible(local_selected != null);
+        btn_rename.setVisible(local_selected != null);
+        btn_delete.setVisible(local_selected != null);
     }
 
     private void back() {
@@ -186,6 +228,35 @@ public class MapManagementScreen extends StageScreen {
         }
     }
 
+    private void rename() {
+        showInput(Language.getText("MSG_INFO_IF"), 20, false, new InputFilter(), new Input.TextInputListener() {
+            @Override
+            public void input(String text) {
+                MapFactory.MapSnapshot snapshot = local_map_list.getSelected();
+                FileHandle target_file = FileProvider.getUserFile("map/" + text + ".aem");
+                if (target_file.exists()) {
+                    showNotification(Language.getText("MSG_ERR_FAE"), new Callable() {
+                        @Override
+                        public void call() {
+                            rename();
+                        }
+                    });
+                } else {
+                    try {
+                        snapshot.file.moveTo(target_file);
+                        refreshLocalMaps();
+                    } catch (GdxRuntimeException ex) {
+                        showNotification(Language.getText("MSG_ERR_FRM"), null);
+                    }
+                }
+            }
+
+            @Override
+            public void canceled() {
+            }
+        });
+    }
+
     private boolean connect() {
         try {
             return NetworkManager.connect(map_server_configuration);
@@ -196,13 +267,14 @@ public class MapManagementScreen extends StageScreen {
 
     private void downloadSelectedMap() {
         if (checkSelectedMap()) {
+            final int map_id = ((MapSnapshot) server_map_list.getSelected()).getID();
             final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
             showPlaceholder(Language.getText("LB_DOWNLOADING"));
             getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
                 public Void doTask() throws Exception {
                     if (connect()) {
-                        Map map = NetworkManager.requestDownloadMap(filename);
+                        Map map = NetworkManager.requestDownloadMap(map_id);
                         NetworkManager.disconnect();
                         tryWriteMap(map, filename);
                         return null;
@@ -214,7 +286,7 @@ public class MapManagementScreen extends StageScreen {
                 @Override
                 public void onFinish(Void map) {
                     closePlaceholder();
-                    showNotification(Language.getText("MSG_ERR_FDM"), null);
+                    showNotification(Language.getText("MSG_INFO_MD"), null);
                 }
 
                 @Override
@@ -228,27 +300,27 @@ public class MapManagementScreen extends StageScreen {
 
     private void uploadSelectedMap() {
         showPlaceholder(Language.getText("LB_UPLOADING"));
-        getContext().submitAsyncTask(new AsyncTask<Boolean>() {
+        getContext().submitAsyncTask(new AsyncTask<Integer>() {
             @Override
-            public Boolean doTask() throws Exception {
+            public Integer doTask() throws Exception {
                 if (connect()) {
                     FileHandle map_file = local_map_list.getSelected().file;
                     Map map = MapFactory.createMap(map_file);
-                    boolean success = NetworkManager.requestUploadMap(map, map_file.nameWithoutExtension());
+                    int code = NetworkManager.requestUploadMap(map, map_file.nameWithoutExtension());
                     NetworkManager.disconnect();
-                    return success;
+                    return code;
                 } else {
                     throw new AEIIException(Language.getText("MSG_ERR_CCS"));
                 }
             }
 
             @Override
-            public void onFinish(Boolean success) {
+            public void onFinish(Integer code) {
                 closePlaceholder();
-                if (success) {
+                if (code == NetworkConstants.CODE_OK) {
                     showNotification(Language.getText("MSG_INFO_MU"), null);
                 } else {
-                    showNotification(Language.getText("MSG_ERR_FUM"), null);
+                    showNotification(Language.getText("MSG_ERR_FUM") + "Error Code [" + code + "]", null);
                 }
             }
 
@@ -262,28 +334,31 @@ public class MapManagementScreen extends StageScreen {
 
     private void tryWriteMap(Map map, String filename) {
         FileHandle map_file = FileProvider.getUserFile("map/" + filename);
-        if (map_file.exists()) {
-            showNotification(Language.getText("MSG_ERR_MAE"), null);
+        if (map == null) {
+            showNotification(Language.getText("MSG_ERR_FDM"), null);
         } else {
-            try {
-                MapFactory.writeMap(map, map_file);
-                refreshLocalMaps();
-                showNotification(Language.getText("MSG_INFO_MD"), null);
-            } catch (IOException e) {
-                showNotification(Language.getText("MSG_ERR_FDM"), null);
+            if (map_file.exists()) {
+                showNotification(Language.getText("MSG_ERR_MAE"), null);
+            } else {
+                try {
+                    MapFactory.writeMap(map, map_file);
+                    refreshLocalMaps();
+                } catch (IOException e) {
+                    showNotification(Language.getText("MSG_ERR_FDM"), null);
+                }
             }
         }
     }
 
     private void previewSelectedServerMap() {
         if (checkSelectedMap()) {
-            final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
+            final int map_id = ((MapSnapshot) server_map_list.getSelected()).getID();
             showPlaceholder(Language.getText("LB_DOWNLOADING"));
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
                     if (connect()) {
-                        Map map = NetworkManager.requestDownloadMap(filename);
+                        Map map = NetworkManager.requestDownloadMap(map_id);
                         NetworkManager.disconnect();
                         return map;
                     } else {
@@ -335,7 +410,7 @@ public class MapManagementScreen extends StageScreen {
             public Array<MapSnapshot> doTask() throws Exception {
                 refreshLocalMaps();
                 if (connect()) {
-                    Array<MapSnapshot> map_list = NetworkManager.requestMapList(current_author);
+                    Array<MapSnapshot> map_list = NetworkManager.requestMapList(current_author, symmetric);
                     NetworkManager.disconnect();
                     return map_list;
                 } else {
@@ -351,6 +426,7 @@ public class MapManagementScreen extends StageScreen {
                 } else {
                     map_list.sort();
                     updateServerMapList(map_list);
+                    update();
                 }
             }
 
@@ -365,18 +441,21 @@ public class MapManagementScreen extends StageScreen {
     private void updateServerMapList(Array<MapSnapshot> map_list) {
         if (current_author == null) {
             server_map_list.setItems(map_list);
-            server_map_list.layout();
             sp_server_map_list.layout();
             sp_server_map_list.setScrollPercentY(last_scroll_position_server_author_list);
         } else {
             Array<Object> list = new Array<Object>(map_list);
             list.insert(0, "/...");
             server_map_list.setItems(list);
+            sp_server_map_list.layout();
         }
+        local_map_list.getSelection().clear();
     }
 
     private void refreshLocalMaps() {
         local_map_list.setItems(MapFactory.getUserMapSnapshots());
+        server_map_list.getSelection().clear();
+        sp_local_map_list.layout();
     }
 
     private void delete() {
@@ -431,6 +510,7 @@ public class MapManagementScreen extends StageScreen {
     @Override
     public void show() {
         super.show();
+        symmetric = false;
         current_author = null;
         local_map_list.clearItems();
         server_map_list.clearItems();
@@ -446,7 +526,7 @@ public class MapManagementScreen extends StageScreen {
     private void setNetworkRelatedButtonsEnabled(boolean enabled) {
         GameContext.setButtonEnabled(btn_upload, enabled);
         GameContext.setButtonEnabled(btn_download, enabled);
-        GameContext.setButtonEnabled(btn_preview_server, enabled);
+        GameContext.setButtonEnabled(btn_preview, enabled);
         GameContext.setButtonEnabled(btn_refresh, enabled);
     }
 

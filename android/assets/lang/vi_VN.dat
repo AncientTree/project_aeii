@@ -1,1118 +1,1691 @@
-
+﻿
 FONT=vi_VN.ttf
+
 
 
 _TITLE=Ancient Empires Reloaded
 
+
 _TITLE_Lobby=Game Lobby
+
 
 
 ABILITY_DESCRIPTION_0=Đơn vị này có khả năng chiếm giữ làng.
 
+
 ABILITY_DESCRIPTION_1=Đơn vị này có khả năng tăng 10 tấn công / phòng thủ dưới nước.
+
 
 ABILITY_DESCRIPTION_2=Đơn vị này có khả năng tăng 10 tấn công / phòng thủ trong rừng.
 
+
 ABILITY_DESCRIPTION_3=Đơn vị này có khả năng tăng 10 tấn công / phòng thủ trên núi.
+
 
 ABILITY_DESCRIPTION_4=Đơn vị này có khả năng phá hủy làng.
 
+
 ABILITY_DESCRIPTION_5=Đơn vị này có khả năng di chuyển tự do mọi địa hình, và có thể di chuyển qua đơn vị [bộ quân] đối phương.
+
 
 ABILITY_DESCRIPTION_6=Thầy gọi hồn có khả năng triệu tập những bộ xương của đơn vị đã tử vong , đồng thời họ sẽ không thể triệu tập nếu đứng trên bia mộ
 
+
 ABILITY_DESCRIPTION_7=Đơn vị này có khả năng chữa trị các đồng minh, và số lượng chữa trị sẽ tăng lên khi lên cấp, LƯU Ý: thầy lang chữa trị có thể vượt trội HP của mục tiêu.
 
-ABILITY_DESCRIPTION_8=Đối với các đơn vị có khả năng này, một khi họ đã hoàn thành hành động của họ, họ có thể sử dụng điểm chuyển động còn lại của mình để di chuyển một lần nữa.
 
-ABILITY_DESCRIPTION_9=Đối với các đơn vị có khả năng này, các cuộc tấn công của họ sẽ đính kèm trạng thái [tẩm thuốc độc] lên kẻ địch trong 2 lượt. Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
+ABILITY_DESCRIPTION_8=Các đơn vị có khả năng này, một khi họ đã hoàn thành hành động của họ, họ có thể sử dụng điểm di chuyển còn lại của mình để di chuyển một lần nữa.
+
+
+ABILITY_DESCRIPTION_9=Các đơn vị có khả năng này, các cuộc tấn công của họ sẽ đính kèm trạng thái [tẩm thuốc độc] lên kẻ địch trong 2 lượt. Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
+
 
 ABILITY_DESCRIPTION_10=Đơn vị có khả năng sửa chữa làng bị phá hỏng.
 
-ABILITY_DESCRIPTION_11=Đối với các đơn vị có khả năng này, bia mộ sẽ không xuất hiện trên bản đồ khi họ tử vong. Hơn nữa, khi họ [tẩm thuốc độc] họ vẫn có thể nhận được lành từ các địa hình và các thiệt hại độc sẽ trở nên lành. Tuy nhiên lành từ các đồng minh sẽ trở thành thiệt hại cho họ.
+
+ABILITY_DESCRIPTION_11=Các đơn vị có khả năng này, bia mộ sẽ không xuất hiện trên bản đồ khi họ tử vong. Hơn nữa, khi họ [tẩm thuốc độc] họ vẫn có thể nhận được lành từ các địa hình và các thiệt hại độc sẽ trở nên lành. Tuy nhiên lành từ các đồng minh sẽ trở thành thiệt hại cho họ.
+
 
 ABILITY_DESCRIPTION_12=Đối với các đơn vị có khả năng này, họ có được 15 tấn công khi tấn công kẻ thù [không quân].
 
-ABILITY_DESCRIPTION_13=Các đơn vị có khả năng này có thể di chuyển qua các địa hình nước ,và khi họ đang ở dưới nước ,khi đến lượt ,họ được phục hồi 10 HP
 
-ABILITY_DESCRIPTION_14=Các đơn vị có khả năng này có thể di chuyển qua các địa hình rừng, và khi họ đang ở trong rừng ,khi đến lượt, họ được phục 10 HP.
+ABILITY_DESCRIPTION_13=Đơn vị này có thể di chuyển qua các địa hình nước ,và khi họ đang ở dưới nước ,khi đến lượt ,họ được phục hồi 10 HP
 
-ABILITY_DESCRIPTION_15=Các đơn vị có khả năng này có thể di chuyển qua các địa hình núi, và khi họ đang ở trên núi ,khi đến lượt, họ được phục 10 HP
 
-ABILITY_DESCRIPTION_16=Units with this ability can move through land terrains using 1 movement point.
+ABILITY_DESCRIPTION_14=Đơn vị này có thể di chuyển qua các địa hình rừng, và khi họ đang ở trong rừng ,khi đến lượt, họ được phục hồi 10 HP.
 
-ABILITY_DESCRIPTION_17=Đối với các đơn vị có khả năng này, khi họ tấn công sẽ có trạng thái [Làm Chậm] kẻ thù và giảm 2 ô di chuyển của mục tiêu Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
+
+ABILITY_DESCRIPTION_15=Đơn vị này có thể di chuyển qua các địa hình núi, và khi họ đang ở trên núi ,khi đến lượt, họ được phục hồi 10 HP
+
+
+ABILITY_DESCRIPTION_16=Đơn vị này có thể di chuyển tự do trên các địa hình đất
+
+
+ABILITY_DESCRIPTION_17=Đơn vị có khả năng này, khi họ tấn công sẽ có trạng thái [Tê Liệt] kẻ thù và giảm 2 ô di chuyển của mục tiêu Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
+
 
 ABILITY_DESCRIPTION_18=Đơn vị có khả năng chiếm giữ lâu đài.
 
+
 ABILITY_DESCRIPTION_19=Đơn vị không thể hành động khi di chuyển và không bị dính bất cứ trạng thái nào
+
 
 ABILITY_DESCRIPTION_20=Đối với các đơn vị có khả năng này, khi họ chờ họ sẽ đính kèm trạng thái [Cảm Hứng] cho các đồng minh trong vòng 2 ô
 
-ABILITY_DESCRIPTION_21=For units who have this ability, each enemy within 2 blocks will give 10 attack bonus and 5 physical defence bonus to them, but they cannot receive heals from terrains.
 
-ABILITY_DESCRIPTION_22=Đối với các đơn vị có khả năng này, khi về làng và lâu đài đồng minh , họ sẽ được 5 phòng thủ 
+ABILITY_DESCRIPTION_21=Các đơn vị có khả năng này, mỗi kẻ địch trong vòng 2 khối sẽ cung cấp thêm 10 tấn công và 5 thủ vật lý cho họ, nhưng họ không thể nhận được lành từ địa hình.
 
-ABILITY_DESCRIPTION_23=Đối với các đơn vị có khả năng này, khi họ chờ họ sẽ xóa trạng thái xấu của các đồng minh trong vòng 2 ô và chữa trị cho họ một chút. Lượng chữa trị sẽ tăng lên khi lên cấp
 
-ABILITY_DESCRIPTION_24=Đối với các đơn vị có khả năng này, các cuộc tấn công cận chiến của họ sẽ mạnh hơn 1,5 lần.
+ABILITY_DESCRIPTION_22=Các đơn vị có khả năng này, khi về làng và lâu đài đồng minh , họ sẽ được 5 phòng thủ 
 
-ABILITY_DESCRIPTION_25=Đối với các đơn vị có khả năng này, nếu kẻ tấn công là trong vòng 2 ô họ có thể thực hiện phản đòn.
 
-ABILITY_DESCRIPTION_26=Đối với các đơn vị có khả năng này, các cuộc tấn công của họ sẽ đính kèm trạng thái [mù lòa]. Tuy nhiên các đơn vị có khả năng điều này sẽ không ảnh hưởng lẫn nhau.
+ABILITY_DESCRIPTION_23=Các đơn vị có khả năng này, khi họ chờ họ sẽ xóa trạng thái xấu của các đồng minh trong vòng 2 ô và chữa trị cho họ một chút. Lượng chữa trị sẽ tăng lên khi lên cấp
+
+
+ABILITY_DESCRIPTION_24=Các đơn vị có khả năng này, các cuộc tấn công cận chiến của họ sẽ mạnh hơn 1,5 lần.
+
+
+ABILITY_DESCRIPTION_25=Các đơn vị có khả năng này, nếu kẻ tấn công là trong vòng 2 ô họ có thể thực hiện phản đòn.
+
+
+ABILITY_DESCRIPTION_26=Các đơn vị có khả năng này, các cuộc tấn công của họ sẽ đính kèm trạng thái [mù lòa]. Tuy nhiên các đơn vị có khả năng điều này sẽ không ảnh hưởng lẫn nhau.
+
 
 ABILITY_DESCRIPTION_27=Các đơn vị có khả năng này sẽ phục hồi tối đa 25% HP khi đến lượt, bất kể là có [tẩm thuốc độc] hay không.
 
-ABILITY_DESCRIPTION_28=For units who have this ability, they receive 50% less damage from ranged attacks.
+
+ABILITY_DESCRIPTION_28=Các đơn vị có khả năng này, họ sẽ giảm 50% sát thương từ các cuộc tấn công tầm xa.
+
 
 
 ABILITY_NAME_0=Chiếm Giữ 
 
+
 ABILITY_NAME_1=Chiến Binh Của Nước
+
 
 ABILITY_NAME_2=Chiến Binh Của Núi
 
+
 ABILITY_NAME_3=Chiến Binh Của Rừng
+
 
 ABILITY_NAME_4=Phá Hủy
 
+
 ABILITY_NAME_5=Không Quân
+
 
 ABILITY_NAME_6=Thầy Gọi Hồn 
 
+
 ABILITY_NAME_7=Chữa Trị
+
 
 ABILITY_NAME_8=Đánh Rồi Chạy
 
+
 ABILITY_NAME_9=Tẩm Thuốc Độc 
+
 
 ABILITY_NAME_10=Thợ Sửa Chữa
 
+
 ABILITY_NAME_11=Bất Tử
+
 
 ABILITY_NAME_12=Thiện Xạ
 
+
 ABILITY_NAME_13=Con Của Nước
+
 
 ABILITY_NAME_14=Con Của Núi
 
+
 ABILITY_NAME_15=Con Của Rừng
+
 
 ABILITY_NAME_16=Đi Qua Nhanh
 
-ABILITY_NAME_17=Khí Làm Chậm
+
+ABILITY_NAME_17=Khí Tê Liệt
+
 
 ABILITY_NAME_18=Chỉ Huy
 
+
 ABILITY_NAME_19=Máy Hạng Nặng
+
 
 ABILITY_NAME_20=Khí Tấn Công
 
+
 ABILITY_NAME_21=Khát Máu
+
 
 ABILITY_NAME_22=Bảo Vệ
 
+
 ABILITY_NAME_23=Khí Tươi Tỉnh
+
 
 ABILITY_NAME_24=Chúa Tể Của Sự Khủng Khiếp 
 
+
 ABILITY_NAME_25=Phản Đòn Điên Cuồng 
 
-ABILITY_NAME_26=Tấn Công mù lòa 
+
+ABILITY_NAME_26=Tấn Công Mù Lòa 
+
 
 ABILITY_NAME_27=Sự Phục Hồi
 
-ABILITY_NAME_28=Hard Skin
+
+ABILITY_NAME_28=Absorptive Skin
+
 
 
 CAMPAIGN_TUTORIAL_NAME=Hướng Dẫn 
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_NAME=Di chuyển & Tấn công
+
 
 CAMPAIGN_TUTORIAL_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
 
-CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_1=Chào mừng bạn chỉ huy mới! Tôi là một huấn luyện viên từ trại quân đội. Trong giai đoạn này, tôi sẽ dạy cho bạn những cơ bản nhất của cuộc chiến: di chuyển và tấn công.
+
+CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_1=Chào mừng chỉ huy mới! Tôi là một huấn luyện viên từ trại quân đội. Trong giai đoạn này, tôi sẽ dạy cho bạn những cơ bản nhất của cuộc chiến: di chuyển và tấn công.
+
 
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_2=Như bạn có thể nhìn thấy bạn đang ở phía bên trái của bản đồ và có hai kẻ thù ở phía bên phải mà bạn cần phải đánh bại.
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_3=Tuy nhiên điểm chuyển động của bạn không đủ để tiếp cận họ, do đó, hãy di chuyển đến ngôi làng ở giữa bản đồ đầu tiên.
+
 
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_4=Để di chuyển một đơn vị, bạn cần phải bấm vào nó đầu tiên và một số hình vuông màu vàng sẽ xuất hiện trên bản đồ cho thấy nơi bạn có thể di chuyển.
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_5=Bằng cách di chuyển con trỏ đến một trong các hình vuông màu vàng một con đường đến đích sẽ xuất hiện. Nhấp vào đích để di chuyển ở đó.
+
 
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_6=Bây giờ là thời gian để thực hành, di chuyển chỉ huy của mình vào làng ở giữa!
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_7=Tốt, bây giờ bạn có thể nhấp vào nút chế độ chờ (nút có biểu tượng mũi tên xuống) để cho chỉ huy của bạn ở chế độ chờ.
+
 
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_8=Nếu không còn quân nào để đi ,bạn hãy nhấp vào "Kết thúc lượt" ở góc dưới bên phải để đến lượt kẻ thù đi
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_9=Bây giờ là thời gian cho bạn để tấn công kẻ thù. Để tấn công một kẻ thù, di chuyển chỉ huy của bạn bên cạnh và một nút với biểu tượng thanh kiếm sẽ xuất hiện.
 
+
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_10=Nhấn vào nút này sau đó di chuyển con trỏ đến một trong những kẻ thù trong phạm vi tấn công và nhấp vào kẻ thù để tấn công.
+
 
 CAMPAIGN_TUTORIAL_STAGE_1_MESSAGE_11=Tuyệt vời, bây giờ bạn đã học được làm thế nào để di chuyển và tấn công, hãy tiêu diệt tất cả các kẻ thù để giành chiến thắng trong giai đoạn!
 
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_NAME=Sửa chữa, Chiếm giữ & Chiêu mộ
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù 
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải con sống
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_1=Chào mừng bạn đến một giai đoạn mới! Trong giai đoạn này, tôi sẽ dạy cho bạn tất cả những gì về sửa chữa, chiếm giữ và chiêu mộ.
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_2=Bạn có thể thấy có rất nhiều đơn vị kẻ thù ở phía bên kia của con sông và kẻ thù có quá nhiều cho chỉ huy của bạn để đánh bại.
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_3=Vì vậy, bạn cần một lâu đài để chiêu mộ các đơn vị để giúp bạn chiến đấu chống lại kẻ thù. Và may mắn thay có một lâu đài gần dưới cùng của bản đồ. Hãy đi đến đó.
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_4=Để chiếm lâu đài này, bạn cần phải di chuyển chỉ huy của bạn ở trên nó và nhấp vào nút chiếm giữ (nút có biểu tượng ngôi nhà)
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_5=Tốt, bây giờ lâu đài này là của bạn, nó sẽ cung cấp 100 vàng mỗi lượt, và bạn có thể sử dụng nó để chiêu mộ các đơn vị để chống lại kẻ thù.
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_6=Nhưng đừng quá vội vàng, có hai di tích làng gần lâu đài, vì vậy hãy chiêu mộ một số binh sĩ để sửa chữa chúng trước tiên.
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_7=Để chiêu mộ một đơn vị, chỉ cần nhấp vào lâu đài sau đó chọn đơn vị bạn muốn chiêu mộ và bấm nút "chiêu mộ".
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_8=Bây giờ là thời gian để thực hành, vì hành động sửa chữa là khá tương tự hành động chiếm giữ , tôi nghĩ bạn có thể thử nó.
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_9=Tuyệt vời, vì mỗi ngôi làng bị chiếm giữ có thể cung cấp 50 vàng mỗi lượt, hãy chiếm chúng trong lượt tiếp theo của bạn.
 
+
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_10=Và có vẻ như vẫn còn một số vàng còn lại hãy cố gắng chiêu mộ một số đơn vị nhiều hơn để tăng cường quân đội của bạn.
+
 
 CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_11=Tuyệt diệu, bây giờ bạn đã đạt được thu nhập cao hơn và không cần phải sợ kẻ thù. Tiêu diệt tất cả các kẻ thù để giành chiến thắng trong giai đoạn!
 
 
+
 CAMPAIGN_TUTORIAL_STAGE_3_NAME=Sẵn sàng cho trận chiến!
+
 
 CAMPAIGN_TUTORIAL_STAGE_3_OBJECTIVE_1=VICTORY: Đánh bại tất cả kẻ địch và chiếm giữ lâu đài của đối phương.
 
+
 CAMPAIGN_TUTORIAL_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải sống
+
 
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_1=Bây giờ là thời gian cho bạn để đặt những gì bạn đã học được vào trận chiến thực sự. Như bạn có thể nhìn thấy kẻ thù cũng có một chỉ huy và một lâu đài có nghĩa là có nhiều khó khăn để đánh bại hơn trước.
 
+
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_2=Chìa khóa để chiến thắng là đặc tính và khả năng của đơn vị ". Nếu bạn chú ý đến thì các trận chiến có thể được dễ dàng hơn nhiều.
+
 
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_3=Để đưa ra một lời giải thích ngắn gọn, có hai loại tấn công: vật lý"màu đỏ" & ma thuật "màu lam" và một đơn vị chỉ có thể có một kiểu tấn công.
 
+
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_4=Và mỗi đơn vị cũng có phòng thủ vật lý và phép thuật. phòng thủ vật lý có một biểu tượng cái khiên màu đỏ trong khi phòng thủ ma thuật là khiên màu xanh.
+
 
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_5=trong khi tấn công, hãy nhớ chọn đối thủ của bạn một cách khôn ngoan. tùy theo cách của bạn
 
-CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_6=Ngoài ra còn có thêm hai đơn vị có sẵn cho việc chiêu mộ trong giai đoạn này: cá heo & phù thủy.
 
-CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_7=Cá heo vốn ở dưới nước, vì vậy họ có thể chiến đấu tốt hơn nhiều khi dưới nước. Và phù thủy có thể triệu tập những bộ xương từ các đơn vị đã tử vong ,nên khá hữu ích.
+CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_6=Ngoài ra còn có thêm hai đơn vị có sẵn cho việc chiêu mộ trong giai đoạn này: Nguyên Tố & phù thủy.
+
+
+CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_7=Nguyên Tố vốn ở dưới nước, vì vậy họ có thể chiến đấu tốt hơn nhiều khi dưới nước. Và phù thủy có thể triệu tập những bộ xương từ các đơn vị đã tử vong ,nên khá hữu ích.
+
 
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_8=Hãy sử dụng những gì bạn đã học được trong giai đoạn trước đó để đánh bại tất cả kẻ thù và chiếm giữ lâu đài của kẻ thù!
 
+
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_9=Tuyệt diệu, có vẻ như bạn đang nhận được tốt hơn ở trận chiến. Nhưng đừng chủ quan, bạn vẫn còn có một con đường dài để đi.
+
 
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_10=Có rất nhiều đơn vị hơn và khả năng cho bạn khám phá. Hãy nhớ kiểm tra wiki trong game nếu bạn có bất kỳ câu hỏi. Để tốt cuộc hành trình của bạn!
 
 
-CAMPAIGN_CHALLENGE_NAME=Thử thách
+
+CAMPAIGN_CHALLENGE_NAME=Thử Thách
+
 
 CAMPAIGN_CHALLENGE_STAGE_1_NAME=Anh hùng bao vây 
 
+
 CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù
 
+
 CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải sống
+
 
 CAMPAIGN_CHALLENGE_STAGE_1_MESSAGE_1=Kẻ thù đang đến, hãy chuẩn bị cho mình!
 
 
+
 CAMPAIGN_CHALLENGE_STAGE_2_NAME=Chiến tranh chớp nhoáng
+
 
 CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_1=VICTORY: Chiếm giữ tất cả lâu đài của kẻ thù
 
+
 CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải sống
 
-CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_3=DEFEAT: số lượt vượt quá 32.
+
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 32.
+
 
 CAMPAIGN_CHALLENGE_STAGE_2_MESSAGE_1=Đó là một trong những thành phố quan trọng của kẻ thù. Quân tiếp viện của kẻ thù ở trên đường đi, chúng ta cần phải nhanh lên. Nắm bắt tất cả các lâu đài quân đội màu xanh trong vòng 32 lượt để giành chiến thắng trong giai đoạn!
 
 
+
 CAMPAIGN_CHALLENGE_STAGE_3_NAME=Phán quyết cuối cùng
+
 
 CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_1=VICTORY: Chiếm giữ tất cả lâu đài kẻ thù
 
+
 CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+
 
 CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=Chết tiệt, các thành phố của kẻ thù đã nhận thấy chúng tôi! Các hoạt động phục kích đã thất bại, chúng ta phải đấu tranh với họ phía trước. Chiếm giữ tất cả các lâu đài của kẻ thù!
 
 
-CAMPAIGN_CHALLENGE_STAGE_4_NAME=Hòn đảo ma
+CAMPAIGN_CHALLENGE_STAGE_4_NAME=Thung lũng rung chuyển
+
 
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 
+
 CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
 
-CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Chỉ huy, hòn đảo này có vẻ kỳ lạ, chúng ta nên cẩn thận!
+
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 200
 
 
-CAMPAIGN_CHALLENGE_STAGE_5_NAME=Thung lũng rung chuyển
+CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Tâu bệ hạ, có một thành trì tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
 
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
+CAMPAIGN_CHALLENGE_STAGE_5_NAME=Endless Trail
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, our enemy get power from the evil ritual, how do we defeat them?
 
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống 
 
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_3=DEFEAT: Số lượt vượt quá 200
+CAMPAIGN_WARROOM_NAME=Són Đen, Làng Chiến Tranh
 
-CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Tâu bệ hạ, có một thành trì tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
 
-CAMPAIGN_CHALLENGE_STAGE_6_NAME=Forest Shrine
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Capture the castle under the shrine..
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, we are approching the shrine of elf, they would kill anyone who pass through the forest!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_2=Our scout noticed that there is an undead army in the west, they are undefeatable!
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_3=Capture the shrine to win!!!
+CAMPAIGN_WARROOM_STAGE_1_NAME=Hòn đảo ma
 
-CAMPAIGN_CHALLENGE_STAGE_7_NAME=Long March
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=VICTORY: Defeat the red team to win..
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
-CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_2=(Defeat other teams to save turns)
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 
-CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần1)
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+
+CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1=Chỉ huy, hòn đảo này có vẻ kỳ lạ, chúng ta nên cẩn thận!
+
+
+CAMPAIGN_WARROOM_STAGE_2_NAME=Đền Thờ Trong Rừng
+
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1=VICTORY: Chiếm giữ tất cả lâu đài dưới ngôi đền
+
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2=DEFEAT: Chỉ huy bạn phải còn sống
+
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1=Tâu bệ hạ, chúng tôi đang tiếp cận ngôi đền của yêu quái, họ sẽ giết chết bất cứ ai đi qua rừng!
+
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2=trinh sát chúng tôi nhận thấy rằng có một đội quân bất tử ở phía tây, họ có khả năng bất tử !
+
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3=Chiếm giữ đền để giành chiến thắng !!!
+
+
+CAMPAIGN_WARROOM_STAGE_3_NAME=Hành Trình Dài
+
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1=VICTORY: Đánh bại đội đỏ để giành chiến thắng...
+
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy bạn phải sống
+
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 50.
+
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=Tâu bệ hạ, mục tiêu của chúng tôi là để đánh bại đội đỏ, nhưng chúng tôi chỉ có 50 lượt! 
+
+CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=(Đánh bại các đội khác để lưu lượt)
+
+
+CAMPAIGN_WARROOM_STAGE_4_NAME=Dilemma
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1=Your majesty, we have arrived the north. Most of lords have surrendered, we are going to have our final battle!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2=Enemy Attack!!!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3=Enemy captured our castle! We must defense!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4=Your majesty, we can try capture the castle ahead.
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5=Or we can retreated to get our castle back!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=But noted that winter is coming, the longer we stay here, the more damage we will suffer!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=Your majesty, storm is coming! Take cover!
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=It's time! Kill them all!
+
+
+CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần 1)
+
 
 CAMPAIGN_AEI_STAGE_1_NAME=Tập Hợp Lại.
 
+
 CAMPAIGN_AEI_STAGE_1_OBJECTIVE=Vua Galamar phải chiếm giữ lâu đài, giữ tất cả binh lính còn sống.
+
 
 CAMPAIGN_AEI_STAGE_1_MESSAGE_1=Vương quốc của Thorin đã được chia ra. Bị phản bội bởi người anh em song sinh của mình là Valadorn, vua Galamar đã trốn vào vùng đất biên giới phía đông.
 
+
 CAMPAIGN_AEI_STAGE_1_MESSAGE_2=Chỉ có bảo vệ màu xanh, quân đội của Galamar , vẫn trung thành và sẵn sàng để đòi lại đất đai...
+
 
 CAMPAIGN_AEI_STAGE_1_MESSAGE_3=Tâu bệ hạ, quân đội của bạn đang mệt mỏi sau trận đấu đêm qua. Chúng ta nên tập hợp lại ở lâu đài bị bỏ hoang
 
+
 CAMPAIGN_AEI_STAGE_1_MESSAGE_4="" 1 âm thanh vang lên "", đội trưởng. Hãy sẵn sàng quân đội ,chúng ta không nên để cho đối phương bắt chúng ta mà không có chuẩn bị trước.
 
+
 CAMPAIGN_AEI_STAGE_1_MESSAGE_5=Nhận biết quân đội Valadorn dễ dàng đến nơi với đồng phục đỏ của họ.
+
 
 CAMPAIGN_AEI_STAGE_1_MESSAGE_6=Gián điệp !! Valadorn và quân đoàn đỏ đã biết chúng ta ở đây! Nhanh chóng, bảo vệ nhà vua!
 
 
+
 CAMPAIGN_AEI_STAGE_2_NAME=Bạn Bè & Kẻ Thù
+
 
 CAMPAIGN_AEI_STAGE_2_OBJECTIVE_1=Chiếm giữ lâu đài và ít nhất một làng, chiêu mộ ít nhất một đơn vị mới của quân đội.
 
-CAMPAIGN_AEI_STAGE_2_OBJECTIVE_2=Tiêu diệt tất cả sói để giúp cá heo trưởng
+
+CAMPAIGN_AEI_STAGE_2_OBJECTIVE_2=Tiêu diệt tất cả sói để giúp Nguyên Tố trưởng
+
 
 CAMPAIGN_AEI_STAGE_2_MESSAGE_1=Vua Galamar đã sống sót sau cuộc tấn công của Valadorn. Tuy nhiên, trước khi Galamar có thể cố gắng để giành lại vương quốc của mình lần đầu tiên ông phải đi về phía bắc để tìm kiếm đồng minh mới.
 
+
 CAMPAIGN_AEI_STAGE_2_MESSAGE_2=Về phía trước, quân đội. Nhưng trước tiên, chiếm giữ hai ngôi làng này. Chúng ta có thể nghỉ ngơi khi chúng ta tiếp cận với làng tiếp theo.
 
-CAMPAIGN_AEI_STAGE_2_MESSAGE_3=Tâu bệ hạ, các tàu do thám của chúng tôi đã báo cáo rằng nhân dân cá heo miền Bắc đang bị tấn công!
 
-CAMPAIGN_AEI_STAGE_2_MESSAGE_4=Sau đó, chúng ta phải hành động nhanh chóng! cá heo trưởng là một đồng minh cũ, và anh chắc chắn sẽ giúp chúng ta nếu chúng ta có thể cứu anh ta.
+CAMPAIGN_AEI_STAGE_2_MESSAGE_3=Tâu bệ hạ, các tàu do thám của chúng tôi đã báo cáo rằng nhân dân Nguyên Tố miền Bắc đang bị tấn công!
 
-CAMPAIGN_AEI_STAGE_2_MESSAGE_5=Tâu bệ hạ, những cá heo mang lại tin tức từ ngôi làng của họ. Họ đang bị tấn công từ chó sói rừng!
+
+CAMPAIGN_AEI_STAGE_2_MESSAGE_4=Sau đó, chúng ta phải hành động nhanh chóng! Nguyên Tố trưởng là một đồng minh cũ, và anh chắc chắn sẽ giúp chúng ta nếu chúng ta có thể cứu anh ta.
+
+
+CAMPAIGN_AEI_STAGE_2_MESSAGE_5=Tâu bệ hạ, những Nguyên Tố mang lại tin tức từ ngôi làng của họ. Họ đang bị tấn công từ chó sói rừng!
+
 
 CAMPAIGN_AEI_STAGE_2_MESSAGE_6=Sói? chúng ta sẽ phải sử dụng địa hình để lợi thế của chúng tôi ,nếu ào ạt tấn công sẽ thua trận .
+
 
 CAMPAIGN_AEI_STAGE_2_MESSAGE_7=Hãy cẩn thận ,những cuộc tấn công của con sói luôn có độc!
 
 
+
 CAMPAIGN_AEI_STAGE_3_NAME=Hộ Tống
 
-CAMPAIGN_AEI_STAGE_3_OBJECTIVE=Galamar và Cá Heo trưởng phải đạt Tháp Xám.
 
-CAMPAIGN_AEI_STAGE_3_MESSAGE_1=Cá Heo trưởng đồng ý tham gia lực lượng của Galamar. Bây giờ suy nghĩ Galamar chuyển sang các phù thủy của tháp xám.
+CAMPAIGN_AEI_STAGE_3_OBJECTIVE=Galamar và Nguyên Tố trưởng phải đạt Tháp Xám.
 
-CAMPAIGN_AEI_STAGE_3_MESSAGE_2=Nếu Cá Heo trưởng có thể thuyết phục họ giúp đỡ, phép thuật của họ sẽ là một tài sản lớn cho lực lượng ngày càng tăng của mình.
+
+CAMPAIGN_AEI_STAGE_3_MESSAGE_1=Nguyên Tố trưởng đồng ý tham gia lực lượng của Galamar. Bây giờ suy nghĩ Galamar chuyển sang các phù thủy của tháp xám.
+
+
+CAMPAIGN_AEI_STAGE_3_MESSAGE_2=Nếu Nguyên Tố trưởng có thể thuyết phục họ giúp đỡ, phép thuật của họ sẽ là một tài sản lớn cho lực lượng ngày càng tăng của mình.
+
 
 CAMPAIGN_AEI_STAGE_3_MESSAGE_3=Tâu bệ hạ, cây cầu đã bị phá hủy!
 
+
 CAMPAIGN_AEI_STAGE_3_MESSAGE_4=Valadorn đang đợi chúng ta ,chúng ta phải tìm một cách khác qua. Đây có thể là một cái bẫy..
 
-CAMPAIGN_AEI_STAGE_3_MESSAGE_5=Quân!! hãy coi chừng và bảo vệ Cá Heo trưởng và tất cả các chi phí.
+
+CAMPAIGN_AEI_STAGE_3_MESSAGE_5=Quân!! hãy coi chừng và bảo vệ Nguyên Tố trưởng và tất cả các chi phí.
+
 
 
 CAMPAIGN_AEI_STAGE_4_NAME=Quân Tiếp Viện
 
+
 CAMPAIGN_AEI_STAGE_4_OBJECTIVE=Bảo vệ thành phố: tiêu diệt tất cả kẻ thù! 
+
 
 CAMPAIGN_AEI_STAGE_4_MESSAGE_1=Sau khi đạt được tháp Xám, các phù thủy mạnh đã đồng ý giúp Galamar. Tuy nhiên, quân đội của Galamar không có thời gian để nghỉ ngơi, như một thông điệp đến từ thành phố bên cạnh Var Telan, nói về một cuộc tấn công bất ngờ của quân đoàn đỏ của Valadorn.
 
+
 CAMPAIGN_AEI_STAGE_4_MESSAGE_2=Tâu bệ hạ, quân đoàn đỏ! Hãy xem các Máy Ném Đá của bọn chúng!!
+
 
 CAMPAIGN_AEI_STAGE_4_MESSAGE_3=Cuộc phản bội này là sao! Tại sao thành phố đã quay lưng lại với chúng tôi!
 
+
 CAMPAIGN_AEI_STAGE_4_MESSAGE_4=Có thể đoán ra mà , anh trai! tôi sẽ hạ được anh ngay bây giờ !
+
 
 CAMPAIGN_AEI_STAGE_4_MESSAGE_5=Rút Quân!! ta nguyền rủa ngươi Galamar! trong thời gian tới, ngươi sẽ không được may mắn như vậy nữa!!
 
 
+
 CAMPAIGN_AEI_STAGE_5_NAME=Rồng Cứu Hộ!
+
 
 CAMPAIGN_AEI_STAGE_5_OBJECTIVE=Tiêu diệt chỉ huy của kẻ thù và giải phóng những con rồng.
 
+
 CAMPAIGN_AEI_STAGE_5_MESSAGE_1=Khi lực lượng Galamar đã cư trú vào lâu đài thành phố, một tuần tra trinh sát phát hiện ra một số con rắn bay và con rồng bị giam giữ tại một khu cắm trại của địch gần đó.
+
 
 CAMPAIGN_AEI_STAGE_5_MESSAGE_2=những con rồng có thể được sử dụng chống lại Valadorn và lực lượng của mình? Để tìm hiểu, Galamar sẽ phải giải cứu họ.
 
+
 CAMPAIGN_AEI_STAGE_5_MESSAGE_3=Nguồn tin cho rằng những con rồng đang được tổ chức tại lâu đài này.
 
+
 CAMPAIGN_AEI_STAGE_5_MESSAGE_4=Hãy cẩn thận, thưa bệ hạ , rồng của bệ hạ có thể là kẻ thù ghê gớm cũng như các đồng minh mạnh mẽ.
+
 
 CAMPAIGN_AEI_STAGE_5_MESSAGE_5=Bệ hạ hãy xem, những con rồng đã được giải cứu! Bây giờ họ đã dưới sự chỉ huy của chúng ta!
 
 
+
 CAMPAIGN_AEI_STAGE_6_NAME=Bao Vây!
+
 
 CAMPAIGN_AEI_STAGE_6_OBJECTIVE=Tiêu diệt tất cả kẻ thù 
 
+
 CAMPAIGN_AEI_STAGE_6_MESSAGE_1=Với những con rồng mạnh mẽ thêm vào lực lượng của mình, Galamar đã sẵn sàng để chiến đấu chống lại Valadorn. Anh quyết định gắn kết một cuộc tấn công bất ngờ vào tuyền tuyến bên ngoài thành phố Thorin
 
+
 CAMPAIGN_AEI_STAGE_6_MESSAGE_2=Tâu bệ hạ, Thành phố này cũng cần được bảo vệ !!
+
 
 CAMPAIGN_AEI_STAGE_6_MESSAGE_3=Đúng vậy. Chúng tôi có thể phải thay đổi kế hoạch chiến đấu của chúng tôi.
 
 
+
 CAMPAIGN_AEI_STAGE_7_NAME=Đột Kích Cuối Cùng 
+
 
 CAMPAIGN_AEI_STAGE_7_OBJECTIVE=Tiêu diệt tất cả kẻ thù và giành lấy Vương quốc 
 
+
 CAMPAIGN_AEI_STAGE_7_MESSAGE_1=Galamar trên bờ vực chiếm lại thành phố thì đột nhiên một vụ nổ lớn chia mãnh đất.
+
 
 CAMPAIGN_AEI_STAGE_7_MESSAGE_2=quân của Valadorn xuất hiện ở khắp mọi nơi ?! Những loại phép thuật ma quái này là gì?
 
-CAMPAIGN_AEI_STAGE_7_MESSAGE_3=Đúng là như vậy, anh em sinh đôi, có vẻ như vị trí của chúng ta được đảo ngược! bay giờ muốn quy phục hay bị tiêu diệt!
 
-CAMPAIGN_AEI_STAGE_7_MESSAGE_4=Không bao giờ! em đã biết có sức mạnh đen tối đang kiểm soát anh, em sẽ đánh bại nó!
+CAMPAIGN_AEI_STAGE_7_MESSAGE_3=Đúng là như vậy đó, người anh em sinh đôi, có vẻ như ta đã lật ngược tình thế ! bay giờ muốn đầu hàng hay bị tiêu diệt!
 
-CAMPAIGN_AEI_STAGE_7_MESSAGE_5=Galamar... anh đã làm điều gì? 
 
-CAMPAIGN_AEI_STAGE_7_MESSAGE_6=Anh đã bị kiểm soát và bây giờ Câu thần chú! đã không còn tác dụng !
+CAMPAIGN_AEI_STAGE_7_MESSAGE_4=Không bao giờ! em đã biết có sức mạnh đen tối nào đó đang kiểm soát anh, em sẽ đánh bại nó!
+
+
+CAMPAIGN_AEI_STAGE_7_MESSAGE_5=Galamar... anh đã làm điều gì sao? 
+
+
+CAMPAIGN_AEI_STAGE_7_MESSAGE_6=Anh đã bị kiểm soát bởi Câu Thần Chú! và bây giờ đã không còn tác dụng !
+
 
 CAMPAIGN_AEI_STAGE_7_MESSAGE_7=Với Galamar chiến thắng, những phép kiểm soát Valadorn không còn tác dụng . Các lực lượng ác không ai khác ,đó là Saeth, con quỷ bóng tối!
+
 
 CAMPAIGN_AEI_STAGE_7_MESSAGE_8=Kế hoạch của ông bị đánh bại, với một tiếng gầm khủng khiếp, ông ra lệnh cho quân đội đen tối của mình để tấn công Galamar. Vương quốc Thorin sẽ chịu được cuộc tấn công lần này? Galamar và anh trai có thể trục xuất Saeth độc ác một lần và cho tất cả?
 
 
+
 CAMPAIGN_AEII_NAME=Trận Chiến Thorin (phần 2)
+
 
 CAMPAIGN_AEII_STAGE_1_NAME=Cung Điện Courage
 
+
 CAMPAIGN_AEII_STAGE_1_OBJECTIVE=Ngăn chặn kẻ cướp, Vua Galamar phải sống.
 
-CAMPAIGN_AEII_STAGE_1_MESSAGE_1=Giúp chúng tôi! Chúng tôi đang bị tấn công! Những bộ xương này đang đánh cắp Pha Lê của cung điện Courage, chúng tôi thề sẽ bảo vệ!
+
+CAMPAIGN_AEII_STAGE_1_MESSAGE_1=Cứu chúng tôi với ! Chúng tôi đang bị tấn công! Những bộ xương này đang đánh cắp Pha Lê của cung điện Courage, chúng tôi thề sẽ bảo vệ!
+
 
 CAMPAIGN_AEII_STAGE_1_MESSAGE_2=Aargh... chúng tôi đã thất bại!
 
+
 CAMPAIGN_AEII_STAGE_1_MESSAGE_3=Đội trưởng, chúng ta phải ngăn chặn mối đe dọa này ngay lập tức! 
+
 
 CAMPAIGN_AEII_STAGE_1_MESSAGE_4=Hãy tiến quân về phía trước, chúng ta nhất định bắt kẻ cướp này phải trả giá! 
 
+
 CAMPAIGN_AEII_STAGE_1_MESSAGE_5=Kẻ cướp đã đến nhiều hơn!
+
 
 CAMPAIGN_AEII_STAGE_1_MESSAGE_6=Đây không giống quân cướp! Họ trông giống như quân địch! Hãy cẩn thận, đội trưởng!
 
+
 CAMPAIGN_AEII_STAGE_1_MESSAGE_7=Xin cảm ơn, tâu Bệ Hạ, ngài phải giúp chúng ta đem Pha Lê trở lại càng nhanh càng tốt. một di tích quan trọng như vậy không thể rơi vào tay kẻ xấu!
+
 
 CAMPAIGN_AEII_STAGE_1_MESSAGE_8=Chúng tôi có thể giúp bạn. bạn có thể nói cho tôi biết tác dụng của Pha Lê ?
 
+
 CAMPAIGN_AEII_STAGE_1_MESSAGE_9=Chỉ sợ bọn tội phạm này sử dụng Pha Lê làm điều ác. Chúng ta sẽ hỏi linh mục tại Cung Điện Wisdom. Anh ta có thể biết nhiều hơn về điều này.
+
 
 CAMPAIGN_AEII_STAGE_1_MESSAGE_10=Tôi sẽ gửi anh trai tôi Valadorn đến đó ngay lập tức. Tôi sẽ đưa quân đội của tôi và lần theo dấu vết của những kẻ tấn công đã trốn thoát.
 
 
+
 CAMPAIGN_AEII_STAGE_2_NAME=Cung Điện Wisdom
+
 
 CAMPAIGN_AEII_STAGE_2_OBJECTIVE=Tiêu diệt tất cả kẻ thù, Chiếm giữ lâu đài.
 
+
 CAMPAIGN_AEII_STAGE_2_MESSAGE_1=Làm sao có thể như vậy? Cung Điện Wisdom cũng đang bị tấn công!
+
 
 CAMPAIGN_AEII_STAGE_2_MESSAGE_2=Tốt , tốt ... Valadorn, ngươi đến để nộp mạng cho ta sao ?
 
+
 CAMPAIGN_AEII_STAGE_2_MESSAGE_3=Thưa ngài, một phần của lực lượng của kẻ thù đang rút lui!
+
 
 CAMPAIGN_AEII_STAGE_2_MESSAGE_4=Bọn chúng đang cướp pha lê của Wisdom! Đừng để bọn chúng thoát khỏi!
 
+
 CAMPAIGN_AEII_STAGE_2_MESSAGE_5=Aarrghh!
 
-CAMPAIGN_AEII_STAGE_2_MESSAGE_6=Thưa ngài, chúng ta phải theo bọn chúng! 
+
+CAMPAIGN_AEII_STAGE_2_MESSAGE_6=Thưa ngài, chúng ta phải đuổi theo bọn chúng! 
+
 
 CAMPAIGN_AEII_STAGE_2_MESSAGE_7=Chúng ta phải nhanh chóng chặn cuộc tấn công này, vì các lính bảo vệ cung điện không thể tiến lên
 
+
 CAMPAIGN_AEII_STAGE_2_MESSAGE_8=Chúng ta hãy tiến lên tới lâu đài này
 
+
 CAMPAIGN_AEII_STAGE_2_MESSAGE_9=Tốt lắm, Đội Trưởng. Nhưng không có thời gian để nghỉ ngơi. Pha Lê của Life cũng có thể gặp nguy hiểm. Chúng ta phải báo tin đến vua Galamar!
+
 
 CAMPAIGN_AEII_STAGE_2_MESSAGE_10=Vâng thưa ngài. Tôi sẽ sẵn sàng quân đội.
 
 
+
 CAMPAIGN_AEII_STAGE_3_NAME=Rừng Sương Mù
+
 
 CAMPAIGN_AEII_STAGE_3_OBJECTIVE=Di chuyển một cách an toàn thông qua rừng. Tiêu diệt tất cả sự cản trở. Vua Galamar phải tồn tại.
 
-CAMPAIGN_AEII_STAGE_3_MESSAGE_1=Bệ hạ, khu rừng này được biết đến là nhà của thần linh, Cá Heo, và các sinh vật ma thuật khác. Đi du lịch vào ban đêm là không an toàn.
+
+CAMPAIGN_AEII_STAGE_3_MESSAGE_1=Bệ hạ, khu rừng này được biết đến là nhà của thần linh, Nguyên Tố , và các sinh vật ma thuật khác. Đi du lịch vào ban đêm là không an toàn.
+
 
 CAMPAIGN_AEII_STAGE_3_MESSAGE_2=Đội trưởng, theo tin báo từ Valadorn, chúng tôi nhất định phải qua khu rừng này, không có thời gian suy nghĩ khi Cung Điện Life đang gặp nạn 
 
+
 CAMPAIGN_AEII_STAGE_3_MESSAGE_3=Đã hiểu. Quân đội, hãy bảo vệ vua Galamar!
 
-CAMPAIGN_AEII_STAGE_3_MESSAGE_4=Có rất nhiều con sói! tâu Bệ hạ,tôi cảm thấy điều này không tốt ...
+
+CAMPAIGN_AEII_STAGE_3_MESSAGE_4=Có rất nhiều con sói! tâu Bệ hạ, tôi cảm thấy điều này không tốt ...
+
 
 CAMPAIGN_AEII_STAGE_3_MESSAGE_5=Trời ơi, chuyện gì sẽ xảy ra nữa đay!
 
-CAMPAIGN_AEII_STAGE_3_MESSAGE_6=Chào mừng, người đàn ông của Thorin! Chúng tôi là cá heo, chúng tôi đã nghe nói về cuộc điều tra của ngài để bảo vệ vùng đất của chúng ta khỏi quỷ dữ và đay là lời đề nghị của Vua và lòng trung thành chúng tôi sẽ hợp tác với ngài.
+
+CAMPAIGN_AEII_STAGE_3_MESSAGE_6=Chào mừng, người đàn ông của Thorin! Chúng tôi là Tinh Linh và Nguyên Tố, chúng tôi đã nghe nói về cuộc điều tra của ngài để bảo vệ vùng đất của chúng ta khỏi quỷ dữ và đay là lời đề nghị của Vua và lòng trung thành chúng tôi sẽ hợp tác với ngài.
+
 
 CAMPAIGN_AEII_STAGE_3_MESSAGE_7=Chúng tôi sẵn sàng chấp nhận đề nghị của bạn. lòng trung thành của bạn đến vương quốc chúng tôi sẽ không quên!
 
 
+
 CAMPAIGN_AEII_STAGE_4_NAME=Cung Điện Life
+
 
 CAMPAIGN_AEII_STAGE_4_OBJECTIVE=Bảo vệ Cung Điện Life , tiêu diệt tất cả kẻ thù, và chiếm giữ lâu đài.
 
+
 CAMPAIGN_AEII_STAGE_4_MESSAGE_1=Bệ hạ, cảm ơn các bạn ở đây! Hãy giúp chúng ta bảo vệ Pha Lê!
+
 
 CAMPAIGN_AEII_STAGE_4_MESSAGE_2=Chỉ trong những pháo đài canh gác nghiêm ngặt của Thorin Pha Lê sẽ được an toàn. Chúng ta phải chuyển giao Pha Lê đến đó.
 
+
 CAMPAIGN_AEII_STAGE_4_MESSAGE_3=Tâu Bệ hạ, các tàu do thám của chúng ta báo cáo quân địch gần đó!
+
 
 CAMPAIGN_AEII_STAGE_4_MESSAGE_4=kẻ thù đang phá hủy làng của chúng ta để làm tê liệt cung cấp vàng của chúng ta ! Phải ngăn chặn bọn chúng lại!
 
+
 CAMPAIGN_AEII_STAGE_4_MESSAGE_5=Đội trưởng, chúng ta phải cất giữ Pha Lê , chuẩn bị quân đội để chiến đấu!
 
+
 CAMPAIGN_AEII_STAGE_4_MESSAGE_6=Bệ hạ, Chúng ta đã ngừng các cuộc tấn công.
+
 
 CAMPAIGN_AEII_STAGE_4_MESSAGE_7=Tốt lắm, đội trưởng! Chuẩn bị các quân để khởi hành đến Thorin!
 
 
+
 CAMPAIGN_AEII_STAGE_5_NAME=Hành Trình Đến Thorin
+
 
 CAMPAIGN_AEII_STAGE_5_OBJECTIVE=Chuyển giao Pha Lê phía nam đến thành phố của Thorin. Vua Galamar phải tồn tại.
 
+
 CAMPAIGN_AEII_STAGE_5_MESSAGE_1=Tâu bệ hạ , tôi thấy khu rừng này có nguy hiểm ,chúng ta phải cẩn thận!
+
 
 CAMPAIGN_AEII_STAGE_5_MESSAGE_2=Rất tốt, Đội trưởng. Hãy để chúng tôi đi theo con đường này và hãy ở lại trên bảo vệ vua của bạn.
 
+
 CAMPAIGN_AEII_STAGE_5_MESSAGE_3=Phục kích! Bảo vệ Pha Lê và tất cả các chi phí!
+
 
 CAMPAIGN_AEII_STAGE_5_MESSAGE_4=Điều này có vẻ là người cuối cùng của bọn chúng ....
 
 
+
 CAMPAIGN_AEII_STAGE_6_NAME=Cánh Cổng Thorin
+
 
 CAMPAIGN_AEII_STAGE_6_OBJECTIVE=Chiếm giữ lâu đài của kẻ thù và tiêu diệt tất cả kẻ thù.
 
+
 CAMPAIGN_AEII_STAGE_6_MESSAGE_1=Kẻ thù đang có kế hoạch tấn công vua Galamar trước khi ông đến Thorin! Chúng ta phải đánh bại bọn chúng!
+
 
 CAMPAIGN_AEII_STAGE_6_MESSAGE_2=Hãy để đó cho chúng tôi, nhanh lên phía Bắc để hỗ trợ Galamar. Kẻ thù đã biết kế hoạch của ông và ông có thể cần sự giúp đỡ.
 
 
+
 CAMPAIGN_AEII_STAGE_7_NAME=Bên Ngoài Thành Phố
+
 
 CAMPAIGN_AEII_STAGE_7_OBJECTIVE_1=Hộ tống Pha Lê phía nam đến thành phố của Thorin. Vua Galamar phải tồn tại.
 
+
 CAMPAIGN_AEII_STAGE_7_OBJECTIVE_2=Khắc một con đường về phía tây qua quân địch, đánh bại chỉ huy của họ và chiếm tất cả các lâu đài!
+
 
 CAMPAIGN_AEII_STAGE_7_MESSAGE_1=Thưa ngài, quân đội đang kiệt sức! Tôi đề nghị chúng ta phải nghĩ ngơi qua đêm.
 
+
 CAMPAIGN_AEII_STAGE_7_MESSAGE_2=Chúng ta không được chậm trễ, Đội Trưởng. Chúng ta phải đến Thorin càng sớm càng tốt. Các binh sĩ có thể nghỉ ngơi khi chúng ta được an toàn..
+
 
 CAMPAIGN_AEII_STAGE_7_MESSAGE_3=Một phục kích! Đừng để Pha Lê rời khỏi tầm mắt của chúng ta!
 
+
 CAMPAIGN_AEII_STAGE_7_MESSAGE_4=Quân đội! Có con rồng đang hướng về phía chúng ta , hãy bảo vệ nhà vua!
+
 
 CAMPAIGN_AEII_STAGE_7_MESSAGE_5=Ôi Không, nó nhắm vào Pha Lê ! Có thể là Đấng Tạo Hóa bảo vệ chúng ta!
 
+
 CAMPAIGN_AEII_STAGE_7_MESSAGE_6=Hỡi con người đáng thương, hãy chạy đi trước khi quá muộn!
+
 
 CAMPAIGN_AEII_STAGE_7_MESSAGE_7=Lực lượng kẻ thù trông thật ghê gớm, chúng ta nên rút lui.
 
+
 CAMPAIGN_AEII_STAGE_7_MESSAGE_8=Chúng ta không có sự lựa chọn, nhưng trước khi đi, chúng ta phải có được Pha Lê 
+
 
 CAMPAIGN_AEII_STAGE_7_MESSAGE_9=Galamar! Chúng tôi đã đến nhanh nhất có thể! Chúng ta sẽ chiến đấu cùng nhau !
 
 
+
 CAMPAIGN_AEII_STAGE_8_NAME=Cấm Thành - Ẩn Náu Cuối Cùng
+
 
 CAMPAIGN_AEII_STAGE_8_OBJECTIVE=Đánh bại Saeth và tay sai của chúng!
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_1=Các tàn tích của thành cổ ... và Saeth! Với các Pha Lê!
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_2=Hahaha, Cuối cùng đã đến, Galamar và Valadorn! ta rất khen ngợi lòng dũng cảm của các ngươi khi dám đối đầu với ta!
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_3=Tất cả chìa khoá và con át chủ bài nay được đưa ra, và sức mạnh lớn nhất từng được tạo ra trên trái đất này sẽ gầm thét và sẽ uốn cong theo ý muốn của ta. tiêu diệt các ngươi sẽ được minh chứng cho sức mạnh và vinh quang của nó!
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_4=Mưu kế của ngươi sẽ không thể lừa được ta đau , Saeth!
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_5=Ngươi không tin ta sao? tốt thôi! Ta đoán là ngươi chỉ nhìn thoáng qua của sức mạnh cổ xưa này. xem đay!
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_6=Trời ơi, năng lượng khủng khiếp này là gì! 
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_7=Con người đáng thương, đây là vật cổ xưa ngươi sẽ không hiểu ngay cả khi ngươi sống thêm một ngàn năm nữa ! ta đặt tên cho nó là Cơn Giận Chúa Trời!
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_8=Galamar! Chúng ta phải nhanh lên nếu quân đội của chúng ta có một cơ hội!
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_9=Chắc chắn, chúng ta nên tấn công các lâu đài đầu tiên trước khi chúng ta khởi động một cuộc tấn công vào Saeth và tàn tích.
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_10=Con người đáng thương. ngươi sẽ không sống đủ lâu để bảo vệ Vương Quốc quý báu của ngươi mãi đâu ...
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_11=Saeth! lần này ngươi đã thất bại hoàn toàn rồi.
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_12=hừm.... cũng có thể.... nhưng giờ mọi thứ đã đi vào hoạt động, thế lực vô hình xuyên thời gian nằm ngoài tầm hiểu biết của các ngươi ,khi ta quay lại, các ngươi sẽ không thể ngăn ta được đau
 
-CAMPAIGN_AEII_STAGE_8_MESSAGE_13=Bệ hạ, tàn tích đang rơi xuống ! Chúng ta nên đi khỏi đay ngay lập tức!
+
+CAMPAIGN_AEII_STAGE_8_MESSAGE_13=Bệ hạ, tàn tích đang văng ra khắp nơi ! Chúng ta nên đi khỏi đay ngay lập tức!
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_14=Nhưng những viên Pha Lê.... vẫn còn ở trong đó!
 
+
 CAMPAIGN_AEII_STAGE_8_MESSAGE_15=Không kịp đau, trước hết hãy bảo vệ chính mình!
+
 
 CAMPAIGN_AEII_STAGE_8_MESSAGE_16=Các bạn đã làm rất tốt . Bây giờ rời khỏi đay thôi !
 
 
+
 EDITOR_ERROR_ATT=Ít nhất 2 đội!
 
+
 EDITOR_ERROR_THOMC=Đội %s có nhiều hơn một chỉ huy!
+
 
 EDITOR_ERROR_FSM=Không thể lưu bản đồ 
 
 
+
 HAVENS_FURY_MESSAGE_1=XÁC ĐỊNH MỤC TIÊU...
+
 
 HAVENS_FURY_MESSAGE_2=KHỞI ĐỘNG CƠN GIẬN CHÚA TRỜI 
 
 
+
 LB_ABILITIES=Khả Năng
+
 
 LB_ABOUT=Nói Về
 
+
 LB_ARTS=Vẽ
+
 
 LB_AUTHOR=Tác Giả
 
+
 LB_BACK=Trở Lại 
+
 
 LB_BALANCING=Cân Bằng
 
+
 LB_BUY=Mua
+
 
 LB_CAMPAIGN=Chiến Dịch
 
+
 LB_CANCEL=Hủy Bỏ
+
 
 LB_CAPACITY=Người Chơi Tối Đa
 
-LB_CHAT_ROOM=Chat Room
 
-LB_CLEAR=Clear
+LB_CHAT_ROOM=Phòng Trò Chuyện 
+
+
+LB_CLEAR=Tẩy Tin Nhắn
+
 
 LB_CLOSE=Đóng
 
+
 LB_CONFIRM=Xác Nhận
+
 
 LB_CONNECT=Kết Nối
 
+
 LB_CONNECTING=Đang Kết Nối...
+
 
 LB_CREATE=Tạo
 
+
 LB_CREATING=Đang Tạo...
+
 
 LB_CREDITS=Tín Dụng 
 
+
 LB_CURRENT_TURN=Số Lượt
 
-LB_DEFENCE_BONUS=Thưởng Phòng Thủ
+
+LB_DEFENCE_BONUS=Thêm Phòng Thủ
+
 
 LB_DELETE=Xóa
 
+
 LB_DIFFICULTY=Chế Độ 
+
 
 LB_DIFFICULTY_0=Dễ
 
+
 LB_DIFFICULTY_1=Bình Thường
+
 
 LB_DIFFICULTY_2=Khó
 
+
 LB_DIFFICULTY_3=Điên Cuồng
+
 
 LB_DOWNLOAD=Tải Về
 
+
 LB_DOWNLOADING=Đang Tải Về...
 
-LB_DUV=Giá Trị Đơn Vị Giết Được
+
+LB_DUV=Giá Đơn Vị Tôi Giết
+
 
 LB_END_TURN=Kết Thúc Lượt
 
+
 LB_ERROR=Lỗi
+
 
 LB_EXIT=Thoát
 
+
 LB_EXIT_GAME=Thoát Trò Chơi
 
-LB_FILENAME=Tên Mục
+
+LB_FILENAME=Tên Thư Mục
+
 
 LB_GAMES=Hành Lang
 
+
 LB_HEIGHT=Chiều Cao
+
 
 LB_HELP=Giúp
 
+
 LB_HP_RECOVERY=Hồi Phục HP
 
-LB_IDLE_PLAYERS=Idle Players
+
+LB_IDLE_PLAYERS=Tên Người Chơi
+
 
 LB_INCOME=Thu Nhập
 
+
 LB_START_GOLD=Vàng Khởi Đầu
+
 
 LB_JOIN=Tham Gia
 
+
 LB_JOINING=Đang Tham Gia...
+
 
 LB_LEAVE=Rời Khỏi
 
+
 LB_LEAVING=Đang Rời Khỏi...
+
 
 LB_LOAD=Tải
 
+
 LB_LOAD_GAME=Tải Trò Chơi
+
 
 LB_LOCAL_MAPS=Bản Đồ Địa Phương
 
-LB_LUV=Giá Trị Đơn Vị Tử Vong 
+
+LB_LUV=Giá Đơn Vị Tử Vong 
+
 
 LB_MANAGE_MAPS=Quản Lý Bản Đồ
 
+
 LB_MAP_EDITOR=Chỉnh Sửa Bản Đồ
+
 
 LB_MAX_POPULATION=Sức Chứa Đơn Vị
 
+
 LB_MENU=Thực Đơn
+
 
 LB_MINI_MAP=Bản Đồ Thu Nhỏ
 
+
 LB_MOBILITY_COST=Chi Phí Dân Hèn
+
 
 LB_MULTIPLAYER=Nhiều Người Chơi
 
+
 LB_MUSIC_VOLUME=Nhạc Nền
+
 
 LB_NEW_GAME=Trò Chơi Mới
 
+
 LB_NO=Không
+
 
 LB_NONE=Không Có Gì
 
+
 LB_OBJECTIVE=Mục Tiêu
+
 
 LB_OCCUPIED=Chiếm Giữ
 
+
 LB_OFF=Tắt
+
 
 LB_OK=Ok
 
+
 LB_ON=Mở
+
 
 LB_ONLINE_MAPS=Bản Đồ Trực Tuyến
 
+
 LB_OPEN=Mở Ra
+
 
 LB_OVERWRITE=Ghi Đè Lên
 
+
 LB_PASSWORD=Mật Khẩu
+
 
 LB_PLAYER=Người Chơi
 
+
 LB_PREVIEW=Xem Trước
+
 
 LB_PROGRAM=Chương Trình
 
+
 LB_RECONNECTING=Đang Kết Nối Lại...
+
 
 LB_RECORD=Ghi Lại
 
+
 LB_RECRUIT=Chiêu Mộ 
+
 
 LB_REFERENCES=Tài Liệu Tham Khảo
 
+
 LB_REFRESH=Làm Mới
+
 
 LB_REFRESHING=Đang Làm Mới...
 
+
+LB_RENAME=Đổi tên
+
+
 LB_RESUME=Tiếp Tục Chơi
+
 
 LB_REPAIRED=Sửa Chữa
 
+
 LB_ROBOT=Máy
+
 
 LB_SAVE=Lưu
 
+
 LB_SAVING=Đang Lưu...
 
-LB_SCENARIOS=Kịch Bản
+
+LB_SCENARIOS=Cốt Truyện
+
 
 LB_SE_VOLUME=Nhạc Hành Động
 
+
 LB_SEARCH=Tìm Kiếm
+
 
 LB_SEND=Gửi
 
+
 LB_SEND_MESSAGE=Gửi Tin Nhắn
+
 
 LB_SET=Đặt
 
+
 LB_SETTING=Cài Đặt
+
 
 LB_SKIRMISH=Giao Tranh
 
+
 LB_STAGE_CLEAR=Hoàn Thành Tiến Trình
+
 
 LB_STAGE_FAIL=Tiến Trình Thất Bại
 
+
 LB_STAGES=Tiến Trình
+
 
 LB_START=Bắt Đầu
 
+
 LB_STARTING=Đang Bắt Đầu...
+
 
 LB_STATISTICS=Thống Kê 
 
+
 LB_SYSTEM=Hệ Thống
+
 
 LB_TEAM=Đội
 
+
 LB_TEAM_0=Lam
+
 
 LB_TEAM_1=Đỏ
 
+
 LB_TEAM_2=Lục
+
 
 LB_TEAM_3=Đen
 
+
 LB_TILE_NUMBER=Địa Hình#
 
-LB_TRANSLATION=Dịch Thuật
+
+LB_TRANSLATION=Người Dịch Ngôn Ngữ
+
 
 LB_TYPE=Kiểu
 
+
 LB_UHA=Các Đơn Vị Có Khả Năng Này
+
 
 LB_UPLOAD=Tải Lên
 
+
 LB_UPLOADING=Đang Tải Lên...
+
 
 LB_USERNAME=Tên Đăng Nhập
 
+
 LB_WIDTH=Chiều Ngang
 
+
 LB_WIN=Thắng 
+
 
 LB_YES=Vâng
 
 
+
 MSG_ERR_AEA=Có lỗi xảy ra :(
+
 
 MSG_ERR_BMF=Mục bản đồ bị hỏng :(
 
+
 MSG_ERR_BSF=Mục lưu bị hỏng :(
 
-MSG_ERR_CCS=Không kết nối máy chủ 
+
+MSG_ERR_CCS=Không thể kết nối máy chủ 
+
 
 MSG_ERR_CNCR=Không thể tạo phòng :(
 
+
 MSG_ERR_CNGML=Không thể có danh sách bản đồ từ máy chủ :(
+
 
 MSG_ERR_CNJR=Không thể tham gia phòng :(
 
+
 MSG_ERR_CNRTS=không thể kết nối lại đến máy chủ
+
 
 MSG_ERR_CNSG=Không thể bắt đầu trò chơi
 
+
 MSG_ERR_DFS=Mất kết nối từ máy chủ
+
+
+MSG_ERR_FAE=Tên tập tin đã tồn tại
+
 
 MSG_ERR_FCMF=không thể tạo mục bản đồ :(
 
+
 MSG_ERR_FDM=Không thể tải bản đồ về :(
+
+
+MSG_ERR_FRM=Failed renaming the map :(
+
 
 MSG_ERR_FUM=Không thể tải bản đồ lên :(
 
+
 MSG_ERR_HPD=Chủ phòng bị mất kết nối
+
 
 MSG_ERR_MAE=Bản đồ đã tồn tại.
 
+
 MSG_ERR_RBS=Từ chối kết nối [Tại phiên bản cũ]
+
 
 MSG_ERR_RI=Yêu cầu gián đoạn
 
+
 MSG_ERR_RVM=Ghi phiên bản không phù hợp
+
 
 MSG_INFO_CD=Đã Phát Phát hiện đội %s gian lận, muốn rời khỏi?
 
+
 MSG_INFO_CDCN=Bạn sẽ bị ngắt kết nối trong 5 giây do gian lận.
+
 
 MSG_INFO_DSM=Xóa bản đồ đã chọn?
 
+
 MSG_INFO_GTC=Bạn được giao cho đội %s.
+
+
+MSG_INFO_IF=tên tập tin đầu vào
+
 
 MSG_INFO_IM=Nhập tin nhắn
 
+
 MSG_INFO_IYUN=Nhập tên bạn
+
 
 MSG_INFO_LTC=Bạn bị mất kiểm soát đến đội %s.
 
+
 MSG_INFO_MD=Tải bản đồ về.
+
 
 MSG_INFO_MU=Tải bản đồ lên.
 
+
 MSG_INFO_NSY=Dù thế nào cũng không mở ra :(
+
 
 MSG_INFO_PD=%s Ngắt Kết nối .
 
+
 MSG_INFO_PIP=Xin nhập nhập khẩu 
+
 
 MSG_INFO_PJ=%s Tham gia trò chơi 
 
+
 MSG_INFO_PJR=%s Bước vào phòng.
+
 
 MSG_INFO_PLR=%s Rời khỏi phòng.
 
+
 MSG_INFO_GS=Trò chơi bắt đầu
+
 
 MSG_INFO_GSV=Lưu trò chơi 
 
+
 MSG_INFO_GSVF=Lưu trò chơi thất bại
+
 
 MSG_INFO_RPF=Ghi phát đã xong.
 
 
+
 OBJECTIVE_CU=Tiêu diệt tất cả kẻ thù
+
 
 OBJECTIVE_CC=Chiếm giữ tất cả lâu đài kẻ thù
 
 
+
 STATUS_DESCRIPTION_0=Các đơn vị đã bị ngộ độc sẽ mất 10 HP khi đến lượt và không thể nhận chữa trị.
 
-STATUS_DESCRIPTION_1=Đối với đơn vị đã bị chậm lại, ô di chuyển của họ sẽ được giảm xuống còn 1.
+
+STATUS_DESCRIPTION_1=Đối với đơn vị đã bị Tê Liệt, ô di chuyển của họ sẽ được giảm xuống còn 1.
+
 
 STATUS_DESCRIPTION_2=Đối với đơn vị đã được truyền cảm hứng, sẽ tăng 10 tấn công của họ.
 
-STATUS_DESCRIPTION_3=Đối với đơn vị đã được mù lòa , phạm vi tấn công của họ sẽ được giảm xuống 0.
+
+STATUS_DESCRIPTION_3=Đối với đơn vị đã được mù lòa thì họ không thể tấn công 
+
 
 
 STATUS_NAME_0=Thuốc độc
 
-STATUS_NAME_1=Chậm lại
+
+STATUS_NAME_1=Tê Liệt
+
 
 STATUS_NAME_2=Cảm hứng
+
 
 STATUS_NAME_3=Mù lòa
 
 
+
 UNIT_NAME_0=Binh Lính
+
 
 UNIT_NAME_1=Cung Thủ
 
-UNIT_NAME_2=Cá Heo
+
+UNIT_NAME_2=Nguyên Tố
+
 
 UNIT_NAME_3=Nữ Phù Thủy
 
-UNIT_NAME_4=Tinh linh
+
+UNIT_NAME_4=Tinh Linh
+
 
 UNIT_NAME_5=Chó Sói
 
+
 UNIT_NAME_6=Khổng lồ
+
 
 UNIT_NAME_7=Máy Ném Đá
 
+
 UNIT_NAME_8=Rồng 
+
 
 UNIT_NAME_9=Chỉ Huy
 
+
 UNIT_NAME_10=Bộ Xương
+
 
 UNIT_NAME_11=Pha Lê
 
+
 UNIT_NAME_12=Hiệp Sĩ Giang Hồ
+
 
 UNIT_NAME_13=Kẻ Náo Loạn
 
+
 UNIT_NAME_14=Bóng Ma
+
 
 UNIT_NAME_15=Pháp Sư Đen
 
-UNIT_NAME_16=Cung Thủ Cưỡi Sói
 
-UNIT_NAME_17=Ice Elemental
+UNIT_NAME_16=Cung Cưỡi Sói
 
 
-UNIT_DESCRIPTION_0=Binh Lính có tài chiến đấu vững chắc, và họ có thể chiếm giữ hoặc sửa chữa ngôi làng để cung cấp cho bạn nhiều lợi ích.
+UNIT_NAME_17=Nguyên Tố Băng
 
-UNIT_DESCRIPTION_1=Với cung mạnh mẽ của họ, Cung Thủ có thể tấn công từ xa và đặc biệt hiệu quả chống lại kẻ thù trong không khí.
 
-UNIT_DESCRIPTION_2=Cá Heo dễ dàng hoạt động trong nước. Khi ở trong nước, họ sẽ mạnh mẽ nhiều hơn nữa.
+UNIT_NAME_18=Slime
 
-UNIT_DESCRIPTION_3=Họ có kỹ năng trong việc sử dụng các chiêu hồn, tuy Nữ Phù Thủy yếu trong chiến đấu cận chiến, nhưng họ có thể triệu tập những bộ xương từ cõi chết để giúp bạn trong cuộc chiến.
 
-UNIT_DESCRIPTION_4=Những chúng sanh huyền thoại của ánh sáng tinh khiết, Tinh Linh phát ra hào quang để bỏ trạng thái xấu từ các đồng minh của bạn và chữa trị cho họ một chút.
+UNIT_DESCRIPTION_0=TÀI NĂNG BINH LÍNH : (1) sữa chữa ngôi làng...(2) chiếm giữ ngôi làng.
 
-UNIT_DESCRIPTION_5=Chó Sói là thợ săn đáng sợ với khả năng di chuyển rất cao. Họ đi rất nhanh trên đất và tiêu diệt kẻ thù với vết cắn độc của họ.
 
-UNIT_DESCRIPTION_6=Khổng lồ, là những sinh vật cổ đại, vô cùng mạnh mẽ trong phòng thủ vật lý và thậm chí còn mạnh mẽ hơn khi ở vùng núi.
+UNIT_DESCRIPTION_1=TÀI NĂNG CUNG THỦ : (1) tấn công xa 2 đến 3 ô...(2) sát thương cao hơn với kẻ thù bay.
 
-UNIT_DESCRIPTION_7=Máy Ném Đá bùng cháy một dấu vết của sự hủy diệt với phạm vi tấn công rất lớn của họ và phá hủy 1 ngôi làng trong chóc lát. Tuy nhiên họ có khả năng di chuyển rất thấp.
 
-UNIT_DESCRIPTION_8=Những con thú bay rất lớn đã thống trị bầu trời từ thời cổ đại. Họ có khả năng vận động rất cao và các cuộc tấn công cận chiến chết người.
+UNIT_DESCRIPTION_2=TÀI NĂNG NGUYÊN TỐ : (1) thêm tấn công /phòng thủ trong nước...(2) hồi phục 10 HP khi dưới nước.
 
-UNIT_DESCRIPTION_9=Chỉ Huy là trái tim của một đội quân. Ông có kỹ năng chiến đấu khá mạnh mẽ và có thể chiếm giữ lâu đài của đối phương.
 
-UNIT_DESCRIPTION_10=Bộ Xương là những sinh vật bất tử được triệu tập bởi Nữ Phù Thủy . Họ không phải là rất mạnh, nhưng có các cuộc tấn công độc hại.
+UNIT_DESCRIPTION_3=TÀI NĂNG NỮ PHÙ THỦY : (1) triệu tập bộ xương từ ngôi mộ...(2) tấn công xa 1 đến 2 ô.
 
-UNIT_DESCRIPTION_11=<none>
 
-UNIT_DESCRIPTION_12=Hiệp Sĩ Giang Hồ là đội quân thánh người có kỹ năng chữa bệnh và cũng có thể chiếm giữ ngôi làng như những binh lính làm.
+UNIT_DESCRIPTION_4=TÀI NĂNG TINH LINH: (1) loại bỏ trạng thái xấu...(2) cấp 1 hồi 10 HP cho đội...(3) cấp 1 rút 10 HP Bộ Xương và Bóng Ma ,(3 KN bị động) này hoạt động trong 2 ô...(4) tấn công xa 1 đến 2 ô
 
-UNIT_DESCRIPTION_13=Kẻ Náo Loạn sinh ra để chiến đấu. Những kẻ thù xung quanh họ sẽ mạnh mẽ hơn
 
-UNIT_DESCRIPTION_14=bóng ma là những sinh vật bất tử thần thoại. Họ nổi lên trên mặt đất và có thể làm kẻ thù mù lòa với các cuộc tấn công của họ.
+UNIT_DESCRIPTION_5=TÀI NĂNG CHÓ SÓI: (1) làm trạng thái độc, giảm 10 HP đối thủ...(2) dùng ô di chuyển còn lại để chạy.
 
-UNIT_DESCRIPTION_15=Pháp Sư Đen có kỹ năng sử dụng ma thuật đen tối. các cuộc tấn công của họ luôn mạnh mẽ chống lại những người có thủ phép thuật.
 
-UNIT_DESCRIPTION_16=Wolfarchers are high mobility version of archers. They can strike almost anywhere you want them to attack.
+UNIT_DESCRIPTION_6=TÀI NĂNG KHỔNG LỒ : (1) làm trạng thái Tê Liệt , giảm di chuyển đối thủ trong vòng 2 ô (KN bị động)...(2) hồi phục 10 HP khi trên núi.
 
-UNIT_DESCRIPTION_17=Ice elementals are mystical beings formed by pure ice. It seems they can fight well both in water and on land.
+
+UNIT_DESCRIPTION_7=TÀI NĂNG MÁY NÉM ĐÁ : (1) tấn công xa 3 đến 7 ô...(2) phá hủy làng...(3) không dính bất cứ trạng thái nào. ĐIỂM YẾU : không thể tấn công khi vừa di chuyển xong.
+
+
+UNIT_DESCRIPTION_8=TÀI NĂNG RỒNG : (1) tấn công xa trong vòng 2 ô...(2) dùng ô di chuyển còn lại để chạy.
+
+
+UNIT_DESCRIPTION_9=TÀI NĂNG CHỈ HUY : (1) sửa chữa làng...(2) chiếm giữ làng...(3) chiếm lâu đài.
+
+
+UNIT_DESCRIPTION_10=TÀI NĂNG BỘ XƯƠNG : (1) làm trạng thái độc giảm 10 HP đối thủ... ĐIỂM YẾU : đứng gần Tinh Linh cấp 1 bị trừ 10 HP.
+
+
+UNIT_DESCRIPTION_11=không có gì
+
+
+UNIT_DESCRIPTION_12=TÀI NĂNG HIỆP SĨ GIANG HỒ : (1) cấp 1 chữa trị 40 HP cho đội và 50 HP cho bản thân, số chữa sẽ trị tăng khi lên cấp...(2) chiếm giữ làng.
+
+
+UNIT_DESCRIPTION_13=TÀI NĂNG KẺ NÁO LOẠN : (1) làm trạng thái cảm hứng tăng 10 tấn công cho đồng đội...(2) tấn công và phòng thủ vật lý sẽ tăng lên khi kẻ thù bao vây.
+
+
+UNIT_DESCRIPTION_14=TÀI NĂNG BÓNG MA : (1) làm trạng thái mù lòa cho đối phương không thể tấn công...(2) bay qua bộ quân đối phương. ĐIỂM YẾU : đứng gần Tinh Linh bị trừ 10 HP
+
+
+UNIT_DESCRIPTION_15=TÀI NĂNG PHÁP SƯ ĐEN : (1) tấn công và phòng thủ phép cao...(2) tấn công xa 1 đến 2 ô.
+
+
+UNIT_DESCRIPTION_16=TÀI NĂNG CUNG THỦ CƯỠI SÓI : (1) làm trạng thái mù lòa cho đối phương không thể tấn công...(2) tấn công xa 2 đến 3 ô
+
+
+UNIT_DESCRIPTION_17=TÀI NĂNG NGUYÊN TỐ BĂNG : (1) địa hình nào cũng được hồi HP...(2) tấn công xa 1 đến 3 ô
+
+
+UNIT_DESCRIPTION_18=những sinh vật huyền bí . Có vẻ như cơ thể mềm mại của họ có thể hấp thụ rất nhiều thiệt hại .
+
 
 
 UNIT_GUIDE_0=Binh lính rất hữu ích trong các trò chơi đầu tiên, họ có thể chiếm giữ hoặc bản sửa chữa để cung cấp cho bạn lợi thế. Mặc dù những người lính không chiến đấu mạnh mẽ, họ có thể đối phó một số thiệt hại khá đến kẻ thù với thủ vật lý thấp.
 
-UNIT_GUIDE_1=Cung Thủ bắt đầu với sức mạnh tấn công khá thấp, nhưng do phạm vi tấn công lâu dài của họ, bạn có thể nâng cấp chúng lên một cách dễ dàng hơn binh lính. Khi họ lên cấp tấn công của họ sẽ mạnh hơn. Trong khi đó cung thủ cũng tốt để tiêu diệt lực lượng không quân.
 
-UNIT_GUIDE_2=Cá Heo có thể di chuyển và chiến đấu hiệu quả trong nước nhiều hơn, vì vậy nếu bạn đang có kế hoạch để chọn lên một cuộc chiến ở những nơi được bao phủ bởi nước là một lựa chọn tốt.
+UNIT_GUIDE_1=Cung Thủ bắt đầu với sức mạnh tấn công khá thấp, nhưng do phạm vi tấn công dài của họ, bạn có thể nâng cấp chúng lên một cách dễ dàng hơn binh lính. Khi họ lên cấp tấn công của họ sẽ mạnh hơn. Trong khi đó cung thủ cũng tốt để tiêu diệt lực lượng không quân.
+
+
+UNIT_GUIDE_2=Nguyên Tố có thể di chuyển và chiến đấu hiệu quả trong nước nhiều hơn, vì vậy nếu bạn đang có kế hoạch để chọn lên một cuộc chiến ở những nơi được bao phủ bởi nước là một lựa chọn tốt.
+
 
 UNIT_GUIDE_3=Nữ Phù Thủy có thể triệu tập những bộ xương từ các đơn vị đã tử vong , vì vậy nếu các trận chiến có nhiều đơn vị và tử vong nhiều đó là một ý tưởng tốt để chiêu mộ Nữ Phù Thủy. Nhưng Nữ Phù Thủy rất yếu để chống lại các cuộc tấn công cận chiến vật lý, bạn nên di chuyển chúng thật thông minh.
 
+
 UNIT_GUIDE_4=Hào quang làm mới tinh thần có thể loại bỏ các trạng thái xấu từ các đồng minh gần đó cũng như chữa trị cho họ một chút, có nghĩa là tinh thần thực sự tốt đối với con sói và bộ xương. Lưu ý rằng các tinh linh có thể chiến đấu tốt hơn trong rừng nhưng hãy cẩn thận với cung thủ.
+
 
 UNIT_GUIDE_5=sói có các cuộc tấn công vật lý chết người và có thể di chuyển nhanh chóng trên đất, vì vậy bạn có thể sử dụng chúng để tiêu diệt các đơn vị chủ chốt của đối phương một cách nhanh chóng. Nhưng kể từ khi con sói không thể nhận được địa hình chữa lành bạn nên xem xét chiêu mộ một số thầy lang.
 
+
 UNIT_GUIDE_6=Khổng Lồ có phòng thủ vật lý rất cao và khi trên núi họ rất giỏi trong việc bảo vệ các cuộc tấn công vật lý của kẻ thù. Tuy nhiên khổng lồ có phòng thủ ma thuật tương đối thấp nên giữ chúng tránh xa kẻ thù sử dụng phép thuật.
+
 
 UNIT_GUIDE_7=Máy Ném Đá có phạm vi tấn công dài nhất của tất cả các đơn vị, do đó bạn có thể sử dụng chúng để tiêu diệt kẻ thù xa. Ngoài ra bạn có thể sử dụng máy ném đá để phá hủy làng. Nhưng Máy Ném Đá phòng thủ rất ít khó chống lại các cuộc tấn công cận chiến và không thể tấn công sau khi di chuyển, do đó bạn có để bảo vệ chúng đúng cách.
 
+
 UNIT_GUIDE_8=Rồng là lực lượng không quân mạnh mẽ, chúng có thể di chuyển qua mọi địa hình một cách dễ dàng và tiêu diệt kẻ thù với các cuộc tấn công chết người của họ. Lưu ý rằng các cuộc tấn công cận chiến rồng có thể gặp nguy hiểm hơn vì vậy hãy chắc chắn sử dụng tốt.
+
 
 UNIT_GUIDE_9=Người chỉ huy có thể chiếm giữ lâu đài kẻ thù đó là chìa khóa để chiến thắng. Và giá chiêu mộ Chỉ Huy sẽ tăng lên mỗi khi chết, bạn hãy cố gắng bảo vệ anh ta và lên cấp độ anh ta nhiều nhất khi bạn có thể.
 
+
 UNIT_GUIDE_10=Bộ Xương có sức tấn công rất thấp có nghĩa là họ không giỏi đối phó thiệt hại ngay lập tức. Nhưng nó luôn luôn là một ý tưởng tốt hãy cố gắng sử dụng xương để áp dụng trạng thái nhiễm độc cho các đơn vị chủ chốt của đối phương, và nên tránh xa tất cả tinh linh ra.
 
-UNIT_GUIDE_11=<none>
+
+UNIT_GUIDE_11= không có gì.
+
 
 UNIT_GUIDE_12=Lưu ý rằng Hiệp Sĩ Giang Hồ có thể chữa trị vượt quá tối đa HP các đồng minh để bạn có thể sử dụng chúng để tăng sức mạnh tấn công của đồng đội. Cũng Hiệp Sĩ Giang Hồ chữa trị có thể làm hư hỏng bộ xương, do đó bạn có thể sử dụng chúng để tiêu diệt bộ xương và tránh bị nhiễm độc.
 
-UNIT_GUIDE_13=Kể từ khi những kẻ thù xung quanh nhiều hơn , Kẻ Náo Loạn sẽ tăng sức mạnh tấn công và phòng thủ vật lý, vì vậy bạn hãy cố gắng chiêu mộ một số Kẻ Náo Loạn. Ngoài ra hào quang của Kẻ Náo Loạn có thể làm đồng minh của bạn tấn công mạnh mẽ hơn và tránh ảnh hưởng xấu
+
+UNIT_GUIDE_13=Kể từ khi những kẻ thù xung quanh nhiều hơn , Kẻ Náo Loạn sẽ tăng sức mạnh tấn công và phòng thủ vật lý, vì vậy bạn hãy cố gắng chiêu mộ một số Kẻ Náo Loạn. Ngoài ra hào quang của Kẻ Náo Loạn có thể làm đồng minh của bạn tấn công mạnh mẽ hơn và tránh ảnh hưởng xấu.
+
 
 UNIT_GUIDE_14=Bóng Ma là những sinh vật bất tử, họ không sợ các chất độc. Và kể từ khi bóng ma có thể làm mù lòa kẻ thù nó luôn luôn là một ý tưởng rất nỗ lực để sử dụng chúng để tấn công các đơn vị đối phương có sát thương cao.
 
+
 UNIT_GUIDE_15=Pháp Sư Đen không có khả năng, nhưng họ có phép thuật tấn công khá cao và làm cho chúng gây sát thương phép thuật tốt. Tuy nhiên pháp sư đen không phải là giỏi cận chiến nên cố gắng sử dụng chúng một cách khôn ngoan.
 
-UNIT_GUIDE_16=Due to their long attack range and high mobility, you can use wolfarchers to destroy enemy air forces quite easily no matter they are in back line or front line. And with their ability to blind targets they are also good at silencing enemy high attack units.
 
-UNIT_GUIDE_17=Ice elementals have quite long attack range and have rehabilitation ability which means they will be very strong on the water. But even on land they are still good magic damage dealers.
-
-
-WIKI_OVERVIEW_P1=Những gì bạn nhìn thấy bây giờ là wiki trong game được thiết kế để giúp bạn tìm hiểu làm thế nào để chơi trò chơi này. Vui lòng kiểm tra các phần sau để biết thêm .Thông Tin Thêm : Bia Mộ có chất độc, hãy cẩn thận!
+UNIT_GUIDE_16=Do phạm vi tấn công dài của họ và di chuyển lượng cao, bạn có thể sử dụng cung thủ cưỡi sói để tiêu diệt lực lượng không quân của đối phương khá dễ dàng dù họ là trong dòng trở lại hoặc đường phía trước. Và với khả năng làm mù lòa của họ cũng rất giỏi trong việc bịt miệng các đơn vị tấn công cao của đối phương.
 
 
-WIKI_GAMEPLAY_OBJECTIVES_P1=Đối với trò chơi giao tranh các mục tiêu là khá đơn giản, bạn cần phải loại bỏ tất cả các đơn vị đối phương và nắm bắt tất cả các lâu đài của đối phương (trừ những người trung thành). Để đạt được điều này bạn cần phải chiêu mộcác đơn vị và chiến đấu chống quân đội đối phương với một số chiến lược.
+UNIT_GUIDE_17=Nguyên tố băng có phạm vi tấn công khá dài và có khả năng phục hồi chức năng có nghĩa là họ sẽ rất mạnh mẽ trên mặt nước. Nhưng ngay cả trên đất họ vẫn còn gây sát thương phép thuật tốt.
+
+
+UNIT_GUIDE_18=Slimes là tốt nhất chống lại các cuộc tấn công tầm xa, nhưng họ đang yếu trong chiến đấu cận chiến nên cố gắng sử dụng chúng một cách khôn ngoan .
+
+
+WIKI_OVERVIEW_P1=Bia Mộ có chất độc, hãy cẩn thận! vật lý màu đỏ, phép thuật màu xanh!!! đây là 1 wiki lập ra để hướng dẫn các game thủ để làm quen trò chơi.
+
+
+
+WIKI_GAMEPLAY_OBJECTIVES_P1=Đối với trò chơi giao tranh các mục tiêu là khá đơn giản, bạn cần phải loại bỏ tất cả các đơn vị đối phương và nắm bắt tất cả các lâu đài của đối phương (trừ những người trung thành). Để đạt được điều này bạn cần phải chiêu mộ các đơn vị và chiến đấu chống quân đội đối phương với một số chiến lược.
+
 
 WIKI_GAMEPLAY_OBJECTIVES_P2=Tuy nhiên đối với các chiến dịch các mục tiêu có thể phức tạp hơn mà bạn cần phải chú ý đến.
 
 
+
 WIKI_GAMEPLAY_RECRUITING_P1=Bạn có thể chiêu mộ các đơn vị từ lâu đài của bạn. Tuy nhiên bạn chỉ có thể chiêu mộ các đơn vị khi có đơn vị trên lâu đài (trừ chỉ huy của bạn). các đơn vị chiêu mộ bạn sẽ chi phí tiền xu vàng và mỗi đơn vị sẽ mất một số tiền nhất định của đơn vị công suất. Vì vậy, hãy nhớ kiểm tra trước khi chiêu mộ một đơn vị.
 
+
 WIKI_GAMEPLAY_RECRUITING_P2=Tuy nhiên đối với các chỉ huy đó là một chút khác nhau. Trước hết bạn chỉ có thể chiêu mộ chỉ huy khi chỉ huy của bạn đã tử vong trong cuộc chiến. Thứ hai giá chiêu mộ chỉ huy sẽ tăng thêm 100 vàng mỗi khi ông chết.
+
 
 WIKI_GAMEPLAY_RECRUITING_P3=Lưu ý rằng ngay cả khi bạn đã đạt đến đơn vị công suất tối đa, bạn vẫn có thể chiêu mộ chỉ huy của bạn.
 
 
+
 WIKI_GAMEPLAY_ATTACKING_P1=Để tấn công đối phương, bạn cần phải lựa chọn và di chuyển một đơn vị về phía kẻ thù đó. Và miễn là kẻ thù trong phạm vi tấn công của đơn vị của bạn, bạn có thể tấn công anh ta.
 
-WIKI_GAMEPLAY_ATTACKING_P2=Có hai loại tấn công / phòng thủ đó là Vật Lý và Phép Thuật  (Vật Lý thì : tấn công / phòng thủ hiển thị màu đỏ) và  (Phép Thuật thì : tấn công / Phòng Thủ hiển thị màu xanh). Vì vậy, bạn nên luôn luôn cố gắng để tấn công kẻ thù yếu để loại tấn công của đơn vị mình.
+
+WIKI_GAMEPLAY_ATTACKING_P2=Có hai loại tấn công / phòng thủ đó là Vật Lý và Phép Thuật (Vật Lý thì : tấn công / phòng thủ hiển thị màu đỏ) và (Phép Thuật thì : tấn công / Phòng Thủ hiển thị màu xanh). Vì vậy, bạn nên luôn luôn cố gắng để tấn công kẻ thù yếu để loại tấn công của đơn vị mình.
+
 
 WIKI_GAMEPLAY_ATTACKING_P3=Khi nói đến phản công, câu chuyện là một chút khác nhau. Đơn vị có thể thực hiện cuộc tấn công cận chiến luôn có thể phản công. Nhưng cuộc tấn công tầm xa không thể phản được. hãy ghi nhớ trong tâm trí khi bạn quyết định để tấn công kẻ thù.
+
 
 WIKI_GAMEPLAY_ATTACKING_P4=Lưu ý rằng khi tấn công, HP thấp hơn sẽ sát thương thấp hơn đối thủ đã chọn. 
 
 
+
 WIKI_GAMEPLAY_HEALING_P1=Các đơn vị có khả năng chữa trị liên quan có thể chữa trị các đồng minh. Một số chữa trị có thể vượt HP tối đa mục tiêu, nhưng HP vượt quá sẽ được loại bỏ khi đơn vị chờ hoặc khi đến lượt mới .
+
 
 WIKI_GAMEPLAY_HEALING_P2=Lưu ý rằng có một hạn chế để chữa trị, đó là, các đơn vị mặt đất không thể chữa lành các đơn vị bay, nhưng các đơn vị bay có thể chữa lành tất cả mọi người.
 
 
+
 WIKI_GAMEPLAY_INCOME_P1=Thu nhập của bạn chủ yếu đến từ các làng và lâu đài. Mỗi làng có thể cung cấp cho bạn 50 đồng tiền vàng mỗi lượt trong khi mỗi lâu đài có thể cung cấp cho bạn 100. Vì vậy, cố gắng chiếm thật nhiều làng và lâu đài như bạn có thể để đạt được lợi thế chống lại kẻ thù.
+
 
 WIKI_GAMEPLAY_INCOME_P2=Lưu ý rằng nếu chỉ huy của bạn còn sống thì ông ta cũng có thể cung cấp cho bạn một số thu nhập. Thu nhập cơ bản của một chỉ huy trưởng là 50 đồng tiền vàng mỗi lượt, trong đó sẽ được tăng thêm 50 mỗi lần chỉ huy của bạn lên cấp.
 
 
+
 WIKI_GAMEPLAY_STATUS_P1=Một số đơn vị có thể đính kèm trạng thái từ các đơn vị khác, đó là một thực tế quan trọng bạn cần phải xem xét khi chiến đấu kẻ thù.
+
 
 WIKI_GAMEPLAY_STATUS_P2=Lưu ý rằng khi một đơn vị được gắn một loại trạng thái sau đó đơn vị này là miễn dịch với các loại trạng thái, nhưng khi nói đến cùng một loại trạng thái này sẽ được làm mới.
 
 
+
 WIKI_MULTIPLAYER_CREATE_GAME_P1=Để tạo ra một trò chơi nhiều người bạn cần phải kết nối với một máy chủ đầu tiên và nó sẽ dẫn bạn đến với trò chơi sảnh. Bằng cách nhấn vào nút tạo ra, bạn có thể tạo ra hoặc là một trò chơi mới hoặc một trò chơi từ một tập tin lưu trữ .
+
 
 WIKI_MULTIPLAYER_CREATE_GAME_P2=Để tạo ra một trò chơi mới, bạn cần phải chọn một bản đồ, thiết lập bắt đầu vàng, công suất đơn vị và tất nhiên số lượng tối đa của người chơi cho phép cho trò chơi này (kể cả khán giả). Tuy nhiên để tạo ra một trò chơi từ lưu các tập tin bạn chỉ cần thiết lập số lượng tối đa của người chơi cho phép cho trò chơi này.
 
+
 WIKI_MULTIPLAYER_CREATE_GAME_P3=Sau khi bạn đã thiết lập trò chơi của bạn bấm vào nút tạo sau đó nó sẽ dẫn bạn đến các phòng trò chơi, nơi bạn có thể chờ đợi cho người chơi khác tham gia trò chơi của bạn và làm cho việc điều chỉnh đội ngũ.
+
 
 WIKI_MULTIPLAYER_CREATE_GAME_P4=Ngoài ra bạn có thể thiết lập một mật khẩu cho trò chơi của bạn trong khi bạn không muốn các đối thủ bất ngờ để tham gia trò chơi.
 
 
+
 WIKI_MULTIPLAYER_JOIN_GAME_P1=Trong khi bạn đang ở trong trò chơi sảnh, bạn có thể xem danh sách các phòng trò chơi có sẵn. Để tham gia một trò chơi là khá đơn giản, trước tiên hãy chắc chắn rằng căn phòng là không đầy đủ, sau đó chọn nó và nhấn nút tham gia. Nếu căn phòng có một mật khẩu sau đó một hộp thoại sẽ bật lên để cho bạn nhập mật khẩu.
+
 
 WIKI_MULTIPLAYER_JOIN_GAME_P2=Bạn có thể rời khỏi các trò chơi bất cứ lúc nào bằng cách nhấn vào nút rời khỏi trong khi bạn vẫn đang ở trong phòng chơi. Tuy nhiên nếu trò chơi được bắt đầu và bạn không phải là một khán giả, chúng tôi đề nghị rằng bạn hoàn thành trò chơi trước khi rời khỏi.
 
 
+
 WIKI_MULTIPLAYER_COMMANDS_ASSIGN_P1=chủ phòng có thể sử dụng lệnh để gán nhóm cho người chơi khi trận đấu được bắt đầu. Để làm điều này bạn cần phải bấm vào chọn đối thủ danh sách người chơi phía trên bên trái màn hình ,rồi chọn một đối thủ, bấm vào nút "=>". Lưu ý rằng nếu đã có đối thủ đã chọn thì ông sẽ mất kiểm soát vào nhóm đó.
+
 
 WIKI_MULTIPLAYER_COMMANDS_ASSIGN_P2=giá trị Team: 0-đội lam, 1-đội đỏ, 2-đội lục, 3-đội đen
 
 
+
 WIKI_ABOUT_P1=Trò chơi này được tạo ra bởi toyknight và dự án đã được bắt đầu từ tháng 6 năm 2014.
+
 
 WIKI_ABOUT_P2=Nếu bạn có bất kỳ câu hỏi, gợi ý hoặc muốn giúp đỡ xin vui lòng gửi email tới toyknight@outlook.com. Cho tôi biết . Cảm Ơn!
 
 
+
 WIKI_NODE_GAMEPLAY_OBJECTIVES=Mục Tiêu
+
 
 WIKI_NODE_GAMEPLAY_RECRUITING=Chiêu Mộ 
 
+
 WIKI_NODE_GAMEPLAY_ATTACKING=Tấn Công 
+
 
 WIKI_NODE_GAMEPLAY_HEALING=Chữa Trị 
 
+
 WIKI_NODE_GAMEPLAY_INCOME=Thu Nhập
+
 
 WIKI_NODE_GAMEPLAY_STATUS=Trạng Thái 
 
 
+
 WIKI_NODE_MULTIPLAYER_CREATE_GAME=Tạo Game
 
+
 WIKI_NODE_MULTIPLAYER_JOIN_GAME=Tham Gia Game
+
 
 WIKI_NODE_MULTIPLAYER_COMMANDS=Chỉ Huy
 
 
+
 WIKI_NODE_ROOT_1=Tổng Quan
+
 
 WIKI_NODE_ROOT_2=Chơi Game
 
+
 WIKI_NODE_ROOT_3=Địa Hình
+
 
 WIKI_NODE_ROOT_4=Đơn Vị
 
+
 WIKI_NODE_ROOT_5=Khả Năng 
+
 
 WIKI_NODE_ROOT_6=Trạng Thái 
 
+
 WIKI_NODE_ROOT_7=Nhiều Người Chơi 
+
 
 WIKI_NODE_ROOT_8=Nói Về
 

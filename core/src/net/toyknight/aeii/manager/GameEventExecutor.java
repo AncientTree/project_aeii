@@ -90,6 +90,12 @@ public class GameEventExecutor {
 
     public void executeGameEvent(JSONObject event) throws JSONException, CheatingException {
         switch (event.getInt("type")) {
+            case GameEvent.STANDBY_FINISH:
+                int target_x = event.getJSONArray("parameters").getInt(0);
+                int target_y = event.getJSONArray("parameters").getInt(1);
+                getManager().fireUnitStandbyEvent(target_x, target_y);
+                getManager().fireStateChangeEvent();
+                break;
             case GameEvent.MANAGER_STATE_SYNC:
                 int manager_state = event.getJSONArray("parameters").getInt(0);
                 getManager().syncState(manager_state, -1, -1);
@@ -97,8 +103,8 @@ public class GameEventExecutor {
             case GameEvent.ATTACK:
                 int attacker_x = event.getJSONArray("parameters").getInt(0);
                 int attacker_y = event.getJSONArray("parameters").getInt(1);
-                int target_x = event.getJSONArray("parameters").getInt(2);
-                int target_y = event.getJSONArray("parameters").getInt(3);
+                target_x = event.getJSONArray("parameters").getInt(2);
+                target_y = event.getJSONArray("parameters").getInt(3);
                 int attack_damage = event.getJSONArray("parameters").getInt(4);
                 boolean counter = event.getJSONArray("parameters").getBoolean(5);
                 onAttack(attacker_x, attacker_y, target_x, target_y, attack_damage, counter);
@@ -332,7 +338,7 @@ public class GameEventExecutor {
             int price = getGame().getUnitPrice(index, team);
             getGame().getCurrentPlayer().changeGold(-price);
 
-            if (index == UnitFactory.getCommanderIndex()) {
+            if (UnitFactory.isCommander(index)) {
                 getGame().restoreCommander(team, target_x, target_y);
             } else {
                 getGame().createUnit(index, team, target_x, target_y);
@@ -619,7 +625,7 @@ public class GameEventExecutor {
             int map_x = reinforcement.getInt("x");
             int map_y = reinforcement.getInt("y");
             if (getGame().getMap().getUnit(map_x, map_y) == null) {
-                if (index == UnitFactory.getCommanderIndex()) {
+                if (UnitFactory.isCommander(index)) {
                     if (getGame().isCommanderAlive(team)) {
                         getGame().createUnit(index, team, map_x, map_y);
                     } else {
@@ -687,7 +693,7 @@ public class GameEventExecutor {
 
     private void onCampaignCreateUnit(int index, int team, int map_x, int map_y) {
         if (getGame().getMap().getUnit(map_x, map_y) == null) {
-            if (index == UnitFactory.getCommanderIndex()) {
+            if (UnitFactory.isCommander(index)) {
                 getGame().restoreCommander(team, map_x, map_y);
             } else {
                 getGame().createUnit(index, team, map_x, map_y);
@@ -724,6 +730,7 @@ public class GameEventExecutor {
     private void onCampaignChangeTeam(int unit_x, int unit_y, int team) {
         Unit unit = getGame().getMap().getUnit(unit_x, unit_y);
         if (unit != null) {
+            getManager().fireMapFocusEvent(unit_x, unit_y, false);
             unit.setTeam(team);
             getAnimationDispatcher().submitUnitSparkAnimation(unit);
         }

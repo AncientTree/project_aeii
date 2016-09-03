@@ -9,6 +9,8 @@ import org.json.JSONObject;
  */
 public class GameEvent {
 
+    public static final int STANDBY_FINISH = -1;
+
     public static final int MANAGER_STATE_SYNC = 0x0;
 
     public static final int BUY = 0x1;

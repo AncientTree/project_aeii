@@ -22,7 +22,6 @@ public class Operation {
     public static final int STANDBY = 0x14;
     public static final int NEXT_TURN = 0x15;
     public static final int TURN_STARTED = 0x16;
-    public static final int AFTER_STANDBY= 0x17;
 
     private final int type;
 

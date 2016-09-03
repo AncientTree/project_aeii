@@ -172,12 +172,6 @@ public class OperationExecutor {
                 getManager().fireMapFocusEvent(map_focus.x, map_focus.y, true);
                 getManager().fireStateChangeEvent();
                 break;
-            case Operation.AFTER_STANDBY:
-                unit_x = operation.getParameter(0);
-                unit_y = operation.getParameter(1);
-                getManager().fireUnitStandbyEvent(unit_x, unit_y);
-                getManager().fireStateChangeEvent();
-                break;
             default:
                 //do nothing
         }
@@ -271,7 +265,7 @@ public class OperationExecutor {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 change = getManager().getUnitToolkit().getTerrainHeal(unit, tile);
                 //the poison damage
-                if (getGame().canBePoisoned(unit)) {
+                if (getGame().isGonnaBePoisoned(unit)) {
                     if (unit.hasAbility(Ability.UNDEAD)) {
                         change += Rule.POISON_DAMAGE;
                     } else {
@@ -285,15 +279,15 @@ public class OperationExecutor {
                 if (unit.getCurrentHp() > unit.getMaxHp()) {
                     change -= unit.getCurrentHp() - unit.getMaxHp();
                 }
+                change = UnitToolkit.validateHpChange(unit, change);
             } else {
                 Tile tile = getGame().getMap().getTile(unit.getX(), unit.getY());
                 if (getGame().isEnemy(unit.getTeam(), next_team)
                         && tile.isCastle() && tile.getTeam() == next_team) {
-                    change = -50;
+                    change = UnitToolkit.validateHpChange(unit, -50);
                 }
             }
             if (change != 0) {
-                change = UnitToolkit.validateHpChange(unit, change);
                 JSONObject hp_change = new JSONObject();
                 hp_change.put("x", unit.getX());
                 hp_change.put("y", unit.getY());
@@ -467,6 +461,7 @@ public class OperationExecutor {
             if (experience > 0) {
                 submitGameEvent(GameEvent.GAIN_EXPERIENCE, unit_x, unit_y, experience);
             }
+            submitGameEvent(GameEvent.STANDBY_FINISH, unit_x, unit_y);
             getManager().setState(GameManager.STATE_SELECT);
         }
     }
