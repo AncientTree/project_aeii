@@ -323,8 +323,8 @@ public class Robot {
                         }
                     }
                     synchronized (GameContext.RENDER_LOCK) {
-                        if (getGame().getMap().isTomb(target_position)
-                                && selected_unit.hasAbility(Ability.NECROMANCER)) {
+                        if (selected_unit.hasAbility(Ability.NECROMANCER) &&
+                                !selected_unit.hasStatus(Status.BLINDED) && getGame().getMap().isTomb(target_position)) {
                             actions.add(new Action(position, target_position, Operation.SUMMON));
                         }
                     }
