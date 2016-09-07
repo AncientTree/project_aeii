@@ -449,7 +449,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                     return false;
                 }
             case Input.Keys.ESCAPE:
-                if (isDialogVisible()) {
+                if (isDialogVisible() && !getGameManager().isMessaging()) {
                     closeTopDialog();
                     update();
                     return true;
@@ -968,19 +968,5 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             viewport.y = (map_height - viewport.height) / 2;
         }
     }
-
-    private final Callable cheating_confirm_yes_callback = new Callable() {
-        @Override
-        public void call() {
-
-        }
-    };
-
-    private final Callable cheating_confirm_no_callback = new Callable() {
-        @Override
-        public void call() {
-
-        }
-    };
 
 }
