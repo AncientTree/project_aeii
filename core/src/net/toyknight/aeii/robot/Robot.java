@@ -949,7 +949,7 @@ public class Robot {
         if (position_b == null) {
             return 1;
         }
-        return getAverageEnemyDistance(position_a) > getAverageEnemyDistance(position_b) ? 1 : -1;
+        return getAverageEnemyDistance(position_a) < getAverageEnemyDistance(position_b) ? 1 : -1;
     }
 
     private final Runnable calculate_task = new Runnable() {
