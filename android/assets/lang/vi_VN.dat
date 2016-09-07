@@ -1273,7 +1273,7 @@ MSG_ERR_HPD=Chủ phòng bị mất kết nối
 MSG_ERR_MAE=Bản đồ đã tồn tại.
 
 
-MSG_ERR_RBS=Từ chối kết nối [Tại phiên bản cũ]
+MSG_ERR_RBS=Từ chối kết nối [phiên bản trò chơi không phù hợp]
 
 
 MSG_ERR_RI=Yêu cầu gián đoạn
