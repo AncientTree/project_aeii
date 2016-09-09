@@ -82,12 +82,7 @@ public class GameMenu extends BasicDialog {
         btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-                    getContext().gotoCampaignScreen();
-                    AudioManager.loopMainTheme();
-                } else {
-                    getContext().gotoStatisticsScreen(getOwner().getGame());
-                }
+                onLeaveGame();
             }
         });
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -153,6 +148,28 @@ public class GameMenu extends BasicDialog {
     private boolean canSave() {
         return getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
+    }
+
+    private void onLeaveGame() {
+        getOwner().showConfirm(Language.getText("LB_EXIT_GAME") + "?", new ConfirmDialog.ConfirmDialogListener() {
+            @Override
+            public void confirmed() {
+                doLeaveGame();
+            }
+
+            @Override
+            public void canceled() {
+            }
+        });
+    }
+
+    private void doLeaveGame() {
+        if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
+            getContext().gotoCampaignScreen();
+            AudioManager.loopMainTheme();
+        } else {
+            getContext().gotoStatisticsScreen(getOwner().getGame());
+        }
     }
 
 }
