@@ -7,12 +7,12 @@ public enum Platform {
 
     Desktop, Android, iOS;
 
-    public static boolean isMobile(Platform platform) {
-        return platform == Android || platform == iOS;
+    public boolean isMobile() {
+        return this == Android || this == iOS;
     }
 
-    public static boolean isDesktop(Platform platform) {
-        return platform == Desktop;
+    public boolean isDesktop() {
+        return this == Desktop;
     }
 
 }

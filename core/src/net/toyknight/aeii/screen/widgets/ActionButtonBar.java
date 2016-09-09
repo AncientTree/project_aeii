@@ -34,9 +34,9 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
     public ActionButtonBar(GameScreen screen) {
         super(screen.getContext());
         this.screen = screen;
-        this.PADDING_LEFT = Platform.isDesktop(getPlatform()) ? ts / 8 : ts / 4;
-        this.BUTTON_WIDTH = Platform.isDesktop(getPlatform()) ? ts / 24 * 20 : ts / 24 * 40;
-        this.BUTTON_HEIGHT = Platform.isDesktop(getPlatform()) ? ts / 24 * 21 : ts / 24 * 42;
+        this.PADDING_LEFT = getPlatform().isDesktop() ? ts / 8 : ts / 4;
+        this.BUTTON_WIDTH = getPlatform().isDesktop() ? ts / 24 * 20 : ts / 24 * 40;
+        this.BUTTON_HEIGHT = getPlatform().isDesktop() ? ts / 24 * 21 : ts / 24 * 42;
         this.buttons = new HashMap<String, CircleButton>();
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
@@ -210,13 +210,13 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
     @Override
     public void draw(Batch batch, float parent_alpha) {
         if (getChildren().size > 0) {
-            if (Platform.isDesktop(getPlatform())) {
+            if (getPlatform().isDesktop()) {
                 batch.end();
                 shape_renderer.begin(ShapeRenderer.ShapeType.Filled);
                 int btn_count = getChildren().size;
                 int background_width = btn_count * BUTTON_WIDTH + (btn_count + 1) * PADDING_LEFT;
-                int background_height = Platform.isDesktop(getPlatform()) ? ts / 2 : ts;
-                int background_radius = Platform.isDesktop(getPlatform()) ? ts / 8 : ts / 4;
+                int background_height = getPlatform().isDesktop() ? ts / 2 : ts;
+                int background_radius = getPlatform().isDesktop() ? ts / 8 : ts / 4;
                 getContext().getBorderRenderer().drawRoundedBackground(shape_renderer,
                         getX() + margin_left, getY() - ts / 12, background_width, background_height, background_radius);
                 shape_renderer.end();

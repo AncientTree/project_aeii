@@ -102,8 +102,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.btn_end_turn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().doEndTurn();
-                update();
+                onEndTurn();
             }
         });
         this.addActor(btn_end_turn);
@@ -735,6 +734,28 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 }
             }
         }
+    }
+
+    private void onEndTurn() {
+        if (getContext().getPlatform().isMobile()) {
+            showConfirm(Language.getText("LB_END_TURN") + "?", new ConfirmDialog.ConfirmDialogListener() {
+                @Override
+                public void confirmed() {
+                    doEndTurn();
+                }
+
+                @Override
+                public void canceled() {
+                }
+            });
+        } else {
+            doEndTurn();
+        }
+    }
+
+    private void doEndTurn() {
+        getGameManager().doEndTurn();
+        update();
     }
 
     public void update() {
