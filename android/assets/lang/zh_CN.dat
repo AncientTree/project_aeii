@@ -486,6 +486,7 @@ MSG_INFO_PIP=请输入密码
 MSG_INFO_PJ=%s 加入了游戏
 MSG_INFO_PJR=%s 进入了房间.
 MSG_INFO_PLR=%s 离开了房间.
+MSG_INFO_PR=%s 重新连接
 MSG_INFO_GS=游戏开始
 MSG_INFO_GSV=游戏已保存
 MSG_INFO_GSVF=游戏保存失败

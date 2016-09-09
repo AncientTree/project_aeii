@@ -21,6 +21,7 @@ public class NetworkConstants {
     public static final int UPLOAD_MAP = 0x92;
     public static final int DOWNLOAD_MAP = 0x93;
     public static final int LIST_IDLE_PLAYERS = 0x94;
+    public static final int RECONNECT = 0x95;
 
     //Notifications
     public static final int PLAYER_JOINING = 0x10;
@@ -29,11 +30,13 @@ public class NetworkConstants {
     public static final int GAME_STARTING = 0x13;
     public static final int GAME_EVENT = 0x14;
     public static final int MESSAGE = 0x15;
+    public static final int PLAYER_RECONNECTING = 0x16;
 
     //Admin operations
     public static final int GLOBAL_MESSAGE = 0x100;
     public static final int DELETE_MAP = 0x101;
     public static final int UPDATE_MAP = 0x102;
+    public static final int DISCONNECT_PLAYER = 0x103;
 
     //Response codes
     public static final int CODE_NETWORK_ERROR = -1;

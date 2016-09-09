@@ -320,7 +320,7 @@ public class MapManagementScreen extends StageScreen {
                 if (code == NetworkConstants.CODE_OK) {
                     showNotification(Language.getText("MSG_INFO_MU"), null);
                 } else {
-                    showNotification(Language.getText("MSG_ERR_FUM") + "Error Code [" + code + "]", null);
+                    showNotification(Language.getText("MSG_ERR_FUM") + " Error Code [" + code + "]", null);
                 }
             }
 

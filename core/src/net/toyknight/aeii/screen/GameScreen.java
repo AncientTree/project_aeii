@@ -11,10 +11,12 @@ import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.animation.*;
+import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.record.GameRecordPlayerListener;
 import net.toyknight.aeii.renderer.*;
 import net.toyknight.aeii.screen.dialog.*;
@@ -310,10 +312,58 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onDisconnect() {
+        closeAllDialogs();
+        showPlaceholder(Language.getText("LB_RECONNECTING"));
+        getContext().clearAsyncTasks();
+        getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
+            @Override
+            public RoomSetting doTask() throws Exception {
+                long room_id = getContext().getRoomManager().getRoomNumber();
+                int previous_id = NetworkManager.getServiceID();
+                String v_string = getContext().getVerificationString();
+                String username = getContext().getUsername();
+                return NetworkManager.requestReconnect(room_id, previous_id, v_string, username);
+            }
+
+            @Override
+            public void onFinish(RoomSetting setting) {
+                if (setting == null) {
+                    onReconnectFail();
+                } else {
+                    onReconnectSuccess(setting);
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                onReconnectFail();
+            }
+        });
+    }
+
+    private void onReconnectSuccess(RoomSetting setting) {
+        closePlaceholder();
+        getContext().getRoomManager().initialize(setting);
+        getGameManager().setGame(setting.game);
+        getGameManager().syncState(setting.manager_state, setting.selected_unit_x, setting.selected_unit_y);
+        for (int team = 0; team < 4; team++) {
+            Player player = getGame().getPlayer(team);
+            if (getContext().getRoomManager().hasTeamAccess(team)) {
+                player.setType(Player.LOCAL);
+            } else {
+                player.setType(Player.REMOTE);
+            }
+        }
+        update();
+    }
+
+    private void onReconnectFail() {
+        closePlaceholder();
         showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
-                getContext().gotoStatisticsScreen(getGame());
+                getContext().gotoMainMenuScreen(true);
+                NetworkManager.disconnect();
             }
         });
     }
@@ -350,6 +400,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.onPlayerLeave(id, username, host);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(Language.getText("MSG_INFO_PD"), username));
+        AudioManager.playSE("prompt.mp3");
+    }
+
+    @Override
+    public void onPlayerReconnect(int id, String username) {
+        super.onPlayerReconnect(id, username);
+        message_box.setPlayers(getContext().getRoomManager().getPlayers());
+        appendMessage(null, String.format(Language.getText("MSG_INFO_PR"), username));
         AudioManager.playSE("prompt.mp3");
     }
 

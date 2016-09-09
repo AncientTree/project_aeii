@@ -1315,7 +1315,7 @@ MSG_INFO_MU=Tải bản đồ lên.
 MSG_INFO_NSY=Dù thế nào cũng không mở ra :(
 
 
-MSG_INFO_PD=%s Ngắt Kết nối .
+MSG_INFO_PD=%s Ngắt Kết nối.
 
 
 MSG_INFO_PIP=Xin nhập nhập khẩu 
@@ -1328,6 +1328,9 @@ MSG_INFO_PJR=%s Bước vào phòng.
 
 
 MSG_INFO_PLR=%s Rời khỏi phòng.
+
+
+MSG_INFO_PR=%s kết nối lại.
 
 
 MSG_INFO_GS=Trò chơi bắt đầu

@@ -482,6 +482,7 @@ MSG_INFO_PIP=Please input password
 MSG_INFO_PJ=%s joins the game.
 MSG_INFO_PJR=%s enters the room.
 MSG_INFO_PLR=%s left the room.
+MSG_INFO_PR=%s reconnected.
 MSG_INFO_GS=Game started.
 MSG_INFO_GSV=Game saved.
 MSG_INFO_GSVF=Game save failed.

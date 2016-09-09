@@ -482,6 +482,7 @@ MSG_INFO_PIP=Digite a senha
 MSG_INFO_PJ=%s entrou no jogo.
 MSG_INFO_PJR=%s entrou na sala.
 MSG_INFO_PLR=%s saiu da sala.
+MSG_INFO_PR=%s reconectado.
 MSG_INFO_GS=Jogo iniciado.
 MSG_INFO_GSV=Jogo salvo.
 MSG_INFO_GSVF=Falha ao salvar o jogo.

@@ -112,6 +112,8 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     }
 
     public void showPlaceholder(String message) {
+        input_dialog.setVisible(false);
+        confirm_dialog.setVisible(false);
         if (!isPromptVisible()) {
             placeholder.setMessage(message);
             placeholder.setVisible(true);
@@ -272,6 +274,11 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
     @Override
     public void onPlayerLeave(int id, String username, int host) {
         getContext().getRoomManager().onPlayerLeave(id, host);
+    }
+
+    @Override
+    public void onPlayerReconnect(int id, String username) {
+        getContext().getRoomManager().onPlayerJoin(id, username);
     }
 
     @Override

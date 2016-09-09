@@ -91,6 +91,12 @@ public class RequestHandler {
                 case NetworkConstants.UPDATE_MAP:
                     onMapUpdateRequested(player, request);
                     break;
+                case NetworkConstants.RECONNECT:
+                    onReconnectRequested(player, request);
+                    break;
+                case NetworkConstants.DISCONNECT_PLAYER:
+                    onDisconnectPlayerRequested(player, request);
+                    break;
                 default:
                     Log.error(TAG, String.format("Illegal request from %s [undefined operation]", player.toString()));
             }
@@ -320,6 +326,48 @@ public class RequestHandler {
                 response.put("success", success);
             } catch (Exception e) {
                 response.put("success", false);
+            }
+            player.sendTCP(response.toString());
+        }
+    }
+
+    public void onReconnectRequested(Player player, JSONObject request) {
+        String username = request.getString("username");
+        String v_string = request.getString("v_string");
+
+        player.setUsername(username);
+
+        JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+        if (getContext().getVerificationString().equals(v_string)) {
+            player.setAuthenticated(true);
+            long room_id = request.getLong("room_id");
+            int previous_id = request.getInt("previous_id");
+            RoomSetting room_setting = getContext().getRoomManager().onPlayerReconnect(player, previous_id, room_id);
+            if (room_setting == null) {
+                response.put("approved", false);
+            } else {
+                response.put("room_setting", room_setting.toJson());
+                response.put("service_id", player.getID());
+                response.put("approved", true);
+            }
+        } else {
+            response.put("approved", false);
+        }
+        player.sendTCP(response.toString());
+    }
+
+    public void onDisconnectPlayerRequested(Player player, JSONObject request) {
+
+        String token = request.getString("token");
+        if (getContext().verifyAdminToken(token)) {
+            JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+            int player_id = request.getInt("player_id");
+            Player target_player;
+            if ((target_player = getContext().getPlayerManager().getPlayer(player_id)) == null) {
+                response.put("success", false);
+            } else {
+                target_player.getConnection().close();
+                response.put("success", true);
             }
             player.sendTCP(response.toString());
         }

@@ -13,6 +13,8 @@ public interface NetworkListener {
 
     void onPlayerLeave(int id, String username, int host);
 
+    void onPlayerReconnect(int id, String username);
+
     void onAllocationUpdate(int[] alliance, int[] allocation, int[] types);
 
     void onGameStart();

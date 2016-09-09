@@ -72,6 +72,17 @@ public class NotificationSender {
         }
     }
 
+    public void notifyPlayerReconnecting(Room room, int reconnect_player_id, String username) {
+        for (int player_id : room.getPlayers()) {
+            if (player_id != reconnect_player_id) {
+                JSONObject notification = PacketBuilder.create(NOTIFICATION, PLAYER_RECONNECTING);
+                notification.put("player_id", reconnect_player_id);
+                notification.put("username", username);
+                submitNotification(player_id, notification);
+            }
+        }
+    }
+
     public void notifyGameStarting(Room room) {
         int host_id = room.getHostID();
         for (int player_id : room.getPlayers()) {
