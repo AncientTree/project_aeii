@@ -82,7 +82,7 @@ public abstract class CampaignController {
 
         public final String code;
         public final String name;
-        public final int difficulty;
+        public final Integer difficulty;
 
         public Snapshot(String code, String name, int difficulty) {
             this.code = code;
@@ -98,7 +98,7 @@ public abstract class CampaignController {
 
         @Override
         public int compareTo(Snapshot snapshot) {
-            return name.compareTo(snapshot.name);
+            return difficulty.compareTo(snapshot.difficulty);
         }
     }
 
