@@ -6,6 +6,7 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.animation.BackgroundFadeAnimator;
 import net.toyknight.aeii.animation.LoadingAnimator;
+import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 4/2/2015.
@@ -40,7 +41,11 @@ public class LoadingScreen implements Screen {
         if (getContext().getResources().update()) {
             if (getContext().initialized()) {
                 if (bg_fade_animator.isAnimationFinished()) {
-                    getContext().gotoMainMenuScreen(true);
+                    if (Language.getLocale().equals("zh_CN")) {
+                        getContext().gotoMainMenuScreen(true, true);
+                    } else {
+                        getContext().gotoMainMenuScreen(true, false);
+                    }
                 } else {
                     bg_fade_animator.render(batch);
                     bg_fade_animator.update(delta);

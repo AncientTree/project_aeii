@@ -152,7 +152,6 @@ public class GameContext extends Game implements GameManagerListener {
         }
     }
 
-
     public boolean initialized() {
         return initialized;
     }
@@ -278,10 +277,18 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void gotoMainMenuScreen(boolean restart_bgm) {
+        gotoMainMenuScreen(restart_bgm, false);
+    }
+
+    public void gotoMainMenuScreen(boolean restart_bgm, boolean show_announcement) {
         if (restart_bgm) {
             AudioManager.loopMainTheme();
         }
         gotoScreen(main_menu_screen);
+        if (show_announcement) {
+            main_menu_screen.showNotification(
+                    "自觉抵制盗版游戏、非法转载，请加入官方交流群获取最新更新动态。\nQQ群号：7850187", null);
+        }
     }
 
     public void gotoMapEditorScreen() {
