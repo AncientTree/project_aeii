@@ -286,8 +286,8 @@ public class GameContext extends Game implements GameManagerListener {
         }
         gotoScreen(main_menu_screen);
         if (show_announcement) {
-            main_menu_screen.showNotification(
-                    "自觉抵制盗版游戏、非法转载，请加入官方交流群获取最新更新动态。\nQQ群号：7850187", null);
+            main_menu_screen.showNotification("亲爱的玩家，请尽可能使用谷歌玩的官方版本。" +
+                    "若有困难，欢迎加入官方交流群获取最新更新动态。\nQQ群号：7850187", null);
         }
     }
 
