@@ -57,6 +57,9 @@ public class NetworkManager {
     }
 
     private static void tryConnect(ServerConfiguration server) throws IOException {
+        if (client != null) {
+            client.close();
+        }
         current_server = server;
         client = new Client(90 * 1024, 90 * 1024);
         client.addListener(new Listener() {
