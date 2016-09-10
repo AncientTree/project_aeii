@@ -70,6 +70,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     private GameMenu menu;
 
     private boolean allow_cheating;
+    private boolean reconnecting;
 
     public GameScreen(GameContext context) {
         super(context);
@@ -312,6 +313,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onDisconnect() {
+        if (reconnecting) return;
+        reconnecting = true;
         closeAllDialogs();
         showPlaceholder(Language.getText("LB_RECONNECTING"));
         getContext().clearAsyncTasks();
@@ -342,6 +345,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     private void onReconnectSuccess(RoomSetting setting) {
+        reconnecting = false;
         closePlaceholder();
         getContext().getRoomManager().initialize(setting);
         getGameManager().setGame(setting.game);
@@ -358,6 +362,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     private void onReconnectFail() {
+        reconnecting = false;
         closePlaceholder();
         showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
@@ -470,6 +475,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void show() {
         super.show();
         allow_cheating = false;
+        reconnecting = false;
 
         scale = 1.0f;
         Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
