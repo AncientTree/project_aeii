@@ -227,10 +227,7 @@ public class DesktopLauncher {
         config.fullscreen = fs;
         config.width = width;
         config.height = height;
-        if (!config.fullscreen) {
-            config.resizable = false;
-            config.useHDPI = true;
-        }
+        config.resizable = false;
         config.foregroundFPS = fps;
         GameContext application = new GameContext(Platform.Desktop, ts);
         new LwjglApplication(application, config);
