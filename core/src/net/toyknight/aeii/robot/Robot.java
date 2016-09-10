@@ -18,9 +18,13 @@ public class Robot {
 
     private final ObjectSet<Position> assigned_positions;
 
+    private final ObjectMap<Integer, Integer> unit_index_status;
+
     private final ObjectMap<Position, Boolean> tile_threat_status;
 
     private final ObjectMap<Integer, ObjectSet<Integer>> ability_map;
+
+    private float water_percentage;
 
     private boolean prepared;
 
@@ -33,6 +37,7 @@ public class Robot {
     public Robot(GameManager manager) {
         this.manager = manager;
         this.assigned_positions = new ObjectSet<Position>();
+        this.unit_index_status = new ObjectMap<Integer, Integer>();
         this.tile_threat_status = new ObjectMap<Position, Boolean>();
         this.ability_map = new ObjectMap<Integer, ObjectSet<Integer>>();
     }
@@ -107,6 +112,8 @@ public class Robot {
         team = getGame().getCurrentTeam();
         assigned_positions.clear();
         createTileThreatStatus();
+        createUnitIndexStatus();
+        createWaterPercentage();
         prepared = true;
     }
 
@@ -115,6 +122,14 @@ public class Robot {
         action = null;
         synchronized (GameContext.RENDER_LOCK) {
             ObjectSet<Unit> units = getGame().getMap().getUnits(team);
+
+            for (Position position : getGame().getMap().getCastlePositions()) {
+                Unit unit = getGame().getMap().getUnit(position);
+                if (isUnitAvailable(unit)) {
+                    getManager().doSelect(unit.getX(), unit.getY());
+                    return;
+                }
+            }
 
             Unit refresher = getFirstAvailableUnitWithAbility(units, Ability.REFRESH_AURA);
             if (refresher != null && !refresher.isStandby()) {
@@ -132,14 +147,6 @@ public class Robot {
             if (conqueror != null && !conqueror.isStandby()) {
                 getManager().doSelect(conqueror.getX(), conqueror.getY());
                 return;
-            }
-
-            for (Position position : getGame().getMap().getCastlePositions()) {
-                Unit unit = getGame().getMap().getUnit(position);
-                if (isUnitAvailable(unit)) {
-                    getManager().doSelect(unit.getX(), unit.getY());
-                    return;
-                }
             }
 
             for (Unit unit : units) {
@@ -268,6 +275,41 @@ public class Robot {
         }
     }
 
+    private void createUnitIndexStatus() {
+        unit_index_status.clear();
+        ObjectSet<Unit> ally_units;
+        synchronized (GameContext.RENDER_LOCK) {
+            ally_units = getGame().getMap().getUnits(team);
+        }
+        for (Unit unit : ally_units) {
+            int index = unit.getIndex();
+            if (unit_index_status.containsKey(index)) {
+                int count = unit_index_status.get(index);
+                unit_index_status.put(index, count + 1);
+            } else {
+                unit_index_status.put(index, 1);
+            }
+        }
+    }
+
+    private void createWaterPercentage() {
+        int map_width = getGame().getMap().getWidth();
+        int map_height = getGame().getMap().getHeight();
+        synchronized (GameContext.RENDER_LOCK) {
+            float tile_count = 0;
+            float water_count = 0;
+            for (int x = map_width / 4; x < map_width * 3 / 4; x++) {
+                for (int y = map_height / 4; y < map_height * 3 / 4; y++) {
+                    tile_count++;
+                    if (getGame().getMap().getTile(x, y).getType() == Tile.TYPE_WATER) {
+                        water_count++;
+                    }
+                }
+            }
+            water_percentage = tile_count > 0 ? water_count / tile_count : 0;
+        }
+    }
+
     private void calculateAction() {
         Unit selected_unit = getManager().getSelectedUnit();
         synchronized (GameContext.RENDER_LOCK) {
@@ -344,60 +386,46 @@ public class Robot {
             }
         }
 
-        if (actions.size > 0) {
-            Action preferred_action;
-            if ((preferred_action = getPreferredAction(actions)) == null) {
-                synchronized (GameContext.RENDER_LOCK) {
-                    Position standby_position = getPreferredStandbyPosition(selected_unit, movable_positions);
-                    submitAction(new Action(standby_position, standby_position, Operation.STANDBY));
-                }
-            } else {
-                submitAction(preferred_action);
-            }
+        Action preferred_action;
+        if (actions.size > 0 && (preferred_action = getPreferredAction(actions)) != null) {
+            submitAction(preferred_action);
         } else {
             synchronized (GameContext.RENDER_LOCK) {
-                if (isThreatened(current_position) && movable_positions.contains(current_position)) {
+                if (isThreatened(current_position) && movable_positions.contains(current_position) && getGold() < 250) {
                     submitAction(new Action(current_position, current_position, Operation.STANDBY));
                     return;
                 }
+            }
+            synchronized (GameContext.RENDER_LOCK) {
                 if (selected_unit.hasAbility(Ability.CONQUEROR)) {
                     Position nearest_village_position = getNearestCapturableVillagePosition(selected_unit);
                     if (nearest_village_position != null) {
-                        Position next_position = getManager().getPositionGenerator().getNextPositionToTarget(
-                                selected_unit, nearest_village_position);
+                        Position next_position = getNextPositionToTarget(selected_unit, nearest_village_position, false);
                         assigned_positions.add(nearest_village_position);
                         submitAction(new Action(next_position, next_position, Operation.STANDBY));
                         return;
                     }
                 }
-                Unit nearest_enemy_commander;
-                if ((nearest_enemy_commander = getNearestEnemyCommander(selected_unit)) == null) {
-                    if (selected_unit.hasAbility(Ability.COMMANDER)) {
-                        Position nearest_castle_position = getNearestCapturableCastlePosition(selected_unit);
-                        if (nearest_castle_position == null) {
-                            Position standby_position = getPreferredStandbyPosition(selected_unit, movable_positions);
-                            submitAction(new Action(standby_position, standby_position, Operation.STANDBY));
-                        } else {
-                            Position next_position = getManager().getPositionGenerator().getNextPositionToTarget(
-                                    selected_unit, nearest_castle_position);
-                            submitAction(new Action(next_position, next_position, Operation.STANDBY));
-                        }
-                    } else {
-                        Unit nearest_enemy;
-                        if ((nearest_enemy = getNearestEnemy(selected_unit)) == null) {
-                            Position standby_position = getPreferredStandbyPosition(selected_unit, movable_positions);
-                            submitAction(new Action(standby_position, standby_position, Operation.STANDBY));
-                        } else {
-                            Position next_position = getManager().getPositionGenerator().getNextPositionToTarget(
-                                    selected_unit, getGame().getMap().getPosition(nearest_enemy));
-                            submitAction(new Action(next_position, next_position, Operation.STANDBY));
-                        }
-                    }
-                } else {
-                    Position next_position = getManager().getPositionGenerator().getNextPositionToTarget(
-                            selected_unit, getGame().getMap().getPosition(nearest_enemy_commander));
+            }
+            Unit preferred_target;
+            ObjectSet<Unit> enemy_units;
+            synchronized (GameContext.RENDER_LOCK) {
+                enemy_units = getGame().getEnemyUnits(team);
+            }
+            if ((preferred_target = getPreferredTarget(selected_unit, enemy_units)) == null) {
+                Position nearest_castle_position;
+                if (selected_unit.hasAbility(Ability.COMMANDER) && enemy_units.size <= 3
+                        && (nearest_castle_position = getNearestCapturableCastlePosition(selected_unit)) != null) {
+                    Position next_position = getNextPositionToTarget(selected_unit, nearest_castle_position, false);
                     submitAction(new Action(next_position, next_position, Operation.STANDBY));
+                } else {
+                    Position standby_position = getPreferredStandbyPosition(selected_unit, movable_positions);
+                    submitAction(new Action(standby_position, standby_position, Operation.STANDBY));
                 }
+            } else {
+                Position next_position = getNextPositionToTarget(
+                        selected_unit, getGame().getMap().getPosition(preferred_target), true);
+                submitAction(new Action(next_position, next_position, Operation.STANDBY));
             }
         }
     }
@@ -482,7 +510,7 @@ public class Robot {
                 case Operation.ATTACK:
                     target = UnitFactory.cloneUnit(getGame().getMap().getUnit(action.getTarget()));
                     if (isEnemy(target)) {
-                        score += target.getPrice() / 20 + getAttackScore(selected_unit, target);
+                        score += getUnitValue(target) / 50 + getAttackScore(selected_unit, target);
                     } else {
                         tile = getGame().getMap().getTile(action.getTarget());
                         if (target == null && isEnemyVillage(tile)) {
@@ -495,9 +523,8 @@ public class Robot {
                 default:
                     score += 0;
             }
-            if (!selected_unit.hasAbility(Ability.CHARGER)) {
-                score += getStandbyScore(selected_unit, action.getPosition());
-            }
+
+            score += getStandbyScore(selected_unit, action.getPosition());
 
             Position current_position = getGame().getMap().getPosition(getManager().getSelectedUnit());
             if (isThreatened(current_position) && !action.getPosition().equals(current_position)) {
@@ -518,19 +545,21 @@ public class Robot {
         int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, false);
         defender.changeCurrentHp(-attack_damage);
         if (defender.isCommander()) {
-            score += defender.getCurrentHp() <= 0 ? defender.getPrice() * 20 : attack_damage * defender.getPrice() / 10;
+            score += defender.getCurrentHp() <= 0 ?
+                    getUnitValue(defender) * 20 : attack_damage * getUnitValue(defender) / 10;
         } else {
-            score += defender.getCurrentHp() <= 0 ? defender.getPrice() * 10 : attack_damage * defender.getPrice() / 20;
+            score += defender.getCurrentHp() <= 0 ?
+                    getUnitValue(defender) * 10 : attack_damage * getUnitValue(defender) / 20;
         }
         if (defender.getStatus() == null) {
             UnitToolkit.attachAttackStatus(attacker, defender);
             if (Status.isDebuff(defender.getStatus())) {
                 switch (defender.getStatus().getType()) {
                     case Status.POISONED:
-                        score += defender.getPrice() / 4;
+                        score += getUnitValue(defender) / 4;
                         break;
                     case Status.BLINDED:
-                        score += defender.getPrice() / 2;
+                        score += getUnitValue(defender) / 2;
                         break;
                 }
             }
@@ -540,20 +569,20 @@ public class Robot {
             attacker.changeCurrentHp(-counter_damage);
             if (attacker.isCommander()) {
                 score -= attacker.getCurrentHp() <= 0 ?
-                        attacker.getPrice() * 20 : counter_damage * attacker.getPrice() / 10;
+                        getUnitValue(attacker) * 20 : counter_damage * getUnitValue(attacker) / 10;
             } else {
                 score -= attacker.getCurrentHp() <= 0 ?
-                        attacker.getPrice() * 10 : counter_damage * attacker.getPrice() / 20;
+                        getUnitValue(attacker) * 10 : counter_damage * getUnitValue(attacker) / 20;
             }
             if (attacker.getStatus() == null) {
                 UnitToolkit.attachAttackStatus(defender, attacker);
                 if (Status.isDebuff(attacker.getStatus())) {
                     switch (attacker.getStatus().getType()) {
                         case Status.POISONED:
-                            score -= attacker.getPrice() / 4;
+                            score -= getUnitValue(attacker) / 4;
                             break;
                         case Status.BLINDED:
-                            score -= attacker.getPrice() / 2;
+                            score -= getUnitValue(attacker) / 2;
                             break;
                     }
                 }
@@ -674,32 +703,41 @@ public class Robot {
         return village_position;
     }
 
-    private Unit getNearestEnemy(Unit selected_unit) {
-        Unit enemy = null;
-        int min_distance = Integer.MAX_VALUE;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            int distance =
-                    getDistance(getGame().getMap().getPosition(unit), getGame().getMap().getPosition(selected_unit));
-            if (isEnemy(unit) && distance < min_distance) {
-                enemy = unit;
-                min_distance = distance;
+    private Position getNextPositionToTarget(Unit unit, Position target, boolean is_enemy) {
+        ObjectSet<Position> movable_positions;
+        synchronized (GameContext.RENDER_LOCK) {
+            movable_positions = getManager().getPositionGenerator().createMovablePositions(unit);
+        }
+        Position next_position = movable_positions.first();
+        int max_score = Integer.MIN_VALUE;
+        for (Position position : movable_positions) {
+            int score = getNextPositionScore(unit, position, target, is_enemy);
+            if (score > max_score) {
+                next_position = position;
+                max_score = score;
             }
         }
-        return enemy;
+        return next_position;
     }
 
-    private Unit getNearestEnemyCommander(Unit selected_unit) {
-        Unit enemy_commander = null;
-        int min_distance = Integer.MAX_VALUE;
-        for (Unit unit : getGame().getMap().getUnits()) {
-            int distance =
-                    getDistance(getGame().getMap().getPosition(unit), getGame().getMap().getPosition(selected_unit));
-            if (isEnemyCommander(unit) && distance < min_distance) {
-                enemy_commander = unit;
-                min_distance = distance;
+    private int getNextPositionScore(Unit unit, Position position, Position target, boolean is_enemy) {
+        synchronized (GameContext.RENDER_LOCK) {
+            int score = 0;
+            Position current_position = getGame().getMap().getPosition(unit);
+            if (is_enemy) {
+                if (getDistance(position, target) <= unit.getMaxAttackRange()) {
+                    score += 400;
+                } else {
+                    score += (getDistance(current_position, target) - getDistance(position, target)) * 50;
+                }
+            } else {
+                score += (getDistance(current_position, target) - getDistance(position, target)) * 50;
             }
+            if (getAverageAllyDistance(position) / getAverageEnemyDistance(position) >= 2) {
+                score -= getUnitValue(unit) * 4 / 5;
+            }
+            return score;
         }
-        return enemy_commander;
     }
 
     private int getPreferredAbility() {
@@ -708,11 +746,6 @@ public class Robot {
         if (getUnitCountWithAbility(ally_units, Ability.CONQUEROR) < 4) {
             return Ability.CONQUEROR;
         }
-        if (getGame().getMap().getTombs().size > 1
-                && getUnitCountWithAbility(ally_units, Ability.NECROMANCER) < 1
-                && ability_map.containsKey(Ability.NECROMANCER)) {
-            return Ability.NECROMANCER;
-        }
         if (getUnitCountWithAbility(ally_units, Ability.HEALER) < 1 && ability_map.containsKey(Ability.HEALER)) {
             return Ability.HEALER;
         }
@@ -720,6 +753,14 @@ public class Robot {
                 && getUnitCountWithAbility(ally_units, Ability.REFRESH_AURA) < 1
                 && ability_map.containsKey(Ability.REFRESH_AURA)) {
             return Ability.REFRESH_AURA;
+        }
+        if (getGame().getMap().getTombs().size > 1
+                && getUnitCountWithAbility(ally_units, Ability.NECROMANCER) < 1
+                && ability_map.containsKey(Ability.NECROMANCER)) {
+            return Ability.NECROMANCER;
+        }
+        if (water_percentage >= 0.4 && getUnitCountWithAbility(ally_units, Ability.FIGHTER_OF_THE_SEA) < 3) {
+            return Ability.FIGHTER_OF_THE_SEA;
         }
         if (getUnitCountWithAbility(enemy_units, Ability.AIR_FORCE) > 0
                 && getUnitCountWithAbility(ally_units, Ability.MARKSMAN) < 2
@@ -774,7 +815,8 @@ public class Robot {
                 if (!UnitFactory.isCommander(index) || !getGame().isCommanderAlive(team)) {
                     Unit sample =
                             UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
-                    if (sample.getAttackType() == preferred_attack_type && sample.getPrice() <= getGold()
+                    if ((sample.getPrice() < 800 || getUnitCountWithIndex(index) < 2)
+                            && sample.getAttackType() == preferred_attack_type && sample.getPrice() <= getGold()
                             && getMobility(sample) >= preferred_mobility && sample.getPrice() > max_price) {
                         max_price = sample.getPrice();
                         preferred_index = index;
@@ -814,6 +856,36 @@ public class Robot {
         return standby_position;
     }
 
+    private Unit getPreferredTarget(Unit unit, ObjectSet<Unit> enemy_units) {
+        if (enemy_units.size > 3 && unit.getCurrentHp() < 30) {
+            return null;
+        }
+        Unit preferred_target = null;
+        int max_target_score = Integer.MIN_VALUE;
+        for (Unit enemy : enemy_units) {
+            int score = getTargetScore(unit, enemy);
+            if (score > 0 && score > max_target_score) {
+                preferred_target = enemy;
+                max_target_score = score;
+            }
+        }
+        return preferred_target;
+    }
+
+    private int getTargetScore(Unit unit, Unit target) {
+        synchronized (GameContext.RENDER_LOCK) {
+            int score = 0;
+            int rough_damage = unit.getAttackType() == Unit.ATTACK_PHYSICAL ?
+                    unit.getAttack() - target.getPhysicalDefence() : unit.getAttack() - target.getMagicDefence();
+            score += rough_damage * 5;
+            if (unit.hasAbility(Ability.MARKSMAN) && target.hasAbility(Ability.AIR_FORCE)) {
+                score += 75;
+            }
+            score -= getDistance(getGame().getMap().getPosition(unit), getGame().getMap().getPosition(target)) * 5;
+            return score;
+        }
+    }
+
     private int getSecondExpensiveUnitPrice() {
         if (getGame().getRule().getAvailableUnits().size >= 2) {
             return getGame().getUnitPrice(getGame().getRule().getAvailableUnits().get(1), team);
@@ -827,58 +899,62 @@ public class Robot {
     }
 
     private int getStandbyScore(Unit unit, Position standby_position) {
-        int score = 0;
-        score += getAverageEnemyDistance(standby_position) * 20;
-        score -= getAverageAllyDistance(standby_position) * 10;
-        score += getManager().getUnitToolkit().getTileDefenceBonus(
-                unit, getGame().getMap().getTileIndex(standby_position)) * 5;
-        Tile tile = getGame().getMap().getTile(standby_position);
-        score += getManager().getUnitToolkit().getTerrainHeal(unit, tile) * 10;
-        if (getGame().getMap().isTomb(standby_position)) {
-            if (!unit.hasAbility(Ability.UNDEAD) && !unit.hasAbility(Ability.NECROMANCER) && unit.getStatus() == null) {
-                score -= unit.getPrice() / 4;
-            }
-            if (unit.hasAbility(Ability.UNDEAD)) {
-                score += 200;
-            }
-        }
-        if (isEnemyCastle(tile)) {
-            score -= 50 * unit.getPrice() / 20;
-        }
-        if (isMyCastle(tile) && !isMyCommander(unit)) {
-            score -= 5000;
-        }
-        if (isThreatened(standby_position)) {
-            if (tile.isCastle() && getGold() < getCheapestUnitPrice()) {
-                score += 20000;
-            }
-            if (tile.isVillage()) {
-                score += 10000;
-            }
-        }
-        if (unit.hasAbility(Ability.SLOWING_AURA)
-                || unit.hasAbility(Ability.ATTACK_AURA) || unit.hasAbility(Ability.REFRESH_AURA)) {
-            ObjectSet<Position> aura_positions = getManager().getPositionGenerator().createPositionsWithinRange(
-                    standby_position.x, standby_position.y, 0, 2);
-            for (Position position : aura_positions) {
-                Unit target = getGame().getMap().getUnit(position);
-                if (unit.hasAbility(Ability.SLOWING_AURA) && isEnemy(target) && target.getStatus() == null) {
-                    score += target.getPrice() / 4;
+        synchronized (GameContext.RENDER_LOCK) {
+            int score = 0;
+            score += getManager().getUnitToolkit().getTileDefenceBonus(
+                    unit, getGame().getMap().getTileIndex(standby_position)) * 5;
+            Tile tile = getGame().getMap().getTile(standby_position);
+            score += getManager().getUnitToolkit().getTerrainHeal(unit, tile) * 10;
+            if (getGame().getMap().isTomb(standby_position)) {
+                if (!unit.hasAbility(Ability.UNDEAD)
+                        && !unit.hasAbility(Ability.NECROMANCER) && unit.getStatus() == null) {
+                    score -= getUnitValue(unit) / 2;
                 }
-                if (unit.hasAbility(Ability.ATTACK_AURA) && isAlly(target) && target.getStatus() == null) {
-                    score += target.getPrice() / 4;
+                if (unit.hasAbility(Ability.UNDEAD)) {
+                    score += 200;
                 }
-                if (unit.hasAbility(Ability.REFRESH_AURA) && isAlly(target)) {
-                    if (target.getCurrentHp() < target.getMaxHp()) {
+            }
+            if (getAverageAllyDistance(standby_position) / getAverageEnemyDistance(standby_position) >= 2) {
+                score -= getUnitValue(unit) * 4 / 5;
+            }
+            if (isEnemyCastle(tile)) {
+                score -= 50 * getUnitValue(unit) / 20;
+            }
+            if (isMyCastle(tile) && !isMyCommander(unit)) {
+                score -= 5000;
+            }
+            if (isThreatened(standby_position)) {
+                if (tile.isCastle() && getGold() < getCheapestUnitPrice()) {
+                    score += 20000;
+                }
+                if (tile.isVillage()) {
+                    score += 10000;
+                }
+            }
+            if (unit.hasAbility(Ability.SLOWING_AURA)
+                    || unit.hasAbility(Ability.ATTACK_AURA) || unit.hasAbility(Ability.REFRESH_AURA)) {
+                ObjectSet<Position> aura_positions = getManager().getPositionGenerator().createPositionsWithinRange(
+                        standby_position.x, standby_position.y, 0, 2);
+                for (Position position : aura_positions) {
+                    Unit target = getGame().getMap().getUnit(position);
+                    if (unit.hasAbility(Ability.SLOWING_AURA) && isEnemy(target) && target.getStatus() == null) {
                         score += target.getPrice() / 4;
                     }
-                    if (Status.isDebuff(target.getStatus())) {
-                        score += target.getPrice() / 5;
+                    if (unit.hasAbility(Ability.ATTACK_AURA) && isAlly(target) && target.getStatus() == null) {
+                        score += target.getPrice() / 4;
+                    }
+                    if (unit.hasAbility(Ability.REFRESH_AURA) && isAlly(target)) {
+                        if (target.getCurrentHp() < target.getMaxHp()) {
+                            score += target.getPrice() / 4;
+                        }
+                        if (Status.isDebuff(target.getStatus())) {
+                            score += target.getPrice() / 5;
+                        }
                     }
                 }
             }
+            return score;
         }
-        return score;
     }
 
     private int getUnhealthyUnitCount(ObjectSet<Unit> units) {
@@ -891,7 +967,6 @@ public class Robot {
         return count;
     }
 
-
     private int getUnitCountWithAbility(ObjectSet<Unit> units, int ability) {
         int count = 0;
         for (Unit unit : units) {
@@ -900,6 +975,23 @@ public class Robot {
             }
         }
         return count;
+    }
+
+    private int getUnitCountWithIndex(int index) {
+        return unit_index_status.get(index, 0);
+    }
+
+    private int getUnitValue(Unit unit) {
+        if (unit.isCommander()) {
+            return unit.getPrice() + 500;
+        }
+        if (unit.isCrystal()) {
+            return unit.getPrice() + 2000;
+        }
+        if (unit.isSkeleton()) {
+            return 100;
+        }
+        return unit.getPrice();
     }
 
     private boolean isAlly(Unit unit) {
@@ -918,10 +1010,6 @@ public class Robot {
 
     private boolean isEnemyCastle(Tile tile) {
         return tile != null && tile.isCastle() && getGame().isEnemy(team, tile.getTeam());
-    }
-
-    private boolean isEnemyCommander(Unit unit) {
-        return isEnemy(unit) && unit.isCommander();
     }
 
     private boolean isEnemyVillage(Tile tile) {
