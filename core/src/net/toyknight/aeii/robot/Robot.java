@@ -128,6 +128,12 @@ public class Robot {
                 return;
             }
 
+            Unit conqueror = getFirstAvailableUnitWithAbility(units, Ability.CONQUEROR);
+            if (conqueror != null && !conqueror.isStandby()) {
+                getManager().doSelect(conqueror.getX(), conqueror.getY());
+                return;
+            }
+
             for (Position position : getGame().getMap().getCastlePositions()) {
                 Unit unit = getGame().getMap().getUnit(position);
                 if (isUnitAvailable(unit)) {
