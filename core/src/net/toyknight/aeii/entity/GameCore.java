@@ -189,7 +189,7 @@ public class GameCore implements Serializable {
         this.turn = turn;
     }
 
-    public int getMaxPopulation() {
+    public int getUnitCapacity() {
         return getRule().getInteger(UNIT_CAPACITY);
     }
 
