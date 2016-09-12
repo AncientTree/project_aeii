@@ -30,10 +30,6 @@ public class GameLoadDialog extends BasicDialog {
 
     private final SaveFileFilter filter = new SaveFileFilter();
 
-    private TextButton btn_load;
-    private TextButton btn_delete;
-    private TextButton btn_cancel;
-
     private StringList<String> save_list;
 
     public GameLoadDialog(StageScreen owner) {
@@ -61,7 +57,7 @@ public class GameLoadDialog extends BasicDialog {
         sp_save_list.setScrollBarPositions(false, true);
         this.addActor(sp_save_list);
 
-        btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
+        TextButton btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
         btn_load.setBounds(ts / 2, ts / 2, ts * 3, ts);
         btn_load.addListener(new ClickListener() {
             @Override
@@ -71,23 +67,26 @@ public class GameLoadDialog extends BasicDialog {
         });
         addActor(btn_load);
 
-        btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
+        TextButton btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
         btn_delete.setBounds(ts * 4, ts / 2, ts * 3, ts);
         btn_delete.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                deleteSelectedSaveFile();
+                onDeleteSelectedFile();
             }
         });
         addActor(btn_delete);
 
-        btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
+        btn_cancel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getOwner().closeDialog("load");
+            }
+        });
+        addActor(btn_delete);
         addActor(btn_cancel);
-    }
-
-    public void setCancelAction(ClickListener listener) {
-        btn_cancel.addListener(listener);
     }
 
     public void loadSelectedSaveFile() {
@@ -153,7 +152,22 @@ public class GameLoadDialog extends BasicDialog {
         }
     }
 
-    public void deleteSelectedSaveFile() {
+    public void onDeleteSelectedFile() {
+        String filename = save_list.getSelected();
+        getOwner().showConfirm(
+                Language.getText("LB_DELETE") + " " + filename + "?", new ConfirmDialog.ConfirmDialogListener() {
+                    @Override
+                    public void confirmed() {
+                        doDeleteSelectedFile();
+                    }
+
+                    @Override
+                    public void canceled() {
+                    }
+                });
+    }
+
+    public void doDeleteSelectedFile() {
         String filename = save_list.getSelected();
         if (filename != null) {
             FileHandle save_file = FileProvider.getSaveFile(filename);
