@@ -375,6 +375,21 @@ public class GameContext extends Game implements GameManagerListener {
         executor.getQueue().clear();
     }
 
+    public void doSaveGame() throws AEIIException {
+        GameCore game = getGame();
+        switch (game.getType()) {
+            case GameCore.SKIRMISH:
+                GameToolkit.saveSkirmish(game);
+                break;
+            case GameCore.CAMPAIGN:
+                String code = getCampaignContext().getCurrentCampaign().getCode();
+                int stage = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+                ObjectMap<String, Integer> attributes = getCampaignContext().getCurrentCampaign().getAttributes();
+                GameToolkit.saveCampaign(game, code, stage, attributes);
+                break;
+        }
+    }
+
     @Override
     public void onMapFocusRequired(int map_x, int map_y, boolean focus_viewport) {
         game_screen.focus(map_x, map_y, focus_viewport);
