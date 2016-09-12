@@ -75,6 +75,14 @@ public class Robot {
         return getGame().getPlayer(team).getGold();
     }
 
+    private int getUnitCapacity() {
+        return getGame().getRule().getInteger(Rule.Entry.UNIT_CAPACITY);
+    }
+
+    private int getUnitCount(int team) {
+        return getGame().getPlayer(team).getPopulation();
+    }
+
     public boolean isCalculating() {
         return calculating;
     }
@@ -540,6 +548,25 @@ public class Robot {
         }
     }
 
+    private int getAffordableUnitIndexWithHighestPhysicalDefence() {
+        boolean commander_alive = getGame().isCommanderAlive(team);
+        int unit_index = -1;
+        int max_physical_defence = Integer.MIN_VALUE;
+        for (int index : getGame().getRule().getAvailableUnits()) {
+            if (!UnitFactory.isCommander(index) || !commander_alive) {
+                Unit sample =
+                        UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
+                if (getGame().getUnitPrice(sample.getIndex(), team) < getGold()
+                        && getGame().canAddPopulation(team, sample.getOccupancy())
+                        && sample.getPhysicalDefence() > max_physical_defence) {
+                    unit_index = sample.getIndex();
+                    max_physical_defence = sample.getPhysicalDefence();
+                }
+            }
+        }
+        return unit_index;
+    }
+
     private int getAttackScore(Unit attacker, Unit defender) {
         int score = 0;
         int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, false);
@@ -733,8 +760,12 @@ public class Robot {
             } else {
                 score += (getDistance(current_position, target) - getDistance(position, target)) * 50;
             }
-            if (getAverageAllyDistance(position) / getAverageEnemyDistance(position) >= 2) {
-                score -= getUnitValue(unit) * 4 / 5;
+            if (!isMyCastle(getGame().getMap().getTile(position))) {
+                score += getGame().getMap().getTile(position).getHpRecovery() * getUnitValue(unit) / 50;
+            }
+            int distance_offset = getAverageAllyDistance(position) - getAverageEnemyDistance(position);
+            if (distance_offset > 0) {
+                score -= getUnitValue(unit) * distance_offset / 10;
             }
             return score;
         }
@@ -785,9 +816,11 @@ public class Robot {
 
     private int getPreferredRecruitment(
             Position recruit_position, int preferred_attack_type, int preferred_ability, int preferred_mobility) {
-        if (getGame().getMap().getUnit(recruit_position) == null
-                && isThreatened(recruit_position) && getGold() < getSecondExpensiveUnitPrice()) {
-            return getGame().getRule().getAvailableUnits().first();
+        if (getGame().getMap().getUnit(recruit_position) == null && isThreatened(recruit_position)) {
+            int index = getAffordableUnitIndexWithHighestPhysicalDefence();
+            if (index >= 0) {
+                return index;
+            }
         }
         if (preferred_ability >= 0 && ability_map.containsKey(preferred_ability)) {
             int preferred_index = -1;
@@ -881,16 +914,11 @@ public class Robot {
             if (unit.hasAbility(Ability.MARKSMAN) && target.hasAbility(Ability.AIR_FORCE)) {
                 score += 75;
             }
+            if (target.isCommander() || target.isCrystal()) {
+                score += 50;
+            }
             score -= getDistance(getGame().getMap().getPosition(unit), getGame().getMap().getPosition(target)) * 5;
             return score;
-        }
-    }
-
-    private int getSecondExpensiveUnitPrice() {
-        if (getGame().getRule().getAvailableUnits().size >= 2) {
-            return getGame().getUnitPrice(getGame().getRule().getAvailableUnits().get(1), team);
-        } else {
-            return getGame().getUnitPrice(getGame().getRule().getAvailableUnits().get(0), team);
         }
     }
 
@@ -914,8 +942,9 @@ public class Robot {
                     score += 200;
                 }
             }
-            if (getAverageAllyDistance(standby_position) / getAverageEnemyDistance(standby_position) >= 2) {
-                score -= getUnitValue(unit) * 4 / 5;
+            int distance_offset = getAverageAllyDistance(standby_position) - getAverageEnemyDistance(standby_position);
+            if (distance_offset > 0) {
+                score -= getUnitValue(unit) * distance_offset / 5;
             }
             if (isEnemyCastle(tile)) {
                 score -= 50 * getUnitValue(unit) / 20;
@@ -924,7 +953,7 @@ public class Robot {
                 score -= 5000;
             }
             if (isThreatened(standby_position)) {
-                if (tile.isCastle() && getGold() < getCheapestUnitPrice()) {
+                if (tile.isCastle() && (getGold() < getCheapestUnitPrice() || getUnitCount(team) >= getUnitCapacity())) {
                     score += 20000;
                 }
                 if (tile.isVillage()) {
