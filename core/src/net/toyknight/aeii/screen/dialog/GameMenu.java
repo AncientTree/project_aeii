@@ -138,7 +138,8 @@ public class GameMenu extends BasicDialog {
     }
 
     private void onLeaveGame() {
-        String message = getContext().getGame().getType() == GameCore.CAMPAIGN ?
+        String message = getContext().getGame().getType() == GameCore.CAMPAIGN
+                && getContext().getGame().getCurrentPlayer().getType() == Player.LOCAL ?
                 Language.getText("LB_SAVE") + " & " + Language.getText("LB_EXIT_GAME") : Language.getText("LB_EXIT_GAME");
         getOwner().showConfirm(message + "?", new ConfirmDialog.ConfirmDialogListener() {
             @Override
