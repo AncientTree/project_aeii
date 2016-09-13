@@ -71,6 +71,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     private boolean allow_cheating;
     private boolean reconnecting;
+    private boolean cheated;
 
     public GameScreen(GameContext context) {
         super(context);
@@ -314,6 +315,10 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     @Override
     public void onDisconnect() {
         if (reconnecting) return;
+        if (cheated) {
+            onReconnectFail();
+            return;
+        }
         reconnecting = true;
         closeAllDialogs();
         showPlaceholder(Language.getText("LB_RECONNECTING"));
@@ -425,6 +430,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void onReceiveMessage(String username, String message) {
         if (message.startsWith("/")) {
             if (message.equals("/cheating")) {
+                cheated = true;
                 appendMessage(username, Language.getText("MSG_INFO_CDCN"));
             }
         } else {
@@ -476,6 +482,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.show();
         allow_cheating = false;
         reconnecting = false;
+        cheated = false;
 
         scale = 1.0f;
         Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
