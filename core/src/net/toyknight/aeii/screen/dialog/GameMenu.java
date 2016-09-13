@@ -154,9 +154,11 @@ public class GameMenu extends BasicDialog {
 
     private void doLeaveGame() {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-            try {
-                getContext().doSaveGame();
-            } catch (AEIIException ignored) {
+            if (getContext().getGame().getCurrentPlayer().getType() == Player.LOCAL) {
+                try {
+                    getContext().doSaveGame();
+                } catch (AEIIException ignored) {
+                }
             }
             getContext().gotoCampaignScreen();
             AudioManager.loopMainTheme();
