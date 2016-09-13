@@ -2,6 +2,7 @@ package net.toyknight.aeii.manager;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
+import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.animation.EmptyAnimationManager;
@@ -399,6 +400,12 @@ public class GameManager implements AnimationListener {
     }
 
     public void doEndTurn() {
+        if (getGame().getType() == GameCore.CAMPAIGN) {
+            try {
+                getContext().doSaveGame();
+            } catch (AEIIException ignored) {
+            }
+        }
         getOperationExecutor().submitOperation(Operation.NEXT_TURN);
         getOperationExecutor().submitOperation(Operation.TURN_STARTED);
     }

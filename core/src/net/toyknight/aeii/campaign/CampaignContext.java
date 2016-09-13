@@ -151,10 +151,6 @@ public class CampaignContext {
 
     public void onTurnStart(int turn) {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-            try {
-                getContext().doSaveGame();
-            } catch (AEIIException ignored) {
-            }
             getCurrentCampaign().getCurrentStage().onTurnStart(turn);
         }
     }
