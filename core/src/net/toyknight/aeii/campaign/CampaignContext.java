@@ -2,6 +2,7 @@ package net.toyknight.aeii.campaign;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
+import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.campaign.aei.AEICampaign;
 import net.toyknight.aeii.campaign.aeii.AEIICampaign;
@@ -150,6 +151,10 @@ public class CampaignContext {
 
     public void onTurnStart(int turn) {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
+            try {
+                getContext().doSaveGame();
+            } catch (AEIIException ignored) {
+            }
             getCurrentCampaign().getCurrentStage().onTurnStart(turn);
         }
     }
