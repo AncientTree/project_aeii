@@ -509,7 +509,7 @@ public class Robot {
                     break;
                 case Operation.HEAL:
                     Unit target = getGame().getMap().getUnit(action.getTarget());
-                    if (isAlly(target)) {
+                    if (isAlly(target) && !target.hasAbility(Ability.HEALER)) {
                         score += 10 * (target.getAttack() * target.getCurrentHp() / target.getMaxHp() + getMobility(target) * 5);
                     } else {
                         score += 0;
