@@ -207,9 +207,6 @@ public class DesktopLauncher {
 
     public void launch() {
         try {
-            validateApplicationHome();
-            loadLanguage();
-            loadConfiguration();
             launcher_window = createWindow();
             update();
             launcher_window.setVisible(true);
@@ -234,7 +231,11 @@ public class DesktopLauncher {
     }
 
     public static void main(String[] args) {
-        if (args.length > 0) {
+        try {
+            DesktopLauncher launcher = new DesktopLauncher();
+            launcher.validateApplicationHome();
+            launcher.loadLanguage();
+            launcher.loadConfiguration();
             if (args.length >= 5) {
                 try {
                     int ts = Integer.parseInt(args[0]);
@@ -242,15 +243,15 @@ public class DesktopLauncher {
                     int height = Integer.parseInt(args[2]);
                     boolean fs = Boolean.parseBoolean(args[3]);
                     int fps = Integer.parseInt(args[4]);
-                    new DesktopLauncher().launch(ts, width, height, fs, fps);
+                    launcher.launch(ts, width, height, fs, fps);
                 } catch (NumberFormatException ex) {
-                    new DesktopLauncher().launch();
+                    launcher.launch();
                 }
             } else {
-                new DesktopLauncher().launch();
+                launcher.launch();
             }
-        } else {
-            new DesktopLauncher().launch();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
