@@ -63,13 +63,16 @@ public class MapManagementScreen extends StageScreen {
 
     public MapManagementScreen(GameContext context) {
         super(context);
+
+        int sp_width = (Gdx.graphics.getWidth() - ts * 3 / 2) / 2;
+
         Label label_online_map = new Label(Language.getText("LB_ONLINE_MAPS"), getContext().getSkin());
         label_online_map.setAlignment(Align.center);
-        label_online_map.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, ts * 8, ts);
+        label_online_map.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, sp_width, ts);
         addActor(label_online_map);
         Label label_local_map = new Label(Language.getText("LB_LOCAL_MAPS"), getContext().getSkin());
         label_local_map.setAlignment(Align.center);
-        label_local_map.setBounds(ts * 9, Gdx.graphics.getHeight() - ts, ts * 8, ts);
+        label_local_map.setBounds(sp_width + ts, Gdx.graphics.getHeight() - ts, sp_width, ts);
         addActor(label_local_map);
 
         server_map_list = new StringList<Object>(getContext(), ts);
@@ -77,7 +80,7 @@ public class MapManagementScreen extends StageScreen {
         sp_server_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_server_map_list.setScrollBarPositions(true, true);
-        sp_server_map_list.setBounds(ts / 2, ts * 2, ts * 8, Gdx.graphics.getHeight() - ts * 3);
+        sp_server_map_list.setBounds(ts / 2, ts * 2, sp_width, Gdx.graphics.getHeight() - ts * 3);
         server_map_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
@@ -96,8 +99,7 @@ public class MapManagementScreen extends StageScreen {
         sp_local_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_local_map_list.setScrollBarPositions(true, true);
-        sp_local_map_list.setBounds(
-                Gdx.graphics.getWidth() - ts * 8 - ts / 2, ts * 2, ts * 8, Gdx.graphics.getHeight() - ts * 3);
+        sp_local_map_list.setBounds(sp_width + ts, ts * 2, sp_width, Gdx.graphics.getHeight() - ts * 3);
         local_map_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
