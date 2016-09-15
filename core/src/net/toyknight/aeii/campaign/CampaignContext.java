@@ -2,7 +2,6 @@ package net.toyknight.aeii.campaign;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.campaign.aei.AEICampaign;
 import net.toyknight.aeii.campaign.aeii.AEIICampaign;
