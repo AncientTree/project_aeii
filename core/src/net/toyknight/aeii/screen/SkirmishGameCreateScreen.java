@@ -43,8 +43,12 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
 
     public SkirmishGameCreateScreen(GameContext context) {
         super(context);
+
+        int button_width = (Gdx.graphics.getWidth() - ts * 9) / 3;
+        int map_list_width = Gdx.graphics.getWidth() - ts * 10 - ts / 2;
+
         TextButton btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
-        btn_preview.setBounds(Gdx.graphics.getWidth() - ts * 10, ts / 2, ts * 3 - ts / 2, ts);
+        btn_preview.setBounds(ts * 7 + ts / 2, ts / 2, button_width, ts);
         btn_preview.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -55,7 +59,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         });
         this.addActor(btn_preview);
         TextButton btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
-        btn_back.setBounds(Gdx.graphics.getWidth() - ts * 7, ts / 2, ts * 3, ts);
+        btn_back.setBounds(ts * 8 + button_width, ts / 2, button_width, ts);
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -64,7 +68,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         });
         this.addActor(btn_back);
         TextButton btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
-        btn_start.setBounds(Gdx.graphics.getWidth() - ts / 2 - ts * 3, ts / 2, ts * 3, ts);
+        btn_start.setBounds(ts * 8 + ts / 2 + button_width * 2, ts / 2, button_width, ts);
         btn_start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -87,7 +91,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         sp_map_list.getStyle().background =
                 new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
         sp_map_list.setScrollBarPositions(false, true);
-        sp_map_list.setBounds(ts / 2, ts / 2 + ts * 2, ts * 6 + ts / 2, Gdx.graphics.getHeight() - ts * 3);
+        sp_map_list.setBounds(ts / 2, ts / 2 + ts * 2, map_list_width, Gdx.graphics.getHeight() - ts * 3);
         this.addActor(sp_map_list);
 
         this.map_preview = new MiniMapDialog(this);
@@ -100,9 +104,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         this.addDialog("map", map_preview);
 
         team_setting_pane = new Table();
-        team_setting_pane.setBounds(
-                ts * 7 + ts / 4, ts * 2 + ts / 2,
-                Gdx.graphics.getWidth() - ts * 8, Gdx.graphics.getHeight() - ts * 4);
+        team_setting_pane.setBounds(map_list_width + ts / 2, ts * 2 + ts / 2, ts * 9 + ts / 2, ts * 6);
         addActor(team_setting_pane);
 
         team_image = new Image[4];
@@ -144,6 +146,19 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         spinner_population.setItems(Rule.POPULATION_PRESET);
         spinner_population.setListener(state_change_listener);
         gp_setting_pane.add(spinner_population).width(ts * 3).height(ts).padLeft(ts / 2);
+
+        Table top_pane = new Table();
+        top_pane.setBounds(map_list_width + ts, ts * 8, ts * 9, Gdx.graphics.getHeight() - ts * 8);
+        addActor(top_pane);
+
+        Label label_empty = new Label("", getContext().getSkin());
+        top_pane.add(label_empty).width(ts);
+        Label label_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
+        label_team.setAlignment(Align.center);
+        top_pane.add(label_team).width(ts * 3).padLeft(ts / 2);
+        Label label_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
+        label_type.setAlignment(Align.center);
+        top_pane.add(label_type).width(ts * 4).padLeft(ts / 2);
     }
 
     @Override
@@ -261,10 +276,6 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         batch.begin();
         batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getFontRenderer().drawTextCenter(
-                batch, Language.getText("LB_TEAM"), ts * 9 + ts / 4, Gdx.graphics.getHeight() - ts - ts / 2, ts * 3, ts);
-        getContext().getFontRenderer().drawTextCenter(
-                batch, Language.getText("LB_TYPE"), ts * 12 + ts / 4 * 3, Gdx.graphics.getHeight() - ts - ts / 2, ts * 4, ts);
         if (selected_map == null) {
             getContext().getFontRenderer().drawTextCenter(batch,
                     Language.getText("MSG_ERR_BMF"),
