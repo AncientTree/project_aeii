@@ -32,8 +32,10 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
 
     private float scale;
 
-    private int pointer_x;
-    private int pointer_y;
+    private int _1st_pointer_x;
+    private int _1st_pointer_y;
+    private int _2nd_pointer_x;
+    private int _2nd_pointer_y;
     private int cursor_map_x;
     private int cursor_map_y;
 
@@ -238,6 +240,8 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     public void show() {
         super.show();
         getEditor().initialize(getContext().getUsername());
+        _2nd_pointer_x = -1;
+        _2nd_pointer_y = -1;
         this.scale = 1.0f;
         locateViewport(0, 0);
     }
@@ -269,23 +273,30 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean event_handled = super.touchDown(screenX, screenY, pointer, button);
         if (!event_handled) {
-            if (button == Input.Buttons.LEFT) {
-                if (0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
-                    pointer_x = screenX;
-                    pointer_y = screenY;
-                    cursor_map_x = createCursorMapX(pointer_x);
-                    cursor_map_y = createCursorMapY(pointer_y);
-                    switch (getEditor().getMode()) {
-                        case MODE_ERASER:
-                            getEditor().doErase(cursor_map_x, cursor_map_y);
-                            break;
-                        case MODE_BRUSH:
-                            getEditor().doBrush(cursor_map_x, cursor_map_y);
-                            break;
-                        default:
-                            //do nothing
+            System.out.println(pointer);
+            if (pointer == 0) {
+                if (button == Input.Buttons.LEFT) {
+                    if (0 <= screenX && screenX <= viewport.width && 0 <= screenY && screenY <= viewport.height) {
+                        _1st_pointer_x = screenX;
+                        _1st_pointer_y = screenY;
+                        cursor_map_x = createCursorMapX(_1st_pointer_x);
+                        cursor_map_y = createCursorMapY(_1st_pointer_y);
+                        switch (getEditor().getMode()) {
+                            case MODE_ERASER:
+                                getEditor().doErase(cursor_map_x, cursor_map_y);
+                                break;
+                            case MODE_BRUSH:
+                                getEditor().doBrush(cursor_map_x, cursor_map_y);
+                                break;
+                            default:
+                                //do nothing
+                        }
                     }
                 }
+            }
+            if (pointer == 1 && getEditor().getMode() == MapEditor.MODE_HAND) {
+                _2nd_pointer_x = screenX;
+                _2nd_pointer_y = screenY;
             }
         }
         return true;
@@ -295,37 +306,63 @@ public class MapEditorScreen extends StageScreen implements MapCanvas, MapEditor
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         boolean event_handled = super.touchDragged(screenX, screenY, pointer);
         if (!event_handled) {
-            if (getEditor().getMode() == MODE_HAND) {
-                int delta_x = pointer_x - screenX;
-                int delta_y = pointer_y - screenY;
-                dragViewport(delta_x, delta_y);
-            }
-            pointer_x = screenX;
-            pointer_y = screenY;
-            cursor_map_x = createCursorMapX(pointer_x);
-            cursor_map_y = createCursorMapY(pointer_y);
-            switch (getEditor().getMode()) {
-                case MODE_ERASER:
-                    getEditor().doErase(cursor_map_x, cursor_map_y);
-                    break;
-                case MODE_BRUSH:
-                    getEditor().doBrush(cursor_map_x, cursor_map_y);
-                    break;
-                default:
-                    //do nothing
+            if (_2nd_pointer_x < 0 && _2nd_pointer_y < 0) {
+                if (getEditor().getMode() == MODE_HAND) {
+                    int delta_x = _1st_pointer_x - screenX;
+                    int delta_y = _1st_pointer_y - screenY;
+                    dragViewport(delta_x, delta_y);
+                }
+                _1st_pointer_x = screenX;
+                _1st_pointer_y = screenY;
+                cursor_map_x = createCursorMapX(_1st_pointer_x);
+                cursor_map_y = createCursorMapY(_1st_pointer_y);
+                switch (getEditor().getMode()) {
+                    case MODE_ERASER:
+                        getEditor().doErase(cursor_map_x, cursor_map_y);
+                        break;
+                    case MODE_BRUSH:
+                        getEditor().doBrush(cursor_map_x, cursor_map_y);
+                        break;
+                    default:
+                        //do nothing
+                }
+            } else {
+                int previous_distance =
+                        Math.abs(_1st_pointer_x - _2nd_pointer_x) + Math.abs(_1st_pointer_y - _2nd_pointer_y);
+                if (pointer == 0) {
+                    _1st_pointer_x = screenX;
+                    _1st_pointer_y = screenY;
+                }
+                if (pointer == 1) {
+                    _2nd_pointer_x = screenX;
+                    _2nd_pointer_y = screenY;
+                }
+                int current_distance =
+                        Math.abs(_1st_pointer_x - _2nd_pointer_x) + Math.abs(_1st_pointer_y - _2nd_pointer_y);
+                int amount = current_distance - previous_distance;
+                scrolled(-amount / 12);
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (pointer == 1) {
+            _2nd_pointer_x = -1;
+            _2nd_pointer_y = -1;
+        }
+        return super.touchUp(screenX, screenY, pointer, button);
     }
 
 //    @Override
 //    public boolean mouseMoved(int screenX, int screenY) {
 //        boolean event_handled = super.mouseMoved(screenX, screenY);
 //        if (!event_handled) {
-//            this.pointer_x = screenX;
-//            this.pointer_y = screenY;
-//            this.cursor_map_x = createCursorMapX(pointer_x);
-//            this.cursor_map_y = createCursorMapY(pointer_y);
+//            this._1st_pointer_x = screenX;
+//            this._1st_pointer_y = screenY;
+//            this.cursor_map_x = createCursorMapX(_1st_pointer_x);
+//            this.cursor_map_y = createCursorMapY(_1st_pointer_y);
 //        }
 //        return true;
 //    }
