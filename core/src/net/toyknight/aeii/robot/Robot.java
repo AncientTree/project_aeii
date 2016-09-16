@@ -512,7 +512,7 @@ public class Robot {
                     if (isAlly(target) && !target.hasAbility(Ability.HEALER)) {
                         score += 10 * (target.getAttack() * target.getCurrentHp() / target.getMaxHp() + getMobility(target) * 5);
                     } else {
-                        score += 0;
+                        score -= 500;
                     }
                     break;
                 case Operation.ATTACK:
@@ -760,10 +760,15 @@ public class Robot {
             } else {
                 score += (getDistance(current_position, target) - getDistance(position, target)) * 50;
             }
-            if (!isMyCastle(getGame().getMap().getTile(position))) {
+            int ally_distance = getAverageAllyDistance(position);
+            int enemy_distance = getAverageEnemyDistance(position);
+            if (ally_distance > enemy_distance) {
                 score += getGame().getMap().getTile(position).getHpRecovery() * getUnitValue(unit) / 50;
             }
-            int distance_offset = getAverageAllyDistance(position) - getAverageEnemyDistance(position);
+            if (!isMyCommander(unit) && isMyCastle(getGame().getMap().getTile(position))) {
+                score -= 5000;
+            }
+            int distance_offset = ally_distance - enemy_distance;
             if (distance_offset > 0) {
                 score -= getUnitValue(unit) * distance_offset / 10;
             }
