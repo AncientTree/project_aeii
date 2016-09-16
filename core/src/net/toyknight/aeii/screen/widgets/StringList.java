@@ -94,6 +94,7 @@ public class StringList<T> extends AEIIWidget {
     public void setItems(Array<? extends T> items) {
         if (items == null) throw new IllegalArgumentException("list items cannot be null.");
         this.items.clear();
+        this.selection.clear();
         this.items.addAll(items);
         updateList();
     }
