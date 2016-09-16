@@ -36,6 +36,8 @@ public class WarroomStage2 extends StageController {
         getContext().focus(13, 13);
         Message message2 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3"));
         getContext().message(message2);
+        getContext().gold(3, 3000);
+
     }
 
     @Override
@@ -93,13 +95,15 @@ public class WarroomStage2 extends StageController {
                     new Reinforcement(1, 14, 6),
                     new Reinforcement(1, 13, 5),
                     new Reinforcement(1, 13, 7));
-        }
-        for (Unit unit : getContext().get_units(1)) {
-            if(unit.getX() > 9 && unit.getY() > 2 && unit.getY() < 10)
-            {
-                getContext().gold(2, getContext().get_gold(2) + unit.getPrice() / 10);
+
+            for (Unit unit : getContext().get_units(1)) {
+                if(unit.getX() > 9 && unit.getY() > 2 && unit.getY() < 10)
+                {
+                    getContext().gold(2, getContext().get_gold(2) + unit.getPrice() / 10);
+                }
             }
         }
+
 
     }
 

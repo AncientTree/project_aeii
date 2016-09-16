@@ -19,7 +19,7 @@ public class WarroomStage4 extends StageController {
 
 
     private void checkClear() {
-        if (getContext().count_unit(1) == 0 && getContext().count_castle(1) == 0) {
+        if (getContext().count_castle(1) == 0) {
             getContext().clear();
         }
     }
@@ -95,6 +95,7 @@ public class WarroomStage4 extends StageController {
         if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         }
+        checkClear();
     }
 
     @Override
@@ -119,8 +120,8 @@ public class WarroomStage4 extends StageController {
         {
             for (Unit unit : getContext().get_units(0)) {
                 getContext().attack(unit.getX(), unit.getY(), -1);
-                getContext().hp_change(unit.getX(), unit.getY(), -20);
-                if(unit.getCurrentHp() == 0)
+                getContext().hp_change(unit.getX(), unit.getY(), -40);
+                if(unit.getCurrentHp() <= 40)
                 {
                     getContext().destroy_unit(unit.getX(), unit.getY());
                 }
@@ -131,7 +132,7 @@ public class WarroomStage4 extends StageController {
             for (Unit unit : getContext().get_units(0)) {
                 getContext().attack(unit.getX(), unit.getY(), -1);
                 getContext().hp_change(unit.getX(), unit.getY(), -20);
-                if(unit.getCurrentHp() == 0)
+                if(unit.getCurrentHp() <= 20)
                 {
                     getContext().destroy_unit(unit.getX(), unit.getY());
                 }

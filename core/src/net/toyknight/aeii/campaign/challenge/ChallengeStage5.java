@@ -44,6 +44,7 @@ public class ChallengeStage5 extends StageController {
                 getContext().fail();
             } else {
                 if(unit.getTeam() == 1) {
+                    getContext().remove_tomb(unit.getX(), unit.getY());
                     Random random = new Random();
                     int ran = random.nextInt(6);
                     switch (unit.getIndex()) {
