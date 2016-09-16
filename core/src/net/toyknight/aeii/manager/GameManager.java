@@ -155,6 +155,10 @@ public class GameManager implements AnimationListener {
         return getAnimationDispatcher().isAnimating();
     }
 
+    public boolean isMessaging() {
+        return campaign_messages.size() > 0;
+    }
+
     public Animator getCurrentAnimation() {
         return getAnimationDispatcher().getCurrentAnimation();
     }
@@ -218,7 +222,7 @@ public class GameManager implements AnimationListener {
     }
 
     public void update(float delta) throws CheatingException {
-        if (campaign_messages.isEmpty()) {
+        if (!isMessaging()) {
             if (getAnimationDispatcher().isAnimating()) {
                 getAnimationDispatcher().updateAnimation(delta);
             } else {
@@ -236,8 +240,8 @@ public class GameManager implements AnimationListener {
 
     private boolean canRobotCalculate() {
         return !isAnimating() &&
+                !isMessaging() &&
                 !isProcessing() &&
-                campaign_messages.isEmpty() &&
                 getGame().getCurrentPlayer().getType() == Player.ROBOT;
     }
 

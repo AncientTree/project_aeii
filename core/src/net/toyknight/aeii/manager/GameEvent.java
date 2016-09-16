@@ -13,6 +13,7 @@ public class GameEvent {
 
     public static final int MANAGER_STATE_SYNC = 0x0;
 
+    //skirmish events
     public static final int BUY = 0x1;
     public static final int MOVE = 0x2;
     public static final int HEAL = 0x3;
@@ -28,6 +29,8 @@ public class GameEvent {
     public static final int UNIT_DESTROY = 0x13;
     public static final int TILE_DESTROY = 0x14;
     public static final int GAIN_EXPERIENCE = 0x15;
+
+    //campaign events
     public static final int CAMPAIGN_REINFORCE = 0x16;
     public static final int CAMPAIGN_MESSAGE = 0x17;
     public static final int CAMPAIGN_ATTACK = 0x18;

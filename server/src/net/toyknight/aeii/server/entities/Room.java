@@ -2,6 +2,7 @@ package net.toyknight.aeii.server.entities;
 
 import static net.toyknight.aeii.entity.Rule.Entry.*;
 
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
@@ -27,6 +28,8 @@ public class Room {
     public final Object PLAYER_LOCK = new Object();
 
     private final ExecutorService event_executor = Executors.newSingleThreadExecutor();
+
+    private final ObjectMap<Integer, ObjectSet<Integer>> leaving_record;
 
     private final long room_id;
     private final String room_name;
@@ -66,6 +69,7 @@ public class Room {
     }
 
     private Room(long room_id, String room_name, int start_gold) {
+        this.leaving_record = new ObjectMap<Integer, ObjectSet<Integer>>();
         this.room_id = room_id;
         this.room_name = room_name;
         this.start_gold = start_gold;
@@ -132,18 +136,49 @@ public class Room {
     public void removePlayer(int id) {
         synchronized (PLAYER_LOCK) {
             players.remove(id);
+            leaving_record.put(id, new ObjectSet<Integer>());
             for (int team = 0; team < 4; team++) {
                 if (allocation[team] == id) {
+                    //remove allocation
                     setPlayerType(team, Player.NONE);
                     allocation[team] = -1;
+                    //record leaver team
+                    leaving_record.get(id).add(team);
                 }
             }
             if (host_player_id == id) {
                 if (players.size > 0) {
-                    host_player_id = players.first();
+                    host_player_id = -1;
+                    for (int player_id : allocation) {
+                        if (player_id > 0) {
+                            host_player_id = player_id;
+                            break;
+                        }
+                    }
+                    if (host_player_id < 0) {
+                        host_player_id = players.first();
+                    }
                 } else {
                     host_player_id = -1;
                 }
+            }
+        }
+    }
+
+    public boolean restorePlayer(int previous_id, int current_id) {
+        synchronized (PLAYER_LOCK) {
+            if (leaving_record.containsKey(previous_id)) {
+                players.add(current_id);
+                for (int team : leaving_record.get(previous_id)) {
+                    if (allocation[team] < 0) {
+                        allocation[team] = current_id;
+                        setPlayerType(team, Player.REMOTE);
+                    }
+                }
+                leaving_record.remove(previous_id);
+                return true;
+            } else {
+                return false;
             }
         }
     }

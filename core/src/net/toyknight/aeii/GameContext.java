@@ -34,8 +34,8 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final Object RENDER_LOCK = new Object();
 
-    public static final String INTERNAL_VERSION = "23";
-    public static final String EXTERNAL_VERSION = "1.2.0";
+    public static final String INTERNAL_VERSION = "24";
+    public static final String EXTERNAL_VERSION = "1.2.1";
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;
@@ -151,7 +151,6 @@ public class GameContext extends Game implements GameManagerListener {
             }
         }
     }
-
 
     public boolean initialized() {
         return initialized;
@@ -278,10 +277,18 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void gotoMainMenuScreen(boolean restart_bgm) {
+        gotoMainMenuScreen(restart_bgm, false);
+    }
+
+    public void gotoMainMenuScreen(boolean restart_bgm, boolean show_announcement) {
         if (restart_bgm) {
             AudioManager.loopMainTheme();
         }
         gotoScreen(main_menu_screen);
+        if (show_announcement) {
+            main_menu_screen.showNotification("亲爱的玩家，请尽可能使用谷歌玩的官方版本。" +
+                    "若有困难，欢迎加入官方交流群获取最新更新动态。\nQQ群号：7850187", null);
+        }
     }
 
     public void gotoMapEditorScreen() {
@@ -366,6 +373,21 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void clearAsyncTasks() {
         executor.getQueue().clear();
+    }
+
+    public void doSaveGame() throws AEIIException {
+        GameCore game = getGame();
+        switch (game.getType()) {
+            case GameCore.SKIRMISH:
+                GameToolkit.saveSkirmish(game);
+                break;
+            case GameCore.CAMPAIGN:
+                String code = getCampaignContext().getCurrentCampaign().getCode();
+                int stage = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+                ObjectMap<String, Integer> attributes = getCampaignContext().getCurrentCampaign().getAttributes();
+                GameToolkit.saveCampaign(game, code, stage, attributes);
+                break;
+        }
     }
 
     @Override

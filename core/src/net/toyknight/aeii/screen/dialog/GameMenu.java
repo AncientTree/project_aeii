@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
@@ -13,7 +12,6 @@ import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Player;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.screen.GameScreen;
-import net.toyknight.aeii.utils.GameToolkit;
 import net.toyknight.aeii.utils.Language;
 
 /**
@@ -82,12 +80,7 @@ public class GameMenu extends BasicDialog {
         btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-                    getContext().gotoCampaignScreen();
-                    AudioManager.loopMainTheme();
-                } else {
-                    getContext().gotoStatisticsScreen(getOwner().getGame());
-                }
+                onLeaveGame();
             }
         });
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
@@ -114,20 +107,9 @@ public class GameMenu extends BasicDialog {
             @Override
             public Void doTask() throws AEIIException {
                 synchronized (GameContext.RENDER_LOCK) {
-                    GameCore game = getOwner().getGame();
-                    switch (game.getType()) {
-                        case GameCore.SKIRMISH:
-                            GameToolkit.saveSkirmish(game);
-                            break;
-                        case GameCore.CAMPAIGN:
-                            String code = getContext().getCampaignContext().getCurrentCampaign().getCode();
-                            int stage = getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
-                            ObjectMap<String, Integer> attributes = getContext().getCampaignContext().getCurrentCampaign().getAttributes();
-                            GameToolkit.saveCampaign(game, code, stage, attributes);
-                            break;
-                    }
+                    getContext().doSaveGame();
+                    return null;
                 }
-                return null;
             }
 
             @Override
@@ -153,6 +135,37 @@ public class GameMenu extends BasicDialog {
     private boolean canSave() {
         return getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
+    }
+
+    private void onLeaveGame() {
+        String message = getContext().getGame().getType() == GameCore.CAMPAIGN
+                && getContext().getGame().getCurrentPlayer().getType() == Player.LOCAL ?
+                Language.getText("LB_SAVE") + " & " + Language.getText("LB_EXIT_GAME") : Language.getText("LB_EXIT_GAME");
+        getOwner().showConfirm(message + "?", new ConfirmDialog.ConfirmDialogListener() {
+            @Override
+            public void confirmed() {
+                doLeaveGame();
+            }
+
+            @Override
+            public void canceled() {
+            }
+        });
+    }
+
+    private void doLeaveGame() {
+        if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
+            if (getContext().getGame().getCurrentPlayer().getType() == Player.LOCAL) {
+                try {
+                    getContext().doSaveGame();
+                } catch (AEIIException ignored) {
+                }
+            }
+            getContext().gotoCampaignScreen();
+            AudioManager.loopMainTheme();
+        } else {
+            getContext().gotoStatisticsScreen(getOwner().getGame());
+        }
     }
 
 }

@@ -18,6 +18,9 @@ public class ChallengeStage1 extends StageController {
             int y = unit.getY();
             if (x == 0 || x == 16 || y == 0 || y == 16) {
                 getContext().team(x, y, 1);
+                if (isCommander(unit, getPlayerTeam())) {
+                    getContext().fail();
+                }
             }
         }
     }

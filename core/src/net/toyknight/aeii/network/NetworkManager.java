@@ -29,6 +29,8 @@ public class NetworkManager {
 
     private static NetworkListener listener;
 
+    private static ServerConfiguration current_server;
+
     private static Client client;
 
     private static final Object RESPONSE_LOCK = new Object();
@@ -54,8 +56,11 @@ public class NetworkManager {
         return service_id;
     }
 
-    public static boolean connect(ServerConfiguration server, String username, String v_string)
-            throws AEIIException, IOException, JSONException {
+    private static void tryConnect(ServerConfiguration server) throws IOException {
+        if (client != null) {
+            client.close();
+        }
+        current_server = server;
         client = new Client(90 * 1024, 90 * 1024);
         client.addListener(new Listener() {
             @Override
@@ -63,6 +68,9 @@ public class NetworkManager {
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
                         listener.onDisconnect();
+                    }
+                    synchronized (RESPONSE_LOCK) {
+                        RESPONSE_LOCK.notifyAll();
                     }
                 }
             }
@@ -74,6 +82,11 @@ public class NetworkManager {
         });
         client.start();
         client.connect(5000, server.getAddress(), server.getPort());
+    }
+
+    public static boolean connect(ServerConfiguration server, String username, String v_string)
+            throws AEIIException, IOException, JSONException {
+        tryConnect(server);
         return (username == null || v_string == null) || requestAuthentication(username, v_string);
     }
 
@@ -86,10 +99,8 @@ public class NetworkManager {
             client.close();
         }
         client = null;
+        current_server = null;
         service_id = -1;
-        synchronized (RESPONSE_LOCK) {
-            RESPONSE_LOCK.notifyAll();
-        }
     }
 
     public static boolean isConnected() {
@@ -135,6 +146,15 @@ public class NetworkManager {
                 if (listener != null) {
                     synchronized (GameContext.RENDER_LOCK) {
                         listener.onPlayerLeave(id, username, host);
+                    }
+                }
+                break;
+            case NetworkConstants.PLAYER_RECONNECTING:
+                id = notification.getInt("player_id");
+                username = notification.getString("username");
+                if (listener != null) {
+                    synchronized (GameContext.RENDER_LOCK) {
+                        listener.onPlayerReconnect(id, username);
                     }
                 }
                 break;
@@ -306,6 +326,31 @@ public class NetworkManager {
                 return new RoomSetting(response.getJSONObject("room_setting"));
             } else {
                 return null;
+            }
+        }
+    }
+
+    public static RoomSetting requestReconnect(long room_id, int previous_id, String v_string, String username)
+            throws IOException {
+        if (current_server == null) {
+            return null;
+        } else {
+            tryConnect(current_server);
+            JSONObject request = createRequest(NetworkConstants.RECONNECT);
+            request.put("room_id", room_id);
+            request.put("previous_id", previous_id);
+            request.put("v_string", v_string);
+            request.put("username", username);
+            JSONObject response = sendRequest(request);
+            if (response == null) {
+                return null;
+            } else {
+                if (response.getBoolean("approved")) {
+                    service_id = response.getInt("service_id");
+                    return new RoomSetting(response.getJSONObject("room_setting"));
+                } else {
+                    return null;
+                }
             }
         }
     }

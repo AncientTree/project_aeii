@@ -46,9 +46,6 @@ public class GameCore implements Serializable {
         JSONArray players = json.getJSONArray("players");
         JSONArray commanders = json.getJSONArray("commanders");
         JSONArray team_destroy = json.getJSONArray("team_destroy");
-        JSONArray income = json.getJSONObject("statistics").getJSONArray("income");
-        JSONArray destroy = json.getJSONObject("statistics").getJSONArray("destroy");
-        JSONArray lose = json.getJSONObject("statistics").getJSONArray("lose");
         for (int team = 0; team < 4; team++) {
             JSONObject player = players.getJSONObject(team);
             getPlayer(team).setType(player.getInt("type"));
@@ -56,11 +53,9 @@ public class GameCore implements Serializable {
             getPlayer(team).setAlliance(player.getInt("alliance"));
             getPlayer(team).setPopulation(player.getInt("population"));
             setTeamDestroyed(team, team_destroy.getBoolean(team));
-            getStatistics().addIncome(team, income.getInt(team));
-            getStatistics().addDestroy(team, destroy.getInt(team));
-            getStatistics().addLose(team, lose.getInt(team));
             setCommander(team, UnitFactory.createUnit(commanders.getJSONObject(team)));
         }
+        getStatistics().initialize(json.getJSONObject("statistics"));
     }
 
     public GameCore(GameCore game) {
@@ -194,7 +189,7 @@ public class GameCore implements Serializable {
         this.turn = turn;
     }
 
-    public int getMaxPopulation() {
+    public int getUnitCapacity() {
         return getRule().getInteger(UNIT_CAPACITY);
     }
 

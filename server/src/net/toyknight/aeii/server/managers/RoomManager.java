@@ -221,6 +221,23 @@ public class RoomManager implements RoomListener {
         }
     }
 
+    public RoomSetting onPlayerReconnect(Player player, int previous_id, long room_id) {
+        Room room = getRoom(room_id);
+        if (canJoin(room) && player.getRoomID() < 0) {
+            boolean success = room.restorePlayer(previous_id, player.getID());
+            if (success) {
+                player.setRoomID(room_id);
+                getContext().getNotificationSender().notifyPlayerReconnecting(room, player.getID(), player.getUsername());
+                getContext().getNotificationSender().notifyAllocationUpdating(room, player.getID());
+                return createRoomSetting(room);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void onGameEventExecuted(Room room, JSONObject event, int submitter) {
         for (int player_id : room.getPlayers()) {

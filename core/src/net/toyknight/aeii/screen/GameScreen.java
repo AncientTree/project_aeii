@@ -7,14 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.animation.*;
+import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.CheatingException;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.record.GameRecordPlayerListener;
 import net.toyknight.aeii.renderer.*;
 import net.toyknight.aeii.screen.dialog.*;
@@ -68,6 +71,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     private GameMenu menu;
 
     private boolean allow_cheating;
+    private boolean reconnecting;
+    private boolean cheated;
 
     public GameScreen(GameContext context) {
         super(context);
@@ -102,8 +107,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.btn_end_turn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getGameManager().doEndTurn();
-                update();
+                onEndTurn();
             }
         });
         this.addActor(btn_end_turn);
@@ -311,10 +315,66 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onDisconnect() {
+        if (reconnecting) return;
+        if (cheated) {
+            onReconnectFail();
+            return;
+        }
+        reconnecting = true;
+        closeAllDialogs();
+        showPlaceholder(Language.getText("LB_RECONNECTING"));
+        getContext().clearAsyncTasks();
+        getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
+            @Override
+            public RoomSetting doTask() throws Exception {
+                long room_id = getContext().getRoomManager().getRoomNumber();
+                int previous_id = NetworkManager.getServiceID();
+                String v_string = getContext().getVerificationString();
+                String username = getContext().getUsername();
+                return NetworkManager.requestReconnect(room_id, previous_id, v_string, username);
+            }
+
+            @Override
+            public void onFinish(RoomSetting setting) {
+                if (setting == null) {
+                    onReconnectFail();
+                } else {
+                    onReconnectSuccess(setting);
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                onReconnectFail();
+            }
+        });
+    }
+
+    private void onReconnectSuccess(RoomSetting setting) {
+        reconnecting = false;
+        closePlaceholder();
+        getContext().getRoomManager().initialize(setting);
+        getGameManager().setGame(setting.game);
+        getGameManager().syncState(setting.manager_state, setting.selected_unit_x, setting.selected_unit_y);
+        for (int team = 0; team < 4; team++) {
+            Player player = getGame().getPlayer(team);
+            if (getContext().getRoomManager().hasTeamAccess(team)) {
+                player.setType(Player.LOCAL);
+            } else {
+                player.setType(Player.REMOTE);
+            }
+        }
+        update();
+    }
+
+    private void onReconnectFail() {
+        reconnecting = false;
+        closePlaceholder();
         showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
-                getContext().gotoStatisticsScreen(getGame());
+                getContext().gotoMainMenuScreen(true);
+                NetworkManager.disconnect();
             }
         });
     }
@@ -355,6 +415,14 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     @Override
+    public void onPlayerReconnect(int id, String username) {
+        super.onPlayerReconnect(id, username);
+        message_box.setPlayers(getContext().getRoomManager().getPlayers());
+        appendMessage(null, String.format(Language.getText("MSG_INFO_PR"), username));
+        AudioManager.playSE("prompt.mp3");
+    }
+
+    @Override
     public void onReceiveGameEvent(JSONObject event) {
         getGameManager().getGameEventExecutor().submitGameEvent(event);
     }
@@ -363,6 +431,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void onReceiveMessage(String username, String message) {
         if (message.startsWith("/")) {
             if (message.equals("/cheating")) {
+                cheated = true;
                 appendMessage(username, Language.getText("MSG_INFO_CDCN"));
             }
         } else {
@@ -413,6 +482,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void show() {
         super.show();
         allow_cheating = false;
+        reconnecting = false;
+        cheated = false;
 
         scale = 1.0f;
         Position team_focus = getGame().getTeamFocus(getGame().getCurrentTeam());
@@ -449,7 +520,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                     return false;
                 }
             case Input.Keys.ESCAPE:
-                if (isDialogVisible()) {
+                if (isDialogVisible() && !getGameManager().isMessaging()) {
                     closeTopDialog();
                     update();
                     return true;
@@ -737,6 +808,35 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         }
     }
 
+    private void onEndTurn() {
+        if (getContext().getPlatform().isMobile()) {
+            showConfirm(Language.getText("LB_END_TURN") + "?", new ConfirmDialog.ConfirmDialogListener() {
+                @Override
+                public void confirmed() {
+                    doEndTurn();
+                }
+
+                @Override
+                public void canceled() {
+                }
+            });
+        } else {
+            doEndTurn();
+        }
+    }
+
+    private void doEndTurn() {
+        if (getGame().getType() == GameCore.CAMPAIGN) {
+            try {
+                getContext().doSaveGame();
+                appendMessage(null, Language.getText("MSG_INFO_GSV"));
+            } catch (AEIIException ignored) {
+            }
+        }
+        getGameManager().doEndTurn();
+        update();
+    }
+
     public void update() {
         action_button_bar.updateButtons();
         btn_message.setVisible(NetworkManager.isConnected() && !message_box.isVisible());
@@ -968,19 +1068,5 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             viewport.y = (map_height - viewport.height) / 2;
         }
     }
-
-    private final Callable cheating_confirm_yes_callback = new Callable() {
-        @Override
-        public void call() {
-
-        }
-    };
-
-    private final Callable cheating_confirm_no_callback = new Callable() {
-        @Override
-        public void call() {
-
-        }
-    };
 
 }

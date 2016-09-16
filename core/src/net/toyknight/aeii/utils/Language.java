@@ -19,12 +19,27 @@ public class Language {
 
     public static void initialize() throws AEIIException {
         try {
-            locale = java.util.Locale.getDefault().toString();
+            createLocale();
             FileHandle languageFile = FileProvider.getLanguageFile(locale);
             InputStreamReader reader = new InputStreamReader(languageFile.read(), "UTF8");
             PropertiesUtils.load(languageMap, reader);
         } catch (IOException ex) {
             throw new AEIIException(ex.getClass() + ": " + ex.getMessage());
+        }
+    }
+
+    private static void createLocale() {
+        locale = java.util.Locale.getDefault().toString();
+        if (locale.startsWith("en_")) {
+            locale = "en_US";
+            return;
+        }
+        if (locale.startsWith("pt_")) {
+            locale = "pt_BR";
+            return;
+        }
+        if (locale.equals("zh_SG")) {
+            locale = "zh_CN";
         }
     }
 

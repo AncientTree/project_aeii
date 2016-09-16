@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class GameToolkit {
 
-    private static final String TAG = "GAME FACTORY";
+    private static final String TAG = "GAME TOOLKIT";
 
     public static final int SAVE = 0x1;
     public static final int RECORD = 0x2;
@@ -54,7 +54,7 @@ public class GameToolkit {
 
     public static void saveSkirmish(GameCore game) throws AEIIException {
         try {
-            FileHandle save_file = FileProvider.getSaveFile("skirmish " + createFilename(SAVE));
+            FileHandle save_file = createSaveFile(game, SAVE);
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
             Output output = new Output(save_file.write(false));
             output.writeInt(SAVE);
@@ -69,14 +69,13 @@ public class GameToolkit {
     public static void saveCampaign(GameCore game, String code, int stage, ObjectMap<String, Integer> attributes)
             throws AEIIException {
         try {
-            FileHandle save_file = FileProvider.getSaveFile("campaign " + createFilename(SAVE));
+            FileHandle save_file = createSaveFile(game, SAVE);
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
             game_save.putString("_code", code);
             game_save.putInteger("_stage", stage);
             for (String key : attributes.keys()) {
                 game_save.putInteger(key, attributes.get(key));
             }
-
             Output output = new Output(save_file.write(false));
             output.writeInt(SAVE);
             output.writeString(game_save.toJson().toString());
@@ -95,6 +94,9 @@ public class GameToolkit {
                 JSONObject json = new JSONObject(input.readString());
                 GameSave save = new GameSave(json);
                 input.close();
+                if (save.getGame().getStatistics().getSaveName() == null) {
+                    save.getGame().getStatistics().setSaveName(save_file.name());
+                }
                 return save;
             } else {
                 return null;
@@ -129,6 +131,28 @@ public class GameToolkit {
         } catch (KryoException ex) {
             Gdx.app.log(TAG, ex.toString());
             return -1;
+        }
+    }
+
+    public static FileHandle createSaveFile(GameCore game, int mode) {
+        String save_name = game.getStatistics().getSaveName();
+        if (save_name == null) {
+            String prefix;
+            switch (game.getType()) {
+                case GameCore.CAMPAIGN:
+                    prefix = "campaign ";
+                    break;
+                case GameCore.SKIRMISH:
+                    prefix = "skirmish ";
+                    break;
+                default:
+                    prefix = "unknown ";
+            }
+            String filename = prefix + createFilename(mode);
+            game.getStatistics().setSaveName(filename);
+            return FileProvider.getSaveFile(filename);
+        } else {
+            return FileProvider.getSaveFile(save_name);
         }
     }
 

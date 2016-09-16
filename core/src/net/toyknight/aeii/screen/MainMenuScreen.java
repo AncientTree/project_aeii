@@ -33,12 +33,6 @@ public class MainMenuScreen extends StageScreen {
         this.addDialog("server", server_list);
 
         GameLoadDialog load_dialog = new GameLoadDialog(this);
-        load_dialog.setCancelAction(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                closeDialog("load");
-            }
-        });
         this.addDialog("load", load_dialog);
 
         this.setting_dialog = new SettingDialog(this);
