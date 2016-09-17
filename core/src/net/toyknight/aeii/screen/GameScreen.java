@@ -358,10 +358,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         getGameManager().syncState(setting.manager_state, setting.selected_unit_x, setting.selected_unit_y);
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
-            if (getContext().getRoomManager().hasTeamAccess(team)) {
-                player.setType(Player.LOCAL);
-            } else {
-                player.setType(Player.REMOTE);
+            if (getGame().getPlayer(team).getType() != Player.NONE) {
+                if (getContext().getRoomManager().hasTeamAccess(team)) {
+                    player.setType(Player.LOCAL);
+                } else {
+                    player.setType(Player.REMOTE);
+                }
             }
         }
         update();
