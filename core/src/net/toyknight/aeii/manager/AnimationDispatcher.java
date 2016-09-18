@@ -29,6 +29,8 @@ public interface AnimationDispatcher {
 
     void submitDustAriseAnimation(int map_x, int map_y);
 
+    void submitDustAriseAnimation(ObjectSet<Position> positions);
+
     void submitUnitAttackAnimation(Unit attacker, Unit target, int damage);
 
     void submitUnitAttackAnimation(Unit attacker, int target_x, int target_y);
@@ -38,6 +40,8 @@ public interface AnimationDispatcher {
     void submitUnitAttackAnimation(int target_x, int target_y);
 
     void submitUnitSparkAnimation(Unit unit);
+
+    void submitUnitSparkAnimation(ObjectSet<Unit> units);
 
     void submitUnitMoveAnimation(Unit unit, Array<Position> path);
 

@@ -1,18 +1,16 @@
 package net.toyknight.aeii.animation;
 
+import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.UnitFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author toyknight 4/19/2015.
  */
 public class UnitAnimator extends MapAnimator {
 
-    private final Map<String, Unit> units = new HashMap<String, Unit>();
+    private final ObjectMap<String, Unit> units = new ObjectMap<String, Unit>();
 
     public UnitAnimator(GameContext context) {
         super(context);
@@ -29,8 +27,12 @@ public class UnitAnimator extends MapAnimator {
         return units.get(key);
     }
 
+    public ObjectMap.Values<Unit> getUnits() {
+        return units.values();
+    }
+
     public int getUnitCount() {
-        return units.values().size();
+        return units.size;
     }
 
 }

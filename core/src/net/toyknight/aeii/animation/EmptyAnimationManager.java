@@ -3,7 +3,6 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.AnimationDispatcher;
@@ -47,6 +46,10 @@ public class EmptyAnimationManager implements AnimationDispatcher {
     }
 
     @Override
+    public void submitDustAriseAnimation(ObjectSet<Position> positions) {
+    }
+
+    @Override
     public void submitUnitAttackAnimation(Unit attacker, Unit target, int damage) {
     }
 
@@ -64,6 +67,10 @@ public class EmptyAnimationManager implements AnimationDispatcher {
 
     @Override
     public void submitUnitSparkAnimation(Unit unit) {
+    }
+
+    @Override
+    public void submitUnitSparkAnimation(ObjectSet<Unit> units) {
     }
 
     @Override

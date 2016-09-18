@@ -96,6 +96,10 @@ public class GameEventExecutor {
                 getManager().fireUnitStandbyEvent(target_x, target_y);
                 getManager().fireStateChangeEvent();
                 break;
+            case GameEvent.CHECK_UNIT_DESTROY:
+                int team = event.getJSONArray("parameters").getInt(0);
+                onCheckUnitDestroy(team);
+                break;
             case GameEvent.MANAGER_STATE_SYNC:
                 int manager_state = event.getJSONArray("parameters").getInt(0);
                 getManager().syncState(manager_state, -1, -1);
@@ -111,7 +115,7 @@ public class GameEventExecutor {
                 break;
             case GameEvent.BUY:
                 int index = event.getJSONArray("parameters").getInt(0);
-                int team = event.getJSONArray("parameters").getInt(1);
+                team = event.getJSONArray("parameters").getInt(1);
                 target_x = event.getJSONArray("parameters").getInt(2);
                 target_y = event.getJSONArray("parameters").getInt(3);
                 onBuy(index, team, target_x, target_y);
@@ -277,9 +281,11 @@ public class GameEventExecutor {
                 getManager().fireCampaignObjectiveRequestEvent();
                 break;
             case GameEvent.CAMPAIGN_HAVENS_FURY:
-                target_x = event.getJSONArray("parameters").getInt(0);
-                target_y = event.getJSONArray("parameters").getInt(1);
-                onCampaignHavensFury(target_x, target_y);
+                team = event.getJSONArray("parameters").getInt(0);
+                target_x = event.getJSONArray("parameters").getInt(1);
+                target_y = event.getJSONArray("parameters").getInt(2);
+                int damage = event.getJSONArray("parameters").getInt(3);
+                onCampaignHavensFury(team, target_x, target_y, damage);
                 break;
             case GameEvent.CAMPAIGN_TILE_DESTROY:
                 target_x = event.getJSONArray("parameters").getInt(0);
@@ -287,8 +293,31 @@ public class GameEventExecutor {
                 short destroyed_index = (short) event.getJSONArray("parameters").getInt(2);
                 onCampaignTileDestroy(target_x, target_y, destroyed_index);
                 break;
+            case GameEvent.CAMPAIGN_NOTIFICATION:
+                JSONArray notifications = event.getJSONArray("parameters").getJSONArray(0);
+                onCampaignNotification(notifications);
+                break;
             default:
                 //do nothing
+        }
+    }
+
+    private void onCheckUnitDestroy(int team) {
+        ObjectSet<Unit> destroyed_units = new ObjectSet<Unit>();
+        ObjectSet<Position> destroy_positions = new ObjectSet<Position>();
+        for (Unit unit : getGame().getMap().getUnits()) {
+            if ((team < 0 || unit.getTeam() == team) && unit.getCurrentHp() <= 0) {
+                destroyed_units.add(unit);
+                destroy_positions.add(getGame().getMap().getPosition(unit));
+                getGame().destroyUnit(unit.getX(), unit.getY());
+            }
+        }
+        if (destroyed_units.size > 0 && destroy_positions.size > 0) {
+            getManager().getAnimationDispatcher().submitUnitSparkAnimation(destroyed_units);
+            getManager().getAnimationDispatcher().submitDustAriseAnimation(destroy_positions);
+            for (Unit unit : destroyed_units) {
+                getManager().fireUnitDestroyEvent(unit);
+            }
         }
     }
 
@@ -756,14 +785,31 @@ public class GameEventExecutor {
         }
     }
 
-    private void onCampaignHavensFury(int target_x, int target_y) {
-        if (getGame().getMap().isWithinMap(target_x, target_y)) {
-            Unit target = getGame().getMap().getUnit(target_x, target_y);
-            if (target != null) {
-                getManager().fireMapFocusEvent(target_x, target_y, true);
-                getAnimationDispatcher().submitMessageAnimation(Language.getText("HAVENS_FURY_MESSAGE_1"), 1f);
-                getAnimationDispatcher().submitMessageAnimation(Language.getText("HAVENS_FURY_MESSAGE_2"), 1f);
-                getAnimationDispatcher().submitHavensFuryAnimation(target);
+    private void onCampaignHavensFury(int team, int target_x, int target_y, int damage) {
+        Unit target;
+        if ((target = getGame().getMap().getUnit(target_x, target_y)) == null) {
+            ObjectSet<Unit> units = getGame().getMap().getUnits(team);
+            int max_price = Integer.MIN_VALUE;
+            int max_hp = Integer.MIN_VALUE;
+            for (Unit unit : units) {
+                if (!unit.isCommander()) {
+                    if (unit.getCurrentHp() > max_hp
+                            || (unit.getCurrentHp() == max_hp && unit.getPrice() > max_price)) {
+                        target = unit;
+                        max_price = unit.getPrice();
+                        max_hp = unit.getCurrentHp();
+                    }
+                }
+            }
+            if (target == null && units.size > 0) {
+                target = units.first();
+            }
+        }
+        if (target != null) {
+            getManager().fireMapFocusEvent(target.getX(), target.getY(), true);
+            getAnimationDispatcher().submitHavensFuryAnimation(target);
+            if (damage != 0) {
+                onHpChange(target, -damage);
             }
         }
     }
@@ -775,6 +821,13 @@ public class GameEventExecutor {
             getGame().setTile(destroyed_index, target_x, target_y);
             TileValidator.validate(getGame().getMap(), target_x, target_y);
             getAnimationDispatcher().submitDustAriseAnimation(target_x, target_y);
+        }
+    }
+
+    private void onCampaignNotification(JSONArray notifications) {
+        for (int i = 0; i < notifications.length(); i++) {
+            String message = notifications.getString(i);
+            getAnimationDispatcher().submitMessageAnimation(message, 1f);
         }
     }
 
@@ -795,6 +848,19 @@ public class GameEventExecutor {
                 }
             }
             getAnimationDispatcher().submitHpChangeAnimation(change_map, units);
+        }
+    }
+
+    private void onHpChange(Unit target, int change) {
+        if (target != null) {
+            JSONArray hp_changes = new JSONArray();
+            JSONObject hp_change = new JSONObject();
+            change = UnitToolkit.validateHpChange(target, change);
+            hp_change.put("x", target.getX());
+            hp_change.put("y", target.getY());
+            hp_change.put("change", change);
+            hp_changes.put(hp_change);
+            onHpChange(hp_changes);
         }
     }
 

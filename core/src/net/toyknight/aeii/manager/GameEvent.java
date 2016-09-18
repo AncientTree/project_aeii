@@ -9,8 +9,9 @@ import org.json.JSONObject;
  */
 public class GameEvent {
 
-    public static final int STANDBY_FINISH = -1;
-
+    //common events
+    public static final int STANDBY_FINISH = -0x1;
+    public static final int CHECK_UNIT_DESTROY = -0x2;
     public static final int MANAGER_STATE_SYNC = 0x0;
 
     //skirmish events
@@ -47,6 +48,7 @@ public class GameEvent {
     public static final int CAMPAIGN_SHOW_OBJECTIVES = 0x29;
     public static final int CAMPAIGN_HAVENS_FURY = 0x30;
     public static final int CAMPAIGN_TILE_DESTROY = 0x31;
+    public static final int CAMPAIGN_NOTIFICATION = 0x32;
 
     public static JSONObject create(int type, Object... params) throws JSONException {
         JSONObject event = new JSONObject();

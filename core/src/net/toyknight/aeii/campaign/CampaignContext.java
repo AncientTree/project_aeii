@@ -11,6 +11,7 @@ import net.toyknight.aeii.campaign.warroom.WarroomCampaign;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
+import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -332,40 +333,19 @@ public class CampaignContext {
         }
 
         public void havens_fury(int team, int target_x, int target_y, int damage) {
-            Unit target;
-            if ((target = getContext().getGame().getMap().getUnit(target_x, target_y)) == null) {
-                ObjectSet<Unit> units = getContext().getGame().getMap().getUnits(team);
-                int max_price = Integer.MIN_VALUE;
-                int max_hp = Integer.MIN_VALUE;
-                for (Unit unit : units) {
-                    if (!unit.isCommander()) {
-                        if (unit.getCurrentHp() > max_hp
-                                || (unit.getCurrentHp() == max_hp && unit.getPrice() > max_price)) {
-                            target = unit;
-                            max_price = unit.getPrice();
-                            max_hp = unit.getCurrentHp();
-                        }
-                    }
-                }
-                if (target == null && units.size > 0) {
-                    target = units.first();
-                }
-                if (target != null) {
-                    getContext().getGameManager().getGameEventExecutor().submitGameEvent(
-                            GameEvent.CAMPAIGN_HAVENS_FURY, target.getX(), target.getY(), damage);
-                }
-            } else {
-                getContext().getGameManager().getGameEventExecutor().submitGameEvent(
-                        GameEvent.CAMPAIGN_HAVENS_FURY, target_x, target_y, damage);
+            notification(Language.getText("HAVENS_FURY_MESSAGE_1"), Language.getText("HAVENS_FURY_MESSAGE_2"));
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_HAVENS_FURY, team, target_x, target_y, damage);
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CHECK_UNIT_DESTROY, team);
+        }
+
+        public void notification(String... messages) {
+            JSONArray notifications = new JSONArray();
+            for (String message : messages) {
+                notifications.put(message);
             }
-            if (target != null) {
-                if (damage != 0) {
-                    hp_change(target.getX(), target.getY(), -damage);
-                }
-                if (target.getCurrentHp() - damage <= 0) {
-                    destroy_unit(target_x, target_y);
-                }
-            }
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_NOTIFICATION, notifications);
         }
 
         public void hp_change(int x, int y, int change) {
