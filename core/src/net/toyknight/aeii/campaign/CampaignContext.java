@@ -388,6 +388,10 @@ public class CampaignContext {
             return getContext().getGame().getPlayer(team).getGold();
         }
 
+        public int current_team() {
+            return getContext().getGame().getCurrentTeam();
+        }
+
     }
 
 }
