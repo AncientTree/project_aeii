@@ -171,6 +171,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             }
         });
         this.addDialog("objective", objective_dialog);
+
+        RankingClearDialog ranking_clear_dialog = new RankingClearDialog(this);
+        this.addDialog("ranking_clear", ranking_clear_dialog);
     }
 
     @Override
@@ -1061,6 +1064,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         } else {
             viewport.y = (map_height - viewport.height) / 2;
         }
+    }
+
+
+    public void showRankingClear() {
+        showDialog("ranking_clear");
     }
 
 }

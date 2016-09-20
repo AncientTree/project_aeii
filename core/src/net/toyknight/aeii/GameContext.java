@@ -247,6 +247,43 @@ public class GameContext extends Game implements GameManagerListener {
         }
     }
 
+    public int getCampaignTurnRecord(String campaign_code, int stage_number) {
+        try {
+            String turn_key = campaign_code + "_" + stage_number + "_TURN";
+            return getConfiguration().containsKey(turn_key) ? Integer.parseInt(getConfiguration().get(turn_key)) : -1;
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    public int getCampaignActionRecord(String campaign_code, int stage_number) {
+        try {
+            String action_key = campaign_code + "_" + stage_number + "_ACTION";
+            return getConfiguration().containsKey(action_key) ? Integer.parseInt(getConfiguration().get(action_key)) : -1;
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    public void updateCampaignLocalRecord(String campaign_code, int stage_number, int turns, int actions) {
+        String turn_key = campaign_code + "_" + stage_number + "_TURN";
+        String action_key = campaign_code + "_" + stage_number + "_ACTION";
+        boolean updated = false;
+        int turn_record = getCampaignTurnRecord(campaign_code, stage_number);
+        if (turn_record < 0 || turns < turn_record) {
+            updateConfiguration(turn_key, Integer.toString(turns));
+            updated = true;
+        }
+        int action_record = getCampaignActionRecord(campaign_code, stage_number);
+        if (action_record < 0 || actions < action_record) {
+            updateConfiguration(action_key, Integer.toString(actions));
+            updated = true;
+        }
+        if (updated) {
+            saveConfiguration();
+        }
+    }
+
     public String getVerificationString() {
         String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + INTERNAL_VERSION;
         return new MD5Converter().toMD5(V_STRING);
@@ -420,7 +457,7 @@ public class GameContext extends Game implements GameManagerListener {
         }
     }
 
-    private boolean onCampaignNextStage() {
+    public boolean onCampaignNextStage() {
         boolean has_next_stage = getCampaignContext().getCurrentCampaign().nextStage();
         if (has_next_stage) {
             String campaign_code = getCampaignContext().getCurrentCampaign().getCode();
@@ -438,11 +475,14 @@ public class GameContext extends Game implements GameManagerListener {
 
     private void onCampaignOver() {
         if (getCampaignContext().getCurrentCampaign().getCurrentStage().isCleared()) {
-            boolean has_next_stage = onCampaignNextStage();
             if (getGameManager().isRanking()) {
-
+                updateCampaignLocalRecord(
+                        getCampaignContext().getCurrentCampaign().getCode(),
+                        getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber(),
+                        getGame().getCurrentTurn(), getGame().getStatistics().getActions());
+                game_screen.showRankingClear();
             } else {
-                if (has_next_stage) {
+                if (onCampaignNextStage()) {
                     gotoGameScreen(
                             getCampaignContext().getCurrentCampaign().getCode(),
                             getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber());

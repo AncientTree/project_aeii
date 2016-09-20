@@ -41,7 +41,7 @@ public class CampaignModeDialog extends BasicDialog {
         });
         add(btn_cancel).size(ts * 3, ts).pad(ts / 4).padTop(0);
         pack();
-        setPosition((Gdx.graphics.getWidth() - getPrefHeight()) / 2, (Gdx.graphics.getHeight() - getPrefHeight()) / 2);
+        setPosition((Gdx.graphics.getWidth() - getWidth()) / 2, (Gdx.graphics.getHeight() - getHeight()) / 2);
     }
 
     public void initialize(String campaign_code, int stage_number) {

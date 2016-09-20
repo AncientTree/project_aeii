@@ -882,6 +882,9 @@ LB_ABILITIES=Khả Năng
 LB_ABOUT=Nói Về
 
 
+LB_ACTIONS=Actions
+
+
 LB_ARTS=Vẽ
 
 
@@ -1008,6 +1011,9 @@ LB_JOIN=Tham Gia
 LB_JOINING=Đang Tham Gia...
 
 
+LB_LEADERBOARD=Leaderboard
+
+
 LB_LEAVE=Rời Khỏi
 
 
@@ -1021,6 +1027,9 @@ LB_LOAD_GAME=Tải Trò Chơi
 
 
 LB_LOCAL_MAPS=Bản Đồ Địa Phương
+
+
+LB_LOCAL_RECORD=Local Ghi
 
 
 LB_LUV=Giá Đơn Vị Tử Vong 
@@ -1078,6 +1087,9 @@ LB_ON=Mở
 
 
 LB_ONLINE_MAPS=Bản Đồ Trực Tuyến
+
+
+LB_ONLINE_RECORD=kỷ lục trực tuyến
 
 
 LB_OPEN=Mở Ra
@@ -1201,6 +1213,9 @@ LB_TILE_NUMBER=Địa Hình#
 
 
 LB_TRANSLATION=Người Dịch Ngôn Ngữ
+
+
+LB_TURNS=Turns
 
 
 LB_TYPE=Kiểu
