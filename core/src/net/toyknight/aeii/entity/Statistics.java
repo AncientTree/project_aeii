@@ -14,6 +14,7 @@ public class Statistics implements Serializable {
     private final int[] destroy;
     private final int[] lose;
     private String save_name;
+    private int actions = Integer.MAX_VALUE;
 
     public Statistics() {
         income = new int[4];
@@ -76,6 +77,18 @@ public class Statistics implements Serializable {
 
     public String getSaveName() {
         return save_name;
+    }
+
+    public void resetActions() {
+        actions = 0;
+    }
+
+    public void addAction(int increment) {
+        actions += increment;
+    }
+
+    public int getActions() {
+        return actions;
     }
 
     @Override

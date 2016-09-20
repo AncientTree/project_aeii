@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.campaign.CampaignController;
 import net.toyknight.aeii.campaign.StageController;
+import net.toyknight.aeii.screen.dialog.CampaignModeDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.Language;
 
@@ -27,6 +28,8 @@ public class CampaignScreen extends StageScreen {
     private final ScrollPane sp_stage_list;
 
     private final Label label_difficulty;
+
+    private final CampaignModeDialog campaign_mode_dialog;
 
     public CampaignScreen(GameContext context) {
         super(context);
@@ -92,13 +95,21 @@ public class CampaignScreen extends StageScreen {
             }
         });
         button_bar.add(btn_start).size((list_width - ts / 2) / 2, ts).padLeft(ts / 2);
+
+        campaign_mode_dialog = new CampaignModeDialog(this);
+        addDialog("mode", campaign_mode_dialog);
     }
 
     private void start() {
         CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
         StageController.Snapshot stage_snapshot = stage_list.getSelected();
         if (scenario_snapshot != null && stage_snapshot != null) {
-            getContext().gotoGameScreen(scenario_snapshot.code, stage_snapshot.stage);
+            if (scenario_snapshot.ranking) {
+                campaign_mode_dialog.initialize(scenario_snapshot.code, stage_snapshot.stage);
+                showDialog("mode");
+            } else {
+                getContext().gotoGameScreen(scenario_snapshot.code, stage_snapshot.stage);
+            }
         }
     }
 
@@ -128,7 +139,8 @@ public class CampaignScreen extends StageScreen {
         if (scenario_snapshot == null) {
             label_difficulty.setText(Language.getText("LB_DIFFICULTY") + ": -");
         } else {
-            label_difficulty.setText(Language.getText("LB_DIFFICULTY") + ": " + Language.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
+            label_difficulty.setText(Language.getText("LB_DIFFICULTY") +
+                    ": " + Language.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
         }
     }
 

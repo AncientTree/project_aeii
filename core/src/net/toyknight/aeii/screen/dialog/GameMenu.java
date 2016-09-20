@@ -133,15 +133,13 @@ public class GameMenu extends BasicDialog {
     }
 
     private boolean canSave() {
-        return getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
+        return !getOwner().getGameManager().isRanking()
+                && getOwner().getGame().getCurrentPlayer().getType() == Player.LOCAL
                 && getOwner().getGameManager().getState() == GameManager.STATE_SELECT;
     }
 
     private void onLeaveGame() {
-        String message = getContext().getGame().getType() == GameCore.CAMPAIGN
-                && getContext().getGame().getCurrentPlayer().getType() == Player.LOCAL ?
-                Language.getText("LB_SAVE") + " & " + Language.getText("LB_EXIT_GAME") : Language.getText("LB_EXIT_GAME");
-        getOwner().showConfirm(message + "?", new ConfirmDialog.ConfirmDialogListener() {
+        getOwner().showConfirm(Language.getText("LB_EXIT_GAME") + "?", new ConfirmDialog.ConfirmDialogListener() {
             @Override
             public void confirmed() {
                 doLeaveGame();
@@ -155,12 +153,6 @@ public class GameMenu extends BasicDialog {
 
     private void doLeaveGame() {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
-            if (getContext().getGame().getCurrentPlayer().getType() == Player.LOCAL) {
-                try {
-                    getContext().doSaveGame();
-                } catch (AEIIException ignored) {
-                }
-            }
             getContext().gotoCampaignScreen();
             AudioManager.loopMainTheme();
         } else {

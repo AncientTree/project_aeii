@@ -120,6 +120,9 @@ public class CampaignContext {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
             Unit unit = getContext().getGame().getMap().getUnit(x, y);
             if (unit != null) {
+                if (unit.getTeam() == getCurrentCampaign().getCurrentStage().getPlayerTeam()) {
+                    getContext().getGame().getStatistics().addAction(1);
+                }
                 getCurrentCampaign().getCurrentStage().onUnitStandby(unit);
             }
         }

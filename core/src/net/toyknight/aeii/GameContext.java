@@ -234,7 +234,7 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public int getCampaignProgress(String campaign_code) {
-        if (campaign_code.equals("C_CH")) {
+        if (getCampaignContext().getCampaign(campaign_code).isOpen()) {
             return getCampaignContext().getCampaign(campaign_code).getStages().size - 1;
         } else {
             if (getConfiguration().containsKey(campaign_code)) {
@@ -413,27 +413,44 @@ public class GameContext extends Game implements GameManagerListener {
     @Override
     public void onGameOver() {
         if (getGame().getType() == GameCore.CAMPAIGN) {
-            if (getCampaignContext().getCurrentCampaign().getCurrentStage().isCleared()) {
-                boolean has_next_stage = getCampaignContext().getCurrentCampaign().nextStage();
-                if (has_next_stage) {
-                    String campaign_code = getCampaignContext().getCurrentCampaign().getCode();
-                    int stage_number = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
-
-                    if (stage_number > getCampaignProgress(campaign_code)) {
-                        updateConfiguration(campaign_code, Integer.toString(stage_number));
-                        saveConfiguration();
-                    }
-                    gotoGameScreen(campaign_code, stage_number);
-                } else {
-                    gotoCampaignScreen();
-                }
-            } else {
-                gotoCampaignScreen();
-            }
-            AudioManager.loopMainTheme();
+            onCampaignOver();
         }
         if (getGame().getType() == GameCore.SKIRMISH) {
             gotoStatisticsScreen(getGame());
+        }
+    }
+
+    private boolean onCampaignNextStage() {
+        boolean has_next_stage = getCampaignContext().getCurrentCampaign().nextStage();
+        if (has_next_stage) {
+            String campaign_code = getCampaignContext().getCurrentCampaign().getCode();
+            int stage_number = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+
+            if (stage_number > getCampaignProgress(campaign_code)) {
+                updateConfiguration(campaign_code, Integer.toString(stage_number));
+                saveConfiguration();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void onCampaignOver() {
+        if (getCampaignContext().getCurrentCampaign().getCurrentStage().isCleared()) {
+            boolean has_next_stage = onCampaignNextStage();
+            if (getGameManager().isRanking()) {
+
+            } else {
+                if (has_next_stage) {
+                    gotoGameScreen(
+                            getCampaignContext().getCurrentCampaign().getCode(),
+                            getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber());
+                }
+            }
+        } else {
+            gotoCampaignScreen();
+            AudioManager.loopMainTheme();
         }
     }
 
