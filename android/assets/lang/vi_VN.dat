@@ -1059,6 +1059,9 @@ LB_NO=Không
 LB_NONE=Không Có Gì
 
 
+LB_NORMAL=chế độ bình thường
+
+
 LB_OBJECTIVE=Mục Tiêu
 
 
@@ -1093,6 +1096,9 @@ LB_PREVIEW=Xem Trước
 
 
 LB_PROGRAM=Chương Trình
+
+
+LB_RANKING=chế độ xếp hạng
 
 
 LB_RECONNECTING=Đang Kết Nối Lại...
