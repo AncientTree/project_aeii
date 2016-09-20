@@ -89,7 +89,7 @@ public class WarroomStage2 extends StageController {
     @Override
     public void onTurnStart(int turn) {
 
-        if(turn % 4 == 3) {
+        if(getContext().current_team() == 2) {
             getContext().reinforce(2,
                     new Reinforcement(1, 12, 6),
                     new Reinforcement(1, 14, 6),

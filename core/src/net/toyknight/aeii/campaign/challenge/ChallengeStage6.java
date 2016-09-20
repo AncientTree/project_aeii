@@ -22,8 +22,8 @@ public class ChallengeStage6 extends StageController {
 
     @Override
     public void onGameStart() {
-        getContext().alliance(1, 0);
-        getContext().alliance(2, 0);
+        getContext().alliance(1, 1);
+        getContext().alliance(2, 1);
         Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1"));
         getContext().message(message);
     }
@@ -42,7 +42,11 @@ public class ChallengeStage6 extends StageController {
 
     @Override
     public void onUnitDestroyed(Unit unit) {
-
+        if (isCommander(unit, getPlayerTeam())) {
+            getContext().fail();
+        } else {
+            checkClear();
+        }
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ChallengeStage6 extends StageController {
 
     @Override
     public void onTurnStart(int turn) {
-        if (turn % 3 == 1) {
+        if (getContext().current_team() == 0) {
             for (Unit unit : getContext().get_units(0)) {
                 if (unit.getCurrentHp() == unit.getMaxHp()) {
                     if(unit.getIndex() != 9  && unit.getIndex() != 10)
