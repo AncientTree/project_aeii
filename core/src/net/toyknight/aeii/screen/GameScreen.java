@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
@@ -172,6 +171,9 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             }
         });
         this.addDialog("objective", objective_dialog);
+
+        RankingClearDialog ranking_clear_dialog = new RankingClearDialog(this);
+        this.addDialog("ranking_clear", ranking_clear_dialog);
     }
 
     @Override
@@ -358,10 +360,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         getGameManager().syncState(setting.manager_state, setting.selected_unit_x, setting.selected_unit_y);
         for (int team = 0; team < 4; team++) {
             Player player = getGame().getPlayer(team);
-            if (getContext().getRoomManager().hasTeamAccess(team)) {
-                player.setType(Player.LOCAL);
-            } else {
-                player.setType(Player.REMOTE);
+            if (getGame().getPlayer(team).getType() != Player.NONE) {
+                if (getContext().getRoomManager().hasTeamAccess(team)) {
+                    player.setType(Player.LOCAL);
+                } else {
+                    player.setType(Player.REMOTE);
+                }
             }
         }
         update();
@@ -826,13 +830,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     private void doEndTurn() {
-        if (getGame().getType() == GameCore.CAMPAIGN) {
-            try {
-                getContext().doSaveGame();
-                appendMessage(null, Language.getText("MSG_INFO_GSV"));
-            } catch (AEIIException ignored) {
-            }
-        }
         getGameManager().doEndTurn();
         update();
     }
@@ -1067,6 +1064,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         } else {
             viewport.y = (map_height - viewport.height) / 2;
         }
+    }
+
+
+    public void showRankingClear() {
+        showDialog("ranking_clear");
     }
 
 }

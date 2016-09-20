@@ -14,10 +14,29 @@ public abstract class CampaignController {
 
     private int current_stage;
 
+    private boolean open = false;
+    private boolean ranking = true;
+
     public CampaignController() {
         this.attributes = new ObjectMap<String, Integer>();
         this.stages = new Array<StageController>();
         this.current_stage = 0;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setRanking(boolean ranking) {
+        this.ranking = ranking;
+    }
+
+    public boolean isRanking() {
+        return ranking;
     }
 
     public final void setAttributes(ObjectMap<String, Integer> attributes) {
@@ -75,7 +94,7 @@ public abstract class CampaignController {
     abstract public int getDifficulty();
 
     public final Snapshot createSnapshot() {
-        return new Snapshot(getCode(), getCampaignName(), getDifficulty());
+        return new Snapshot(getCode(), getCampaignName(), getDifficulty(), isOpen(), isRanking());
     }
 
     public class Snapshot implements Comparable<Snapshot> {
@@ -84,10 +103,15 @@ public abstract class CampaignController {
         public final String name;
         public final Integer difficulty;
 
-        public Snapshot(String code, String name, int difficulty) {
+        public final boolean open;
+        public final boolean ranking;
+
+        public Snapshot(String code, String name, int difficulty, boolean open, boolean ranking) {
             this.code = code;
             this.name = name;
             this.difficulty = difficulty;
+            this.open = open;
+            this.ranking = ranking;
         }
 
         @Override

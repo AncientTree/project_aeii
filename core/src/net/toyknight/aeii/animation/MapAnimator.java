@@ -1,17 +1,16 @@
 package net.toyknight.aeii.animation;
 
+import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.screen.MapCanvas;
-
-import java.util.HashSet;
 
 /**
  * @author toyknight 4/21/2015.
  */
 public class MapAnimator extends Animator {
 
-    private final HashSet<Position> locations = new HashSet<Position>();
+    private final ObjectSet<Position> locations = new ObjectSet<Position>();
 
     public MapAnimator(GameContext context) {
         super(context);
@@ -34,8 +33,16 @@ public class MapAnimator extends Animator {
 
     public final void addLocation(int x, int y) {
         if (getCanvas().getMap().isWithinMap(x, y)) {
-            this.locations.add(getCanvas().getMap().getPosition(x, y));
+            addLocation(getCanvas().getMap().getPosition(x, y));
         }
+    }
+
+    public final void addLocation(Position position) {
+        locations.add(position);
+    }
+
+    public final ObjectSet<Position> getLocations() {
+        return locations;
     }
 
     public final boolean hasLocation(int x, int y) {

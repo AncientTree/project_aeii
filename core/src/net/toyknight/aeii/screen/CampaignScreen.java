@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.campaign.CampaignController;
 import net.toyknight.aeii.campaign.StageController;
+import net.toyknight.aeii.screen.dialog.CampaignModeDialog;
+import net.toyknight.aeii.screen.dialog.LeaderboardDialog;
 import net.toyknight.aeii.screen.widgets.StringList;
 import net.toyknight.aeii.utils.Language;
 
@@ -26,12 +28,18 @@ public class CampaignScreen extends StageScreen {
     private final StringList<StageController.Snapshot> stage_list;
     private final ScrollPane sp_stage_list;
 
+    private final TextButton btn_leaderboard;
+
     private final Label label_difficulty;
+
+    private final CampaignModeDialog campaign_mode_dialog;
+    private final LeaderboardDialog leaderboard_dialog;
 
     public CampaignScreen(GameContext context) {
         super(context);
 
         int list_width = (Gdx.graphics.getWidth() - ts / 2 * 3) / 2;
+        int button_width = (Gdx.graphics.getWidth() - ts / 2 * 5) / 4;
 
         Label label_scenarios = new Label(Language.getText("LB_SCENARIOS"), getContext().getSkin());
         label_scenarios.setAlignment(Align.center);
@@ -42,13 +50,13 @@ public class CampaignScreen extends StageScreen {
         scenario_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
-                updateDifficulty();
+                updateButtons();
                 updateStages();
             }
 
             @Override
             public void onChange(int index, Object value) {
-                updateDifficulty();
+                updateButtons();
                 updateStages();
             }
         });
@@ -66,14 +74,13 @@ public class CampaignScreen extends StageScreen {
         sp_stage_list.setBounds(list_width + ts, ts * 2, list_width, Gdx.graphics.getHeight() - ts * 3);
         addActor(sp_stage_list);
 
+        Table button_bar = new Table();
+        button_bar.setBounds(ts / 2, ts / 2, Gdx.graphics.getWidth() - ts, ts);
+        addActor(button_bar);
+
         label_difficulty = new Label("", getContext().getSkin());
         label_difficulty.setAlignment(Align.center);
-        label_difficulty.setBounds(0, 0, list_width, ts * 2);
-        addActor(label_difficulty);
-
-        Table button_bar = new Table();
-        button_bar.setBounds(list_width + ts, 0, list_width, ts * 2);
-        addActor(button_bar);
+        button_bar.add(label_difficulty).size(button_width, ts).padRight(ts / 2);
 
         TextButton btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
         btn_back.addListener(new ClickListener() {
@@ -82,7 +89,16 @@ public class CampaignScreen extends StageScreen {
                 getContext().gotoMainMenuScreen(false);
             }
         });
-        button_bar.add(btn_back).size((list_width - ts / 2) / 2, ts);
+        button_bar.add(btn_back).size(button_width, ts).padRight(ts / 2);
+
+        btn_leaderboard = new TextButton(Language.getText("LB_LEADERBOARD"), getContext().getSkin());
+        btn_leaderboard.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showLeaderboard();
+            }
+        });
+        button_bar.add(btn_leaderboard).size(button_width, ts).padRight(ts / 2);
 
         TextButton btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
         btn_start.addListener(new ClickListener() {
@@ -91,14 +107,34 @@ public class CampaignScreen extends StageScreen {
                 start();
             }
         });
-        button_bar.add(btn_start).size((list_width - ts / 2) / 2, ts).padLeft(ts / 2);
+        button_bar.add(btn_start).size(button_width, ts);
+
+        campaign_mode_dialog = new CampaignModeDialog(this);
+        addDialog("mode", campaign_mode_dialog);
+
+        leaderboard_dialog = new LeaderboardDialog(this);
+        addDialog("leaderboard", leaderboard_dialog);
     }
 
     private void start() {
         CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
         StageController.Snapshot stage_snapshot = stage_list.getSelected();
         if (scenario_snapshot != null && stage_snapshot != null) {
-            getContext().gotoGameScreen(scenario_snapshot.code, stage_snapshot.stage);
+            if (scenario_snapshot.ranking) {
+                campaign_mode_dialog.initialize(scenario_snapshot.code, stage_snapshot.stage);
+                showDialog("mode");
+            } else {
+                getContext().gotoGameScreen(scenario_snapshot.code, stage_snapshot.stage);
+            }
+        }
+    }
+
+    private void showLeaderboard() {
+        CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
+        StageController.Snapshot stage_snapshot = stage_list.getSelected();
+        if (scenario_snapshot != null && stage_snapshot != null) {
+            leaderboard_dialog.initialize(scenario_snapshot.code, stage_snapshot.stage);
+            showDialog("leaderboard");
         }
     }
 
@@ -123,12 +159,15 @@ public class CampaignScreen extends StageScreen {
         }
     }
 
-    private void updateDifficulty() {
+    private void updateButtons() {
         CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
         if (scenario_snapshot == null) {
             label_difficulty.setText(Language.getText("LB_DIFFICULTY") + ": -");
+            btn_leaderboard.setVisible(false);
         } else {
-            label_difficulty.setText(Language.getText("LB_DIFFICULTY") + ": " + Language.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
+            label_difficulty.setText(Language.getText("LB_DIFFICULTY") +
+                    ": " + Language.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
+            btn_leaderboard.setVisible(scenario_snapshot.ranking);
         }
     }
 
@@ -136,7 +175,7 @@ public class CampaignScreen extends StageScreen {
     public void show() {
         super.show();
         updateScenarios();
-        updateDifficulty();
+        updateButtons();
         updateStages();
     }
 

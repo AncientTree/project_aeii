@@ -56,6 +56,8 @@ public class GameManager implements AnimationListener {
 
     private final LinkedList<Message> campaign_messages;
 
+    private boolean ranking;
+
     public GameManager() {
         this(null, new EmptyAnimationManager());
     }
@@ -80,6 +82,7 @@ public class GameManager implements AnimationListener {
 
     public void setGame(GameCore game) {
         this.game = game;
+        this.ranking = false;
         this.state = STATE_SELECT;
         getGameEventExecutor().reset();
         getOperationExecutor().reset();
@@ -133,6 +136,14 @@ public class GameManager implements AnimationListener {
 
     public GameManagerListener getListener() {
         return manager_listener;
+    }
+
+    public void setRanking(boolean ranking) {
+        this.ranking = ranking;
+    }
+
+    public boolean isRanking() {
+        return ranking;
     }
 
     public void setState(int state) {

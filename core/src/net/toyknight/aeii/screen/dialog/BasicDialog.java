@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
-import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.screen.StageScreen;
 
 /**
@@ -14,8 +13,6 @@ public class BasicDialog extends Table {
 
     protected final int ts;
     private StageScreen owner;
-
-    private String name;
 
     private boolean top_bottom_border_enabled = false;
 

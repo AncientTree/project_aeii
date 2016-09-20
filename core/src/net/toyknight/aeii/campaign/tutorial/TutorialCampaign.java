@@ -15,6 +15,7 @@ public class TutorialCampaign extends CampaignController {
 
     @Override
     public void initialize() {
+        setRanking(false);
         addStage(new TutorialStage1());
         addStage(new TutorialStage2());
         addStage(new TutorialStage3());

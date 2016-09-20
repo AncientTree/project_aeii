@@ -234,7 +234,7 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public int getCampaignProgress(String campaign_code) {
-        if (campaign_code.equals("C_CH")) {
+        if (getCampaignContext().getCampaign(campaign_code).isOpen()) {
             return getCampaignContext().getCampaign(campaign_code).getStages().size - 1;
         } else {
             if (getConfiguration().containsKey(campaign_code)) {
@@ -244,6 +244,43 @@ public class GameContext extends Game implements GameManagerListener {
                 saveConfiguration();
                 return 0;
             }
+        }
+    }
+
+    public int getCampaignTurnRecord(String campaign_code, int stage_number) {
+        try {
+            String turn_key = campaign_code + "_" + stage_number + "_TURN";
+            return getConfiguration().containsKey(turn_key) ? Integer.parseInt(getConfiguration().get(turn_key)) : -1;
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    public int getCampaignActionRecord(String campaign_code, int stage_number) {
+        try {
+            String action_key = campaign_code + "_" + stage_number + "_ACTION";
+            return getConfiguration().containsKey(action_key) ? Integer.parseInt(getConfiguration().get(action_key)) : -1;
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    public void updateCampaignLocalRecord(String campaign_code, int stage_number, int turns, int actions) {
+        String turn_key = campaign_code + "_" + stage_number + "_TURN";
+        String action_key = campaign_code + "_" + stage_number + "_ACTION";
+        boolean updated = false;
+        int turn_record = getCampaignTurnRecord(campaign_code, stage_number);
+        if (turn_record < 0 || turns < turn_record) {
+            updateConfiguration(turn_key, Integer.toString(turns));
+            updated = true;
+        }
+        int action_record = getCampaignActionRecord(campaign_code, stage_number);
+        if (action_record < 0 || actions < action_record) {
+            updateConfiguration(action_key, Integer.toString(actions));
+            updated = true;
+        }
+        if (updated) {
+            saveConfiguration();
         }
     }
 
@@ -413,27 +450,47 @@ public class GameContext extends Game implements GameManagerListener {
     @Override
     public void onGameOver() {
         if (getGame().getType() == GameCore.CAMPAIGN) {
-            if (getCampaignContext().getCurrentCampaign().getCurrentStage().isCleared()) {
-                boolean has_next_stage = getCampaignContext().getCurrentCampaign().nextStage();
-                if (has_next_stage) {
-                    String campaign_code = getCampaignContext().getCurrentCampaign().getCode();
-                    int stage_number = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
-
-                    if (stage_number > getCampaignProgress(campaign_code)) {
-                        updateConfiguration(campaign_code, Integer.toString(stage_number));
-                        saveConfiguration();
-                    }
-                    gotoGameScreen(campaign_code, stage_number);
-                } else {
-                    gotoCampaignScreen();
-                }
-            } else {
-                gotoCampaignScreen();
-            }
-            AudioManager.loopMainTheme();
+            onCampaignOver();
         }
         if (getGame().getType() == GameCore.SKIRMISH) {
             gotoStatisticsScreen(getGame());
+        }
+    }
+
+    public boolean onCampaignNextStage() {
+        boolean has_next_stage = getCampaignContext().getCurrentCampaign().nextStage();
+        if (has_next_stage) {
+            String campaign_code = getCampaignContext().getCurrentCampaign().getCode();
+            int stage_number = getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber();
+
+            if (stage_number > getCampaignProgress(campaign_code)) {
+                updateConfiguration(campaign_code, Integer.toString(stage_number));
+                saveConfiguration();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void onCampaignOver() {
+        if (getCampaignContext().getCurrentCampaign().getCurrentStage().isCleared()) {
+            if (getGameManager().isRanking()) {
+                updateCampaignLocalRecord(
+                        getCampaignContext().getCurrentCampaign().getCode(),
+                        getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber(),
+                        getGame().getCurrentTurn(), getGame().getStatistics().getActions());
+                game_screen.showRankingClear();
+            } else {
+                if (onCampaignNextStage()) {
+                    gotoGameScreen(
+                            getCampaignContext().getCurrentCampaign().getCode(),
+                            getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber());
+                }
+            }
+        } else {
+            gotoCampaignScreen();
+            AudioManager.loopMainTheme();
         }
     }
 

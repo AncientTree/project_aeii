@@ -76,6 +76,11 @@ public class AnimationManager implements AnimationDispatcher {
     }
 
     @Override
+    public void submitDustAriseAnimation(ObjectSet<Position> positions) {
+        submitAnimation(new DustAriseAnimator(context, positions));
+    }
+
+    @Override
     public void submitUnitAttackAnimation(Unit attacker, Unit target, int damage) {
         submitAnimation(new UnitAttackAnimator(context, attacker, target, damage));
     }
@@ -98,6 +103,11 @@ public class AnimationManager implements AnimationDispatcher {
     @Override
     public void submitUnitSparkAnimation(Unit unit) {
         submitAnimation(new UnitSparkAnimator(context, unit));
+    }
+
+    @Override
+    public void submitUnitSparkAnimation(ObjectSet<Unit> units) {
+        submitAnimation(new UnitSparkAnimator(context, units));
     }
 
     @Override

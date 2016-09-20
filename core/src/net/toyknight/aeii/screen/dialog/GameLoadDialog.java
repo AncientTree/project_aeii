@@ -32,6 +32,8 @@ public class GameLoadDialog extends BasicDialog {
 
     private StringList<String> save_list;
 
+    private TextButton btn_delete;
+
     public GameLoadDialog(StageScreen owner) {
         super(owner);
         int width = ts * 11;
@@ -67,7 +69,7 @@ public class GameLoadDialog extends BasicDialog {
         });
         addActor(btn_load);
 
-        TextButton btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
+        btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
         btn_delete.setBounds(ts * 4, ts / 2, ts * 3, ts);
         btn_delete.addListener(new ClickListener() {
             @Override
@@ -85,7 +87,6 @@ public class GameLoadDialog extends BasicDialog {
                 getOwner().closeDialog("load");
             }
         });
-        addActor(btn_delete);
         addActor(btn_cancel);
     }
 
@@ -154,17 +155,19 @@ public class GameLoadDialog extends BasicDialog {
 
     public void onDeleteSelectedFile() {
         String filename = save_list.getSelected();
-        getOwner().showConfirm(
-                Language.getText("LB_DELETE") + " " + filename + "?", new ConfirmDialog.ConfirmDialogListener() {
-                    @Override
-                    public void confirmed() {
-                        doDeleteSelectedFile();
-                    }
+        if (filename != null) {
+            getOwner().showConfirm(
+                    Language.getText("LB_DELETE") + " " + filename + "?", new ConfirmDialog.ConfirmDialogListener() {
+                        @Override
+                        public void confirmed() {
+                            doDeleteSelectedFile();
+                        }
 
-                    @Override
-                    public void canceled() {
-                    }
-                });
+                        @Override
+                        public void canceled() {
+                        }
+                    });
+        }
     }
 
     public void doDeleteSelectedFile() {
@@ -184,6 +187,7 @@ public class GameLoadDialog extends BasicDialog {
             list.add(file.name());
         }
         save_list.setItems(list);
+        btn_delete.setVisible(list.size > 0);
     }
 
     @Override
