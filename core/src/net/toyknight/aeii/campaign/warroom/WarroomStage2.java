@@ -67,7 +67,7 @@ public class WarroomStage2 extends StageController {
                 getContext().destroy_team(3);
             }
             if(unit.getTeam() == 3) {
-                getContext().gold(3, (getContext().get_gold(3) + unit.getPrice()));
+                getContext().gold(3, (getContext().get_gold(3) +  (int)(unit.getPrice() * 0.8)));
             }
             checkClear();
         }
