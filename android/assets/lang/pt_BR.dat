@@ -137,6 +137,11 @@ CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VITÓRIA: Destruir todos inimigos and cap
 CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DERROTA: Seu comandante ser derrotado.
 CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, our enemy get power from the evil ritual, how do we defeat them?
 
+CAMPAIGN_CHALLENGE_STAGE_6_NAME=Blasted Lands
+CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, this land is cursed, our undamaged troops is demoted each turn, be careful!
+
 CAMPAIGN_WARROOM_NAME=BW's Warroom
 
 CAMPAIGN_WARROOM_STAGE_1_NAME=Ghost Island
