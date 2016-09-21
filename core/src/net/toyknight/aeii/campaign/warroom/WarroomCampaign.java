@@ -15,6 +15,7 @@ public class WarroomCampaign extends CampaignController {
 
     @Override
     public void initialize() {
+        setOpen(true);
         addStage(new WarroomStage1());
         addStage(new WarroomStage2());
         addStage(new WarroomStage3());
