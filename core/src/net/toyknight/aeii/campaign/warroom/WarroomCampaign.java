@@ -20,6 +20,7 @@ public class WarroomCampaign extends CampaignController {
         addStage(new WarroomStage2());
         addStage(new WarroomStage3());
         addStage(new WarroomStage4());
+        addStage(new WarroomStage5());
     }
 
     @Override
