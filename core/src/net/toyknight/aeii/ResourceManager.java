@@ -143,7 +143,7 @@ public class ResourceManager {
         FileHandleResolver file_resolver = new InternalFileHandleResolver();
 
         //fonts
-        FreeTypeFontGenerator.setMaxTextureSize(2048);
+        FreeTypeFontGenerator.setMaxTextureSize(ts * 20);
 
         asset_manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(file_resolver));
         asset_manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(file_resolver));
