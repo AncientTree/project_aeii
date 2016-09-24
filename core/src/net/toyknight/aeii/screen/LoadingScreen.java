@@ -7,6 +7,7 @@ import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.animation.BackgroundFadeAnimator;
 import net.toyknight.aeii.animation.LoadingAnimator;
 import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.utils.Platform;
 
 /**
  * @author toyknight 4/2/2015.
@@ -41,7 +42,7 @@ public class LoadingScreen implements Screen {
         if (getContext().getResources().update()) {
             if (getContext().initialized()) {
                 if (bg_fade_animator.isAnimationFinished()) {
-                    if (Language.getLocale().equals("zh_CN")) {
+                    if (Language.getLocale().equals("zh_CN") && getContext().getPlatform() == Platform.Android) {
                         getContext().gotoMainMenuScreen(true, true);
                     } else {
                         getContext().gotoMainMenuScreen(true, false);
