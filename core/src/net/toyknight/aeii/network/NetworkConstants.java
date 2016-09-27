@@ -22,6 +22,8 @@ public class NetworkConstants {
     public static final int DOWNLOAD_MAP = 0x93;
     public static final int LIST_IDLE_PLAYERS = 0x94;
     public static final int RECONNECT = 0x95;
+    public static final int SUBMIT_RECORD = 0x96;
+    public static final int GET_BEST_RECORD = 0x97;
 
     //Notifications
     public static final int PLAYER_JOINING = 0x10;

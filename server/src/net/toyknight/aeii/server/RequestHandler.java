@@ -5,6 +5,7 @@ import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkConstants;
+import net.toyknight.aeii.network.entity.LeaderboardRecord;
 import net.toyknight.aeii.network.entity.RoomSetting;
 import net.toyknight.aeii.network.entity.RoomSnapshot;
 import net.toyknight.aeii.server.entities.Player;
@@ -96,6 +97,12 @@ public class RequestHandler {
                     break;
                 case NetworkConstants.DISCONNECT_PLAYER:
                     onDisconnectPlayerRequested(player, request);
+                    break;
+                case NetworkConstants.SUBMIT_RECORD:
+                    onRecordSubmitted(player, request);
+                    break;
+                case NetworkConstants.GET_BEST_RECORD:
+                    onBestRecordRequested(player, request);
                     break;
                 default:
                     Log.error(TAG, String.format("Illegal request from %s [undefined operation]", player.toString()));
@@ -228,7 +235,7 @@ public class RequestHandler {
     }
 
     public void onMapListRequested(Player player, JSONObject request) {
-        if (getContext().getConfiguration().isMapManagerEnabled()) {
+        if (getContext().getConfiguration().isDatabaseEnabled()) {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
             boolean symmetric = request.has("symmetric") && request.getBoolean("symmetric");
             if (request.has("author")) {
@@ -242,7 +249,7 @@ public class RequestHandler {
     }
 
     public void onMapUploadRequest(Player player, JSONObject request) {
-        if (getContext().getConfiguration().isMapManagerEnabled()) {
+        if (getContext().getConfiguration().isDatabaseEnabled()) {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
             Map map = new Map(request.getJSONObject("map"));
             String map_name = request.getString("map_name");
@@ -259,7 +266,7 @@ public class RequestHandler {
     }
 
     public void onMapDownloadRequested(Player player, JSONObject request) {
-        if (getContext().getConfiguration().isMapManagerEnabled()) {
+        if (getContext().getConfiguration().isDatabaseEnabled()) {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
             int map_id = request.getInt("id");
             boolean approved;
@@ -357,7 +364,6 @@ public class RequestHandler {
     }
 
     public void onDisconnectPlayerRequested(Player player, JSONObject request) {
-
         String token = request.getString("token");
         if (getContext().verifyAdminToken(token)) {
             JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
@@ -371,6 +377,40 @@ public class RequestHandler {
             }
             player.sendTCP(response.toString());
         }
+    }
+
+    public void onRecordSubmitted(Player player, JSONObject request) {
+        JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+        String campaign_code = request.getString("campaign_code");
+        int stage_number = request.getInt("stage_number");
+        int turns = request.getInt("turns");
+        int actions = request.getInt("actions");
+        if (stage_number >= 0 && turns > 0 && actions > 0) {
+            try {
+                getContext().getDatabaseManager().submitRecord(
+                        player.getUsername(), player.getAddress(), campaign_code, stage_number, turns, actions);
+                response.put("approved", true);
+            } catch (SQLException e) {
+                response.put("approved", false);
+            }
+        } else {
+            response.put("approved", false);
+        }
+        player.sendTCP(response.toString());
+    }
+
+    public void onBestRecordRequested(Player player, JSONObject request) {
+        JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+        String campaign_code = request.getString("campaign_code");
+        int stage_number = request.getInt("stage_number");
+        try {
+            LeaderboardRecord record = getContext().getDatabaseManager().getBestRecord(campaign_code, stage_number);
+            response.put("response_code", NetworkConstants.CODE_OK);
+            response.put("record", record.toJson());
+        } catch (SQLException ignored) {
+            response.put("response_code", NetworkConstants.CODE_SERVER_ERROR);
+        }
+        player.sendTCP(response.toString());
     }
 
     public void submitRequest(Player player, String request_content) throws JSONException {
