@@ -463,7 +463,7 @@ LB_WIDTH=Largura
 LB_WIN=Venceu
 LB_YES=Sim
 
-MSG_ERR_AEA=Ocorreu um erro :(
+MSG_ERR_AEA=Ocorreu um erro
 MSG_ERR_BMF=Arquivo de mapa corrompido :(
 MSG_ERR_BSF=Arquivo de Save comrrompido :(
 MSG_ERR_CCS=Não foi possível conectar no servidor

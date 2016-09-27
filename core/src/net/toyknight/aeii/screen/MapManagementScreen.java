@@ -21,7 +21,6 @@ import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkConstants;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.screen.dialog.ConfirmDialog;
 import net.toyknight.aeii.screen.dialog.MiniMapDialog;
@@ -37,10 +36,6 @@ import java.io.IOException;
  * @author toyknight 6/10/2016.
  */
 public class MapManagementScreen extends StageScreen {
-
-    private final ServerConfiguration map_server_configuration =
-//            new ServerConfiguration("127.0.0.1", 5438, "aeii server - NA");
-            new ServerConfiguration("45.56.93.69", 5438, "aeii server - NA");
 
     private final MiniMapDialog map_preview_dialog;
 
@@ -259,14 +254,6 @@ public class MapManagementScreen extends StageScreen {
         });
     }
 
-    private boolean connect() {
-        try {
-            return NetworkManager.connect(map_server_configuration);
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
     private void downloadSelectedMap() {
         if (checkSelectedMap()) {
             final int map_id = ((MapSnapshot) server_map_list.getSelected()).getID();
@@ -275,7 +262,7 @@ public class MapManagementScreen extends StageScreen {
             getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
                 public Void doTask() throws Exception {
-                    if (connect()) {
+                    if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
                         Map map = NetworkManager.requestDownloadMap(map_id);
                         NetworkManager.disconnect();
                         tryWriteMap(map, filename);
@@ -305,7 +292,7 @@ public class MapManagementScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Integer>() {
             @Override
             public Integer doTask() throws Exception {
-                if (connect()) {
+                if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
                     FileHandle map_file = local_map_list.getSelected().file;
                     Map map = MapFactory.createMap(map_file);
                     int code = NetworkManager.requestUploadMap(map, map_file.nameWithoutExtension());
@@ -359,7 +346,7 @@ public class MapManagementScreen extends StageScreen {
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
-                    if (connect()) {
+                    if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
                         Map map = NetworkManager.requestDownloadMap(map_id);
                         NetworkManager.disconnect();
                         return map;
@@ -411,7 +398,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public Array<MapSnapshot> doTask() throws Exception {
                 refreshLocalMaps();
-                if (connect()) {
+                if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
                     Array<MapSnapshot> map_list = NetworkManager.requestMapList(current_author, symmetric);
                     NetworkManager.disconnect();
                     return map_list;

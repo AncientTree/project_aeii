@@ -120,9 +120,9 @@ public class DatabaseManager {
         turns_statement.setString(1, campaign_code);
         turns_statement.setInt(2, stage_number);
         ResultSet turns_result = turns_statement.executeQuery();
-        String best_turns_username = "";
+        String best_turns_username = "none";
         int best_turns = -1;
-        if (turns_result.next()) {
+        if (turns_result.first() && turns_result.getInt("turns") > 0) {
             best_turns_username = turns_result.getString("username");
             best_turns = turns_result.getInt("turns");
         }
@@ -132,14 +132,13 @@ public class DatabaseManager {
         actions_statement.setString(1, campaign_code);
         actions_statement.setInt(2, stage_number);
         ResultSet actions_result = actions_statement.executeQuery();
-        String best_actions_username = "";
+        String best_actions_username = "none";
         int best_actions = -1;
-        if (actions_result.next()) {
+        if (actions_result.first() && actions_result.getInt("actions") > 0) {
             best_actions_username = actions_result.getString("username");
             best_actions = actions_result.getInt("actions");
         }
-        return new LeaderboardRecord(
-                campaign_code, stage_number, best_turns, best_turns_username, best_actions, best_actions_username);
+        return new LeaderboardRecord(best_turns, best_turns_username, best_actions, best_actions_username);
     }
 
 }

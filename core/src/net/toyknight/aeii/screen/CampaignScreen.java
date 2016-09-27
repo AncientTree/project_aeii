@@ -196,5 +196,8 @@ public class CampaignScreen extends StageScreen {
         super.draw();
     }
 
+    @Override
+    public void onDisconnect() {
+    }
 
 }

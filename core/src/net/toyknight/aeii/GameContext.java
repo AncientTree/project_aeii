@@ -17,6 +17,7 @@ import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.GameManagerListener;
 import net.toyknight.aeii.manager.RoomManager;
 import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.CanvasRenderer;
@@ -36,6 +37,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public static final String INTERNAL_VERSION = "24";
     public static final String EXTERNAL_VERSION = "1.3.0 preview";
+    public static final ServerConfiguration MAIN_SERVER = new ServerConfiguration("45.56.93.69", 5438, "main server");
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;

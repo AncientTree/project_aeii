@@ -10,10 +10,8 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.manager.GameEvent;
-import net.toyknight.aeii.network.entity.MapSnapshot;
-import net.toyknight.aeii.network.entity.PlayerSnapshot;
-import net.toyknight.aeii.network.entity.RoomSetting;
-import net.toyknight.aeii.network.entity.RoomSnapshot;
+import net.toyknight.aeii.network.entity.*;
+import net.toyknight.aeii.utils.Language;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,7 +89,13 @@ public class NetworkManager {
     }
 
     public static boolean connect(ServerConfiguration server) throws AEIIException, IOException, JSONException {
-        return connect(server, null, null);
+        try {
+            return connect(server, null, null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            disconnect();
+            return false;
+        }
     }
 
     public static void disconnect() {
@@ -402,6 +406,23 @@ public class NetworkManager {
         request.put("map_name", map_name);
         JSONObject response = sendRequest(request);
         return response == null ? NetworkConstants.CODE_NETWORK_ERROR : response.getInt("code");
+    }
+
+    public static LeaderboardRecord requestBestRecord(String campaign_code, int stage_number) throws AEIIException {
+        JSONObject request = createRequest(NetworkConstants.GET_BEST_RECORD);
+        request.put("campaign_code", campaign_code);
+        request.put("stage_number", stage_number);
+        JSONObject response = sendRequest(request);
+        if (response == null) {
+            throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+        } else {
+            int response_code = response.getInt("response_code");
+            if (response_code == NetworkConstants.CODE_OK) {
+                return new LeaderboardRecord(response.getJSONObject("record"));
+            } else {
+                throw new AEIIException(Language.getText("MSG_ERR_AEA") + " [" + response_code + "]");
+            }
+        }
     }
 
     public static void notifyLeaveRoom() throws JSONException {

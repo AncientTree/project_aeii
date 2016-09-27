@@ -467,7 +467,7 @@ LB_WIDTH=宽度
 LB_WIN=胜利
 LB_YES=是
 
-MSG_ERR_AEA=发生了一个错误 :(
+MSG_ERR_AEA=发生了一个错误
 MSG_ERR_BMF=地图文件损坏 :(
 MSG_ERR_BSF=存档文件损坏 :(
 MSG_ERR_CCS=无法连接至服务器
