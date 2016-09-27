@@ -13,6 +13,16 @@ public abstract class StageController {
 
     private boolean cleared;
 
+    private boolean ranking = true;
+
+    public void setRanking(boolean ranking) {
+        this.ranking = ranking;
+    }
+
+    public boolean isRanking() {
+        return ranking;
+    }
+
     public final void setContext(CampaignContext.StageContext context) {
         this.context = context;
     }
@@ -68,17 +78,19 @@ public abstract class StageController {
     abstract public String getStageName();
 
     public final Snapshot createSnapshot() {
-        return new Snapshot(getStageNumber(), getStageName());
+        return new Snapshot(getStageNumber(), getStageName(), isRanking());
     }
 
     public class Snapshot {
 
         public final int stage;
         public final String name;
+        public final boolean ranking;
 
-        public Snapshot(int stage, String name) {
+        public Snapshot(int stage, String name, boolean ranking) {
             this.stage = stage;
             this.name = name;
+            this.ranking = ranking;
         }
 
         @Override
