@@ -99,7 +99,7 @@ public class LeaderboardDialog extends BasicDialog {
         getContext().submitAsyncTask(new AsyncTask<LeaderboardRecord>() {
             @Override
             public LeaderboardRecord doTask() throws Exception {
-                if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
+                if (NetworkManager.connect(GameContext.CAMPAIGN_SERVER)) {
                     return NetworkManager.requestBestRecord(campaign_code, stage_number);
                 } else {
                     throw new AEIIException(Language.getText("MSG_ERR_CCS"));

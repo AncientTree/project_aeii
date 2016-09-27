@@ -262,7 +262,7 @@ public class MapManagementScreen extends StageScreen {
             getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
                 public Void doTask() throws Exception {
-                    if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
+                    if (NetworkManager.connect(GameContext.MAP_SERVER)) {
                         Map map = NetworkManager.requestDownloadMap(map_id);
                         NetworkManager.disconnect();
                         tryWriteMap(map, filename);
@@ -292,7 +292,7 @@ public class MapManagementScreen extends StageScreen {
         getContext().submitAsyncTask(new AsyncTask<Integer>() {
             @Override
             public Integer doTask() throws Exception {
-                if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
+                if (NetworkManager.connect(GameContext.MAP_SERVER)) {
                     FileHandle map_file = local_map_list.getSelected().file;
                     Map map = MapFactory.createMap(map_file);
                     int code = NetworkManager.requestUploadMap(map, map_file.nameWithoutExtension());
@@ -346,7 +346,7 @@ public class MapManagementScreen extends StageScreen {
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
-                    if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
+                    if (NetworkManager.connect(GameContext.MAP_SERVER)) {
                         Map map = NetworkManager.requestDownloadMap(map_id);
                         NetworkManager.disconnect();
                         return map;
@@ -398,7 +398,7 @@ public class MapManagementScreen extends StageScreen {
             @Override
             public Array<MapSnapshot> doTask() throws Exception {
                 refreshLocalMaps();
-                if (NetworkManager.connect(GameContext.MAIN_SERVER)) {
+                if (NetworkManager.connect(GameContext.MAP_SERVER)) {
                     Array<MapSnapshot> map_list = NetworkManager.requestMapList(current_author, symmetric);
                     NetworkManager.disconnect();
                     return map_list;
