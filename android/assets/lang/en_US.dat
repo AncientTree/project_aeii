@@ -458,6 +458,7 @@ LB_TURNS=Turns
 LB_TYPE=Type
 LB_UHA=Units having this ability
 LB_UPLOAD=Upload
+LB_UPLOADED=Uploaded
 LB_UPLOADING=Uploading...
 LB_USERNAME=Username
 LB_WIDTH=Width

@@ -45,5 +45,6 @@ public class NetworkConstants {
     public static final int CODE_SERVER_ERROR = 0x0;
     public static final int CODE_OK = 0x1;
     public static final int CODE_MAP_EXISTING = 0x10;
+    public static final int CODE_REJECTED = 0x11;
 
 }

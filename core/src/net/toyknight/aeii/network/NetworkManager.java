@@ -425,6 +425,24 @@ public class NetworkManager {
         }
     }
 
+    public static void submitRecord(String username, String campaign_code, int stage_number, int turns, int actions)
+            throws AEIIException {
+        JSONObject request = createRequest(NetworkConstants.SUBMIT_RECORD);
+        request.put("username", username);
+        request.put("campaign_code", campaign_code);
+        request.put("stage_number", stage_number);
+        request.put("turns", turns);
+        request.put("actions", actions);
+        JSONObject response = sendRequest(request);
+        if (response == null) {
+            throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+        } else {
+            if (!response.getBoolean("approved")) {
+                throw new AEIIException(Language.getText("MSG_ERR_AEA") + " [" + NetworkConstants.CODE_REJECTED + "]");
+            }
+        }
+    }
+
     public static void notifyLeaveRoom() throws JSONException {
         JSONObject notification = createNotification(NetworkConstants.PLAYER_LEAVING);
         sendNotification(notification);

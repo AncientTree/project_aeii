@@ -485,6 +485,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     @Override
     public void show() {
         super.show();
+        getGameManager().setRanking(true);
         allow_cheating = false;
         reconnecting = false;
         cheated = false;

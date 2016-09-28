@@ -117,7 +117,7 @@ public class LeaderboardDialog extends BasicDialog {
                     label_online_turns.setText(Language.getText("LB_TURNS") + ": - [?]");
                 }
                 if (result.getActions() > 0) {
-                    label_online_turns.setText(
+                    label_online_actions.setText(
                             Language.getText("LB_ACTIONS") + ": " + result.getActions() + " [" + result.getUsernameActions() + "]");
                 } else {
                     label_online_actions.setText(Language.getText("LB_ACTIONS") + ": - [?]");

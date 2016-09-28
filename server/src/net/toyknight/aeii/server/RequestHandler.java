@@ -381,6 +381,7 @@ public class RequestHandler {
 
     public void onRecordSubmitted(Player player, JSONObject request) {
         JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
+        String username = request.getString("username");
         String campaign_code = request.getString("campaign_code");
         int stage_number = request.getInt("stage_number");
         int turns = request.getInt("turns");
@@ -388,7 +389,7 @@ public class RequestHandler {
         if (stage_number >= 0 && turns > 0 && actions > 0) {
             try {
                 getContext().getDatabaseManager().submitRecord(
-                        player.getUsername(), player.getAddress(), campaign_code, stage_number, turns, actions);
+                       username, player.getAddress(), campaign_code, stage_number, turns, actions);
                 response.put("approved", true);
             } catch (SQLException e) {
                 response.put("approved", false);
