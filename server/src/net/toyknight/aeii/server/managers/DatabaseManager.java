@@ -116,7 +116,7 @@ public class DatabaseManager {
 
     public LeaderboardRecord getBestRecord(String campaign_code, int stage_number) throws SQLException {
         PreparedStatement turns_statement = getConnection().prepareStatement(
-                "SELECT username, MAX(turns) AS turns FROM leaderboard WHERE campaign_code = ? AND stage_number = ? ORDER BY timestamp ASC");
+                "SELECT username, MIN(turns) AS turns FROM leaderboard WHERE campaign_code = ? AND stage_number = ? ORDER BY timestamp ASC");
         turns_statement.setString(1, campaign_code);
         turns_statement.setInt(2, stage_number);
         ResultSet turns_result = turns_statement.executeQuery();
@@ -128,7 +128,7 @@ public class DatabaseManager {
         }
         turns_result.close();
         PreparedStatement actions_statement = getConnection().prepareStatement(
-                "SELECT username, MAX(actions) AS actions FROM leaderboard WHERE campaign_code = ? AND stage_number = ? ORDER BY timestamp ASC");
+                "SELECT username, MIN(actions) AS actions FROM leaderboard WHERE campaign_code = ? AND stage_number = ? ORDER BY timestamp ASC");
         actions_statement.setString(1, campaign_code);
         actions_statement.setInt(2, stage_number);
         ResultSet actions_result = actions_statement.executeQuery();
