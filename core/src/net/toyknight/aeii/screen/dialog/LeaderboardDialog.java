@@ -7,6 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.concurrent.AsyncTask;
+import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.network.entity.LeaderboardRecord;
 import net.toyknight.aeii.screen.StageScreen;
 import net.toyknight.aeii.utils.Language;
 
@@ -90,8 +95,44 @@ public class LeaderboardDialog extends BasicDialog {
     }
 
     private void tryLoadOnlineRecord() {
-        label_online_turns.setText(Language.getText("LB_TURNS") + ": - [?]");
-        label_online_actions.setText(Language.getText("LB_ACTIONS") + ": - [?]");
+        getOwner().showPlaceholder(Language.getText("LB_CONNECTING"));
+        getContext().submitAsyncTask(new AsyncTask<LeaderboardRecord>() {
+            @Override
+            public LeaderboardRecord doTask() throws Exception {
+                if (NetworkManager.connect(GameContext.CAMPAIGN_SERVER)) {
+                    return NetworkManager.requestBestRecord(campaign_code, stage_number);
+                } else {
+                    throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+                }
+            }
+
+            @Override
+            public void onFinish(LeaderboardRecord result) {
+                NetworkManager.disconnect();
+                getOwner().closePlaceholder();
+                if (result.getTurns() > 0) {
+                    label_online_turns.setText(
+                            Language.getText("LB_TURNS") + ": " + result.getTurns() + " [" + result.getUsernameTurns() + "]");
+                } else {
+                    label_online_turns.setText(Language.getText("LB_TURNS") + ": - [?]");
+                }
+                if (result.getActions() > 0) {
+                    label_online_actions.setText(
+                            Language.getText("LB_ACTIONS") + ": " + result.getActions() + " [" + result.getUsernameActions() + "]");
+                } else {
+                    label_online_actions.setText(Language.getText("LB_ACTIONS") + ": - [?]");
+                }
+            }
+
+            @Override
+            public void onFail(String message) {
+                NetworkManager.disconnect();
+                getOwner().closePlaceholder();
+                getOwner().showNotification(message, null);
+                label_online_turns.setText(Language.getText("LB_TURNS") + ": - [?]");
+                label_online_actions.setText(Language.getText("LB_ACTIONS") + ": - [?]");
+            }
+        });
     }
 
     private void tryLoadLocalRecord() {

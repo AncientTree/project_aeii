@@ -495,7 +495,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         cursor_map_x = team_focus.x;
         cursor_map_y = team_focus.y;
 
-        btn_message.setVisible(NetworkManager.isConnected());
+        btn_message.setVisible(NetworkManager.isConnected() && getGame().getType() == GameCore.SKIRMISH);
 
         if (NetworkManager.isConnected()) {
             Array<PlayerSnapshot> players = new Array<PlayerSnapshot>(getContext().getRoomManager().getPlayers());
@@ -836,7 +836,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     public void update() {
         action_button_bar.updateButtons();
-        btn_message.setVisible(NetworkManager.isConnected() && !message_box.isVisible());
+        btn_message.setVisible(
+                NetworkManager.isConnected() && getGame().getType() == GameCore.SKIRMISH && !message_box.isVisible());
         message_board.setFading(!message_box.isVisible());
         GameContext.setButtonEnabled(btn_end_turn, canEndTurn());
         GameContext.setButtonEnabled(btn_menu, !menu.isVisible());

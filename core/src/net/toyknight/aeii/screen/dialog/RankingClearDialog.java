@@ -8,7 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.AudioManager;
+import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.concurrent.AsyncTask;
+import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.screen.StageScreen;
 import net.toyknight.aeii.utils.Language;
 
@@ -47,6 +51,11 @@ public class RankingClearDialog extends BasicDialog {
         });
         button_pane.add(btn_leave).size(ts * 2, ts).padRight(ts / 2);
         TextButton btn_upload = new TextButton(Language.getText("LB_UPLOAD"), getContext().getSkin());
+        btn_upload.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                upload();
+            }
+        });
         button_pane.add(btn_upload).size(ts * 2, ts);
 
         pack();
@@ -57,6 +66,40 @@ public class RankingClearDialog extends BasicDialog {
         getContext().onCampaignNextStage();
         getContext().gotoCampaignScreen();
         AudioManager.loopMainTheme();
+    }
+
+    private void upload() {
+        getOwner().showPlaceholder(Language.getText("LB_UPLOADING"));
+        getContext().submitAsyncTask(new AsyncTask<Void>() {
+            @Override
+            public Void doTask() throws Exception {
+                if (NetworkManager.connect(GameContext.CAMPAIGN_SERVER)) {
+                    NetworkManager.submitRecord(
+                            getContext().getUsername(),
+                            getContext().getCampaignContext().getCurrentCampaign().getCode(),
+                            getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber(),
+                            getContext().getGame().getCurrentTurn(),
+                            getContext().getGame().getStatistics().getActions());
+                } else {
+                    throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+                }
+                return null;
+            }
+
+            @Override
+            public void onFinish(Void result) {
+                NetworkManager.disconnect();
+                getOwner().closePlaceholder();
+                getOwner().showNotification(Language.getText("LB_UPLOADED"), null);
+            }
+
+            @Override
+            public void onFail(String message) {
+                NetworkManager.disconnect();
+                getOwner().closePlaceholder();
+                getOwner().showNotification(message, null);
+            }
+        });
     }
 
     @Override

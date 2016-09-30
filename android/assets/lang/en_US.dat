@@ -458,13 +458,14 @@ LB_TURNS=Turns
 LB_TYPE=Type
 LB_UHA=Units having this ability
 LB_UPLOAD=Upload
+LB_UPLOADED=Uploaded
 LB_UPLOADING=Uploading...
 LB_USERNAME=Username
 LB_WIDTH=Width
 LB_WIN=Wins
 LB_YES=Yes
 
-MSG_ERR_AEA=An error occurred :(
+MSG_ERR_AEA=An error occurred.
 MSG_ERR_BMF=Broken map file :(
 MSG_ERR_BSF=Broken save file :(
 MSG_ERR_CCS=Cannot connect to server

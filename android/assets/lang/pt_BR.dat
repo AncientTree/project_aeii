@@ -457,13 +457,14 @@ LB_TURNS=Turns
 LB_TYPE=Tipo
 LB_UHA=Unidades com essa habilidade
 LB_UPLOAD=Upload
+LB_UPLOADED=Uploaded
 LB_UPLOADING=Uploading...
 LB_USERNAME=Usuário
 LB_WIDTH=Largura
 LB_WIN=Venceu
 LB_YES=Sim
 
-MSG_ERR_AEA=Ocorreu um erro :(
+MSG_ERR_AEA=Ocorreu um erro
 MSG_ERR_BMF=Arquivo de mapa corrompido :(
 MSG_ERR_BSF=Arquivo de Save comrrompido :(
 MSG_ERR_CCS=Não foi possível conectar no servidor

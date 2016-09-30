@@ -124,7 +124,8 @@ public class ServerContext {
         request_handler = new RequestHandler(this);
         player_manager = new PlayerManager(this);
         room_manager = new RoomManager(this);
-        if (getConfiguration().isMapManagerEnabled()) {
+        map_manager = new MapManager(this);
+        if (getConfiguration().isDatabaseEnabled()) {
             try {
                 database_manager = new DatabaseManager();
                 database_manager.connect(
@@ -135,7 +136,6 @@ public class ServerContext {
             } catch (Exception ex) {
                 throw new ServerException(TAG, "Error initializing server [exception while connecting to DB]", ex);
             }
-            map_manager = new MapManager(this);
         }
         //initialize server object
         server = new Server(90 * 1024, 90 * 1024);

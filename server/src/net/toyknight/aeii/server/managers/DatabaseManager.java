@@ -1,6 +1,7 @@
 package net.toyknight.aeii.server.managers;
 
 import com.badlogic.gdx.utils.ObjectSet;
+import net.toyknight.aeii.network.entity.LeaderboardRecord;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 
 import java.sql.*;
@@ -97,6 +98,47 @@ public class DatabaseManager {
         statement.setString(2, author);
         ResultSet result = statement.executeQuery();
         return result.next() && result.getInt(1) == 1;
+    }
+
+    public void submitRecord(
+            String username, String address, String campaign_code, int stage_number, int turns, int actions)
+            throws SQLException {
+        PreparedStatement statement = getConnection().prepareStatement(
+                "INSERT INTO leaderboard (username, address, campaign_code, stage_number, turns, actions, timestamp) VALUES (?, ?, ?, ?, ?, ?, now())");
+        statement.setString(1, username);
+        statement.setString(2, address);
+        statement.setString(3, campaign_code);
+        statement.setInt(4, stage_number);
+        statement.setInt(5, turns);
+        statement.setInt(6, actions);
+        statement.executeUpdate();
+    }
+
+    public LeaderboardRecord getBestRecord(String campaign_code, int stage_number) throws SQLException {
+        PreparedStatement turns_statement = getConnection().prepareStatement(
+                "SELECT * FROM leaderboard WHERE campaign_code = ? AND stage_number = ? ORDER BY turns ASC, timestamp ASC LIMIT 1");
+        turns_statement.setString(1, campaign_code);
+        turns_statement.setInt(2, stage_number);
+        ResultSet turns_result = turns_statement.executeQuery();
+        String best_turns_username = "none";
+        int best_turns = -1;
+        if (turns_result.first() && turns_result.getInt("turns") > 0) {
+            best_turns_username = turns_result.getString("username");
+            best_turns = turns_result.getInt("turns");
+        }
+        turns_result.close();
+        PreparedStatement actions_statement = getConnection().prepareStatement(
+                "SELECT * FROM leaderboard WHERE campaign_code = ? AND stage_number = ? ORDER BY actions ASC, timestamp ASC LIMIT 1");
+        actions_statement.setString(1, campaign_code);
+        actions_statement.setInt(2, stage_number);
+        ResultSet actions_result = actions_statement.executeQuery();
+        String best_actions_username = "none";
+        int best_actions = -1;
+        if (actions_result.first() && actions_result.getInt("actions") > 0) {
+            best_actions_username = actions_result.getString("username");
+            best_actions = actions_result.getInt("actions");
+        }
+        return new LeaderboardRecord(best_turns, best_turns_username, best_actions, best_actions_username);
     }
 
 }

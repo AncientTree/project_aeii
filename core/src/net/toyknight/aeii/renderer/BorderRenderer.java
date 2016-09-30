@@ -22,7 +22,8 @@ public class BorderRenderer {
 
         Texture border_texture_sheet = getResources().getBorderTexture();
         borders = ResourceManager.createFrames(border_texture_sheet, 8, 1);
-        border_size = getResources().getBorderTexture().getHeight();
+        int ts = getContext().getTileSize();
+        border_size = ts * getResources().getBorderTexture().getHeight() / 48;
     }
 
     public GameContext getContext() {

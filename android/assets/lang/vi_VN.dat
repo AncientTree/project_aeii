@@ -1237,6 +1237,9 @@ LB_UHA=Các Đơn Vị Có Khả Năng Này
 LB_UPLOAD=Tải Lên
 
 
+LB_UPLOADED=Tải lên thành công
+
+
 LB_UPLOADING=Đang Tải Lên...
 
 
@@ -1253,7 +1256,7 @@ LB_YES=Vâng
 
 
 
-MSG_ERR_AEA=Có lỗi xảy ra :(
+MSG_ERR_AEA=Có lỗi xảy ra
 
 
 MSG_ERR_BMF=Mục bản đồ bị hỏng :(

@@ -50,14 +50,14 @@ public class CampaignScreen extends StageScreen {
         scenario_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
-                updateButtons();
                 updateStages();
+                updateButtons();
             }
 
             @Override
             public void onChange(int index, Object value) {
-                updateButtons();
                 updateStages();
+                updateButtons();
             }
         });
         sp_scenario_list = new ScrollPane(scenario_list, getContext().getSkin());
@@ -70,6 +70,17 @@ public class CampaignScreen extends StageScreen {
         addActor(label_stages);
 
         stage_list = new StringList<StageController.Snapshot>(getContext(), ts);
+        stage_list.setListener(new StringList.SelectionListener() {
+            @Override
+            public void onSelect(int index, Object value) {
+                updateButtons();
+            }
+
+            @Override
+            public void onChange(int index, Object value) {
+                updateButtons();
+            }
+        });
         sp_stage_list = new ScrollPane(stage_list, getContext().getSkin());
         sp_stage_list.setBounds(list_width + ts, ts * 2, list_width, Gdx.graphics.getHeight() - ts * 3);
         addActor(sp_stage_list);
@@ -120,7 +131,7 @@ public class CampaignScreen extends StageScreen {
         CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
         StageController.Snapshot stage_snapshot = stage_list.getSelected();
         if (scenario_snapshot != null && stage_snapshot != null) {
-            if (scenario_snapshot.ranking) {
+            if (stage_snapshot.ranking) {
                 campaign_mode_dialog.initialize(scenario_snapshot.code, stage_snapshot.stage);
                 showDialog("mode");
             } else {
@@ -161,13 +172,14 @@ public class CampaignScreen extends StageScreen {
 
     private void updateButtons() {
         CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
+        StageController.Snapshot stage_snapshot = stage_list.getSelected();
         if (scenario_snapshot == null) {
             label_difficulty.setText(Language.getText("LB_DIFFICULTY") + ": -");
             btn_leaderboard.setVisible(false);
         } else {
             label_difficulty.setText(Language.getText("LB_DIFFICULTY") +
                     ": " + Language.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
-            btn_leaderboard.setVisible(scenario_snapshot.ranking);
+            btn_leaderboard.setVisible(stage_snapshot.ranking);
         }
     }
 
@@ -175,8 +187,8 @@ public class CampaignScreen extends StageScreen {
     public void show() {
         super.show();
         updateScenarios();
-        updateButtons();
         updateStages();
+        updateButtons();
     }
 
     @Override
@@ -196,5 +208,8 @@ public class CampaignScreen extends StageScreen {
         super.draw();
     }
 
+    @Override
+    public void onDisconnect() {
+    }
 
 }

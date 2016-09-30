@@ -15,8 +15,8 @@ public class AEICampaign extends CampaignController {
 
     @Override
     public void initialize() {
-        addStage(new AEIStage1());
-        addStage(new AEIStage2());
+        addStage(new AEIStage1()).setRanking(false);
+        addStage(new AEIStage2()).setRanking(false);
         addStage(new AEIStage3());
         addStage(new AEIStage4());
         addStage(new AEIStage5());

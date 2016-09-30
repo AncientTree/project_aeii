@@ -461,13 +461,14 @@ LB_TURNS=回合数
 LB_TYPE=玩家类型
 LB_UHA=拥有该能力的单位
 LB_UPLOAD=上传
+LB_UPLOADED=上传完成
 LB_UPLOADING=上传中...
 LB_USERNAME=用户名
 LB_WIDTH=宽度
 LB_WIN=胜利
 LB_YES=是
 
-MSG_ERR_AEA=发生了一个错误 :(
+MSG_ERR_AEA=发生了一个错误
 MSG_ERR_BMF=地图文件损坏 :(
 MSG_ERR_BSF=存档文件损坏 :(
 MSG_ERR_CCS=无法连接至服务器

@@ -18,9 +18,9 @@ public class ServerConfiguration {
 
     private int port;
 
-    private boolean map_manager_enabled;
-
     private String admin_token;
+
+    private boolean database_enabled;
 
     private String database_host;
 
@@ -36,7 +36,7 @@ public class ServerConfiguration {
         //parse the configuration
         port = Integer.parseInt(configuration.get("PORT", "5438"));
         admin_token = configuration.get("ADMIN_TOKEN", "123456");
-        map_manager_enabled = Boolean.parseBoolean(configuration.get("MAP_MANAGER_ENABLED", "false"));
+        database_enabled = Boolean.parseBoolean(configuration.get("DATABASE_ENABLED", "false"));
         database_host = configuration.get("DATABASE_HOST", "127.0.0.1");
         database_name = configuration.get("DATABASE_NAME", "aeii");
         database_username = configuration.get("DATABASE_USERNAME", "undefined");
@@ -51,8 +51,8 @@ public class ServerConfiguration {
         return admin_token;
     }
 
-    public boolean isMapManagerEnabled() {
-        return map_manager_enabled;
+    public boolean isDatabaseEnabled() {
+        return database_enabled;
     }
 
     public String getDatabaseHost() {

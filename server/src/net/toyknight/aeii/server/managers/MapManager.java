@@ -1,6 +1,5 @@
 package net.toyknight.aeii.server.managers;
 
-import com.esotericsoftware.minlog.Log;
 import net.toyknight.aeii.AEIIException;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.entity.MapSnapshot;
@@ -16,8 +15,6 @@ import java.sql.SQLException;
  */
 public class MapManager {
 
-    private static final String TAG = "MAP MANAGER";
-
     private final ServerContext context;
 
     private final Object CHANGE_LOCK = new Object();
@@ -28,30 +25,6 @@ public class MapManager {
 
     public ServerContext getContext() {
         return context;
-    }
-
-    public void index() {
-        File map_dir = new File("maps");
-        File[] map_files = map_dir.listFiles(new MapFileFilter());
-        for (File map_file : map_files) {
-            try {
-                FileInputStream fis = new FileInputStream(map_file);
-                DataInputStream dis = new DataInputStream(fis);
-                Map map = MapFactory.createMap(dis);
-
-                dis.close();
-                fis.close();
-
-                int id = getContext().getDatabaseManager().addMap(
-                        getCapacity(map), map_file.getName(), map.getAuthor().trim().toLowerCase(), MapFactory.isSymmetric(map));
-                boolean success = map_file.renameTo(new File("maps-temp/m" + id));
-                if (!success) {
-                    Log.error(TAG, "Failed renaming map file: " + map_file.getName());
-                }
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-            }
-        }
     }
 
     private void writeMap(File map_file, Map map) throws IOException {
@@ -152,15 +125,6 @@ public class MapManager {
             }
         }
         return player_count;
-    }
-
-    private class MapFileFilter implements FileFilter {
-
-        @Override
-        public boolean accept(File file) {
-            return !file.isDirectory() && file.getName().endsWith(".aem");
-        }
-
     }
 
     public class MapExistingException extends Exception {
