@@ -82,6 +82,10 @@ public class ChallengeStage3 extends StageController {
                 getContext().restore(2);
             }
         }
+        if (getContext().count_unit(2) == 0) {
+            getContext().destroy_team(2);
+        }
+
     }
 
     @Override
