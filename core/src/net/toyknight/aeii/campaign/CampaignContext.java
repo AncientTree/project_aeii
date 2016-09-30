@@ -171,11 +171,12 @@ public class CampaignContext {
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CAMPAIGN_MESSAGE, message_list);
         }
 
-        public void reinforce(int team, Reinforcement... reinforcements) {
-            reinforce(team, -1, -1, reinforcements);
+        public boolean reinforce(int team, Reinforcement... reinforcements) {
+            return reinforce(team, -1, -1, reinforcements);
         }
 
-        public void reinforce(int team, int from_x, int from_y, Reinforcement... reinforcements) {
+        public boolean reinforce(int team, int from_x, int from_y, Reinforcement... reinforcements) {
+            boolean reinforced = false;
             JSONArray json_reinforcements = new JSONArray();
             for (Reinforcement reinforcement : reinforcements) {
                 JSONObject json_reinforcement = new JSONObject();
@@ -184,9 +185,13 @@ public class CampaignContext {
                 json_reinforcement.put("x", reinforcement.getMapX());
                 json_reinforcement.put("y", reinforcement.getMapY());
                 json_reinforcements.put(json_reinforcement);
+                if (getContext().getGame().getMap().getUnit(reinforcement.getMapX(), reinforcement.getMapY()) == null) {
+                    reinforced = true;
+                }
             }
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(
                     GameEvent.CAMPAIGN_REINFORCE, team, from_x, from_y, json_reinforcements);
+            return reinforced;
         }
 
         public int count_unit(int team) {

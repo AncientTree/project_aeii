@@ -59,33 +59,29 @@ public class ChallengeStage3 extends StageController {
             getContext().clear();
         } else {
             if (getContext().tile(x, y).isCastle() && team == getPlayerTeam() && y == 6) {
-                getContext().reinforce(2,
+                boolean reinforced = getContext().reinforce(2,
                         new Reinforcement(8, 11, 5),
                         new Reinforcement(8, 11, 6),
                         new Reinforcement(8, 11, 7));
-                getContext().restore(2);
+                if (reinforced) getContext().restore(2);
             }
             if (getContext().tile(x, y).isCastle() && team == getPlayerTeam() && y == 0) {
-                getContext().reinforce(2,
+                boolean reinforced = getContext().reinforce(2,
                         new Reinforcement(8, 10, 3),
                         new Reinforcement(8, 11, 2),
                         new Reinforcement(8, 11, 3),
                         new Reinforcement(8, 11, 4));
-                getContext().restore(2);
+                if (reinforced) getContext().restore(2);
             }
             if (getContext().tile(x, y).isVillage() && team == getPlayerTeam() && y <= 2) {
-                getContext().reinforce(2,
+                boolean reinforced = getContext().reinforce(2,
                         new Reinforcement(8, 1, 8),
                         new Reinforcement(8, 3, 9),
                         new Reinforcement(8, 5, 9),
                         new Reinforcement(8, 7, 8));
-                getContext().restore(2);
+                if (reinforced) getContext().restore(2);
             }
         }
-        if (getContext().count_unit(2) == 0) {
-            getContext().destroy_team(2);
-        }
-
     }
 
     @Override
