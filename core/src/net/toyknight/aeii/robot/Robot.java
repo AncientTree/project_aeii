@@ -765,7 +765,12 @@ public class Robot {
             int score = 0;
             Position current_position = getGame().getMap().getPosition(unit);
             if (is_enemy) {
-                if (getDistance(position, target) <= unit.getMaxAttackRange()) {
+                Unit enemy;
+                if ((enemy = getGame().getMap().getUnit(target)) != null
+                        && UnitToolkit.isWithinRange(enemy, position.x, position.y)) {
+                    score -= getUnitValue(unit) / 2;
+                }
+                if (getDistance(position, target) == unit.getMaxAttackRange()) {
                     score += 400;
                 } else {
                     score += (getDistance(current_position, target) - getDistance(position, target)) * 50;
