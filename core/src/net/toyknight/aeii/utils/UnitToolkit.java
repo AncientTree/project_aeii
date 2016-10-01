@@ -179,7 +179,7 @@ public class UnitToolkit {
             attack_bonus += enemy_count * 10;
         }
         if (attacker.hasStatus(Status.INSPIRED)) {
-            attack_bonus += 10;
+            attack_bonus += 5;
         }
         return attack_bonus;
     }
