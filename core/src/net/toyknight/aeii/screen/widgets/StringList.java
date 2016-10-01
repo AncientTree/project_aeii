@@ -150,11 +150,13 @@ public class StringList<T> extends AEIIWidget {
     }
 
     private String toString(T item) {
+        String str;
         if (item instanceof FileHandle) {
-            return ((FileHandle) item).name();
+            str = ((FileHandle) item).name();
         } else {
-            return item.toString();
+            str = item.toString();
         }
+        return str == null ? "" : str;
     }
 
     public interface SelectionListener {
