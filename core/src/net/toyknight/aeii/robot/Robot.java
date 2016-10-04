@@ -571,13 +571,26 @@ public class Robot {
         int score = 0;
         int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, false);
         defender.changeCurrentHp(-attack_damage);
-        if (defender.isCommander()) {
-            score += defender.getCurrentHp() <= 0 ?
-                    getUnitValue(defender) * 20 : attack_damage * getUnitValue(defender) / 10;
+        int damage_score = attack_damage * getUnitValue(defender) / 20;
+        int killing_score;
+        if (defender.getCurrentHp() <= 0) {
+            killing_score = getUnitValue(defender) * 10 / 4;
+            if (defender.isCommander()) {
+                killing_score += 500;
+            }
+            if (defender.isCrystal()) {
+                killing_score += 1000;
+            }
+            if (defender.hasAbility(Ability.HEALER)) {
+                killing_score += 200;
+            }
+            if (defender.hasAbility(Ability.REFRESH_AURA)) {
+                killing_score += 100;
+            }
         } else {
-            score += defender.getCurrentHp() <= 0 ?
-                    getUnitValue(defender) * 10 : attack_damage * getUnitValue(defender) / 20;
+            killing_score = 0;
         }
+        score += damage_score + killing_score;
         if (defender.getStatus() == null) {
             UnitToolkit.attachAttackStatus(attacker, defender);
             if (Status.isDebuff(defender.getStatus())) {
@@ -752,7 +765,12 @@ public class Robot {
             int score = 0;
             Position current_position = getGame().getMap().getPosition(unit);
             if (is_enemy) {
-                if (getDistance(position, target) <= unit.getMaxAttackRange()) {
+                Unit enemy;
+                if ((enemy = getGame().getMap().getUnit(target)) != null
+                        && UnitToolkit.isWithinRange(enemy, position.x, position.y)) {
+                    score -= getUnitValue(unit) / 2;
+                }
+                if (getDistance(position, target) == unit.getMaxAttackRange()) {
                     score += 400;
                 } else {
                     score += (getDistance(current_position, target) - getDistance(position, target)) * 50;
@@ -1017,10 +1035,10 @@ public class Robot {
 
     private int getUnitValue(Unit unit) {
         if (unit.isCommander()) {
-            return unit.getPrice() + 500;
+            return unit.getPrice() + 200;
         }
         if (unit.isCrystal()) {
-            return unit.getPrice() + 2000;
+            return unit.getPrice() + 500;
         }
         if (unit.isSkeleton()) {
             return 100;
