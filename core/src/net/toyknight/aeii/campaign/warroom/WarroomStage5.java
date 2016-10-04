@@ -1,5 +1,6 @@
 package net.toyknight.aeii.campaign.warroom;
 
+import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
@@ -24,6 +25,7 @@ public class WarroomStage5 extends StageController {
     public void onGameStart() {
         Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1"));
         getContext().message(message);
+        getContext().gold(0, 2000);
     }
 
     @Override
@@ -43,9 +45,17 @@ public class WarroomStage5 extends StageController {
         if (isCommander(unit, getPlayerTeam())) {
             getContext().fail();
         }
-        else {
+        else if(unit.getIndex() == 7){
+            for (Unit player : getContext().get_units(0)) {
+
+                getContext().hp_change(player.getX(), player.getY(), player.getMaxHp() - player.getCurrentHp());
+            }
+
+        }
+        else{
             checkClear();
         }
+
 
     }
 
@@ -76,13 +86,14 @@ public class WarroomStage5 extends StageController {
     @Override
     public Rule getRule() {
         Rule rule = Rule.createDefault();
-        rule.setValue(Rule.Entry.UNIT_CAPACITY, 50);
+        rule.getAvailableUnits().removeValue(7, false);
+        rule.setValue(Rule.Entry.UNIT_CAPACITY, 40);
         return rule;
     }
 
     @Override
     public int getStartGold() {
-        return 1000;
+        return 0;
     }
 
     @Override
