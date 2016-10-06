@@ -226,11 +226,9 @@ public class CampaignContext {
             getCurrentCampaign().setAttribute(name, value);
         }
 
-        public void level(int unit_x, int unit_y, int experience) {
-            Unit unit = getManager().getGame().getMap().getUnit(unit_x, unit_y);
-            if (unit != null) {
-                unit.gainExperience(experience);
-            }
+        public void level_up(int unit_x, int unit_y) {
+            getContext().getGameManager().getGameEventExecutor().submitGameEvent(
+                    GameEvent.CAMPAIGN_LEVEL_UP, unit_x, unit_y);
         }
 
         public Tile tile(int map_x, int map_y) {

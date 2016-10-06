@@ -297,6 +297,10 @@ public class GameEventExecutor {
                 JSONArray notifications = event.getJSONArray("parameters").getJSONArray(0);
                 onCampaignNotification(notifications);
                 break;
+            case GameEvent.CAMPAIGN_LEVEL_UP:
+                target_x = event.getJSONArray("parameters").getInt(0);
+                target_y = event.getJSONArray("parameters").getInt(1);
+                onCampaignLevelUp(target_x, target_y);
             default:
                 //do nothing
         }
@@ -828,6 +832,15 @@ public class GameEventExecutor {
         for (int i = 0; i < notifications.length(); i++) {
             String message = notifications.getString(i);
             getAnimationDispatcher().submitMessageAnimation(message, 1f);
+        }
+    }
+
+    public void onCampaignLevelUp(int target_x, int target_y) {
+        Unit unit = getGame().getMap().getUnit(target_x, target_y);
+        if (unit != null && unit.getLevel() < 3) {
+            getManager().fireMapFocusEvent(target_x, target_y, false);
+            unit.gainExperience(unit.getLevelUpExperience() - unit.getCurrentExperience());
+            getAnimationDispatcher().submitUnitLevelUpAnimation(unit);
         }
     }
 
