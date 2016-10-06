@@ -381,17 +381,22 @@ public class RequestHandler {
 
     public void onRecordSubmitted(Player player, JSONObject request) {
         JSONObject response = PacketBuilder.create(NetworkConstants.RESPONSE);
-        String username = request.getString("username");
-        String campaign_code = request.getString("campaign_code");
-        int stage_number = request.getInt("stage_number");
-        int turns = request.getInt("turns");
-        int actions = request.getInt("actions");
-        if (stage_number >= 0 && turns > 0 && actions > 0) {
-            try {
-                getContext().getDatabaseManager().submitRecord(
-                       username, player.getAddress(), campaign_code, stage_number, turns, actions);
-                response.put("approved", true);
-            } catch (SQLException e) {
+        String v_string = request.getString("v_string");
+        if (getContext().getVerificationString().equals(v_string)) {
+            String username = request.getString("username");
+            String campaign_code = request.getString("campaign_code");
+            int stage_number = request.getInt("stage_number");
+            int turns = request.getInt("turns");
+            int actions = request.getInt("actions");
+            if (stage_number >= 0 && turns > 0 && actions > 0) {
+                try {
+                    getContext().getDatabaseManager().submitRecord(
+                            username, player.getAddress(), campaign_code, stage_number, turns, actions);
+                    response.put("approved", true);
+                } catch (SQLException e) {
+                    response.put("approved", false);
+                }
+            } else {
                 response.put("approved", false);
             }
         } else {

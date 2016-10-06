@@ -75,6 +75,7 @@ public class RankingClearDialog extends BasicDialog {
             public Void doTask() throws Exception {
                 if (NetworkManager.connect(GameContext.CAMPAIGN_SERVER)) {
                     NetworkManager.submitRecord(
+                            getContext().getVerificationString(),
                             getContext().getUsername(),
                             getContext().getCampaignContext().getCurrentCampaign().getCode(),
                             getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().getStageNumber(),

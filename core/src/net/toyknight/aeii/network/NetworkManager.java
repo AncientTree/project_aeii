@@ -425,9 +425,11 @@ public class NetworkManager {
         }
     }
 
-    public static void submitRecord(String username, String campaign_code, int stage_number, int turns, int actions)
+    public static void submitRecord(
+            String v_string, String username, String campaign_code, int stage_number, int turns, int actions)
             throws AEIIException {
         JSONObject request = createRequest(NetworkConstants.SUBMIT_RECORD);
+        request.put("v_string", v_string);
         request.put("username", username);
         request.put("campaign_code", campaign_code);
         request.put("stage_number", stage_number);
