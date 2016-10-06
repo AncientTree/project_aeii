@@ -62,13 +62,15 @@ public class MapManagementScreen extends StageScreen {
         int sp_width = (Gdx.graphics.getWidth() - ts * 3 / 2) / 2;
 
         Label label_online_map = new Label(Language.getText("LB_ONLINE_MAPS"), getContext().getSkin());
-        label_online_map.setAlignment(Align.center);
-        label_online_map.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, sp_width, ts);
+        label_online_map.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, sp_width - ts * 2, ts);
+        label_online_map.setAlignment(Align.left);
         addActor(label_online_map);
         Label label_local_map = new Label(Language.getText("LB_LOCAL_MAPS"), getContext().getSkin());
-        label_local_map.setAlignment(Align.center);
+        label_local_map.setAlignment(Align.right);
         label_local_map.setBounds(sp_width + ts, Gdx.graphics.getHeight() - ts, sp_width, ts);
         addActor(label_local_map);
+
+
 
         server_map_list = new StringList<Object>(getContext(), ts);
         sp_server_map_list = new ScrollPane(server_map_list, getContext().getSkin());
