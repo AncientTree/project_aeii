@@ -100,7 +100,7 @@ public class WarroomStage3 extends StageController {
 
     @Override
     public int getStartGold() {
-        return 450;
+        return 1000;
     }
 
     @Override

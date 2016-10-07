@@ -8,6 +8,7 @@ import net.toyknight.aeii.campaign.aeii.AEIICampaign;
 import net.toyknight.aeii.campaign.challenge.ChallengeCampaign;
 import net.toyknight.aeii.campaign.tutorial.TutorialCampaign;
 import net.toyknight.aeii.campaign.warroom.WarroomCampaign;
+import net.toyknight.aeii.campaign.toybox.ToyboxCampaign;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
@@ -52,6 +53,10 @@ public class CampaignContext {
         CampaignController campaign_warroom = new WarroomCampaign();
         campaign_warroom.initialize();
         campaigns.put(campaign_warroom.getCode(), campaign_warroom);
+
+        CampaignController campaign_toybox = new ToyboxCampaign();
+        campaign_toybox.initialize();
+        campaigns.put(campaign_toybox.getCode(), campaign_toybox);
     }
 
     public GameContext getContext() {

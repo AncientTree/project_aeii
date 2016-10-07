@@ -434,10 +434,11 @@ CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=But noted that winter is coming, the longer w
 CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=Your majesty, storm is coming! Take cover!
 CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=It's time! Kill them all!
 
-CAMPAIGN_WARROOM_STAGE_5_NAME=Siege
-CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_1=VICTORY: Defeat the red team to win..
+CAMPAIGN_WARROOM_STAGE_5_NAME=Rugged canyon
+CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_1=VICTORY: Defeat the red team to win.
 CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1=Your majesty, our enemy has taken the terrain, the battle will be tough!
+CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1=Your majesty, our enemy has taken the terrain, the battle will be tough. Destroy their catapult will boost our morale!
+CAMPAIGN_WARROOM_STAGE_5_MESSAGE_2=Your majesty, the enemy catapult has been destroyed, we shall win the fight!
 
 
 CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần 1)

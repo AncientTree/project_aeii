@@ -52,12 +52,12 @@ public class AEIIStage5 extends StageController {
         }
         if (unit.getTeam() == getPlayerTeam()
                 && unit.getY() > 4 && unit.getX() > 8 &&
-                getContext().get("reinforced2") == 1 && getContext().get("reinforced3") == 0) {
+                getContext().get("reinforced3") == 0) {
             reinforce3();
         }
         if (unit.getTeam() == getPlayerTeam()
                 && unit.getY() > 7 && unit.getX() > 14 &&
-                getContext().get("reinforced3") == 1 && getContext().get("reinforced4") == 0) {
+                getContext().get("reinforced4") == 0) {
             reinforce4();
         }
 

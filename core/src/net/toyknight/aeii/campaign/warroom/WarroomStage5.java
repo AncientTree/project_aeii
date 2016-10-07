@@ -25,7 +25,7 @@ public class WarroomStage5 extends StageController {
     public void onGameStart() {
         Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1"));
         getContext().message(message);
-        getContext().gold(0, 2000);
+        getContext().gold(0, 1500);
     }
 
     @Override
@@ -46,9 +46,18 @@ public class WarroomStage5 extends StageController {
             getContext().fail();
         }
         else if(unit.getIndex() == 7){
+            Message message1 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_5_MESSAGE_2"));
+            getContext().message(message1);
             for (Unit player : getContext().get_units(0)) {
 
-                getContext().hp_change(player.getX(), player.getY(), player.getMaxHp() - player.getCurrentHp());
+                if(player.getMaxHp() - player.getCurrentHp() <= 50) {
+                    getContext().hp_change(player.getX(), player.getY(), player.getMaxHp() - player.getCurrentHp());
+                }
+                else
+                {
+                    getContext().hp_change(player.getX(), player.getY(), 50);
+                }
+                getContext().level_up(player.getX(), player.getY());
             }
 
         }
