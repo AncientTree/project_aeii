@@ -309,7 +309,7 @@ public class GameEventExecutor {
     private void onCheckUnitDestroy(int team) {
         ObjectSet<Unit> destroyed_units = new ObjectSet<Unit>();
         ObjectSet<Position> destroy_positions = new ObjectSet<Position>();
-        for (Unit unit : getGame().getMap().getUnits()) {
+        for (Unit unit : getGame().getMap().getUnits().toArray()) {
             if ((team < 0 || unit.getTeam() == team) && unit.getCurrentHp() <= 0) {
                 destroyed_units.add(unit);
                 destroy_positions.add(getGame().getMap().getPosition(unit));
