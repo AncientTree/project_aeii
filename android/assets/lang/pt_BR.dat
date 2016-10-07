@@ -181,6 +181,24 @@ CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1=Your majesty, our enemy has taken the terrain, the battle will be tough. Destroy their catapult will boost our morale!
 CAMPAIGN_WARROOM_STAGE_5_MESSAGE_2=Your majesty, the enemy catapult has been destroyed, we shall win the fight!
 
+CAMPAIGN_TOYBOX_NAME=Toybox
+CAMPAIGN_TOYBOX_STAGE_1_NAME=Endless Mode
+CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_1=VICTORY: This is the endless arena, survive as many wave as possible.
+CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_1= This is the endless arena, survive as many wave as possible.
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_2= Rules: Enemy wave comes every 10 turns, or they comes when the last wave is defeated.
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_3= You will get supply every five waves, defeat your enemy as soon as possible to get bonus!
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4= Wave
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5= is coming!
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_6= You get gold
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_7= You get extra turn
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8= You have survived
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9= waves, you have kill enemy worth
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10= funds, you are the winner!
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_11= Bonus wave! Kill the crystal to get reinforcement!
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_12= Kill all skeletons in time to enter the bonus wave!
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_13= You fool! You get nothing!
+
 CAMPAIGN_AEI_NAME=Battle of Thorin Prequel
 CAMPAIGN_AEI_STAGE_1_NAME=Regroup
 CAMPAIGN_AEI_STAGE_1_OBJECTIVE=Rei Galamar must occupy castle, keep all troops alive.
