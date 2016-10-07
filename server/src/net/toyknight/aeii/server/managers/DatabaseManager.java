@@ -78,11 +78,16 @@ public class DatabaseManager {
         return snapshots;
     }
 
-    public ObjectSet<String> getAuthors(boolean symmetric) throws SQLException {
-        String sql = symmetric ?
+    public ObjectSet<String> getAuthors(String prefix, boolean symmetric) throws SQLException {
+        String prefix_modifier = prefix == null ? "" : " WHERE author LIKE ?";
+        String sql = (symmetric ?
                 "SELECT DISTINCT author FROM (SELECT * FROM maps WHERE symmetric = 1) AS symmetric_maps" :
-                "SELECT DISTINCT author FROM maps";
+                "SELECT DISTINCT author FROM maps")
+                + prefix_modifier;
         PreparedStatement statement = getConnection().prepareStatement(sql);
+        if (prefix != null) {
+            statement.setString(1, prefix + "%");
+        }
         ResultSet result = statement.executeQuery();
         ObjectSet<String> authors = new ObjectSet<String>();
         while (result.next()) {

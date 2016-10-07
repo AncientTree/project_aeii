@@ -40,7 +40,7 @@ public class GameContext extends Game implements GameManagerListener {
     public static final ServerConfiguration MAIN_SERVER = new ServerConfiguration("45.56.93.69", 5438, "main server");
     public static final ServerConfiguration TEST_SERVER = new ServerConfiguration("45.56.93.69", 5439, "test server");
     public static final ServerConfiguration MAP_SERVER = MAIN_SERVER;
-    public static final ServerConfiguration CAMPAIGN_SERVER = TEST_SERVER;
+    public static final ServerConfiguration CAMPAIGN_SERVER = MAIN_SERVER;
     private static final String TAG = "Main";
 
     private final int TILE_SIZE;

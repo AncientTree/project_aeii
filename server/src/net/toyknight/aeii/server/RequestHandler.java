@@ -242,7 +242,8 @@ public class RequestHandler {
                 String author = request.getString("author");
                 response.put("maps", getContext().getMapManager().getSerializedMapList(author, symmetric));
             } else {
-                response.put("maps", getContext().getMapManager().getSerializedAuthorList(symmetric));
+                String prefix = request.has("prefix") ? request.getString("prefix") : null;
+                response.put("maps", getContext().getMapManager().getSerializedAuthorList(prefix, symmetric));
             }
             player.sendTCP(response.toString());
         }
@@ -393,7 +394,8 @@ public class RequestHandler {
                     getContext().getDatabaseManager().submitRecord(
                             username, player.getAddress(), campaign_code, stage_number, turns, actions);
                     response.put("approved", true);
-                } catch (SQLException e) {
+                } catch (SQLException ex) {
+                    Log.error(TAG, "Error submitting record", ex);
                     response.put("approved", false);
                 }
             } else {
@@ -413,7 +415,8 @@ public class RequestHandler {
             LeaderboardRecord record = getContext().getDatabaseManager().getBestRecord(campaign_code, stage_number);
             response.put("response_code", NetworkConstants.CODE_OK);
             response.put("record", record.toJson());
-        } catch (SQLException ignored) {
+        } catch (SQLException ex) {
+            Log.error(TAG, "Error getting best record", ex);
             response.put("response_code", NetworkConstants.CODE_SERVER_ERROR);
         }
         player.sendTCP(response.toString());

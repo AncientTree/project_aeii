@@ -93,10 +93,10 @@ public class MapManager {
         }
     }
 
-    public JSONArray getSerializedAuthorList(boolean symmetric) {
+    public JSONArray getSerializedAuthorList(String prefix, boolean symmetric) {
         JSONArray list = new JSONArray();
         try {
-            for (String author : getContext().getDatabaseManager().getAuthors(symmetric)) {
+            for (String author : getContext().getDatabaseManager().getAuthors(prefix, symmetric)) {
                 MapSnapshot snapshot = new MapSnapshot(0, "null", author);
                 snapshot.setDirectory(true);
                 list.put(snapshot.toJson());
