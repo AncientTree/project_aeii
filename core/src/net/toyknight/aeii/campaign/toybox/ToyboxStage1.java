@@ -15,6 +15,14 @@ import java.util.Random;
 public class ToyboxStage1 extends StageController {
 
 
+    private void checkClear(){
+        if (getContext().count_unit(0) == 0 && getContext().count_castle(0) == 0) {
+            Message message_end = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8") + ' ' + (getContext().get("Wave") - 1) + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9")
+                    + ' ' + getContext().get("Gold") + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10"));
+            getContext().message(message_end);
+            getContext().clear();
+        }
+    }
 
     private boolean checkClean(){
         if(getContext().count_unit(1) == 0)
@@ -24,7 +32,8 @@ public class ToyboxStage1 extends StageController {
 
     private Reinforcement reinforce_trap(int index, int x, int y){
         if(getContext().get_unit(x, y) != null)
-            if(getContext().get_unit(x, y).isCommander() == false && getContext().get_unit(x, y).getTeam() == 0) {
+            if(getContext().get_unit(x, y).isCommander() == false) {
+                getContext().gold(1, getContext().get_gold(1) + getContext().get_unit(x, y).getPrice());
                 getContext().destroy_unit(x, y);
                 getContext().remove_tomb(x, y);
             }
@@ -43,7 +52,7 @@ public class ToyboxStage1 extends StageController {
     private void nextWave(int wave)
     {
         int gold;
-        Message message3 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4") + ' ' + getContext().get("Wave") + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5"));
+        Message message3 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4") + ' ' + wave + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5"));
         getContext().message(message3);
         switch(wave % 10){
             case 1:
@@ -170,11 +179,11 @@ public class ToyboxStage1 extends StageController {
             default:gold = 0;break;
         }
         getContext().gold(0, getContext().get_gold(0) + gold);
-        getContext().set("Wave", ++wave);
+        getContext().set("Wave", getContext().get("Wave") + 1);
         Message message_gold = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_6") + ' ' + gold);
         getContext().message(message_gold);
         if(wave % 10 != 9 && wave % 10 != 0) {
-            for (int i = 0; i < (getContext().get("Wave") - 2) / 10 && i < 3; i++) {
+            for (int i = 0; i < (wave - 2) / 10 && i < 3; i++) {
                 getContext().level_up(2, 2);
                 getContext().level_up(3, 2);
                 getContext().level_up(4, 2);
@@ -197,10 +206,16 @@ public class ToyboxStage1 extends StageController {
             Message message_crystal = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_11"));
             getContext().message(message_crystal);
         }
+        else;
+        if(wave > 30)
+        {
+            getContext().gold(1, getContext().get_gold(1) + ((wave - 20) / 10) * 1500);
+        }
     }
 
     @Override
     public void onGameStart() {
+        getContext().gold(0, 1500);
         Message message = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_1"));
         getContext().message(message);
         Message message1 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_2"));
@@ -212,7 +227,9 @@ public class ToyboxStage1 extends StageController {
         getContext().set("King", 1);
         getContext().set("Gold", 0);
 
+
     }
+
 
     @Override
     public void onUnitMoved(Unit unit, int x, int y) {
@@ -228,12 +245,7 @@ public class ToyboxStage1 extends StageController {
 
     @Override
     public void onUnitDestroyed(Unit unit) {
-        if (isCommander(unit, getPlayerTeam())) {
-            Message message_end = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8") + ' ' + (getContext().get("Wave") - 1) + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9")
-            + ' ' + getContext().get("Gold") + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10"));
-            getContext().message(message_end);
-            getContext().clear();
-        }
+        checkClear();
         if(isCrystal(unit, 1))
         {
             getContext().remove_tomb(unit.getX(), unit.getY());
@@ -335,7 +347,7 @@ public class ToyboxStage1 extends StageController {
 
     @Override
     public void onTileOccupied(int x, int y, int team) {
-
+        checkClear();
     }
 
     @Override
@@ -388,12 +400,13 @@ public class ToyboxStage1 extends StageController {
         rule.setValue(Rule.Entry.VILLAGE_INCOME, 0);
         rule.setValue(Rule.Entry.COMMANDER_INCOME, 0);
         rule.setValue(Rule.Entry.UNIT_CAPACITY, 50);
+        rule.getAvailableUnits().removeValue(9, false);
         return rule;
     }
 
     @Override
     public int getStartGold() {
-        return 2000;
+        return 0;
     }
 
     @Override
