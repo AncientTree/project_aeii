@@ -17,8 +17,7 @@ public class ToyboxCampaign extends CampaignController {
     @Override
     public void initialize() {
         setOpen(true);
-        addStage(new ToyboxStage1());
-
+        addStage(new ToyboxStage1()).setRanking(false);
     }
 
     @Override
