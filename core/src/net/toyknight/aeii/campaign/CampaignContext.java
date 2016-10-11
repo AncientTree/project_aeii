@@ -187,6 +187,7 @@ public class CampaignContext {
                 JSONObject json_reinforcement = new JSONObject();
                 json_reinforcement.put("index", reinforcement.getIndex());
                 json_reinforcement.put("head", reinforcement.getHead());
+                json_reinforcement.put("level", reinforcement.getLevel());
                 json_reinforcement.put("x", reinforcement.getMapX());
                 json_reinforcement.put("y", reinforcement.getMapY());
                 json_reinforcements.put(json_reinforcement);

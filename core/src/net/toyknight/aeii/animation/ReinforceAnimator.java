@@ -50,9 +50,9 @@ public class ReinforceAnimator extends UnitAnimator {
                     Position position = animation_positions.get("unit" + i);
                     Unit unit = getUnit("unit" + i);
                     if (unit.isAt(position.x, position.y)) {
-                        getCanvas().getRenderer().drawUnit(batch, unit, position.x, position.y);
+                        getCanvas().getRenderer().drawUnitWithInformation(batch, unit, position.x, position.y);
                     } else {
-                        getCanvas().getRenderer().drawUnit(batch, unit,
+                        getCanvas().getRenderer().drawUnitWithInformation(batch, unit,
                                 position.x, position.y,
                                 getOffsetX(position.x, unit.getX()),
                                 getOffsetY(position.x, position.y, unit.getX(), unit.getY()));
@@ -65,7 +65,7 @@ public class ReinforceAnimator extends UnitAnimator {
                 for (int i = 0; i <= n; i++) {
                     if (i < unit_count) {
                         Unit unit = getUnit("unit" + i);
-                        getCanvas().getRenderer().drawUnit(batch, unit, unit.getX(), unit.getY());
+                        getCanvas().getRenderer().drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
                     }
                 }
             }

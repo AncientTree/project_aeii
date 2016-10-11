@@ -655,17 +655,18 @@ public class GameEventExecutor {
             JSONObject reinforcement = reinforcements.getJSONObject(i);
             int index = reinforcement.getInt("index");
             int head = reinforcement.getInt("head");
+            int level = reinforcement.getInt("level");
             int map_x = reinforcement.getInt("x");
             int map_y = reinforcement.getInt("y");
             if (getGame().getMap().getUnit(map_x, map_y) == null) {
                 if (UnitFactory.isCommander(index)) {
                     if (getGame().isCommanderAlive(team)) {
-                        getGame().createUnit(index, team, map_x, map_y);
+                        getGame().createUnit(index, level, team, map_x, map_y);
                     } else {
                         getGame().restoreCommander(team, map_x, map_y);
                     }
                 } else {
-                    getGame().createUnit(index, team, map_x, map_y);
+                    getGame().createUnit(index, level, team, map_x, map_y);
                 }
                 if (head >= 0) {
                     getGame().getMap().getUnit(map_x, map_y).setHead(head);

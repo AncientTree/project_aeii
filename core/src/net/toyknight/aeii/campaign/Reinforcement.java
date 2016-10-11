@@ -10,6 +10,8 @@ public class Reinforcement {
     private final int map_x;
     private final int map_y;
 
+    private int level = 0;
+
     public Reinforcement(int index, int map_x, int map_y) {
         this(index, -1, map_x, map_y);
     }
@@ -27,6 +29,15 @@ public class Reinforcement {
 
     public int getHead() {
         return head;
+    }
+
+    public Reinforcement setLevel(int level) {
+        this.level = level <= 3 ? level : 3;
+        return this;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public int getMapX() {

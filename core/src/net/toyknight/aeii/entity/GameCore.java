@@ -273,9 +273,16 @@ public class GameCore implements Serializable {
     }
 
     public Unit createUnit(int index, int team, int x, int y) {
+        return createUnit(index, 0, team, x, y);
+    }
+
+    public Unit createUnit(int index, int level, int team, int x, int y) {
         Unit unit = UnitFactory.createUnit(index, team);
         unit.setX(x);
         unit.setY(y);
+        while (unit.getLevel() < level) {
+            unit.gainExperience(unit.getLevelUpExperience());
+        }
         getMap().addUnit(unit);
         updatePopulation(team);
         return unit;
