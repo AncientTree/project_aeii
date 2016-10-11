@@ -1,4 +1,4 @@
-﻿
+
 FONT=vi_VN.ttf
 
 
@@ -182,7 +182,7 @@ ABILITY_NAME_26=Tấn Công Mù Lòa
 ABILITY_NAME_27=Sự Phục Hồi
 
 
-ABILITY_NAME_28=Absorptive Skin
+ABILITY_NAME_28=Hấp Thụ
 
 
 
@@ -302,7 +302,7 @@ CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_5=trong khi tấn công, hãy nhớ chọn đ�
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_6=Ngoài ra còn có thêm hai đơn vị có sẵn cho việc chiêu mộ trong giai đoạn này: Nguyên Tố & phù thủy.
 
 
-CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_7=Nguyên Tố vốn ở dưới nước, vì vậy họ có thể chiến đấu tốt hơn nhiều khi dưới nước. Và phù thủy có thể triệu tập những bộ xương từ các đơn vị đã tử vong ,nên khá hữu ích.
+CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_7=Nguyên Tố này thích ở dưới nước, vì vậy họ có thể chiến đấu tốt hơn nhiều khi dưới nước. Và phù thủy có thể triệu tập những bộ xương từ các đơn vị đã tử vong ,nên khá hữu ích.
 
 
 CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_8=Hãy sử dụng những gì bạn đã học được trong giai đoạn trước đó để đánh bại tất cả kẻ thù và chiếm giữ lâu đài của kẻ thù!
@@ -318,42 +318,42 @@ CAMPAIGN_TUTORIAL_STAGE_3_MESSAGE_10=Có rất nhiều đơn vị hơn và khả
 CAMPAIGN_CHALLENGE_NAME=Thử Thách
 
 
-CAMPAIGN_CHALLENGE_STAGE_1_NAME=Anh hùng bao vây 
+CAMPAIGN_CHALLENGE_STAGE_1_NAME=Anh Hùng bao vây 
 
 
-CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù
+CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù
 
 
-CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải sống
+CAMPAIGN_CHALLENGE_STAGE_1_OBJECTIVE_2=(2): Chỉ huy của bạn phải sống
 
 
-CAMPAIGN_CHALLENGE_STAGE_1_MESSAGE_1=Kẻ thù đang đến, hãy chuẩn bị cho mình!
+CAMPAIGN_CHALLENGE_STAGE_1_MESSAGE_1=Kẻ thù đang đến, mọi người hãy chuẩn bị !
 
 
 
 CAMPAIGN_CHALLENGE_STAGE_2_NAME=Chiến tranh chớp nhoáng
 
 
-CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_1=VICTORY: Chiếm giữ tất cả lâu đài của kẻ thù
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_1=(1): Chiếm giữ tất cả lâu đài của kẻ thù
 
 
-CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải sống
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_2=(2): Chỉ huy của bạn phải sống
 
 
-CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 32.
+CAMPAIGN_CHALLENGE_STAGE_2_OBJECTIVE_3=(3): số lượt không vượt quá 32.
 
 
-CAMPAIGN_CHALLENGE_STAGE_2_MESSAGE_1=Đó là một trong những thành phố quan trọng của kẻ thù. Quân tiếp viện của kẻ thù ở trên đường đi, chúng ta cần phải nhanh lên. Nắm bắt tất cả các lâu đài quân đội màu xanh trong vòng 32 lượt để giành chiến thắng trong giai đoạn!
+CAMPAIGN_CHALLENGE_STAGE_2_MESSAGE_1=Đó là một trong những thành phố quan trọng của kẻ thù. Quân tiếp viện của kẻ thù rải rác trên đường đi, chúng ta cần phải nhanh lên. năm bắt tất cả các lâu đài quân đội màu xanh trong vòng 32 lượt để giành chiến thắng!
 
 
 
 CAMPAIGN_CHALLENGE_STAGE_3_NAME=Phán quyết cuối cùng
 
 
-CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_1=VICTORY: Chiếm giữ tất cả lâu đài kẻ thù
+CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_1=(1): Chiếm giữ tất cả lâu đài kẻ thù
 
 
-CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+CAMPAIGN_CHALLENGE_STAGE_3_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 
 
 CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=Chết tiệt, các thành phố của kẻ thù đã nhận thấy chúng tôi! Các hoạt động phục kích đã thất bại, chúng ta phải đấu tranh với họ phía trước. Chiếm giữ tất cả các lâu đài của kẻ thù!
@@ -362,101 +362,134 @@ CAMPAIGN_CHALLENGE_STAGE_3_MESSAGE_1=Chết tiệt, các thành phố của kẻ
 CAMPAIGN_CHALLENGE_STAGE_4_NAME=Thung lũng rung chuyển
 
 
-CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 
 
-CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 
 
-CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 200
+CAMPAIGN_CHALLENGE_STAGE_4_OBJECTIVE_3=(3): số lượt không vượt quá 200
 
 
-CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Tâu bệ hạ, có một thành trì tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
+CAMPAIGN_CHALLENGE_STAGE_4_MESSAGE_1=Tâu bệ hạ, có một lâu đài tên cướp trên núi, chúng ta cần phải loại bỏ chúng để bảo vệ làng!
 
-CAMPAIGN_CHALLENGE_STAGE_5_NAME=Endless Trail
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
-CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Your majesty, our enemy get power from the evil ritual, how do we defeat them?
+CAMPAIGN_CHALLENGE_STAGE_5_NAME=Con Đường Bất Tận
 
-CAMPAIGN_CHALLENGE_STAGE_6_NAME=Blasted Lands
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
-CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, this land is cursed, our undamaged troops is demoted each turn, be careful!
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài.
+
+CAMPAIGN_CHALLENGE_STAGE_5_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
+
+CAMPAIGN_CHALLENGE_STAGE_5_MESSAGE_1=Tâu bệ hạ, kẻ thù đã có được sức mạnh từ các nghi lễ ma quỷ, chúng ta làm thế nào để đánh bại họ?
+
+CAMPAIGN_CHALLENGE_STAGE_6_NAME=Cuồng Phong Đảo
+CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=(1): Tiêu diệt tất cã kẻ thù và chiếm giữ tất cả lâu đài.
+CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống.
+CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Tâu bệ hạ, hòn đảo này đã bị nguyền rủa, quân đội không bị thương của chúng ta sẽ gián cấp mỗi lượt, hãy cẩn thận!
 
 
-CAMPAIGN_WARROOM_NAME=Són Đen, Làng Chiến Tranh
+CAMPAIGN_WARROOM_NAME=Vòng Đen, Làng Chiến Tranh
 
 
 CAMPAIGN_WARROOM_STAGE_1_NAME=Hòn đảo ma
 
-CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 
-CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 
 CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1=Chỉ huy, hòn đảo này có vẻ kỳ lạ, chúng ta nên cẩn thận!
 
 
 CAMPAIGN_WARROOM_STAGE_2_NAME=Đền Thờ Trong Rừng
 
-CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1=VICTORY: Chiếm giữ tất cả lâu đài dưới ngôi đền
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1=(1): Chiếm giữ tất cả lâu đài dưới ngôi đền
 
-CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2=DEFEAT: Chỉ huy bạn phải còn sống
+CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 
-CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1=Tâu bệ hạ, chúng tôi đang tiếp cận ngôi đền của yêu quái, họ sẽ giết chết bất cứ ai đi qua rừng!
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1=Tâu bệ hạ, chúng ta đang tiếp cận ngôi đền của yêu quái, họ sẽ giết chết bất cứ ai đi qua rừng!
 
-CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2=trinh sát chúng tôi nhận thấy rằng có một đội quân bất tử ở phía tây, họ có khả năng bất tử !
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2=trinh sát của chúng ta nhận thấy rằng có một đội quân bất tử ở phía tây, họ có khả năng bất tử !
 
-CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3=Chiếm giữ đền để giành chiến thắng !!!
+CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3=Chiếm giữ ngôi đền để giành chiến thắng !!!
 
 
-CAMPAIGN_WARROOM_STAGE_3_NAME=Hành Trình Dài
+CAMPAIGN_WARROOM_STAGE_3_NAME=Cuộc Hành Trình Dài
 
-CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1=VICTORY: Đánh bại đội đỏ để giành chiến thắng...
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1=(1): Đánh bại đội đỏ để giành chiến thắng...
 
-CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy bạn phải sống
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2=(2): Chỉ huy bạn phải sống
 
-CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=DEFEAT: số lượt không vượt quá 50.
+CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3=(3): số lượt không vượt quá 50.
 
 CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1=Tâu bệ hạ, mục tiêu của chúng tôi là để đánh bại đội đỏ, nhưng chúng tôi chỉ có 50 lượt! 
 
 CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2=(Đánh bại các đội khác để lưu lượt)
 
 
-CAMPAIGN_WARROOM_STAGE_4_NAME=Dilemma
-CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1=VICTORY: Defeat the red team to win..
-CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1=Your majesty, we have arrived the north. Most of lords have surrendered, we are going to have our final battle!
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2=Enemy Attack!!!
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3=Enemy captured our castle! We must defense!
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4=Your majesty, we can try capture the castle ahead.
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5=Or we can retreated to get our castle back!
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=But noted that winter is coming, the longer we stay here, the more damage we will suffer!
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=Your majesty, storm is coming! Take cover!
-CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=It's time! Kill them all!
+CAMPAIGN_WARROOM_STAGE_4_NAME=Tiến Thoái Lưỡng Nan
 
-CAMPAIGN_WARROOM_STAGE_5_NAME=Rugged canyon
-CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_1=VICTORY: Defeat the red team to win.
-CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1=Your majesty, our enemy has taken the terrain, the battle will be tough. Destroy their catapult will boost our morale!
-CAMPAIGN_WARROOM_STAGE_5_MESSAGE_2=Your majesty, the enemy catapult has been destroyed, we shall win the fight!
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1=(1): Tiêu diệt đội đỏ..
 
-CAMPAIGN_TOYBOX_NAME=Toybox
-CAMPAIGN_TOYBOX_STAGE_1_NAME=Endless Mode
-CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_1=VICTORY: This is the endless arena, survive as many wave as possible.
-CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_1= This is the endless arena, survive as many wave as possible.
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_2= Rules: Enemy wave comes every 10 turns, or they comes when the last wave is defeated.
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_3= You will get supply every five waves, defeat your enemy as soon as possible to get bonus!
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4= Wave
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5= is coming!
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_6= You get gold
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_7= You get extra turn
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8= You have survived
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9= waves, you have kill enemy worth
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10= funds, you are the winner!
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_11= Bonus wave! Kill the crystal to get reinforcement!
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_12= Kill all skeletons in time to enter the bonus wave!
-CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_13= You fool! You get nothing!
+CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống.
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1=Tâu bệ hạ, chúng ta đã đến phía bắc. Hầu hết các lãnh chúa đã đầu hàng, đây là trận đấu cuối cùng của chúng ta !
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2=Kẻ thù tấn công!!!
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3=Kẻ thù đang chiếm lâu đài của chúng ta, chúng ta phải bảo vệ.
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4=Tâu bệ hạ, chúng ta có thể cố gắng chiếm giữ những lâu đài trước.
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5=Hoặc chúng ta có thể rút lui để lấy lâu đài của chúng ta trở lại!
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6=Nhưng ý rằng mùa đông đang sắp tới, còn chúng ta ở đây, các thiệt hại nhiều hơn, chúng tôi sẽ bị ảnh hưởng!
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7=Tâu bệ hạ, cơn bão đang đến! hãy trốn đi !
+
+CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8=đã đến lúc! giết tất cả chúng!
+
+CAMPAIGN_WARROOM_STAGE_5_NAME=Hẻm Núi Lởm Chởm
+
+CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_1=(1): Tiêu diệt đội đỏ.
+
+CAMPAIGN_WARROOM_STAGE_5_OBJECTIVE_2=(2): Chỉ huy bạn phải sống
+
+CAMPAIGN_WARROOM_STAGE_5_MESSAGE_1=Tâu bệ hạ, kẻ thù của chúng tôi đã đưa ra những địa hình, cuộc chiến sẽ rất khó khăn. Phá hủy máy ném đá của kẻ thù sẽ thúc đẩy tinh thần của bạn!
+
+CAMPAIGN_WARROOM_STAGE_5_MESSAGE_2=Tâu bệ hạ, máy ném đá kẻ thù đã bị phá hủy, chúng tôi sẽ giành chiến thắng trong cuộc chiến!
+
+CAMPAIGN_TOYBOX_NAME=Hộp Đồ Chơi
+
+CAMPAIGN_TOYBOX_STAGE_1_NAME=Kiểu Bất Tận
+
+CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_1=(1): Đây là đấu trường vô tận,hãy cố gắng tồn tại càng lâu càng tốt.
+ 
+CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống.
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_1= Đây là đấu trường vô tận,hãy cố gắng tồn tại càng lâu càng tốt.
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_2= quy tắc: Kẻ thù của vòng chơi đến 10 lượt , hoặc chỉ đến khi vòng chơi cuối cùng là bị đánh bại.
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_3= Bạn sẽ được cung cấp mỗi lần 5 vòng chơi, đánh bại kẻ thù của bạn càng sớm càng tốt để có được thưởng thêm!
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4= Vòng chơi
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5= Đang đến!
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_6= Bạn có được vàng
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_7= Bạn nhận thêm lượt
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8= Bạn đã sống sót
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9= Vòng chơi, bạn đã giết kẻ đáng giá
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10= kinh phí, bạn là người chiến thắng!
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_11= Vòng thưởng ! đánh những pha lê để nhận tăng cường!
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_12= Giết tất cả các bộ xương trong thời gian này để nhận vòng chơi thưởng!
+
+CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_13= đồ ngốc! bạn nhận được gì!
 
 
 CAMPAIGN_AEI_NAME=Trận Chiến Thorin (phần 1)
@@ -521,7 +554,7 @@ CAMPAIGN_AEI_STAGE_2_MESSAGE_7=Hãy cẩn thận ,những cuộc tấn công c�
 CAMPAIGN_AEI_STAGE_3_NAME=Hộ Tống
 
 
-CAMPAIGN_AEI_STAGE_3_OBJECTIVE=Galamar và Nguyên Tố trưởng phải đạt Tháp Xám.
+CAMPAIGN_AEI_STAGE_3_OBJECTIVE=Galamar và Nguyên Tố Trưởng phải còn sống. 
 
 
 CAMPAIGN_AEI_STAGE_3_MESSAGE_1=Nguyên Tố trưởng đồng ý tham gia lực lượng của Galamar. Bây giờ suy nghĩ Galamar chuyển sang các phù thủy của tháp xám.
@@ -552,7 +585,7 @@ CAMPAIGN_AEI_STAGE_4_MESSAGE_1=Sau khi đạt được tháp Xám, các phù th�
 CAMPAIGN_AEI_STAGE_4_MESSAGE_2=Tâu bệ hạ, quân đoàn đỏ! Hãy xem các Máy Ném Đá của bọn chúng!!
 
 
-CAMPAIGN_AEI_STAGE_4_MESSAGE_3=Cuộc phản bội này là sao! Tại sao thành phố đã quay lưng lại với chúng tôi!
+CAMPAIGN_AEI_STAGE_4_MESSAGE_3=Cuộc phản bội này là sao! Tại sao anh muốn chống lại chúng tôi !
 
 
 CAMPAIGN_AEI_STAGE_4_MESSAGE_4=Có thể đoán ra mà , anh trai! tôi sẽ hạ được anh ngay bây giờ !
@@ -911,7 +944,7 @@ LB_ABILITIES=Khả Năng
 LB_ABOUT=Nói Về
 
 
-LB_ACTIONS=Actions
+LB_ACTIONS=Hành Động
 
 
 LB_ARTS=Vẽ
@@ -938,7 +971,7 @@ LB_CANCEL=Hủy Bỏ
 LB_CAPACITY=Người Chơi Tối Đa
 
 
-LB_CHAT_ROOM=Phòng Trò Chuyện 
+LB_CHAT_ROOM=Trò Chuyện 
 
 
 LB_CLEAR=Tẩy Tin Nhắn
@@ -1031,7 +1064,7 @@ LB_IDLE_PLAYERS=Tên Người Chơi
 LB_INCOME=Thu Nhập
 
 
-LB_START_GOLD=Vàng Khởi Đầu
+LB_START_GOLD=Vàng
 
 
 LB_JOIN=Tham Gia
@@ -1040,7 +1073,7 @@ LB_JOIN=Tham Gia
 LB_JOINING=Đang Tham Gia...
 
 
-LB_LEADERBOARD=Leaderboard
+LB_LEADERBOARD=Xếp Hạng
 
 
 LB_LEAVE=Rời Khỏi
@@ -1058,7 +1091,7 @@ LB_LOAD_GAME=Tải Trò Chơi
 LB_LOCAL_MAPS=Bản Đồ Địa Phương
 
 
-LB_LOCAL_RECORD=Local Ghi
+LB_LOCAL_RECORD=Kỷ Lục Của Tôi
 
 
 LB_LUV=Giá Đơn Vị Tử Vong 
@@ -1079,7 +1112,7 @@ LB_MENU=Thực Đơn
 LB_MINI_MAP=Bản Đồ Thu Nhỏ
 
 
-LB_MOBILITY_COST=Chi Phí Dân Hèn
+LB_MOBILITY_COST=Chi Phí Tính Cơ Động
 
 
 LB_MULTIPLAYER=Nhiều Người Chơi
@@ -1097,7 +1130,7 @@ LB_NO=Không
 LB_NONE=Không Có Gì
 
 
-LB_NORMAL=chế độ bình thường
+LB_NORMAL=Kiểu bình thường
 
 
 LB_OBJECTIVE=Mục Tiêu
@@ -1118,7 +1151,7 @@ LB_ON=Mở
 LB_ONLINE_MAPS=Bản Đồ Trực Tuyến
 
 
-LB_ONLINE_RECORD=kỷ lục trực tuyến
+LB_ONLINE_RECORD=Kỷ Lục Trực Tuyến
 
 
 LB_OPEN=Mở Ra
@@ -1139,7 +1172,7 @@ LB_PREVIEW=Xem Trước
 LB_PROGRAM=Chương Trình
 
 
-LB_RANKING=chế độ xếp hạng
+LB_RANKING=Kiểu Xếp Hạng
 
 
 LB_RECONNECTING=Đang Kết Nối Lại...
@@ -1244,7 +1277,7 @@ LB_TILE_NUMBER=Địa Hình#
 LB_TRANSLATION=Người Dịch Ngôn Ngữ
 
 
-LB_TURNS=Turns
+LB_TURNS=Lượt
 
 
 LB_TYPE=Kiểu
@@ -1314,7 +1347,7 @@ MSG_ERR_FCMF=không thể tạo mục bản đồ :(
 MSG_ERR_FDM=Không thể tải bản đồ về :(
 
 
-MSG_ERR_FRM=Failed renaming the map :(
+MSG_ERR_FRM=Không thể đổi tên bản đồ :(
 
 
 MSG_ERR_FUM=Không thể tải bản đồ lên :(
@@ -1486,64 +1519,64 @@ UNIT_NAME_16=Cung Cưỡi Sói
 UNIT_NAME_17=Nguyên Tố Băng
 
 
-UNIT_NAME_18=Slime
+UNIT_NAME_18=Bùn Đất
 
 
-UNIT_DESCRIPTION_0=TÀI NĂNG BINH LÍNH : (1) sữa chữa ngôi làng...(2) chiếm giữ ngôi làng.
+UNIT_DESCRIPTION_0=TÀI NĂNG BINH LÍNH : (1) sữa chữa ngôi làng...........(2) chiếm giữ ngôi làng.
 
 
-UNIT_DESCRIPTION_1=TÀI NĂNG CUNG THỦ : (1) tấn công xa 2 đến 3 ô...(2) sát thương cao hơn với kẻ thù bay.
+UNIT_DESCRIPTION_1=TÀI NĂNG CUNG THỦ : (1) tấn công xa 2 đến 3 ô..........(2) sát thương cao hơn với kẻ thù bay.
 
 
-UNIT_DESCRIPTION_2=TÀI NĂNG NGUYÊN TỐ : (1) thêm tấn công /phòng thủ trong nước...(2) hồi phục 10 HP khi dưới nước.
+UNIT_DESCRIPTION_2=TÀI NĂNG NGUYÊN TỐ : (1) thêm tấn công /phòng thủ trong nước.........(2) hồi phục 10 HP khi dưới nước.
 
 
-UNIT_DESCRIPTION_3=TÀI NĂNG NỮ PHÙ THỦY : (1) triệu tập bộ xương từ ngôi mộ...(2) tấn công xa 1 đến 2 ô.
+UNIT_DESCRIPTION_3=TÀI NĂNG NỮ PHÙ THỦY : (1) triệu tập bộ xương từ ngôi mộ.........(2) tấn công xa 1 đến 2 ô.
 
 
-UNIT_DESCRIPTION_4=TÀI NĂNG TINH LINH: (1) loại bỏ trạng thái xấu...(2) cấp 1 hồi 10 HP cho đội...(3) cấp 1 rút 10 HP Bộ Xương và Bóng Ma ,(3 KN bị động) này hoạt động trong 2 ô...(4) tấn công xa 1 đến 2 ô
+UNIT_DESCRIPTION_4=TÀI NĂNG TINH LINH: (1) loại bỏ trạng thái xấu.........(2) cấp 1 hồi 10 HP cho đội........(3) cấp 1 rút 10 HP Bộ Xương và Bóng Ma ,(3 KN bị động) này hoạt động trong 2 ô.........(4) tấn công xa 1 đến 2 ô
 
 
-UNIT_DESCRIPTION_5=TÀI NĂNG CHÓ SÓI: (1) làm trạng thái độc, giảm 10 HP đối thủ...(2) dùng ô di chuyển còn lại để chạy.
+UNIT_DESCRIPTION_5=TÀI NĂNG CHÓ SÓI: (1) làm trạng thái độc, giảm 10 HP đối thủ..........(2) dùng ô di chuyển còn lại để chạy.
 
 
-UNIT_DESCRIPTION_6=TÀI NĂNG KHỔNG LỒ : (1) làm trạng thái Tê Liệt , giảm di chuyển đối thủ trong vòng 2 ô (KN bị động)...(2) hồi phục 10 HP khi trên núi.
+UNIT_DESCRIPTION_6=TÀI NĂNG KHỔNG LỒ : (1) làm trạng thái Tê Liệt , giảm di chuyển đối thủ trong vòng 2 ô (KN bị động)...........(2) hồi phục 10 HP khi trên núi.
 
 
-UNIT_DESCRIPTION_7=TÀI NĂNG MÁY NÉM ĐÁ : (1) tấn công xa 3 đến 7 ô...(2) phá hủy làng...(3) không dính bất cứ trạng thái nào. ĐIỂM YẾU : không thể tấn công khi vừa di chuyển xong.
+UNIT_DESCRIPTION_7=TÀI NĂNG MÁY NÉM ĐÁ : (1) tấn công xa 3 đến 7 ô..........(2) phá hủy làng...........(3) không dính bất cứ trạng thái nào. ĐIỂM YẾU : không thể tấn công khi vừa di chuyển xong.
 
 
-UNIT_DESCRIPTION_8=TÀI NĂNG RỒNG : (1) tấn công xa trong vòng 2 ô...(2) dùng ô di chuyển còn lại để chạy.
+UNIT_DESCRIPTION_8=TÀI NĂNG RỒNG : (1) tấn công xa trong vòng 2 ô..........(2) dùng ô di chuyển còn lại để chạy.
 
 
-UNIT_DESCRIPTION_9=TÀI NĂNG CHỈ HUY : (1) sửa chữa làng...(2) chiếm giữ làng...(3) chiếm lâu đài.
+UNIT_DESCRIPTION_9=TÀI NĂNG CHỈ HUY : (1) sửa chữa làng............(2) chiếm giữ làng.............(3) chiếm lâu đài.
 
 
-UNIT_DESCRIPTION_10=TÀI NĂNG BỘ XƯƠNG : (1) làm trạng thái độc giảm 10 HP đối thủ... ĐIỂM YẾU : đứng gần Tinh Linh cấp 1 bị trừ 10 HP.
+UNIT_DESCRIPTION_10=TÀI NĂNG BỘ XƯƠNG : (1) làm trạng thái độc giảm 10 HP đối thủ......... ĐIỂM YẾU : đứng gần Tinh Linh cấp 1 bị trừ 10 HP.
 
 
 UNIT_DESCRIPTION_11=không có gì
 
 
-UNIT_DESCRIPTION_12=TÀI NĂNG HIỆP SĨ GIANG HỒ : (1) cấp 1 chữa trị 40 HP cho đội và 50 HP cho bản thân, số chữa sẽ trị tăng khi lên cấp...(2) chiếm giữ làng.
+UNIT_DESCRIPTION_12=TÀI NĂNG HIỆP SĨ GIANG HỒ : (1) cấp 1 chữa trị 40 HP cho đội và 50 HP cho bản thân, số chữa sẽ trị tăng khi lên cấp.........(2) chiếm giữ làng.
 
 
-UNIT_DESCRIPTION_13=TÀI NĂNG KẺ NÁO LOẠN : (1) làm trạng thái cảm hứng tăng 10 tấn công cho đồng đội...(2) tấn công và phòng thủ vật lý sẽ tăng lên khi kẻ thù bao vây.
+UNIT_DESCRIPTION_13=TÀI NĂNG KẺ NÁO LOẠN : (1) làm trạng thái cảm hứng tăng 10 tấn công cho đồng đội...........(2) tấn công và phòng thủ vật lý sẽ tăng lên khi kẻ thù bao vây.
 
 
-UNIT_DESCRIPTION_14=TÀI NĂNG BÓNG MA : (1) làm trạng thái mù lòa cho đối phương không thể tấn công...(2) bay qua bộ quân đối phương. ĐIỂM YẾU : đứng gần Tinh Linh bị trừ 10 HP
+UNIT_DESCRIPTION_14=TÀI NĂNG BÓNG MA : (1) làm trạng thái mù lòa cho đối phương không thể tấn công.........(2) bay qua bộ quân đối phương. ĐIỂM YẾU : đứng gần Tinh Linh bị trừ 10 HP
 
 
-UNIT_DESCRIPTION_15=TÀI NĂNG PHÁP SƯ ĐEN : (1) tấn công và phòng thủ phép cao...(2) tấn công xa 1 đến 2 ô.
+UNIT_DESCRIPTION_15=TÀI NĂNG PHÁP SƯ ĐEN : (1) tấn công và phòng thủ phép cao.........(2) tấn công xa 1 đến 2 ô.
 
 
-UNIT_DESCRIPTION_16=TÀI NĂNG CUNG THỦ CƯỠI SÓI : (1) làm trạng thái mù lòa cho đối phương không thể tấn công...(2) tấn công xa 2 đến 3 ô
+UNIT_DESCRIPTION_16=TÀI NĂNG CUNG THỦ CƯỠI SÓI : (1) làm trạng thái mù lòa cho đối phương không thể tấn công..........(2) tấn công xa 2 đến 3 ô
 
 
-UNIT_DESCRIPTION_17=TÀI NĂNG NGUYÊN TỐ BĂNG : (1) địa hình nào cũng được hồi HP...(2) tấn công xa 1 đến 3 ô
+UNIT_DESCRIPTION_17=TÀI NĂNG NGUYÊN TỐ BĂNG : (1) địa hình nào cũng được hồi HP.........(2) tấn công xa 1 đến 3 ô
 
 
-UNIT_DESCRIPTION_18=những sinh vật huyền bí . Có vẻ như cơ thể mềm mại của họ có thể hấp thụ rất nhiều thiệt hại .
+UNIT_DESCRIPTION_18=TÀI NĂNG BÙN ĐẤT : (1) hồi phục ít HP mỗi lượt.........
 
 
 
@@ -1712,10 +1745,10 @@ WIKI_NODE_GAMEPLAY_STATUS=Trạng Thái
 
 
 
-WIKI_NODE_MULTIPLAYER_CREATE_GAME=Tạo Game
+WIKI_NODE_MULTIPLAYER_CREATE_GAME=Tạo Phòng
 
 
-WIKI_NODE_MULTIPLAYER_JOIN_GAME=Tham Gia Game
+WIKI_NODE_MULTIPLAYER_JOIN_GAME=Tham Gia
 
 
 WIKI_NODE_MULTIPLAYER_COMMANDS=Chỉ Huy
@@ -1744,4 +1777,3 @@ WIKI_NODE_ROOT_7=Nhiều Người Chơi
 
 
 WIKI_NODE_ROOT_8=Nói Về
-

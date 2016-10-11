@@ -36,7 +36,7 @@ public class GameContext extends Game implements GameManagerListener {
     public static final Object RENDER_LOCK = new Object();
 
     public static final String INTERNAL_VERSION = "25";
-    public static final String EXTERNAL_VERSION = "1.3.0";
+    public static final String EXTERNAL_VERSION = "1.3.1 preview";
     public static final ServerConfiguration MAIN_SERVER = new ServerConfiguration("45.56.93.69", 5438, "main server");
     public static final ServerConfiguration TEST_SERVER = new ServerConfiguration("45.56.93.69", 5439, "test server");
     public static final ServerConfiguration MAP_SERVER = MAIN_SERVER;
