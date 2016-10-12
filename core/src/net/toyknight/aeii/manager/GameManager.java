@@ -544,7 +544,7 @@ public class GameManager implements AnimationListener {
     }
 
     public void syncGameEvent() {
-        if (getContext() != null && NetworkManager.isConnected()) {
+        if (getContext() != null && getState() != STATE_MOVE && NetworkManager.isConnected()) {
             getContext().submitAsyncTask(new GameEventSyncTask(getState()) {
                 @Override
                 public void onFinish(Void result) {
