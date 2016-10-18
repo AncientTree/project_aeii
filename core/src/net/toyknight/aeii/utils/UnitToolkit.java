@@ -111,7 +111,8 @@ public class UnitToolkit {
     }
 
     public int getTileDefenceBonus(Unit unit, int tile_index) {
-        if (unit.getUnitCode().equals("saeth")) {
+        String unit_code = unit.getUnitCode();
+        if (unit_code.equals("saeth")) {
             return 30;
         }
         int defence_bonus = 0;
@@ -141,6 +142,9 @@ public class UnitToolkit {
                 break;
             default:
                 //do nothing
+        }
+        if (unit_code.equals("avatar")) {
+            defence_bonus += 30;
         }
         return defence_bonus;
     }
@@ -180,6 +184,10 @@ public class UnitToolkit {
         }
         if (attacker.hasStatus(Status.INSPIRED)) {
             attack_bonus += 5;
+        }
+        String unit_code = attacker.getUnitCode();
+        if (unit_code.equals("avatar")) {
+            attack_bonus += 30;
         }
         return attack_bonus;
     }
