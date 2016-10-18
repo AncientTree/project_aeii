@@ -24,6 +24,8 @@ public class RankingClearDialog extends BasicDialog {
     private final Label label_clear_turns;
     private final Label label_clear_actions;
 
+    private final TextButton btn_upload;
+
     public RankingClearDialog(StageScreen owner) {
         super(owner);
         Label label_stage_clear = new Label(Language.getText("LB_STAGE_CLEAR"), getContext().getSkin()) {
@@ -50,7 +52,7 @@ public class RankingClearDialog extends BasicDialog {
             }
         });
         button_pane.add(btn_leave).size(ts * 2, ts).padRight(ts / 2);
-        TextButton btn_upload = new TextButton(Language.getText("LB_UPLOAD"), getContext().getSkin());
+        btn_upload = new TextButton(Language.getText("LB_UPLOAD"), getContext().getSkin());
         btn_upload.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 upload();
@@ -90,6 +92,7 @@ public class RankingClearDialog extends BasicDialog {
             @Override
             public void onFinish(Void result) {
                 NetworkManager.disconnect();
+                btn_upload.setVisible(false);
                 getOwner().closePlaceholder();
                 getOwner().showNotification(Language.getText("LB_UPLOADED"), null);
             }
@@ -108,6 +111,7 @@ public class RankingClearDialog extends BasicDialog {
         label_clear_turns.setText(Language.getText("LB_TURNS") + ": " + getContext().getGame().getCurrentTurn());
         label_clear_actions.setText(
                 Language.getText("LB_ACTIONS") + ": " + getContext().getGame().getStatistics().getActions());
+        btn_upload.setVisible(true);
     }
 
 }
