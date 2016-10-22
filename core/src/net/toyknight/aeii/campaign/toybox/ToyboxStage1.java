@@ -218,12 +218,12 @@ public class ToyboxStage1 extends StageController {
             int skill = random.nextInt(9);
             int skill_level = 0;
             if (prob * 10 > rand) {
-                if(rand > 80 && getContext().get_gold(1) > 10000)
+                if(rand > 50 && getContext().get_gold(1) > 10000)
                 {
                     skill_level = 3;
                     getContext().gold(1, getContext().get_gold(1) - 10000);
                 }
-                else if(rand > 50 && getContext().get_gold(1) > 5000)
+                else if(rand > 30 && getContext().get_gold(1) > 5000)
                 {
                     skill_level = 2;
                     getContext().gold(1, getContext().get_gold(1) - 5000);
@@ -237,16 +237,17 @@ public class ToyboxStage1 extends StageController {
             if(skill_level > 0)
             {
                 switch(skill){
-                    case 0: heaven_fury(skill_level);
-                    case 1: blizzard(skill_level);
-                    case 2: hyper_upgrade(skill_level);
-                    case 3: avatar(skill_level);
-                    case 4: curse(skill_level);
-                    case 5: poison(skill_level);
-                    case 6: ghost(skill_level);
-                    case 7: dragon(skill_level);
-                    case 8: gold_rush(skill_level);
-                    case 9: market_crash(skill_level);
+                    case 0: heaven_fury(skill_level);break;
+                    case 1: blizzard(skill_level);break;
+                    case 2: hyper_upgrade(skill_level);break;
+                    case 3: avatar(skill_level);break;
+                    case 4: curse(skill_level);break;
+                    case 5: poison(skill_level);break;
+                    case 6: ghost(skill_level);break;
+                    case 7: dragon(skill_level);break;
+                    case 8: gold_rush(skill_level);break;
+                    case 9: market_crash(skill_level);break;
+                    default: break;
                 }
             }
         }
@@ -573,7 +574,7 @@ public class ToyboxStage1 extends StageController {
                     getContext().gold(0, getContext().get_gold(0) + (10 - turn +  getContext().get("Time"))  * 50);
                     getContext().set("Time", turn);
                     nextWave(getContext().get("Wave"));
-                    getContext().set("Hard", getContext().get("Hard" + (10 - turn + getContext().get("Time") * 25)));
+                    getContext().set("Hard", getContext().get("Hard") + (10 - turn + getContext().get("Time") * 25));
                 }
                 else {
                     if(getContext().get("Wave") % 10 == 0) {
