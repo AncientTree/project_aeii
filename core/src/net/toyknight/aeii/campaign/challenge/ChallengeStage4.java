@@ -96,7 +96,7 @@ public class ChallengeStage4 extends StageController {
 
     @Override
     public int getStartGold() {
-        return 450;
+        return 950;
     }
 
     @Override

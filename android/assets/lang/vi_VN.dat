@@ -386,6 +386,11 @@ CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=(1): Tiêu diệt tất cã kẻ thù và
 CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống.
 CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Tâu bệ hạ, hòn đảo này đã bị nguyền rủa, quân đội không bị thương của chúng ta sẽ gián cấp mỗi lượt, hãy cẩn thận!
 
+CAMPAIGN_CHALLENGE_STAGE_7_NAME=On Protracted War
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=VICTORY: Defeat all red units..
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=Your majesty, we are not able to capture any property this time, or we will lose our troop!
+
 
 CAMPAIGN_WARROOM_NAME=Vòng Đen, Làng Chiến Tranh
 

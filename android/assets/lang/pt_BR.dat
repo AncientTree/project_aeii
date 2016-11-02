@@ -142,6 +142,11 @@ CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1=VICTORY: Defeat all enemies and capture a
 CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1=Your majesty, this land is cursed, our undamaged troops is demoted each turn, be careful!
 
+CAMPAIGN_CHALLENGE_STAGE_7_NAME=On Protracted War
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_1=VICTORY: Defeat all red units..
+CAMPAIGN_CHALLENGE_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+CAMPAIGN_CHALLENGE_STAGE_7_MESSAGE_1=Your majesty, we are not able to capture any property this time, or we will lose our troop!
+
 CAMPAIGN_WARROOM_NAME=BW's Warroom
 
 CAMPAIGN_WARROOM_STAGE_1_NAME=Ghost Island

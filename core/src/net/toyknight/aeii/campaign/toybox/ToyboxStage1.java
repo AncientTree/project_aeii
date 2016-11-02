@@ -65,7 +65,7 @@ public class ToyboxStage1 extends StageController {
         if(wave % 10 == 1)
         {
             getContext().set("CurrentHard", getContext().get("Hard"));
-            getContext().set("Hard", getContext().get("Hard") + 1500);
+            getContext().set("Hard", getContext().get("Hard") + 3000);
         }
         Message message3 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4") + ' ' + wave + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5"));
         getContext().message(message3);
@@ -208,7 +208,7 @@ public class ToyboxStage1 extends StageController {
             getContext().message(message_crystal);
         }
         else;
-        getContext().gold(1, getContext().get_gold(1) + getContext().get("CurrentHard"));
+        getContext().gold(1, getContext().get_gold(1) + getContext().get("CurrentHard") / 2);
 
 
         if(wave % 10 != 0 && wave % 10 != 9) {
@@ -401,7 +401,7 @@ public class ToyboxStage1 extends StageController {
         getContext().set("Time", 0);
         getContext().set("King", 1);
         getContext().set("Gold", 0);
-        getContext().set("Hard", 500);
+        getContext().set("Hard", 1000);
         getContext().set("CurrentHard", 0);
 
 
