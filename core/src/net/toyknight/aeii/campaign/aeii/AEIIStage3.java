@@ -35,10 +35,6 @@ public class AEIIStage3 extends StageController {
         if (unit.getTeam() == getPlayerTeam() && getContext().get("reinforced") == 0 && unit.getY() <= 10) {
             getContext().set("reinforced", 1);
             getContext().reinforce(1,
-                    new Reinforcement(5, 1, 2),
-                    new Reinforcement(4, 2, 1),
-                    new Reinforcement(5, 3, 2));
-            getContext().reinforce(1,
                     new Reinforcement(5, 0, 8),
                     new Reinforcement(5, 1, 7));
             getContext().reinforce(1, new Reinforcement(5, 8, 6));
@@ -56,9 +52,17 @@ public class AEIIStage3 extends StageController {
             getContext().team(4, 7, 0);
             getContext().team(5, 8, 0);
         }
+        else if(unit.getTeam() == getPlayerTeam() && getContext().get("reinforced") == 1 && unit.getY() <= 5)
+        {
+            getContext().reinforce(1,
+                    new Reinforcement(5, 1, 2),
+                    new Reinforcement(4, 2, 1),
+                    new Reinforcement(5, 3, 2));
+        }
         if (isCommander(unit, getPlayerTeam()) && getContext().get("reinforced") == 1 && unit.getX() == 2 && unit.getY() <= 1) {
             getContext().clear();
         }
+
     }
 
     @Override
