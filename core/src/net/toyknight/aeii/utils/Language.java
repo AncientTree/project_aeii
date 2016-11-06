@@ -34,6 +34,10 @@ public class Language {
             locale = "en_US";
             return;
         }
+        if (locale.startsWith("ru_")) {
+            locale = "ru_RU";
+            return;
+        }
         if (locale.startsWith("pt_")) {
             locale = "pt_BR";
             return;
