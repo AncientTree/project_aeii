@@ -50,22 +50,19 @@ public class WarroomStage5 extends StageController {
             getContext().message(message1);
             for (Unit player : getContext().get_units(0)) {
 
-                if(player.getMaxHp() - player.getCurrentHp() <= 50) {
+                if(player.getMaxHp() - player.getCurrentHp() <= 20) {
                     getContext().hp_change(player.getX(), player.getY(), player.getMaxHp() - player.getCurrentHp());
                 }
                 else
                 {
-                    getContext().hp_change(player.getX(), player.getY(), 50);
+                    getContext().hp_change(player.getX(), player.getY(), 20);
                 }
                 getContext().level_up(player.getX(), player.getY());
             }
 
         }
-        else{
-            checkClear();
-        }
-
-
+        else;
+        checkClear();
     }
 
     @Override
