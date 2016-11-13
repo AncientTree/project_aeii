@@ -1034,16 +1034,20 @@ public class Robot {
     }
 
     private int getUnitValue(Unit unit) {
+        int value = unit.getPrice();
+        if (isEnemy(unit) && isMyCastle(getGame().getMap().getTile(unit))) {
+            value += 1000;
+        }
         if (unit.isCommander()) {
-            return unit.getPrice() + 200;
+            return value + 200;
         }
         if (unit.isCrystal()) {
-            return unit.getPrice() + 500;
+            return value + 500;
         }
         if (unit.isSkeleton()) {
-            return 100;
+            return value + 100;
         }
-        return unit.getPrice();
+        return value;
     }
 
     private boolean isAlly(Unit unit) {
