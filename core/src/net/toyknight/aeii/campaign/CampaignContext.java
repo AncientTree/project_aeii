@@ -54,9 +54,9 @@ public class CampaignContext {
         campaign_warroom.initialize();
         campaigns.put(campaign_warroom.getCode(), campaign_warroom);
 
-        CampaignController campaign_toybox = new ToyboxCampaign();
-        campaign_toybox.initialize();
-        campaigns.put(campaign_toybox.getCode(), campaign_toybox);
+//        CampaignController campaign_toybox = new ToyboxCampaign();
+//        campaign_toybox.initialize();
+//        campaigns.put(campaign_toybox.getCode(), campaign_toybox);
     }
 
     public GameContext getContext() {

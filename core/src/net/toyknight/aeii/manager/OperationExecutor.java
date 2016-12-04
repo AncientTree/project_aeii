@@ -317,7 +317,7 @@ public class OperationExecutor {
                 submitGameEvent(GameEvent.HEAL, healer_x, healer_y, target_x, target_y, heal);
             }
             int experience = heal + target.getCurrentHp() > 0 ?
-                    getGame().getRule().getInteger(ATTACK_EXPERIENCE) :
+                    getGame().getRule().getInteger(HEAL_EXPERIENCE) :
                     getGame().getRule().getInteger(KILL_EXPERIENCE);
             submitGameEvent(GameEvent.GAIN_EXPERIENCE, healer_x, healer_y, experience);
         }
@@ -473,7 +473,7 @@ public class OperationExecutor {
             submitGameEvent(
                     GameEvent.GAIN_EXPERIENCE,
                     summoner_x, summoner_y,
-                    getGame().getRule().getInteger(ATTACK_EXPERIENCE));
+                    getGame().getRule().getInteger(SUMMON_EXPERIENCE));
         }
     }
 

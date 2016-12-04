@@ -39,6 +39,10 @@ public class Rule implements Serializable {
         setValue(COMMANDER_INCOME, json.getInt(COMMANDER_INCOME));
         setValue(KILL_EXPERIENCE, json.getInt(KILL_EXPERIENCE));
         setValue(ATTACK_EXPERIENCE, json.getInt(ATTACK_EXPERIENCE));
+        setValue(HEAL_EXPERIENCE,
+                json.has(HEAL_EXPERIENCE) ? json.getInt(HEAL_EXPERIENCE) : json.getInt(ATTACK_EXPERIENCE));
+        setValue(SUMMON_EXPERIENCE,
+                json.has(SUMMON_EXPERIENCE) ? json.getInt(HEAL_EXPERIENCE) : json.getInt(SUMMON_EXPERIENCE));
         setValue(COUNTER_EXPERIENCE, json.getInt(COUNTER_EXPERIENCE));
         setValue(COMMANDER_PRICE_STEP, json.getInt(COMMANDER_PRICE_STEP));
         setValue(UNIT_CAPACITY, json.getInt(UNIT_CAPACITY));
@@ -123,6 +127,8 @@ public class Rule implements Serializable {
         rule.setValue(Entry.COMMANDER_INCOME, 50);
         rule.setValue(Entry.KILL_EXPERIENCE, 60);
         rule.setValue(Entry.ATTACK_EXPERIENCE, 30);
+        rule.setValue(Entry.HEAL_EXPERIENCE, 30);
+        rule.setValue(Entry.SUMMON_EXPERIENCE, 30);
         rule.setValue(Entry.COUNTER_EXPERIENCE, 10);
         rule.setValue(Entry.COMMANDER_PRICE_STEP, 100);
         rule.setValue(Entry.UNIT_CAPACITY, POPULATION_PRESET[0]);
@@ -165,6 +171,8 @@ public class Rule implements Serializable {
         json.put(COMMANDER_INCOME, getInteger(COMMANDER_INCOME));
         json.put(KILL_EXPERIENCE, getInteger(KILL_EXPERIENCE));
         json.put(ATTACK_EXPERIENCE, getInteger(ATTACK_EXPERIENCE));
+        json.put(HEAL_EXPERIENCE, getInteger(HEAL_EXPERIENCE));
+        json.put(SUMMON_EXPERIENCE, getInteger(SUMMON_EXPERIENCE));
         json.put(COUNTER_EXPERIENCE, getInteger(COUNTER_EXPERIENCE));
         json.put(COMMANDER_PRICE_STEP, getInteger(COMMANDER_PRICE_STEP));
         json.put(UNIT_CAPACITY, getInteger(UNIT_CAPACITY));
@@ -185,6 +193,8 @@ public class Rule implements Serializable {
         public static final String COMMANDER_INCOME = "COMMANDER_INCOME";
         public static final String KILL_EXPERIENCE = "KILL_EXPERIENCE";
         public static final String ATTACK_EXPERIENCE = "ATTACK_EXPERIENCE";
+        public static final String HEAL_EXPERIENCE = "HEALING_EXPERIENCE";
+        public static final String SUMMON_EXPERIENCE = "SUMMON_EXPERIENCE";
         public static final String COUNTER_EXPERIENCE = "COUNTER_EXPERIENCE";
         public static final String COMMANDER_PRICE_STEP = "COMMANDER_PRICE_STEP";
         public static final String UNIT_CAPACITY = "UNIT_CAPACITY";
