@@ -3,7 +3,7 @@ package net.toyknight.aeii.manager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.*;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 
 import java.util.LinkedList;
@@ -71,7 +71,7 @@ public class PositionGenerator {
         if (unit == null) {
             return new ObjectSet<Position>(movable_positions);
         } else {
-            current_unit = UnitFactory.cloneUnit(unit);
+            current_unit = AER.units.cloneUnit(unit);
             initializeMoveMarkMap();
             createMovablePositions(createStartStep(unit), unit, preview);
             return new ObjectSet<Position>(movable_positions);

@@ -1,7 +1,7 @@
 package net.toyknight.aeii.server;
 
 import com.esotericsoftware.minlog.Log;
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.NetworkConstants;
@@ -277,7 +277,7 @@ public class RequestHandler {
                 approved = true;
             } catch (IOException ex) {
                 approved = false;
-            } catch (AEIIException ex) {
+            } catch (GameException ex) {
                 approved = false;
             }
             response.put("approved", approved);

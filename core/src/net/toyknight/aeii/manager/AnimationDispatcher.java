@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.animation.Animator;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.screen.MapCanvas;
 
 /**
  * @author toyknight 4/14/2015.

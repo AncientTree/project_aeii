@@ -5,9 +5,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.entity.*;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.TileValidator;
-import net.toyknight.aeii.utils.UnitFactory;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -310,7 +310,7 @@ public class GameEventExecutor {
         ObjectSet<Unit> destroyed_units = new ObjectSet<Unit>();
         ObjectSet<Position> destroy_positions = new ObjectSet<Position>();
         for (Unit unit : getGame().getMap().getUnits().toArray()) {
-            if ((team < 0 || unit.getTeam() == team) && unit.getCurrentHp() <= 0) {
+            if ((team < 0 || unit.getTeam() == team) && unit.getCurrentHP() <= 0) {
                 destroyed_units.add(unit);
                 destroy_positions.add(getGame().getMap().getPosition(unit));
                 getGame().destroyUnit(unit.getX(), unit.getY());
@@ -336,7 +336,7 @@ public class GameEventExecutor {
                 getAnimationDispatcher().submitUnitAttackAnimation(attacker, target_x, target_y);
             } else {
                 if (attack_damage >= 0) {
-                    defender.changeCurrentHp(-attack_damage);
+                    defender.changeCurrentHP(-attack_damage);
                     UnitToolkit.attachAttackStatus(attacker, defender);
                     getAnimationDispatcher().submitUnitAttackAnimation(attacker, defender, attack_damage);
                 }
@@ -371,7 +371,7 @@ public class GameEventExecutor {
             int price = getGame().getUnitPrice(index, team);
             getGame().getCurrentPlayer().changeGold(-price);
 
-            if (UnitFactory.isCommander(index)) {
+            if (AER.units.isCommander(index)) {
                 getGame().restoreCommander(team, target_x, target_y);
             } else {
                 getGame().createUnit(index, team, target_x, target_y);
@@ -414,7 +414,7 @@ public class GameEventExecutor {
             getManager().fireMapFocusEvent(target_x, target_y, false);
 
             Unit target = getGame().getMap().getUnit(target_x, target_y);
-            target.changeCurrentHp(heal);
+            target.changeCurrentHP(heal);
             getAnimationDispatcher().submitHpChangeAnimation(target, heal);
         } else {
             throw new CheatingException("healing check failed!", getGame().getCurrentTeam());
@@ -575,7 +575,7 @@ public class GameEventExecutor {
 
     private boolean canStandby(int target_x, int target_y) {
         Unit target = getGame().getMap().getUnit(target_x, target_y);
-        return target != null && !target.isStandby() && target.getCurrentHp() > 0;
+        return target != null && !target.isStandby() && target.getCurrentHP() > 0;
     }
 
     private void onSummon(int summoner_x, int summoner_y, int target_x, int target_y) throws CheatingException {
@@ -584,7 +584,7 @@ public class GameEventExecutor {
 
             Unit summoner = getGame().getMap().getUnit(summoner_x, summoner_y);
             getGame().getMap().removeTomb(target_x, target_y);
-            getGame().createUnit(UnitFactory.getSkeletonIndex(), summoner.getTeam(), target_x, target_y);
+            getGame().createUnit(AER.units.getSkeletonIndex(), summoner.getTeam(), target_x, target_y);
             getAnimationDispatcher().submitSummonAnimation(summoner, target_x, target_y);
         } else {
             throw new CheatingException("summoning check failed!", getGame().getCurrentTeam());
@@ -659,7 +659,7 @@ public class GameEventExecutor {
             int map_x = reinforcement.getInt("x");
             int map_y = reinforcement.getInt("y");
             if (getGame().getMap().getUnit(map_x, map_y) == null) {
-                if (UnitFactory.isCommander(index)) {
+                if (AER.units.isCommander(index)) {
                     if (getGame().isCommanderAlive(team)) {
                         getGame().createUnit(index, level, team, map_x, map_y);
                     } else {
@@ -717,7 +717,7 @@ public class GameEventExecutor {
                 getGame().createUnit(0, 1, map_x, map_y);
             }
             if (UnitToolkit.getRange(map_x, map_y, target_x, target_y) == 1) {
-                getGame().createUnit(UnitFactory.getCrystalIndex(), 1, map_x, map_y);
+                getGame().createUnit(AER.units.getCrystalIndex(), 1, map_x, map_y);
             }
             if (UnitToolkit.getRange(map_x, map_y, target_x, target_y) == 2) {
                 getGame().createUnit(0, 1, map_x, map_y);
@@ -727,7 +727,7 @@ public class GameEventExecutor {
 
     private void onCampaignCreateUnit(int index, int team, int map_x, int map_y) {
         if (getGame().getMap().getUnit(map_x, map_y) == null) {
-            if (UnitFactory.isCommander(index)) {
+            if (AER.units.isCommander(index)) {
                 getGame().restoreCommander(team, map_x, map_y);
             } else {
                 getGame().createUnit(index, team, map_x, map_y);
@@ -783,7 +783,7 @@ public class GameEventExecutor {
             int carrier_x, int carrier_y, int target_index, int target_team, int dest_x, int dest_y) {
         Unit carrier = getGame().getMap().getUnit(carrier_x, carrier_y);
         if (carrier != null) {
-            Unit target = UnitFactory.createUnit(target_index, target_team);
+            Unit target = AER.units.createUnit(target_index, target_team);
             getGame().getMap().removeUnit(carrier_x, carrier_y);
             getGame().updatePopulation(carrier.getTeam());
             getAnimationDispatcher().submitUnitCarryAnimation(carrier, target, dest_x, dest_y);
@@ -798,11 +798,11 @@ public class GameEventExecutor {
             int max_hp = Integer.MIN_VALUE;
             for (Unit unit : units) {
                 if (!unit.isCommander()) {
-                    if (unit.getCurrentHp() > max_hp
-                            || (unit.getCurrentHp() == max_hp && unit.getPrice() > max_price)) {
+                    if (unit.getCurrentHP() > max_hp
+                            || (unit.getCurrentHP() == max_hp && unit.getPrice() > max_price)) {
                         target = unit;
                         max_price = unit.getPrice();
-                        max_hp = unit.getCurrentHp();
+                        max_hp = unit.getCurrentHP();
                     }
                 }
             }
@@ -856,7 +856,7 @@ public class GameEventExecutor {
                 Position position = getGame().getMap().getPosition(x, y);
                 Unit target = getGame().getMap().getUnit(position);
                 if (target != null) {
-                    target.changeCurrentHp(change.getInt("change"));
+                    target.changeCurrentHP(change.getInt("change"));
                     change_map.put(position, change.getInt("change"));
                     units.add(target);
                 }

@@ -4,11 +4,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Tile;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.system.AER;
 
 import java.io.*;
 import java.util.Scanner;
@@ -21,16 +22,16 @@ public class MapFactory {
     private MapFactory() {
     }
 
-    public static Map createMap(FileHandle map_file) throws AEIIException {
+    public static Map createMap(FileHandle map_file) throws GameException {
         try {
             DataInputStream dis = new DataInputStream(map_file.read());
             return createMap(dis);
         } catch (GdxRuntimeException ex) {
-            throw new AEIIException("Error reading map file", ex);
+            throw new GameException("Error reading map file", ex);
         }
     }
 
-    public static Map createMap(DataInputStream dis) throws AEIIException {
+    public static Map createMap(DataInputStream dis) throws GameException {
         try {
             String author_name = dis.readUTF();
             boolean[] team_access = new boolean[4];
@@ -55,7 +56,7 @@ public class MapFactory {
                     int index = checkUnit(dis.readInt());
                     int x = dis.readInt();
                     int y = dis.readInt();
-                    Unit unit = UnitFactory.createUnit(index, team);
+                    Unit unit = AER.units.createUnit(index, team);
                     unit.setX(x);
                     unit.setY(y);
                     map.addUnit(unit);
@@ -64,26 +65,26 @@ public class MapFactory {
                 return map;
             } else {
                 dis.close();
-                throw new AEIIException("Invalid map size!");
+                throw new GameException("Invalid map size!");
             }
         } catch (IOException ex) {
-            throw new AEIIException("broken map file!");
+            throw new GameException("broken map file!");
         }
     }
 
-    private static short checkTile(short index) throws AEIIException {
-        if (0 <= index && index < TileFactory.getTileCount()) {
+    private static short checkTile(short index) throws GameException {
+        if (0 <= index && index < AER.tiles.getTileCount()) {
             return index;
         } else {
-            throw new AEIIException("broken map file!");
+            throw new GameException("broken map file!");
         }
     }
 
-    private static int checkUnit(int index) throws AEIIException {
-        if (0 <= index && index < UnitFactory.getUnitCount()) {
+    private static int checkUnit(int index) throws GameException {
+        if (0 <= index && index < AER.units.getUnitCount()) {
             return index;
         } else {
-            throw new AEIIException("broken map file!");
+            throw new GameException("broken map file!");
         }
     }
 
@@ -237,8 +238,8 @@ public class MapFactory {
         if ((32 <= tile_index_a && tile_index_a <= 35) || (32 <= tile_index_b && tile_index_b <= 35)) {
             return tile_index_a == tile_index_b;
         }
-        Tile tile_a = TileFactory.getTile(tile_index_a);
-        Tile tile_b = TileFactory.getTile(tile_index_b);
+        Tile tile_a = AER.tiles.getTile(tile_index_a);
+        Tile tile_b = AER.tiles.getTile(tile_index_b);
         return tile_a.isCastle() && tile_b.isCastle()
                 || tile_a.isVillage() && tile_b.isVillage()
                 || tile_a.isTemple() && tile_b.isTemple()

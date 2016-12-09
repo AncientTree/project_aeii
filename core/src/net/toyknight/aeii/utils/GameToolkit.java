@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.record.GameRecord;
@@ -33,7 +33,7 @@ public class GameToolkit {
     private GameToolkit() {
     }
 
-    public static GameCore createCampaignGame(StageController stage) throws AEIIException {
+    public static GameCore createCampaignGame(StageController stage) throws GameException {
         FileHandle map_file = FileProvider.getAssetsFile("map/campaign/" + stage.getMapName());
         Map map = MapFactory.createMap(map_file);
         Rule rule = stage.getRule();
@@ -52,7 +52,7 @@ public class GameToolkit {
         return game;
     }
 
-    public static void saveSkirmish(GameCore game) throws AEIIException {
+    public static void saveSkirmish(GameCore game) throws GameException {
         try {
             FileHandle save_file = createSaveFile(game, SAVE);
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
@@ -62,12 +62,12 @@ public class GameToolkit {
             output.flush();
             output.close();
         } catch (KryoException ex) {
-            throw new AEIIException("Cannot save the game", ex);
+            throw new GameException("Cannot save the game", ex);
         }
     }
 
     public static void saveCampaign(GameCore game, String code, int stage, ObjectMap<String, Integer> attributes)
-            throws AEIIException {
+            throws GameException {
         try {
             FileHandle save_file = createSaveFile(game, SAVE);
             GameSave game_save = new GameSave(new GameCore(game), game.getType());
@@ -82,7 +82,7 @@ public class GameToolkit {
             output.flush();
             output.close();
         } catch (KryoException ex) {
-            throw new AEIIException("Cannot save the game", ex);
+            throw new GameException("Cannot save the game", ex);
         }
     }
 

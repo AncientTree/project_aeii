@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.screen.GameScreen;
+import net.toyknight.aeii.gui.GameScreen;
 import net.toyknight.aeii.utils.UnitToolkit;
 
 /**

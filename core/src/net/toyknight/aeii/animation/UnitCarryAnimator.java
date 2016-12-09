@@ -3,7 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/29/2016.
@@ -20,8 +20,8 @@ public class UnitCarryAnimator extends UnitAnimator {
 
     public UnitCarryAnimator(GameContext context, Unit carrier, Unit target, int dest_x, int dest_y) {
         super(context);
-        this.carrier = UnitFactory.cloneUnit(carrier);
-        this.target = UnitFactory.cloneUnit(target);
+        this.carrier = AER.units.cloneUnit(carrier);
+        this.target = AER.units.cloneUnit(target);
         this.dest_x = dest_x;
         this.dest_y = dest_y;
     }

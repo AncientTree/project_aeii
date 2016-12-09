@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Tile;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.*;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class MapEditor {
         setMap(map, "undefined");
         this.brush_type = TYPE_TILE;
         this.selected_tile_index = 0;
-        this.selected_unit = UnitFactory.getSample(0);
+        this.selected_unit = AER.units.getSample(0);
         this.setSelectedTeam(0);
         setBrushType(TYPE_TILE);
     }
@@ -174,7 +175,7 @@ public class MapEditor {
                     break;
                 case TYPE_UNIT:
                     if (getMap().getUnit(map_x, map_y) == null) {
-                        Unit unit = UnitFactory.cloneUnit(getSelectedUnit());
+                        Unit unit = AER.units.cloneUnit(getSelectedUnit());
                         unit.setX(map_x);
                         unit.setY(map_y);
                         unit.setTeam(getSelectedTeam());

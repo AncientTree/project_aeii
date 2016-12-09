@@ -4,13 +4,12 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.server.entities.Player;
 import net.toyknight.aeii.server.managers.*;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.MD5Converter;
-import net.toyknight.aeii.utils.TileFactory;
-import net.toyknight.aeii.utils.UnitFactory;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -95,7 +94,7 @@ public class ServerContext {
 
     public void createVerificationString() {
         verification_string = new MD5Converter().toMD5(
-                TileFactory.getVerificationString() + UnitFactory.getVerificationString() + GameContext.INTERNAL_VERSION);
+                AER.tiles.getVerificationString() + AER.units.getVerificationString() + GameContext.INTERNAL_VERSION);
     }
 
     public String getVerificationString() {
@@ -112,10 +111,9 @@ public class ServerContext {
         }
         //load game data and create verification string
         try {
-            UnitFactory.loadUnitData();
-            TileFactory.loadTileData();
+            AER.initializeData();
             createVerificationString();
-        } catch (AEIIException ex) {
+        } catch (GameException ex) {
             throw new ServerException(TAG, "Error initializing server [exception while loading game data]", ex);
         }
         //initialize managers

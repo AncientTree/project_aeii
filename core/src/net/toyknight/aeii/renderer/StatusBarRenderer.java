@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.screen.GameScreen;
+import net.toyknight.aeii.gui.GameScreen;
 
 /**
  * @author toyknight 4/19/2015.

@@ -208,7 +208,7 @@ public class OperationExecutor {
             } else {
                 int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, true);
                 submitGameEvent(GameEvent.ATTACK, attacker_x, attacker_y, target_x, target_y, attack_damage, false);
-                if (attack_damage < defender.getCurrentHp()) {
+                if (attack_damage < defender.getCurrentHP()) {
                     submitGameEvent(
                             GameEvent.GAIN_EXPERIENCE,
                             attacker_x, attacker_y,
@@ -234,7 +234,7 @@ public class OperationExecutor {
         if (getGame().canCounter(attacker, defender)) {
             int counter_damage = getManager().getUnitToolkit().getDamage(defender, attacker, true);
             submitGameEvent(GameEvent.ATTACK, target_x, target_y, attacker_x, attacker_y, counter_damage, true);
-            if (counter_damage < attacker.getCurrentHp()) {
+            if (counter_damage < attacker.getCurrentHP()) {
                 submitGameEvent(
                         GameEvent.GAIN_EXPERIENCE,
                         target_x, target_y,
@@ -274,10 +274,10 @@ public class OperationExecutor {
                 }
                 //rehabilitation
                 if (unit.hasAbility(Ability.REHABILITATION)) {
-                    change += unit.getMaxHp() / 4;
+                    change += unit.getMaxHP() / 4;
                 }
-                if (unit.getCurrentHp() > unit.getMaxHp()) {
-                    change -= unit.getCurrentHp() - unit.getMaxHp();
+                if (unit.getCurrentHP() > unit.getMaxHP()) {
+                    change -= unit.getCurrentHP() - unit.getMaxHP();
                 }
                 change = UnitToolkit.validateHpChange(unit, change);
             } else {
@@ -293,7 +293,7 @@ public class OperationExecutor {
                 hp_change.put("y", unit.getY());
                 hp_change.put("change", change);
                 hp_changes.put(hp_change);
-                if (unit.getCurrentHp() + change <= 0) {
+                if (unit.getCurrentHP() + change <= 0) {
                     destroyed_units.add(unit);
                 }
             }
@@ -309,14 +309,14 @@ public class OperationExecutor {
         Unit target = getGame().getMap().getUnit(target_x, target_y);
         if (getGame().canHeal(healer, target)) {
             int heal = UnitToolkit.getHealerHeal(healer, target);
-            if (target.getCurrentHp() + heal <= 0) {
+            if (target.getCurrentHP() + heal <= 0) {
                 submitGameEvent(GameEvent.HEAL,
                         healer_x, healer_y, target_x, target_y, UnitToolkit.validateHpChange(target, heal));
                 submitGameEvent(GameEvent.UNIT_DESTROY, target_x, target_y, healer.getTeam());
             } else {
                 submitGameEvent(GameEvent.HEAL, healer_x, healer_y, target_x, target_y, heal);
             }
-            int experience = heal + target.getCurrentHp() > 0 ?
+            int experience = heal + target.getCurrentHP() > 0 ?
                     getGame().getRule().getInteger(HEAL_EXPERIENCE) :
                     getGame().getRule().getInteger(KILL_EXPERIENCE);
             submitGameEvent(GameEvent.GAIN_EXPERIENCE, healer_x, healer_y, experience);
@@ -427,8 +427,8 @@ public class OperationExecutor {
             JSONArray hp_changes = new JSONArray();
             ObjectSet<Unit> destroyed_units = new ObjectSet<Unit>();
 
-            if (unit.getCurrentHp() > unit.getMaxHp()) {
-                int change = unit.getMaxHp() - unit.getCurrentHp();
+            if (unit.getCurrentHP() > unit.getMaxHP()) {
+                int change = unit.getMaxHP() - unit.getCurrentHP();
                 JSONObject hp_change = new JSONObject();
                 hp_change.put("x", unit.getX());
                 hp_change.put("y", unit.getY());
@@ -447,7 +447,7 @@ public class OperationExecutor {
                         hp_change.put("y", target.getY());
                         hp_change.put("change", change);
                         hp_changes.put(hp_change);
-                        if (target.getCurrentHp() + change <= 0) {
+                        if (target.getCurrentHP() + change <= 0) {
                             destroyed_units.add(target);
                         }
                     }

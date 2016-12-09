@@ -1,11 +1,11 @@
 package net.toyknight.aeii.manager;
 
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 
 /**
  * @author toyknight 6/23/2016.
  */
-public class CheatingException extends AEIIException {
+public class CheatingException extends GameException {
 
     private final int team;
 

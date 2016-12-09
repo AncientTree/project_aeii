@@ -1,6 +1,6 @@
 package net.toyknight.aeii.server.managers;
 
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.server.ServerContext;
@@ -35,7 +35,7 @@ public class MapManager {
         fos.close();
     }
 
-    private Map readMap(File map_file) throws IOException, AEIIException {
+    private Map readMap(File map_file) throws IOException, GameException {
         FileInputStream fis = new FileInputStream(map_file);
         DataInputStream dis = new DataInputStream(fis);
         Map map = MapFactory.createMap(dis);
@@ -44,7 +44,7 @@ public class MapManager {
         return map;
     }
 
-    public Map getMap(int map_id) throws IOException, AEIIException {
+    public Map getMap(int map_id) throws IOException, GameException {
         synchronized (CHANGE_LOCK) {
             File map_file = new File("maps/m" + map_id);
             return readMap(map_file);
@@ -72,7 +72,7 @@ public class MapManager {
         }
     }
 
-    public boolean updateMap(int map_id, String author, String filename) throws IOException, AEIIException {
+    public boolean updateMap(int map_id, String author, String filename) throws IOException, GameException {
         synchronized (CHANGE_LOCK) {
             File map_file = new File("maps/m" + map_id);
             try {

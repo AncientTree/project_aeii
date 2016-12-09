@@ -22,8 +22,9 @@ import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.renderer.FontRenderer;
-import net.toyknight.aeii.screen.*;
-import net.toyknight.aeii.screen.wiki.Wiki;
+import net.toyknight.aeii.gui.*;
+import net.toyknight.aeii.gui.wiki.Wiki;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.*;
 
 import java.io.IOException;
@@ -94,16 +95,15 @@ public class GameContext extends Game implements GameManagerListener {
                     0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<Runnable>());
             FileProvider.setPlatform(PLATFORM);
+            AER.initialize();
             Language.initialize();
-            TileFactory.loadTileData();
-            UnitFactory.loadUnitData();
             resource_manager = new ResourceManager();
             resource_manager.prepare(TILE_SIZE);
 
             LoadingScreen loading_screen = new LoadingScreen(this);
             Gdx.input.setCatchBackKey(true);
             setScreen(loading_screen);
-        } catch (AEIIException ex) {
+        } catch (GameException ex) {
             Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
         }
     }
@@ -151,7 +151,7 @@ public class GameContext extends Game implements GameManagerListener {
                 campaign_context = new CampaignContext(this);
 
                 initialized = true;
-            } catch (AEIIException ex) {
+            } catch (GameException ex) {
                 Gdx.app.log(TAG, ex.toString() + "; Cause: " + ex.getCause().toString());
             }
         }
@@ -181,7 +181,7 @@ public class GameContext extends Game implements GameManagerListener {
         return wiki;
     }
 
-    private void loadConfiguration() throws AEIIException {
+    private void loadConfiguration() throws GameException {
         FileHandle config_file = FileProvider.getUserFile("user.config");
         configuration = new ObjectMap<String, String>();
         try {
@@ -196,7 +196,7 @@ public class GameContext extends Game implements GameManagerListener {
                 PropertiesUtils.store(configuration, writer, "aeii user configuration file");
             }
         } catch (IOException ex) {
-            throw new AEIIException(ex.getMessage());
+            throw new GameException(ex.getMessage());
         }
     }
 
@@ -290,7 +290,7 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public String getVerificationString() {
-        String V_STRING = TileFactory.getVerificationString() + UnitFactory.getVerificationString() + INTERNAL_VERSION;
+        String V_STRING = AER.tiles.getVerificationString() + AER.units.getVerificationString() + INTERNAL_VERSION;
         return new MD5Converter().toMD5(V_STRING);
     }
 
@@ -367,7 +367,7 @@ public class GameContext extends Game implements GameManagerListener {
             getGameManager().getAnimationDispatcher().submitMessageAnimation(stage_name, 1f);
             getCampaignContext().onGameStart();
             getCampaignContext().getCurrentCampaign().getCurrentStage().getContext().show_objectives();
-        } catch (AEIIException ex) {
+        } catch (GameException ex) {
             if (getScreen() instanceof StageScreen) {
                 ((StageScreen) getScreen()).showNotification(Language.getText("MSG_ERR_BMF"), null);
             }
@@ -417,7 +417,7 @@ public class GameContext extends Game implements GameManagerListener {
         executor.getQueue().clear();
     }
 
-    public void doSaveGame() throws AEIIException {
+    public void doSaveGame() throws GameException {
         GameCore game = getGame();
         switch (game.getType()) {
             case GameCore.SKIRMISH:

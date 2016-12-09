@@ -3,7 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Position;
-import net.toyknight.aeii.screen.MapCanvas;
+import net.toyknight.aeii.gui.MapCanvas;
 
 /**
  * @author toyknight 4/21/2015.

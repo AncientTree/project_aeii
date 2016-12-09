@@ -11,7 +11,7 @@ import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.record.GameRecorder;
 import net.toyknight.aeii.robot.Robot;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONObject;
 
@@ -493,9 +493,9 @@ public class GameManager implements AnimationListener {
             Tile tile = getGame().getMap().getTile(map_x, map_y);
             Unit unit = getGame().getMap().getUnit(map_x, map_y);
             if (getGame().isCastleAccessible(tile, team) && getGame().canBuyUponUnit(unit, team)) {
-                Unit sample = UnitFactory.isCommander(index) ?
-                        UnitFactory.cloneUnit(getGame().getCommander(team)) :
-                        UnitFactory.cloneUnit(UnitFactory.getSample(index));
+                Unit sample = AER.units.isCommander(index) ?
+                        AER.units.cloneUnit(getGame().getCommander(team)) :
+                        AER.units.cloneUnit(AER.units.getSample(index));
                 sample.clearStatus();
                 sample.setTeam(team);
                 sample.setX(map_x);

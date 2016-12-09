@@ -291,7 +291,7 @@ public class ToyboxStage1 extends StageController {
         for (Unit unit : getContext().get_units(0)) {
             getContext().attack(unit.getX(), unit.getY(), -1);
             getContext().hp_change(unit.getX(), unit.getY(), damage);
-            if(unit.getCurrentHp() <= -1 * damage)
+            if(unit.getCurrentHP() <= -1 * damage)
             {
                 getContext().destroy_unit(unit.getX(), unit.getY());
             }
@@ -303,7 +303,7 @@ public class ToyboxStage1 extends StageController {
         Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Hyper Upgrade"));
         getContext().message(message_power);
          for (Unit player : getContext().get_units(1)) {
-             getContext().hp_change(player.getX(), player.getY(), player.getMaxHp() - player.getCurrentHp());
+             getContext().hp_change(player.getX(), player.getY(), player.getMaxHP() - player.getCurrentHP());
              for(int i = 0; i < level; i++) {
                  getContext().level_up(player.getX(), player.getY());
              }
@@ -596,7 +596,7 @@ public class ToyboxStage1 extends StageController {
                 for (Unit unit : getContext().get_units(1)) {
                     if(unit.isCommander())
                     {
-                        getContext().hp_change(unit.getX(), unit.getY(), unit.getMaxHp() - unit.getCurrentHp());
+                        getContext().hp_change(unit.getX(), unit.getY(), unit.getMaxHP() - unit.getCurrentHP());
                     }
                 }
             }
@@ -610,7 +610,7 @@ public class ToyboxStage1 extends StageController {
                 for (Unit unit : getContext().get_units(0)) {
                     getContext().attack(unit.getX(), unit.getY(), -1);
                     getContext().hp_change(unit.getX(), unit.getY(), damage);
-                    if(unit.getCurrentHp() <= -1 * damage)
+                    if(unit.getCurrentHP() <= -1 * damage)
                     {
                         getContext().destroy_unit(unit.getX(), unit.getY());
                     }
@@ -623,7 +623,7 @@ public class ToyboxStage1 extends StageController {
     {
         if (getContext().current_team() == 0) {
             for (Unit unit : getContext().get_units(0)) {
-                if (unit.getCurrentHp() == unit.getMaxHp()) {
+                if (unit.getCurrentHP() == unit.getMaxHP()) {
                     if(unit.getIndex() != 9  && unit.getIndex() != 10)
                     {
                         getContext().remove_unit(unit.getX(), unit.getY());

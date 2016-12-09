@@ -15,10 +15,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
 import net.toyknight.aeii.utils.Language;
-import net.toyknight.aeii.utils.TileFactory;
-import net.toyknight.aeii.utils.UnitFactory;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -89,7 +88,7 @@ public class ResourceManager {
 
     public void prepare(int ts) {
         //map related textures
-        texture_tiles = new Texture[TileFactory.getTileCount()];
+        texture_tiles = new Texture[AER.tiles.getTileCount()];
         for (int i = 0; i < texture_tiles.length; i++) {
             asset_manager.load("images/tiles/tile_" + i + ".png", Texture.class);
         }
@@ -108,7 +107,7 @@ public class ResourceManager {
         asset_manager.load("images/cursor_move_target.png", Texture.class);
         asset_manager.load("images/icons_unit_preview.png", Texture.class);
         //unit textures
-        texture_units = new TextureRegion[4][UnitFactory.getUnitCount()][2];
+        texture_units = new TextureRegion[4][AER.units.getUnitCount()][2];
         for (int team = 0; team < 4; team++) {
             asset_manager.load("images/units/unit_sheet_" + team + ".png", Texture.class);
         }
@@ -202,8 +201,8 @@ public class ResourceManager {
 
         for (int team = 0; team < 4; team++) {
             Texture sheet_units = asset_manager.get("images/units/unit_sheet_" + team + ".png", Texture.class);
-            int texture_size = sheet_units.getWidth() / UnitFactory.getUnitCount();
-            for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
+            int texture_size = sheet_units.getWidth() / AER.units.getUnitCount();
+            for (int index = 0; index < AER.units.getUnitCount(); index++) {
                 texture_units[team][index][0] = new TextureRegion(sheet_units,
                         index * texture_size, 0, texture_size, texture_size);
                 texture_units[team][index][1] = new TextureRegion(sheet_units,

@@ -3,7 +3,6 @@ package net.toyknight.aeii.campaign.challenge;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
-import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
@@ -64,7 +63,7 @@ public class ChallengeStage6 extends StageController {
     public void onTurnStart(int turn) {
         if (getContext().current_team() == 0) {
             for (Unit unit : getContext().get_units(0)) {
-                if (unit.getCurrentHp() == unit.getMaxHp()) {
+                if (unit.getCurrentHP() == unit.getMaxHP()) {
                     if(unit.getIndex() != 9  && unit.getIndex() != 10)
                     {
                         getContext().remove_unit(unit.getX(), unit.getY());

@@ -7,8 +7,6 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
-import net.toyknight.aeii.entity.Tile;
-
 
 
 /**
@@ -121,7 +119,7 @@ public class WarroomStage4 extends StageController {
             for (Unit unit : getContext().get_units(0)) {
                 getContext().attack(unit.getX(), unit.getY(), -1);
                 getContext().hp_change(unit.getX(), unit.getY(), -20);
-                if(unit.getCurrentHp() <= 20)
+                if(unit.getCurrentHP() <= 20)
                 {
                     getContext().destroy_unit(unit.getX(), unit.getY());
                 }
@@ -132,7 +130,7 @@ public class WarroomStage4 extends StageController {
             for (Unit unit : getContext().get_units(0)) {
                 getContext().attack(unit.getX(), unit.getY(), -1);
                 getContext().hp_change(unit.getX(), unit.getY(), -20);
-                if(unit.getCurrentHp() <= 20)
+                if(unit.getCurrentHP() <= 20)
                 {
                     getContext().destroy_unit(unit.getX(), unit.getY());
                 }

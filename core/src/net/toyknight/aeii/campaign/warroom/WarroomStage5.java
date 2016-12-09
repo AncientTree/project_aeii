@@ -1,10 +1,7 @@
 package net.toyknight.aeii.campaign.warroom;
 
-import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.campaign.Message;
-import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
-import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.utils.Language;
@@ -50,8 +47,8 @@ public class WarroomStage5 extends StageController {
             getContext().message(message1);
             for (Unit player : getContext().get_units(0)) {
 
-                if(player.getMaxHp() - player.getCurrentHp() <= 20) {
-                    getContext().hp_change(player.getX(), player.getY(), player.getMaxHp() - player.getCurrentHp());
+                if(player.getMaxHP() - player.getCurrentHP() <= 20) {
+                    getContext().hp_change(player.getX(), player.getY(), player.getMaxHP() - player.getCurrentHP());
                 }
                 else
                 {

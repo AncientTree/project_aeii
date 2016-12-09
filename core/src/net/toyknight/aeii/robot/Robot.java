@@ -6,7 +6,7 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.manager.Operation;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 
 /**
@@ -48,7 +48,7 @@ public class Robot {
         assigned_positions.clear();
         ability_map.clear();
         for (Integer index : getGame().getRule().getAvailableUnits()) {
-            for (int ability : UnitFactory.getSample(index).getAbilities()) {
+            for (int ability : AER.units.getSample(index).getAbilities()) {
                 if (ability_map.containsKey(ability)) {
                     ability_map.get(ability).add(index);
                 } else {
@@ -177,7 +177,7 @@ public class Robot {
                 return false;
             } else {
                 if (!getGame().isCommanderAlive(team) && getGame().getCommander(team).getPrice() <= getGold()) {
-                    getManager().doBuyUnit(UnitFactory.getCommanderIndex(), recruit_position.x, recruit_position.y);
+                    getManager().doBuyUnit(AER.units.getCommanderIndex(), recruit_position.x, recruit_position.y);
                     return true;
                 } else {
                     ObjectSet<Unit> enemy_units = getGame().getEnemyUnits(team);
@@ -351,7 +351,7 @@ public class Robot {
         }
 
         ObjectSet<Action> actions = new ObjectSet<Action>();
-        Unit temp_selected_unit = UnitFactory.cloneUnit(selected_unit);
+        Unit temp_selected_unit = AER.units.cloneUnit(selected_unit);
         for (Position position : movable_positions) {
             if (!selected_unit.hasAbility(Ability.HEAVY_MACHINE) ||
                     (selected_unit.hasAbility(Ability.HEAVY_MACHINE) && position.equals(current_position))) {
@@ -486,7 +486,7 @@ public class Robot {
 
     private int getActionScore(Action action) {
         synchronized (GameContext.RENDER_LOCK) {
-            Unit selected_unit = UnitFactory.cloneUnit(getManager().getSelectedUnit());
+            Unit selected_unit = AER.units.cloneUnit(getManager().getSelectedUnit());
             selected_unit.setX(action.getPosition().x);
             selected_unit.setY(action.getPosition().y);
 
@@ -510,13 +510,13 @@ public class Robot {
                 case Operation.HEAL:
                     Unit target = getGame().getMap().getUnit(action.getTarget());
                     if (isAlly(target) && !target.hasAbility(Ability.HEALER)) {
-                        score += 10 * (target.getAttack() * target.getCurrentHp() / target.getMaxHp() + getMobility(target) * 5);
+                        score += 10 * (target.getAttack() * target.getCurrentHP() / target.getMaxHP() + getMobility(target) * 5);
                     } else {
                         score -= 500;
                     }
                     break;
                 case Operation.ATTACK:
-                    target = UnitFactory.cloneUnit(getGame().getMap().getUnit(action.getTarget()));
+                    target = AER.units.cloneUnit(getGame().getMap().getUnit(action.getTarget()));
                     if (isEnemy(target)) {
                         score += getUnitValue(target) / 50 + getAttackScore(selected_unit, target);
                     } else {
@@ -553,9 +553,9 @@ public class Robot {
         int unit_index = -1;
         int max_physical_defence = Integer.MIN_VALUE;
         for (int index : getGame().getRule().getAvailableUnits()) {
-            if (!UnitFactory.isCommander(index) || !commander_alive) {
+            if (!AER.units.isCommander(index) || !commander_alive) {
                 Unit sample =
-                        UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
+                        AER.units.isCommander(index) ? getGame().getCommander(team) : AER.units.getSample(index);
                 if (getGame().getUnitPrice(sample.getIndex(), team) < getGold()
                         && getGame().canAddPopulation(team, sample.getOccupancy())
                         && sample.getPhysicalDefence() > max_physical_defence) {
@@ -570,10 +570,10 @@ public class Robot {
     private int getAttackScore(Unit attacker, Unit defender) {
         int score = 0;
         int attack_damage = getManager().getUnitToolkit().getDamage(attacker, defender, false);
-        defender.changeCurrentHp(-attack_damage);
+        defender.changeCurrentHP(-attack_damage);
         int damage_score = attack_damage * getUnitValue(defender) / 20;
         int killing_score;
-        if (defender.getCurrentHp() <= 0) {
+        if (defender.getCurrentHP() <= 0) {
             killing_score = getUnitValue(defender) * 10 / 4;
             if (defender.isCommander()) {
                 killing_score += 500;
@@ -606,12 +606,12 @@ public class Robot {
         }
         if (getGame().canCounter(attacker, defender)) {
             int counter_damage = getManager().getUnitToolkit().getDamage(defender, attacker, false);
-            attacker.changeCurrentHp(-counter_damage);
+            attacker.changeCurrentHP(-counter_damage);
             if (attacker.isCommander()) {
-                score -= attacker.getCurrentHp() <= 0 ?
+                score -= attacker.getCurrentHP() <= 0 ?
                         getUnitValue(attacker) * 20 : counter_damage * getUnitValue(attacker) / 10;
             } else {
-                score -= attacker.getCurrentHp() <= 0 ?
+                score -= attacker.getCurrentHP() <= 0 ?
                         getUnitValue(attacker) * 10 : counter_damage * getUnitValue(attacker) / 20;
             }
             if (attacker.getStatus() == null) {
@@ -849,9 +849,9 @@ public class Robot {
             int preferred_index = -1;
             boolean mobility_reached = false;
             for (int index : ability_map.get(preferred_ability)) {
-                if (!UnitFactory.isCommander(index) || !getGame().isCommanderAlive(team)) {
+                if (!AER.units.isCommander(index) || !getGame().isCommanderAlive(team)) {
                     Unit sample =
-                            UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
+                            AER.units.isCommander(index) ? getGame().getCommander(team) : AER.units.getSample(index);
                     if (preferred_index < 0) {
                         preferred_index = index;
                         mobility_reached = getMobility(sample) >= preferred_mobility;
@@ -868,9 +868,9 @@ public class Robot {
             int preferred_index = -1;
             int max_price = Integer.MIN_VALUE;
             for (Integer index : getGame().getRule().getAvailableUnits()) {
-                if (!UnitFactory.isCommander(index) || !getGame().isCommanderAlive(team)) {
+                if (!AER.units.isCommander(index) || !getGame().isCommanderAlive(team)) {
                     Unit sample =
-                            UnitFactory.isCommander(index) ? getGame().getCommander(team) : UnitFactory.getSample(index);
+                            AER.units.isCommander(index) ? getGame().getCommander(team) : AER.units.getSample(index);
                     if ((sample.getPrice() < 800 || getUnitCountWithIndex(index) < 2)
                             && sample.getAttackType() == preferred_attack_type && sample.getPrice() <= getGold()
                             && getMobility(sample) >= preferred_mobility && sample.getPrice() > max_price) {
@@ -913,7 +913,7 @@ public class Robot {
     }
 
     private Unit getPreferredTarget(Unit unit, ObjectSet<Unit> enemy_units) {
-        if (enemy_units.size > 3 && unit.getCurrentHp() < 30) {
+        if (enemy_units.size > 3 && unit.getCurrentHP() < 30) {
             return null;
         }
         Unit preferred_target = null;
@@ -996,7 +996,7 @@ public class Robot {
                         score += target.getPrice() / 4;
                     }
                     if (unit.hasAbility(Ability.REFRESH_AURA) && isAlly(target)) {
-                        if (target.getCurrentHp() < target.getMaxHp()) {
+                        if (target.getCurrentHP() < target.getMaxHP()) {
                             score += target.getPrice() / 4;
                         }
                         if (Status.isDebuff(target.getStatus())) {
@@ -1012,7 +1012,7 @@ public class Robot {
     private int getUnhealthyUnitCount(ObjectSet<Unit> units) {
         int count = 0;
         for (Unit unit : units) {
-            if (Status.isDebuff(unit.getStatus()) || unit.getCurrentHp() < unit.getMaxHp()) {
+            if (Status.isDebuff(unit.getStatus()) || unit.getCurrentHP() < unit.getMaxHP()) {
                 count++;
             }
         }

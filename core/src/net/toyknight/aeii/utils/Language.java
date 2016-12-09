@@ -3,7 +3,7 @@ package net.toyknight.aeii.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,14 +17,14 @@ public class Language {
 
     private static ObjectMap<String, String> languageMap = new ObjectMap<String, String>();
 
-    public static void initialize() throws AEIIException {
+    public static void initialize() throws GameException {
         try {
             createLocale();
             FileHandle languageFile = FileProvider.getLanguageFile(locale);
             InputStreamReader reader = new InputStreamReader(languageFile.read(), "UTF8");
             PropertiesUtils.load(languageMap, reader);
         } catch (IOException ex) {
-            throw new AEIIException(ex.getClass() + ": " + ex.getMessage());
+            throw new GameException(ex.getClass() + ": " + ex.getMessage());
         }
     }
 

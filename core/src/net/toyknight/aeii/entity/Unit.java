@@ -3,7 +3,7 @@ package net.toyknight.aeii.entity;
 import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.Serializable;
 import net.toyknight.aeii.Verifiable;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import org.json.JSONObject;
 
 /**
@@ -16,40 +16,26 @@ public class Unit implements Serializable, Verifiable {
 
     private static final int[] LEVEL_EXPERIENCE = {0, 100, 300, 600};
 
+    private final Definition definition;
+
     private final int index;
 
-    private int price;
-    private int occupancy;
+    private String u_code;
 
-    private int level;
-    private int experience = 0;
-
-    private String unit_code;
     private int team;
 
-    private int max_hp;
+    private int level = 0;
+    private int experience = 0;
+
+    private int price_increment = 0;
+
     private int current_hp;
-    private int attack;
-    private int attack_type;
-    private int physical_defence;
-    private int magic_defence;
-    private int movement_point;
     private int current_movement_point;
-
-    private Array<Integer> abilities;
-    private Status status;
-
-    private int hp_growth;
-    private int attack_growth;
-    private int physical_defence_growth;
-    private int magic_defence_growth;
-    private int movement_growth;
 
     private int x_position;
     private int y_position;
 
-    private int max_attack_range;
-    private int min_attack_range;
+    private Status status;
 
     private boolean is_standby;
 
@@ -57,12 +43,9 @@ public class Unit implements Serializable, Verifiable {
 
     private int head = 0;
 
-    private Unit(int index, String unit_code) {
-        this.level = 0;
+    public Unit(Definition definition, int index) {
         this.index = index;
-        this.abilities = new Array<Integer>();
-        this.unit_code = unit_code;
-        this.is_standby = false;
+        this.definition = definition;
     }
 
     public Unit(Unit unit) {
@@ -70,54 +53,24 @@ public class Unit implements Serializable, Verifiable {
         setStandby(unit.isStandby());
     }
 
-    public Unit(Unit unit, String unit_code) {
-        this(unit.getIndex(), unit_code);
+    public Unit(Unit unit, String u_code) {
+        this(unit.getDefinition(), unit.getIndex());
+        this.u_code = u_code;
+        this.team = unit.getTeam();
         this.level = unit.getLevel();
         this.experience = unit.getTotalExperience();
-        this.price = unit.getPrice();
-        this.occupancy = unit.getOccupancy();
-        this.team = unit.getTeam();
-        this.max_hp = unit.getMaxHp();
-        this.current_hp = unit.getCurrentHp();
-        this.attack = unit.getAttack();
-        this.attack_type = unit.getAttackType();
-        this.physical_defence = unit.getPhysicalDefence();
-        this.magic_defence = unit.getMagicDefence();
-        this.movement_point = unit.getMovementPoint();
+        this.current_hp = unit.getCurrentHP();
         this.current_movement_point = unit.getCurrentMovementPoint();
-        this.hp_growth = unit.getHpGrowth();
-        this.attack_growth = unit.getAttackGrowth();
-        this.physical_defence_growth = unit.getPhysicalDefenceGrowth();
-        this.magic_defence_growth = unit.getMagicDefenceGrowth();
-        this.movement_growth = unit.getMovementGrowth();
         this.x_position = unit.getX();
         this.y_position = unit.getY();
-        this.max_attack_range = unit.getMaxAttackRange();
-        this.min_attack_range = unit.getMinAttackRange();
-        this.abilities = new Array<Integer>(unit.getAbilities());
         this.status = unit.getStatus() == null ? null : new Status(unit.getStatus());
+        this.is_standby = unit.isStandby();
         this.is_static = unit.isStatic();
         this.head = unit.getHead();
     }
 
-    public Unit(UnitDefinition definition, int index) {
-        this(index, "#");
-        this.price = definition.price;
-        this.occupancy = definition.occupancy;
-        this.max_hp = definition.max_hp;
-        this.attack = definition.attack;
-        this.attack_type = definition.attack_type;
-        this.physical_defence = definition.physical_defence;
-        this.magic_defence = definition.magic_defence;
-        this.movement_point = definition.movement_point;
-        this.abilities = definition.abilities;
-        this.hp_growth = definition.hp_growth;
-        this.attack_growth = definition.attack_growth;
-        this.physical_defence_growth = definition.physical_defence_growth;
-        this.magic_defence_growth = definition.magic_defence_growth;
-        this.movement_growth = definition.movement_growth;
-        this.max_attack_range = definition.max_attack_range;
-        this.min_attack_range = definition.min_attack_range;
+    protected Definition getDefinition() {
+        return definition;
     }
 
     public int getIndex() {
@@ -125,31 +78,27 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public boolean isCommander() {
-        return UnitFactory.isCommander(getIndex());
+        return AER.units.isCommander(getIndex());
     }
 
     public boolean isCrystal() {
-        return UnitFactory.isCrystal(getIndex());
+        return AER.units.isCrystal(getIndex());
     }
 
     public boolean isSkeleton() {
-        return UnitFactory.isSkeleton(getIndex());
+        return AER.units.isSkeleton(getIndex());
     }
 
     public int getPrice() {
-        return price;
+        return definition.price + price_increment;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void changePrice(int increment) {
+        this.price_increment += increment;
     }
 
     public int getOccupancy() {
-        return occupancy;
-    }
-
-    public void setOccupancy(int occupancy) {
-        this.occupancy = occupancy;
+        return definition.occupancy;
     }
 
     public int getLevel() {
@@ -157,11 +106,11 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public void setUnitCode(String unit_code) {
-        this.unit_code = unit_code;
+        this.u_code = unit_code;
     }
 
     public String getUnitCode() {
-        return unit_code;
+        return u_code;
     }
 
     public int getTeam() {
@@ -172,43 +121,43 @@ public class Unit implements Serializable, Verifiable {
         this.team = team;
     }
 
-    public int getMaxHp() {
-        return max_hp + getHpGrowth() * getLevel();
+    public int getMaxHP() {
+        return definition.max_hp + getHPGrowth() * getLevel();
     }
 
-    public int getCurrentHp() {
+    public int getCurrentHP() {
         return current_hp;
     }
 
-    public void setCurrentHp(int current_hp) {
+    public void setCurrentHP(int current_hp) {
         this.current_hp = current_hp;
     }
 
-    public void changeCurrentHp(int change) {
+    public void changeCurrentHP(int change) {
         this.current_hp += change;
     }
 
     public int getAttack() {
-        return attack + getAttackGrowth() * getLevel();
+        return definition.attack + getAttackGrowth() * getLevel();
     }
 
     public int getAttackType() {
-        return attack_type;
+        return definition.attack_type;
     }
 
     public int getPhysicalDefence() {
-        return physical_defence + getPhysicalDefenceGrowth() * getLevel();
+        return definition.physical_defence + getPhysicalDefenceGrowth() * getLevel();
     }
 
     public int getMagicDefence() {
-        return magic_defence + getMagicDefenceGrowth() * getLevel();
+        return definition.magic_defence + getMagicDefenceGrowth() * getLevel();
     }
 
     public int getMovementPoint() {
         if (hasStatus(Status.SLOWED)) {
             return 1;
         } else {
-            return movement_point + getMovementGrowth() * getLevel();
+            return definition.movement_point + getMovementGrowth() * getLevel();
         }
     }
 
@@ -225,15 +174,11 @@ public class Unit implements Serializable, Verifiable {
     }
 
     public boolean hasAbility(int ability) {
-        return abilities.indexOf(ability, false) >= 0;
+        return definition.abilities.indexOf(ability, false) >= 0;
     }
 
     public Array<Integer> getAbilities() {
-        return abilities;
-    }
-
-    public void setAbilities(Array<Integer> abilities) {
-        this.abilities = abilities;
+        return definition.abilities;
     }
 
     public Status getStatus() {
@@ -244,24 +189,24 @@ public class Unit implements Serializable, Verifiable {
         return getStatus() != null && getStatus().getType() == type;
     }
 
-    public int getHpGrowth() {
-        return hp_growth;
+    public int getHPGrowth() {
+        return definition.hp_growth;
     }
 
     public int getAttackGrowth() {
-        return attack_growth;
+        return definition.attack_growth;
     }
 
     public int getPhysicalDefenceGrowth() {
-        return physical_defence_growth;
+        return definition.physical_defence_growth;
     }
 
     public int getMagicDefenceGrowth() {
-        return magic_defence_growth;
+        return definition.magic_defence_growth;
     }
 
     public int getMovementGrowth() {
-        return movement_growth;
+        return definition.movement_growth;
     }
 
     public int getX() {
@@ -284,7 +229,7 @@ public class Unit implements Serializable, Verifiable {
         if (hasStatus(Status.BLINDED)) {
             return 0;
         } else {
-            return max_attack_range;
+            return definition.max_attack_range;
         }
     }
 
@@ -292,7 +237,7 @@ public class Unit implements Serializable, Verifiable {
         if (hasStatus(Status.BLINDED)) {
             return 0;
         } else {
-            return min_attack_range;
+            return definition.min_attack_range;
         }
     }
 
@@ -314,8 +259,8 @@ public class Unit implements Serializable, Verifiable {
             int total_experience = getTotalExperience();
             setTotalExperience(total_experience + experience);
             int level_advance = getLevel() - old_level;
-            current_hp += getHpGrowth() * level_advance;
-            current_movement_point += movement_growth * level_advance;
+            current_hp += getHPGrowth() * level_advance;
+            current_movement_point += definition.movement_growth * level_advance;
             return level_advance > 0;
         } else {
             return false;
@@ -396,10 +341,6 @@ public class Unit implements Serializable, Verifiable {
         return this.x_position == x && this.y_position == y;
     }
 
-    public boolean isAt(Position position) {
-        return isAt(position.x, position.y);
-    }
-
     @Override
     public boolean equals(Object object) {
         if (object instanceof Unit) {
@@ -419,11 +360,11 @@ public class Unit implements Serializable, Verifiable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("index", getIndex());
-        json.put("price", getPrice());
+        json.put("price_increment", price_increment);
         json.put("experience", getTotalExperience());
         json.put("unit_code", getUnitCode());
         json.put("team", getTeam());
-        json.put("current_hp", getCurrentHp());
+        json.put("current_hp", getCurrentHP());
         json.put("current_movement_point", getCurrentMovementPoint());
         json.put("x_position", getX());
         json.put("y_position", getY());
@@ -441,27 +382,27 @@ public class Unit implements Serializable, Verifiable {
         String str = "";
         str = str
                 + index
-                + price
-                + max_hp
-                + attack
-                + attack_type
-                + physical_defence
-                + magic_defence
-                + movement_point
-                + hp_growth
-                + attack_growth
-                + physical_defence_growth
-                + magic_defence_growth
-                + movement_growth
-                + max_attack_range
-                + min_attack_range;
-        for (Integer ability : abilities) {
+                + definition.price
+                + definition.max_hp
+                + definition.attack
+                + definition.attack_type
+                + definition.physical_defence
+                + definition.magic_defence
+                + definition.movement_point
+                + definition.hp_growth
+                + definition.attack_growth
+                + definition.physical_defence_growth
+                + definition.magic_defence_growth
+                + definition.movement_growth
+                + definition.max_attack_range
+                + definition.min_attack_range;
+        for (Integer ability : definition.abilities) {
             str += ability;
         }
         return str;
     }
 
-    public static class UnitDefinition {
+    public static class Definition {
 
         public int price;
 
@@ -494,6 +435,10 @@ public class Unit implements Serializable, Verifiable {
         public int max_attack_range;
 
         public int min_attack_range;
+
+        public Definition() {
+            abilities = new Array<Integer>();
+        }
 
     }
 

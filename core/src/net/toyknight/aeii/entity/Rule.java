@@ -3,7 +3,7 @@ package net.toyknight.aeii.entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.Serializable;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,25 +141,22 @@ public class Rule implements Serializable {
     }
 
     private static Array<Integer> getDefaultUnits() {
-        int commander = UnitFactory.getCommanderIndex();
-        int skeleton = UnitFactory.getSkeletonIndex();
-        int crystal = UnitFactory.getCrystalIndex();
         Array<Integer> unit_list = new Array<Integer>();
-        for (int index = 0; index < UnitFactory.getUnitCount(); index++) {
-            if (index != commander && index != skeleton && index != crystal) {
+        for (int index = 0; index < AER.units.getUnitCount(); index++) {
+            if (!AER.units.isCommander(index) && !AER.units.isSkeleton(index) && !AER.units.isCrystal(index)) {
                 unit_list.add(index);
             }
         }
         //sort unit list
         for (int i = unit_list.size - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
-                if (UnitFactory.getSample(unit_list.get(j)).getPrice() >
-                        UnitFactory.getSample(unit_list.get(j + 1)).getPrice()) {
+                if (AER.units.getSample(unit_list.get(j)).getPrice() >
+                        AER.units.getSample(unit_list.get(j + 1)).getPrice()) {
                     unit_list.swap(j, j + 1);
                 }
             }
         }
-        unit_list.add(commander);
+        unit_list.add(AER.units.getCommanderIndex());
         return unit_list;
     }
 

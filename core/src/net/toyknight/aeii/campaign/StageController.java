@@ -2,7 +2,7 @@ package net.toyknight.aeii.campaign;
 
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/24/2016.
@@ -36,7 +36,7 @@ public abstract class StageController {
     }
 
     protected boolean isCrystal(Unit unit, int team) {
-        return unit.getTeam() == team && UnitFactory.isCrystal(unit.getIndex());
+        return unit.getTeam() == team && AER.units.isCrystal(unit.getIndex());
     }
 
     public final void setCleared(boolean cleared) {

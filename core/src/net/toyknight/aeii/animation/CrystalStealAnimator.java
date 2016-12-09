@@ -3,7 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 
 /**
@@ -36,13 +36,13 @@ public class CrystalStealAnimator extends UnitAnimator {
         this.map_y = map_y;
         this.target_x = target_x;
         this.target_y = target_y;
-        unit1 = UnitFactory.createUnit(0, 1);
+        unit1 = AER.units.createUnit(0, 1);
         x1 = map_x;
         y1 = map_y;
-        unit2 = UnitFactory.createUnit(UnitFactory.getCrystalIndex(), 1);
+        unit2 = AER.units.createUnit(AER.units.getCrystalIndex(), 1);
         x2 = map_x;
         y2 = map_y;
-        unit3 = UnitFactory.createUnit(0, 1);
+        unit3 = AER.units.createUnit(0, 1);
         x3 = map_x;
         y3 = map_y;
         while (map_x != target_x) {

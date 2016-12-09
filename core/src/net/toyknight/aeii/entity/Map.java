@@ -4,8 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.Serializable;
-import net.toyknight.aeii.utils.TileFactory;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +44,7 @@ public class Map implements Serializable {
         }
         JSONArray units = json.getJSONArray("units");
         for (int i = 0; i < units.length(); i++) {
-            addUnit(UnitFactory.createUnit(units.getJSONObject(i)));
+            addUnit(AER.units.createUnit(units.getJSONObject(i)));
         }
         JSONArray tombs = json.getJSONArray("tombs");
         for (int i = 0; i < tombs.length(); i++) {
@@ -169,7 +168,7 @@ public class Map implements Serializable {
 
     public Tile getTile(int x, int y) {
         if (isWithinMap(x, y)) {
-            return TileFactory.getTile(map_data[x][y]);
+            return AER.tiles.getTile(map_data[x][y]);
         } else {
             return null;
         }

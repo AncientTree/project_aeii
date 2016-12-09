@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import net.toyknight.aeii.AEIIException;
+import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
@@ -83,12 +83,12 @@ public class NetworkManager {
     }
 
     public static boolean connect(ServerConfiguration server, String username, String v_string)
-            throws AEIIException, IOException, JSONException {
+            throws GameException, IOException, JSONException {
         tryConnect(server);
         return (username == null || v_string == null) || requestAuthentication(username, v_string);
     }
 
-    public static boolean connect(ServerConfiguration server) throws AEIIException, IOException, JSONException {
+    public static boolean connect(ServerConfiguration server) throws GameException, IOException, JSONException {
         try {
             return connect(server, null, null);
         } catch (Exception ex) {
@@ -225,13 +225,13 @@ public class NetworkManager {
         client.sendTCP(notification.toString());
     }
 
-    public static boolean requestAuthentication(String username, String v_string) throws JSONException, AEIIException {
+    public static boolean requestAuthentication(String username, String v_string) throws JSONException, GameException {
         JSONObject request = createRequest(NetworkConstants.AUTHENTICATION);
         request.put("username", username);
         request.put("v_string", v_string);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new AEIIException("Connection timeout");
+            throw new GameException("Connection timeout");
         } else {
             boolean approved = response.getBoolean("approved");
             if (approved) {
@@ -241,11 +241,11 @@ public class NetworkManager {
         }
     }
 
-    public static Array<RoomSnapshot> requestRoomList() throws JSONException, AEIIException {
+    public static Array<RoomSnapshot> requestRoomList() throws JSONException, GameException {
         JSONObject request = createRequest(NetworkConstants.LIST_ROOMS);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new AEIIException("Connection timeout");
+            throw new GameException("Connection timeout");
         } else {
             Array<RoomSnapshot> snapshots = new Array<RoomSnapshot>();
             for (int i = 0; i < response.getJSONArray("rooms").length(); i++) {
@@ -255,11 +255,11 @@ public class NetworkManager {
         }
     }
 
-    public static Array<PlayerSnapshot> requestIdlePlayerList() throws JSONException, AEIIException {
+    public static Array<PlayerSnapshot> requestIdlePlayerList() throws JSONException, GameException {
         JSONObject request = createRequest(NetworkConstants.LIST_IDLE_PLAYERS);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new AEIIException("Connection timeout");
+            throw new GameException("Connection timeout");
         } else {
             Array<PlayerSnapshot> snapshots = new Array<PlayerSnapshot>();
             for (int i = 0; i < response.getJSONArray("players").length(); i++) {
@@ -408,26 +408,26 @@ public class NetworkManager {
         return response == null ? NetworkConstants.CODE_NETWORK_ERROR : response.getInt("code");
     }
 
-    public static LeaderboardRecord requestBestRecord(String campaign_code, int stage_number) throws AEIIException {
+    public static LeaderboardRecord requestBestRecord(String campaign_code, int stage_number) throws GameException {
         JSONObject request = createRequest(NetworkConstants.GET_BEST_RECORD);
         request.put("campaign_code", campaign_code);
         request.put("stage_number", stage_number);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+            throw new GameException(Language.getText("MSG_ERR_CCS"));
         } else {
             int response_code = response.getInt("response_code");
             if (response_code == NetworkConstants.CODE_OK) {
                 return new LeaderboardRecord(response.getJSONObject("record"));
             } else {
-                throw new AEIIException(Language.getText("MSG_ERR_AEA") + " [" + response_code + "]");
+                throw new GameException(Language.getText("MSG_ERR_AEA") + " [" + response_code + "]");
             }
         }
     }
 
     public static void submitRecord(
             String v_string, String username, String campaign_code, int stage_number, int turns, int actions)
-            throws AEIIException {
+            throws GameException {
         JSONObject request = createRequest(NetworkConstants.SUBMIT_RECORD);
         request.put("v_string", v_string);
         request.put("username", username);
@@ -437,10 +437,10 @@ public class NetworkManager {
         request.put("actions", actions);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new AEIIException(Language.getText("MSG_ERR_CCS"));
+            throw new GameException(Language.getText("MSG_ERR_CCS"));
         } else {
             if (!response.getBoolean("approved")) {
-                throw new AEIIException(Language.getText("MSG_ERR_AEA") + " [" + NetworkConstants.CODE_REJECTED + "]");
+                throw new GameException(Language.getText("MSG_ERR_AEA") + " [" + NetworkConstants.CODE_REJECTED + "]");
             }
         }
     }

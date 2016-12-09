@@ -3,7 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/29/2016.
@@ -17,10 +17,10 @@ public class FlyOverAnimator extends UnitAnimator {
 
     public FlyOverAnimator(GameContext context, Unit flier, Unit target, int start_x, int start_y) {
         super(context);
-        this.flier = UnitFactory.cloneUnit(flier);
+        this.flier = AER.units.cloneUnit(flier);
         this.flier.setX(start_x);
         this.flier.setY(start_y);
-        this.target = UnitFactory.cloneUnit(target);
+        this.target = AER.units.cloneUnit(target);
         addLocation(target.getX(), target.getY());
     }
 

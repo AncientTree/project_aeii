@@ -12,8 +12,8 @@ import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Status;
 import net.toyknight.aeii.entity.Tile;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.screen.MapCanvas;
-import net.toyknight.aeii.utils.TileFactory;
+import net.toyknight.aeii.gui.MapCanvas;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 7/8/2016.
@@ -102,9 +102,9 @@ public class CanvasRenderer {
         int screen_x = canvas.getXOnScreen(map_x);
         int screen_y = canvas.getYOnScreen(map_y);
         //draw health points
-        if (unit.getCurrentHp() != unit.getMaxHp()) {
+        if (unit.getCurrentHP() != unit.getMaxHP()) {
             getContext().getFontRenderer().drawSNumber(
-                    batch, unit.getCurrentHp(), (int) (screen_x + offset_x), (int) (screen_y + offset_y));
+                    batch, unit.getCurrentHP(), (int) (screen_x + offset_x), (int) (screen_y + offset_y));
         }
         //draw status
         int sw = ts() * getResources().getStatusTexture(0).getRegionWidth() / 24;
@@ -135,7 +135,7 @@ public class CanvasRenderer {
 
     public void drawTile(SpriteBatch batch, int index, float x, float y) {
         int current_frame = getCurrentFrame();
-        Tile tile = TileFactory.getTile(index);
+        Tile tile = AER.tiles.getTile(index);
         if (tile.isAnimated()) {
             if (current_frame == 0) {
                 batch.draw(getResources().getTileTexture(index), x, y, ts(), ts());

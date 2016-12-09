@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.screen.GameScreen;
+import net.toyknight.aeii.gui.GameScreen;
 
 /**
  * @author toyknight 4/26/2015.
@@ -112,7 +112,7 @@ public class RightPanelRenderer {
                     screen.getViewportWidth() + pad + hw + (f_size - hw - getContext().getFontRenderer().getTextLayout(mdefence_str).width) / 2,
                     screen.getViewportHeight() - f_size - pad - hh * 3 - (hh - lbh) / 2);
             //draw health points
-            String hp_str = target_unit.getCurrentHp() + "/" + target_unit.getMaxHp();
+            String hp_str = target_unit.getCurrentHP() + "/" + target_unit.getMaxHP();
             getContext().getFontRenderer().setTextColor(Color.GREEN);
             getContext().getFontRenderer().drawText(batch, hp_str,
                     screen.getViewportWidth() + pad + getContext().getFontRenderer().getTextLayout(STR_HP).width,

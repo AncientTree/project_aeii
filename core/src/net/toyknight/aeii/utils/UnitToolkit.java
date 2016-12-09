@@ -1,6 +1,7 @@
 package net.toyknight.aeii.utils;
 
 import net.toyknight.aeii.entity.*;
+import net.toyknight.aeii.system.AER;
 
 import java.util.*;
 
@@ -76,7 +77,7 @@ public class UnitToolkit {
         if (unit.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile_type == Tile.TYPE_MOUNTAIN) {
             mp_cost = 1;
         }
-        if (UnitFactory.isCrystal(unit.getIndex()) && tile.getType() == Tile.TYPE_MOUNTAIN && tile.getStepCost() >= 3) {
+        if (AER.units.isCrystal(unit.getIndex()) && tile.getType() == Tile.TYPE_MOUNTAIN && tile.getStepCost() >= 3) {
             mp_cost = 99;
         }
         return mp_cost;
@@ -116,7 +117,7 @@ public class UnitToolkit {
             return 30;
         }
         int defence_bonus = 0;
-        Tile tile = TileFactory.getTile(tile_index);
+        Tile tile = AER.tiles.getTile(tile_index);
         if (!unit.hasAbility(Ability.AIR_FORCE)) {
             defence_bonus += tile.getDefenceBonus();
         }
@@ -165,7 +166,7 @@ public class UnitToolkit {
 
     public int getAttackBonus(Unit attacker, Unit defender, int tile_index) {
         int attack_bonus = 0;
-        Tile tile = TileFactory.getTile(tile_index);
+        Tile tile = AER.tiles.getTile(tile_index);
         if (attacker.hasAbility(Ability.FIGHTER_OF_THE_MOUNTAIN) && tile.getType() == Tile.TYPE_MOUNTAIN) {
             attack_bonus += 10;
         }
@@ -205,8 +206,8 @@ public class UnitToolkit {
                 : defender.getMagicDefence() + getMagicDefenceBonus(attacker, defender, defender_tile_index);
         //calculate base damage
         int damage = attack > defence ? attack - defence : 0;
-        int attacker_hp = attacker.getCurrentHp();
-        int attacker_max_hp = attacker.getMaxHp();
+        int attacker_hp = attacker.getCurrentHP();
+        int attacker_max_hp = attacker.getMaxHP();
         //calculate random damage offset
         int offset = apply_rng ? random.nextInt(5) - 2 : 0;
         //calculate final damage
@@ -227,12 +228,12 @@ public class UnitToolkit {
         damage += offset;
         //validate damage
         damage = damage >= 0 ? damage : 0;
-        damage = damage < defender.getCurrentHp() ? damage : defender.getCurrentHp();
+        damage = damage < defender.getCurrentHP() ? damage : defender.getCurrentHP();
         return damage;
     }
 
     public static boolean canMoveAgain(Unit unit) {
-        return unit.getCurrentHp() > 0
+        return unit.getCurrentHP() > 0
                 && unit.getCurrentMovementPoint() > 0
                 && unit.hasAbility(Ability.CHARGER);
     }
@@ -256,10 +257,10 @@ public class UnitToolkit {
     }
 
     public static int validateHpChange(Unit unit, int change) {
-        int origin_hp = unit.getCurrentHp();
+        int origin_hp = unit.getCurrentHP();
         int changed_hp = origin_hp + change;
-        if (changed_hp > unit.getMaxHp()) {
-            changed_hp = unit.getMaxHp();
+        if (changed_hp > unit.getMaxHP()) {
+            changed_hp = unit.getMaxHP();
         }
         if (changed_hp < 0) {
             changed_hp = 0;

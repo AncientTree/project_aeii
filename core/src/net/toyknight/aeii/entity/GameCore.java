@@ -5,7 +5,7 @@ import static net.toyknight.aeii.entity.Rule.Entry.*;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.Serializable;
-import net.toyknight.aeii.utils.UnitFactory;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +53,7 @@ public class GameCore implements Serializable {
             getPlayer(team).setAlliance(player.getInt("alliance"));
             getPlayer(team).setPopulation(player.getInt("population"));
             setTeamDestroyed(team, team_destroy.getBoolean(team));
-            setCommander(team, UnitFactory.createUnit(commanders.getJSONObject(team)));
+            setCommander(team, AER.units.createUnit(commanders.getJSONObject(team)));
         }
         getStatistics().initialize(json.getJSONObject("statistics"));
     }
@@ -104,7 +104,7 @@ public class GameCore implements Serializable {
             team_destroy[team] = false;
 
             if (commanders[team] == null) {
-                commanders[team] = UnitFactory.createCommander(team);
+                commanders[team] = AER.units.createCommander(team);
             }
         }
     }
@@ -204,7 +204,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean canBuy(int index, int team) {
-        Unit sample = UnitFactory.cloneUnit(UnitFactory.getSample(index));
+        Unit sample = AER.units.cloneUnit(AER.units.getSample(index));
         int price = getUnitPrice(index, team);
         return price >= 0 &&
                 isTeamAlive(team) &&
@@ -247,8 +247,7 @@ public class GameCore implements Serializable {
             }
             if (target.isCommander()) {
                 Unit commander = getCommander(target.getTeam());
-                int price = commander.getPrice();
-                commander.setPrice(price + getRule().getInteger(COMMANDER_PRICE_STEP));
+                commander.changePrice(getRule().getInteger(COMMANDER_PRICE_STEP));
             }
         }
     }
@@ -266,7 +265,7 @@ public class GameCore implements Serializable {
             commanders[team].setY(y);
             commanders[team].clearStatus();
             getMap().addUnit(commanders[team]);
-            commanders[team].setCurrentHp(commanders[team].getMaxHp());
+            commanders[team].setCurrentHP(commanders[team].getMaxHP());
             resetUnit(commanders[team]);
             updatePopulation(team);
         }
@@ -277,7 +276,7 @@ public class GameCore implements Serializable {
     }
 
     public Unit createUnit(int index, int level, int team, int x, int y) {
-        Unit unit = UnitFactory.createUnit(index, team);
+        Unit unit = AER.units.createUnit(index, team);
         unit.setX(x);
         unit.setY(y);
         while (unit.getLevel() < level) {
@@ -309,13 +308,13 @@ public class GameCore implements Serializable {
 
     public void setCommander(int team, Unit commander) {
         commanders[team] = commander;
-        if (commander.getCurrentHp() > 0 && isCommanderAlive(team)) {
+        if (commander.getCurrentHP() > 0 && isCommanderAlive(team)) {
             getMap().addUnit(commanders[team], true);
         }
     }
 
     public int getUnitPrice(int index, int team) {
-        Unit unit = UnitFactory.getSample(index);
+        Unit unit = AER.units.getSample(index);
         if (unit.isCommander()) {
             if (isCommanderAlive(team)) {
                 return -1;
@@ -532,13 +531,13 @@ public class GameCore implements Serializable {
     public boolean canReceiveHeal(Unit target) {
         return !target.hasAbility(Ability.UNDEAD)
                 && !target.hasStatus(Status.POISONED)
-                && target.getCurrentHp() <= target.getMaxHp();
+                && target.getCurrentHP() <= target.getMaxHP();
     }
 
     public boolean canRefresh(Unit refresher, Unit target) {
         return !(refresher == null || target == null)
                 && canHealReachTarget(refresher, target)
-                && target.getCurrentHp() <= target.getMaxHp()
+                && target.getCurrentHP() <= target.getMaxHP()
                 && (!isEnemy(refresher, target) || target.hasAbility(Ability.UNDEAD));
     }
 
@@ -575,7 +574,7 @@ public class GameCore implements Serializable {
     }
 
     public boolean isUnitAlive(Unit unit) {
-        return unit != null && unit.getCurrentHp() > 0;
+        return unit != null && unit.getCurrentHP() > 0;
     }
 
     public boolean isCastleAccessible(Tile tile) {

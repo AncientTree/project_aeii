@@ -3,6 +3,7 @@ package net.toyknight.aeii.utils;
 import com.badlogic.gdx.utils.ObjectMap;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.entity.Tile;
+import net.toyknight.aeii.system.AER;
 
 import java.util.Arrays;
 
@@ -337,7 +338,7 @@ public class TileValidator {
 
     public static void validate(Map map, int x, int y) {
         short index = map.getTileIndex(x, y);
-        if (TileFactory.getTile(index).getType() == Tile.TYPE_WATER) {
+        if (AER.tiles.getTile(index).getType() == Tile.TYPE_WATER) {
             TileSurround surround = createTileSurround(map, x, y);
             Short validated_index = water_mapping.get(surround);
             if (validated_index != null && !isBridge(index) && (isCostTile(index) || isCostTile(validated_index))) {
