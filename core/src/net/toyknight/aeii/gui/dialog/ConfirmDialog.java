@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 8/22/2016.
@@ -41,7 +41,7 @@ public class ConfirmDialog extends Dialog {
         confirm_message.setWrap(true);
         getContentTable().add(confirm_message).width(ts * 6);
         //set the button
-        btn_confirm = new TextButton(Language.getText("LB_YES"), getContext().getSkin());
+        btn_confirm = new TextButton(AER.lang.getText("LB_YES"), getContext().getSkin());
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -50,7 +50,7 @@ public class ConfirmDialog extends Dialog {
             }
         });
         getButtonTable().add(btn_confirm).size(ts * 2, ts / 3 * 2).padRight(ts / 2).padBottom(ts / 8);
-        btn_cancel = new TextButton(Language.getText("LB_NO"), getContext().getSkin());
+        btn_cancel = new TextButton(AER.lang.getText("LB_NO"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

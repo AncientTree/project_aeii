@@ -15,7 +15,6 @@ import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.gui.widgets.SmallCircleLabel;
 import net.toyknight.aeii.gui.widgets.UnitFrame;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 6/12/2016.
@@ -99,7 +98,7 @@ public class UnitPage extends AEIITable {
         label_description.setWrap(true);
         add(label_description).width(ts * 7).padBottom(ts / 8).row();
 
-        Label label_abilities = new Label(Language.getText("LB_ABILITIES"), getWiki().getContext().getSkin()) {
+        Label label_abilities = new Label(AER.lang.getText("LB_ABILITIES"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -113,7 +112,7 @@ public class UnitPage extends AEIITable {
         ability_references = new Table();
         add(ability_references).width(ts * 7).pad(ts / 8);
 
-        label_none = new Label(Language.getText("LB_NONE"), getWiki().getContext().getSkin());
+        label_none = new Label(AER.lang.getText("LB_NONE"), getWiki().getContext().getSkin());
     }
 
     public void setIndex(int index) {
@@ -128,7 +127,7 @@ public class UnitPage extends AEIITable {
         label_price.setText(sample.getPrice() > 0 ? Integer.toString(sample.getPrice()) : "-");
         label_occupancy.setText(Integer.toString(sample.getOccupancy()));
         label_attack_range.setText(sample.getMinAttackRange() + "-" + sample.getMaxAttackRange());
-        label_description.setText(Language.getUnitGuide(index));
+        label_description.setText(AER.lang.getUnitGuide(index));
         ability_references.clearChildren();
         if (sample.getAbilities().size > 0) {
             for (int ability : sample.getAbilities()) {

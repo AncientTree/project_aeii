@@ -12,7 +12,7 @@ import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Player;
 import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.gui.GameScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/1/2015.
@@ -41,7 +41,7 @@ public class GameMenu extends BasicDialog {
     }
 
     private void initComponents() {
-        TextButton btn_mini_map = new TextButton(Language.getText("LB_MINI_MAP"), getContext().getSkin());
+        TextButton btn_mini_map = new TextButton(AER.lang.getText("LB_MINI_MAP"), getContext().getSkin());
         btn_mini_map.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -50,7 +50,7 @@ public class GameMenu extends BasicDialog {
             }
         });
         this.add(btn_mini_map).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        TextButton btn_objective = new TextButton(Language.getText("LB_OBJECTIVE"), getContext().getSkin());
+        TextButton btn_objective = new TextButton(AER.lang.getText("LB_OBJECTIVE"), getContext().getSkin());
         btn_objective.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -59,7 +59,7 @@ public class GameMenu extends BasicDialog {
             }
         });
         this.add(btn_objective).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        this.btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
+        this.btn_save = new TextButton(AER.lang.getText("LB_SAVE"), getContext().getSkin());
         this.btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -67,7 +67,7 @@ public class GameMenu extends BasicDialog {
             }
         });
         this.add(btn_save).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        TextButton btn_help = new TextButton(Language.getText("LB_HELP"), getContext().getSkin());
+        TextButton btn_help = new TextButton(AER.lang.getText("LB_HELP"), getContext().getSkin());
         btn_help.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -76,7 +76,7 @@ public class GameMenu extends BasicDialog {
             }
         });
         this.add(btn_help).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        TextButton btn_exit = new TextButton(Language.getText("LB_EXIT_GAME"), getContext().getSkin());
+        TextButton btn_exit = new TextButton(AER.lang.getText("LB_EXIT_GAME"), getContext().getSkin());
         btn_exit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -84,7 +84,7 @@ public class GameMenu extends BasicDialog {
             }
         });
         this.add(btn_exit).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).padBottom(MARGIN).row();
-        TextButton btn_resume = new TextButton(Language.getText("LB_RESUME"), getContext().getSkin());
+        TextButton btn_resume = new TextButton(AER.lang.getText("LB_RESUME"), getContext().getSkin());
         btn_resume.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -102,7 +102,7 @@ public class GameMenu extends BasicDialog {
 
     private void trySaveGame() {
         Gdx.input.setInputProcessor(null);
-        btn_save.setText(Language.getText("LB_SAVING"));
+        btn_save.setText(AER.lang.getText("LB_SAVING"));
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws GameException {
@@ -114,16 +114,16 @@ public class GameMenu extends BasicDialog {
 
             @Override
             public void onFinish(Void result) {
-                btn_save.setText(Language.getText("LB_SAVE"));
+                btn_save.setText(AER.lang.getText("LB_SAVE"));
                 getOwner().closeDialog("menu");
-                getOwner().appendMessage(null, Language.getText("MSG_INFO_GSV"));
+                getOwner().appendMessage(null, AER.lang.getText("MSG_INFO_GSV"));
             }
 
             @Override
             public void onFail(String message) {
-                btn_save.setText(Language.getText("LB_SAVE"));
+                btn_save.setText(AER.lang.getText("LB_SAVE"));
                 getOwner().closeDialog("menu");
-                getOwner().appendMessage(null, Language.getText("MSG_INFO_GSVF"));
+                getOwner().appendMessage(null, AER.lang.getText("MSG_INFO_GSVF"));
             }
         });
     }
@@ -139,7 +139,7 @@ public class GameMenu extends BasicDialog {
     }
 
     private void onLeaveGame() {
-        getOwner().showConfirm(Language.getText("LB_EXIT_GAME") + "?", new ConfirmDialog.ConfirmDialogListener() {
+        getOwner().showConfirm(AER.lang.getText("LB_EXIT_GAME") + "?", new ConfirmDialog.ConfirmDialogListener() {
             @Override
             public void confirmed() {
                 doLeaveGame();

@@ -11,7 +11,6 @@ import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Status;
 import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 6/16/2016.
@@ -36,7 +35,7 @@ public class AbilityPage extends AEIITable {
         label_description.setWrap(true);
         add(label_description).width(ts * 7).padBottom(ts / 8).row();
 
-        Label label_uha = new Label(Language.getText("LB_UHA"), getWiki().getContext().getSkin()) {
+        Label label_uha = new Label(AER.lang.getText("LB_UHA"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -50,7 +49,7 @@ public class AbilityPage extends AEIITable {
         unit_references = new Table();
         add(unit_references).width(ts * 7).pad(ts / 8).row();
 
-        Label label_references = new Label(Language.getText("LB_REFERENCES"), getWiki().getContext().getSkin()) {
+        Label label_references = new Label(AER.lang.getText("LB_REFERENCES"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -64,7 +63,7 @@ public class AbilityPage extends AEIITable {
         content_references = new Table();
         add(content_references).width(ts * 7).pad(ts / 8);
 
-        label_none = new Label(Language.getText("LB_NONE"), getWiki().getContext().getSkin());
+        label_none = new Label(AER.lang.getText("LB_NONE"), getWiki().getContext().getSkin());
     }
 
     public Wiki getWiki() {
@@ -72,7 +71,7 @@ public class AbilityPage extends AEIITable {
     }
 
     public void setAbility(int ability) {
-        label_description.setText(Language.getAbilityDescription(ability));
+        label_description.setText(AER.lang.getAbilityDescription(ability));
 
         int count = 0;
         unit_references.clearChildren();
@@ -111,7 +110,7 @@ public class AbilityPage extends AEIITable {
             case Ability.SON_OF_THE_MOUNTAIN:
             case Ability.SON_OF_THE_SEA:
             case Ability.HARD_SKIN:
-                content_references.add(new Label(Language.getText("LB_NONE"), getWiki().getContext().getSkin())).
+                content_references.add(new Label(AER.lang.getText("LB_NONE"), getWiki().getContext().getSkin())).
                         width(ts * 7 - ts / 4);
                 break;
             case Ability.ATTACK_AURA:

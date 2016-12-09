@@ -1,7 +1,7 @@
 package net.toyknight.aeii.campaign.tutorial;
 
 import net.toyknight.aeii.campaign.CampaignController;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/25/2016.
@@ -22,7 +22,7 @@ public class TutorialCampaign extends CampaignController {
 
     @Override
     public String getCampaignName() {
-        return Language.getText("CAMPAIGN_TUTORIAL_NAME");
+        return AER.lang.getText("CAMPAIGN_TUTORIAL_NAME");
     }
 
     @Override

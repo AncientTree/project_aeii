@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 8/22/2016.
@@ -49,7 +49,7 @@ public class InputDialog extends Dialog {
             }
         });
         getContentTable().add(input_field).size(idw - ts / 2, ts / 2 + ts / 8);
-        input_btn_ok = new TextButton(Language.getText("LB_OK"), getContext().getSkin());
+        input_btn_ok = new TextButton(AER.lang.getText("LB_OK"), getContext().getSkin());
         input_btn_ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -58,7 +58,7 @@ public class InputDialog extends Dialog {
             }
         });
         getButtonTable().add(input_btn_ok).size(ts * 3, ts / 3 * 2).pad(ts / 4).padTop(ts / 8);
-        input_btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        input_btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         input_btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

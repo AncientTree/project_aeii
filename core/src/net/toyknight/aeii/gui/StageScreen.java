@@ -12,7 +12,7 @@ import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.NetworkListener;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.gui.dialog.*;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -258,7 +258,7 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     @Override
     public void onDisconnect() {
-        showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
+        showNotification(AER.lang.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
                 getContext().gotoMainMenuScreen(true);

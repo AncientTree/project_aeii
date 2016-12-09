@@ -7,7 +7,6 @@ import net.toyknight.aeii.entity.Tile;
 import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.gui.widgets.PreviewFrame;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 6/17/2016.
@@ -39,19 +38,19 @@ public class TilePage extends AEIITable {
         };
         add(data_pane).width(ts * 7);
 
-        Label label_mp_cost = new Label(Language.getText("LB_MOBILITY_COST") + ": ", getWiki().getContext().getSkin());
+        Label label_mp_cost = new Label(AER.lang.getText("LB_MOBILITY_COST") + ": ", getWiki().getContext().getSkin());
         data_pane.add(label_mp_cost).width(ts * 4).padTop(ts / 8);
 
         label_mp_cost_value = new Label("", getWiki().getContext().getSkin());
         data_pane.add(label_mp_cost_value).width(ts * 3).padTop(ts / 8).row();
 
-        Label label_defence_bonus = new Label(Language.getText("LB_DEFENCE_BONUS") + ": ", getWiki().getContext().getSkin());
+        Label label_defence_bonus = new Label(AER.lang.getText("LB_DEFENCE_BONUS") + ": ", getWiki().getContext().getSkin());
         data_pane.add(label_defence_bonus).width(ts * 4).padTop(ts / 8);
 
         label_defence_bonus_value = new Label("", getWiki().getContext().getSkin());
         data_pane.add(label_defence_bonus_value).width(ts * 3).padTop(ts / 8).row();
 
-        Label label_hp_recovery = new Label(Language.getText("LB_HP_RECOVERY") + ": ", getWiki().getContext().getSkin());
+        Label label_hp_recovery = new Label(AER.lang.getText("LB_HP_RECOVERY") + ": ", getWiki().getContext().getSkin());
         data_pane.add(label_hp_recovery).width(ts * 4).padTop(ts / 8);
 
         label_hp_recovery_value = new Label("", getWiki().getContext().getSkin());

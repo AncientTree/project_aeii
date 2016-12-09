@@ -2,7 +2,7 @@ package net.toyknight.aeii.gui.wiki;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
@@ -33,31 +33,31 @@ public class GameplayPage extends Table {
         clearChildren();
         switch (type) {
             case EntryNode.TYPE_GAMEPLAY_ATTACKING:
-                addParagraph(Language.getText("WIKI_GAMEPLAY_ATTACKING_P1"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_ATTACKING_P2"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_ATTACKING_P3"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_ATTACKING_P4"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_ATTACKING_P1"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_ATTACKING_P2"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_ATTACKING_P3"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_ATTACKING_P4"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_HEALING:
-                addParagraph(Language.getText("WIKI_GAMEPLAY_HEALING_P1"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_HEALING_P2"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_HEALING_P1"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_HEALING_P2"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_INCOME:
-                addParagraph(Language.getText("WIKI_GAMEPLAY_INCOME_P1"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_INCOME_P2"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_INCOME_P1"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_INCOME_P2"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_OBJECTIVES:
-                addParagraph(Language.getText("WIKI_GAMEPLAY_OBJECTIVES_P1"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_OBJECTIVES_P2"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_OBJECTIVES_P1"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_OBJECTIVES_P2"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_RECRUITING:
-                addParagraph(Language.getText("WIKI_GAMEPLAY_RECRUITING_P1"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_RECRUITING_P2"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_RECRUITING_P3"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_RECRUITING_P1"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_RECRUITING_P2"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_RECRUITING_P3"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_STATUS:
-                addParagraph(Language.getText("WIKI_GAMEPLAY_STATUS_P1"));
-                addParagraph(Language.getText("WIKI_GAMEPLAY_STATUS_P2"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_STATUS_P1"));
+                addParagraph(AER.lang.getText("WIKI_GAMEPLAY_STATUS_P2"));
                 break;
         }
     }

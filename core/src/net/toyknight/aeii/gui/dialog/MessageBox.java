@@ -16,7 +16,7 @@ import net.toyknight.aeii.concurrent.MessageSendingTask;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.widgets.PlayerList;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/7/2015.
@@ -51,7 +51,7 @@ public class MessageBox extends BasicDialog {
         add(sp_player_list).size(ts * 6 + ts / 2, ts * 6).padTop(ts / 2).padLeft(ts / 2).padRight(ts / 2).row();
 
         Table button_bar = new Table();
-        TextButton btn_send = new TextButton(Language.getText("LB_SEND_MESSAGE"), getContext().getSkin());
+        TextButton btn_send = new TextButton(AER.lang.getText("LB_SEND_MESSAGE"), getContext().getSkin());
         btn_send.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -59,7 +59,7 @@ public class MessageBox extends BasicDialog {
             }
         });
         button_bar.add(btn_send).size(ts * 3, ts);
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -81,10 +81,10 @@ public class MessageBox extends BasicDialog {
     }
 
     public void sendMessage() {
-        if (Language.getLocale().equals("zh_CN")) {
-            Gdx.input.getTextInput(input_listener, Language.getText("MSG_INFO_IM"), "", "");
+        if (AER.lang.getLocale().equals("zh_CN")) {
+            Gdx.input.getTextInput(input_listener, AER.lang.getText("MSG_INFO_IM"), "", "");
         } else {
-            getOwner().showInput(Language.getText("MSG_INFO_IM"), 128, false, input_listener);
+            getOwner().showInput(AER.lang.getText("MSG_INFO_IM"), 128, false, input_listener);
         }
     }
 

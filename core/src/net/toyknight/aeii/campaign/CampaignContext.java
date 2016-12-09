@@ -12,7 +12,7 @@ import net.toyknight.aeii.campaign.toybox.ToyboxCampaign;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.manager.GameManager;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -345,7 +345,7 @@ public class CampaignContext {
         }
 
         public void havens_fury(int team, int target_x, int target_y, int damage) {
-            notification(Language.getText("HAVENS_FURY_MESSAGE_1"), Language.getText("HAVENS_FURY_MESSAGE_2"));
+            notification(AER.lang.getText("HAVENS_FURY_MESSAGE_1"), AER.lang.getText("HAVENS_FURY_MESSAGE_2"));
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(
                     GameEvent.CAMPAIGN_HAVENS_FURY, team, target_x, target_y, damage);
             getContext().getGameManager().getGameEventExecutor().submitGameEvent(GameEvent.CHECK_UNIT_DESTROY, team);

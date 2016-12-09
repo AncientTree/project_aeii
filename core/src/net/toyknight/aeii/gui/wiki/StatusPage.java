@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.gui.widgets.PreviewFrame;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
@@ -44,7 +44,7 @@ public class StatusPage extends AEIITable {
 
     public void setStatus(int status) {
         status_preview.setStatus(status);
-        label_description.setText(Language.getStatusDescription(status));
+        label_description.setText(AER.lang.getStatusDescription(status));
     }
 
 }

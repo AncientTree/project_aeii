@@ -6,7 +6,8 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
+
 import java.util.Random;
 import java.lang.Math;
 
@@ -18,8 +19,8 @@ public class ToyboxStage1 extends StageController {
 
     private void checkClear(){
         if (getContext().count_unit(0) == 0 && getContext().count_castle(0) == 0 || getContext().count_unit(1) >= 70) {
-            Message message_end = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8") + ' ' + (getContext().get("Wave") - 1) + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9")
-                    + ' ' + getContext().get("Gold") + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10"));
+            Message message_end = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_8") + ' ' + (getContext().get("Wave") - 1) + ' ' + AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_9")
+                    + ' ' + getContext().get("Gold") + ' ' + AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_10"));
             getContext().message(message_end);
             getContext().clear();
         }
@@ -67,7 +68,7 @@ public class ToyboxStage1 extends StageController {
             getContext().set("CurrentHard", getContext().get("Hard"));
             getContext().set("Hard", getContext().get("Hard") + 3000);
         }
-        Message message3 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4") + ' ' + wave + ' ' + Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5"));
+        Message message3 = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_4") + ' ' + wave + ' ' + AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_5"));
         getContext().message(message3);
         switch(wave % 10){
             case 1:
@@ -195,16 +196,16 @@ public class ToyboxStage1 extends StageController {
         }
         getContext().gold(0, getContext().get_gold(0) + gold);
         getContext().set("Wave", getContext().get("Wave") + 1);
-        Message message_gold = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_6") + ' ' + gold);
+        Message message_gold = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_6") + ' ' + gold);
         getContext().message(message_gold);
         if(wave % 10 == 9)
         {
-            Message message_bone = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_12"));
+            Message message_bone = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_12"));
             getContext().message(message_bone);
         }
         else if(wave % 10 == 0)
         {
-            Message message_crystal = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_11"));
+            Message message_crystal = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_11"));
             getContext().message(message_crystal);
         }
         else;
@@ -264,7 +265,7 @@ public class ToyboxStage1 extends StageController {
 
     void heaven_fury(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Heaven Fury"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Heaven Fury"));
         getContext().message(message_power);
         for(int i = 0;i < 5; i++)
         {
@@ -285,7 +286,7 @@ public class ToyboxStage1 extends StageController {
 
     void blizzard(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Blizzard"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Blizzard"));
         getContext().message(message_power);
         int damage = -(10 + 10 * level);
         for (Unit unit : getContext().get_units(0)) {
@@ -300,7 +301,7 @@ public class ToyboxStage1 extends StageController {
 
     void hyper_upgrade(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Hyper Upgrade"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Hyper Upgrade"));
         getContext().message(message_power);
          for (Unit player : getContext().get_units(1)) {
              getContext().hp_change(player.getX(), player.getY(), player.getMaxHP() - player.getCurrentHP());
@@ -312,35 +313,35 @@ public class ToyboxStage1 extends StageController {
 
     void avatar(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Avatar"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Avatar"));
         getContext().message(message_power);
         getContext().set("avatar", level);
     }
 
     void curse(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Curse"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Curse"));
         getContext().message(message_power);
         getContext().set("curse", level);
     }
 
     void poison(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Poison"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Poison"));
         getContext().message(message_power);
         getContext().set("poison", level);
     }
 
     void ghost(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Ghost"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Ghost"));
         getContext().message(message_power);
         getContext().set("ghost", level);
     }
 
     void dragon(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Dragon"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Dragon"));
         getContext().message(message_power);
         for(int i = 9; i >= 10 - level; i--)
         {
@@ -353,7 +354,7 @@ public class ToyboxStage1 extends StageController {
 
     void gold_rush(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Gold Rush"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Gold Rush"));
         getContext().message(message_power);
         if(level == 1)
         {
@@ -371,7 +372,7 @@ public class ToyboxStage1 extends StageController {
 
     void market_crash(int level)
     {
-        Message message_power = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Market Crash"));
+        Message message_power = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_14" + "Market Crash"));
         getContext().message(message_power);
         if(level == 1)
         {
@@ -391,11 +392,11 @@ public class ToyboxStage1 extends StageController {
     public void onGameStart() {
         getContext().gold(0, 2000);
         clear_power();
-        Message message = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_1"));
+        Message message = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_1"));
         getContext().message(message);
-        Message message1 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_2"));
+        Message message1 = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_2"));
         getContext().message(message1);
-        Message message2 = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_3"));
+        Message message2 = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_3"));
         getContext().message(message2);
         getContext().set("Wave", 1 );
         getContext().set("Time", 0);
@@ -436,7 +437,7 @@ public class ToyboxStage1 extends StageController {
             int rand = random.nextInt(100);
             if(rand == 0)
             {
-                Message message_nothing = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_13"));
+                Message message_nothing = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_13"));
                 getContext().message(message_nothing);
             }
             else if(rand <= 20)
@@ -569,7 +570,7 @@ public class ToyboxStage1 extends StageController {
             if((turn % 2 == 0 && checkClean() == true) || (turn % 2 == 0 && remain_turn <= 0))
             {
                 if(remain_turn / 2 > 0) {
-                    Message message_bonus = new Message(5, Language.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_7") + ' ' + remain_turn);
+                    Message message_bonus = new Message(5, AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_MESSAGE_7") + ' ' + remain_turn);
                     getContext().message(message_bonus);
                     getContext().gold(0, getContext().get_gold(0) + (10 - turn +  getContext().get("Time"))  * 50);
                     getContext().set("Time", turn);
@@ -759,8 +760,8 @@ public class ToyboxStage1 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_1"),
-                Language.getText("CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_2"),
+                AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_OBJECTIVE_2"),
         };
     }
 
@@ -771,7 +772,7 @@ public class ToyboxStage1 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_TOYBOX_STAGE_1_NAME");
+        return AER.lang.getText("CAMPAIGN_TOYBOX_STAGE_1_NAME");
     }
 
 }

@@ -13,7 +13,7 @@ import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.LeaderboardRecord;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/20/2016.
@@ -43,7 +43,7 @@ public class LeaderboardDialog extends BasicDialog {
         label_stage_name.setAlignment(Align.center);
         add(label_stage_name).width(ts * 6).pad(ts / 4).padTop(0).row();
 
-        Label label_online_record = new Label(Language.getText("LB_ONLINE_RECORD"), getContext().getSkin()) {
+        Label label_online_record = new Label(AER.lang.getText("LB_ONLINE_RECORD"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -58,7 +58,7 @@ public class LeaderboardDialog extends BasicDialog {
         label_online_actions = new Label("", getContext().getSkin());
         add(label_online_actions).width(ts * 6).pad(ts / 4).padTop(0).row();
 
-        Label label_local_record = new Label(Language.getText("LB_LOCAL_RECORD"), getContext().getSkin()) {
+        Label label_local_record = new Label(AER.lang.getText("LB_LOCAL_RECORD"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -73,7 +73,7 @@ public class LeaderboardDialog extends BasicDialog {
         label_local_actions = new Label("", getContext().getSkin());
         add(label_local_actions).width(ts * 6).pad(ts / 4).padTop(0).row();
 
-        TextButton btn_ok = new TextButton(Language.getText("LB_OK"), getContext().getSkin());
+        TextButton btn_ok = new TextButton(AER.lang.getText("LB_OK"), getContext().getSkin());
         btn_ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -95,14 +95,14 @@ public class LeaderboardDialog extends BasicDialog {
     }
 
     private void tryLoadOnlineRecord() {
-        getOwner().showPlaceholder(Language.getText("LB_CONNECTING"));
+        getOwner().showPlaceholder(AER.lang.getText("LB_CONNECTING"));
         getContext().submitAsyncTask(new AsyncTask<LeaderboardRecord>() {
             @Override
             public LeaderboardRecord doTask() throws Exception {
                 if (NetworkManager.connect(GameContext.CAMPAIGN_SERVER)) {
                     return NetworkManager.requestBestRecord(campaign_code, stage_number);
                 } else {
-                    throw new GameException(Language.getText("MSG_ERR_CCS"));
+                    throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
                 }
             }
 
@@ -112,15 +112,15 @@ public class LeaderboardDialog extends BasicDialog {
                 getOwner().closePlaceholder();
                 if (result.getTurns() > 0) {
                     label_online_turns.setText(
-                            Language.getText("LB_TURNS") + ": " + result.getTurns() + " [" + result.getUsernameTurns() + "]");
+                            AER.lang.getText("LB_TURNS") + ": " + result.getTurns() + " [" + result.getUsernameTurns() + "]");
                 } else {
-                    label_online_turns.setText(Language.getText("LB_TURNS") + ": - [?]");
+                    label_online_turns.setText(AER.lang.getText("LB_TURNS") + ": - [?]");
                 }
                 if (result.getActions() > 0) {
                     label_online_actions.setText(
-                            Language.getText("LB_ACTIONS") + ": " + result.getActions() + " [" + result.getUsernameActions() + "]");
+                            AER.lang.getText("LB_ACTIONS") + ": " + result.getActions() + " [" + result.getUsernameActions() + "]");
                 } else {
-                    label_online_actions.setText(Language.getText("LB_ACTIONS") + ": - [?]");
+                    label_online_actions.setText(AER.lang.getText("LB_ACTIONS") + ": - [?]");
                 }
             }
 
@@ -129,8 +129,8 @@ public class LeaderboardDialog extends BasicDialog {
                 NetworkManager.disconnect();
                 getOwner().closePlaceholder();
                 getOwner().showNotification(message, null);
-                label_online_turns.setText(Language.getText("LB_TURNS") + ": - [?]");
-                label_online_actions.setText(Language.getText("LB_ACTIONS") + ": - [?]");
+                label_online_turns.setText(AER.lang.getText("LB_TURNS") + ": - [?]");
+                label_online_actions.setText(AER.lang.getText("LB_ACTIONS") + ": - [?]");
             }
         });
     }
@@ -138,8 +138,8 @@ public class LeaderboardDialog extends BasicDialog {
     private void tryLoadLocalRecord() {
         int turn_record = getContext().getCampaignTurnRecord(campaign_code, stage_number);
         int action_record = getContext().getCampaignActionRecord(campaign_code, stage_number);
-        label_local_turns.setText(Language.getText("LB_TURNS") + ": " + (turn_record > 0 ? turn_record : "-"));
-        label_local_actions.setText(Language.getText("LB_ACTIONS") + ": " + (action_record > 0 ? action_record : "-"));
+        label_local_turns.setText(AER.lang.getText("LB_TURNS") + ": " + (turn_record > 0 ? turn_record : "-"));
+        label_local_actions.setText(AER.lang.getText("LB_ACTIONS") + ": " + (action_record > 0 ? action_record : "-"));
     }
 
     @Override

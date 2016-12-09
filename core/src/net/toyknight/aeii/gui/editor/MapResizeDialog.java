@@ -8,7 +8,7 @@ import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.dialog.BasicDialog;
 import net.toyknight.aeii.gui.widgets.NumberSpinner;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 7/9/2015.
@@ -27,19 +27,19 @@ public class MapResizeDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        Label lb_width = new Label(Language.getText("LB_WIDTH"), getContext().getSkin());
+        Label lb_width = new Label(AER.lang.getText("LB_WIDTH"), getContext().getSkin());
         lb_width.setAlignment(Align.center);
         this.add(lb_width).size(ts * 3, ts);
         this.spinner_width = new NumberSpinner(getContext(), 5, 21);
         this.add(spinner_width).size(ts * 3, ts).padLeft(ts / 2).row();
 
-        Label lb_height = new Label(Language.getText("LB_HEIGHT"), getContext().getSkin());
+        Label lb_height = new Label(AER.lang.getText("LB_HEIGHT"), getContext().getSkin());
         lb_height.setAlignment(Align.center);
         this.add(lb_height).size(ts * 3, ts).padTop(ts / 4);
         this.spinner_height = new NumberSpinner(getContext(), 5, 21);
         this.add(spinner_height).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 4).row();
 
-        TextButton btn_confirm = new TextButton(Language.getText("LB_CONFIRM"), getContext().getSkin());
+        TextButton btn_confirm = new TextButton(AER.lang.getText("LB_CONFIRM"), getContext().getSkin());
         btn_confirm.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -48,7 +48,7 @@ public class MapResizeDialog extends BasicDialog {
             }
         });
         this.add(btn_confirm).size(ts * 3, ts).padTop(ts / 4);
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

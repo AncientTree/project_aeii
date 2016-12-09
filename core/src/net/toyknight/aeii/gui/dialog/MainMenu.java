@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.gui.MainMenuScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.Platform;
 
 /**
@@ -28,7 +28,7 @@ public class MainMenu extends BasicDialog {
     }
 
     private void initComponents() {
-        TextButton btn_test = new TextButton(Language.getText("LB_SKIRMISH"), getContext().getSkin());
+        TextButton btn_test = new TextButton(AER.lang.getText("LB_SKIRMISH"), getContext().getSkin());
         btn_test.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -36,7 +36,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_test).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).row();
-        TextButton btn_campaign = new TextButton(Language.getText("LB_CAMPAIGN"), getContext().getSkin());
+        TextButton btn_campaign = new TextButton(AER.lang.getText("LB_CAMPAIGN"), getContext().getSkin());
         btn_campaign.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -44,7 +44,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_campaign).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
-        TextButton btn_multiplayer = new TextButton(Language.getText("LB_MULTIPLAYER"), getContext().getSkin());
+        TextButton btn_multiplayer = new TextButton(AER.lang.getText("LB_MULTIPLAYER"), getContext().getSkin());
         btn_multiplayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -52,7 +52,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_multiplayer).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
-        TextButton btn_map_editor = new TextButton(Language.getText("LB_MAP_EDITOR"), getContext().getSkin());
+        TextButton btn_map_editor = new TextButton(AER.lang.getText("LB_MAP_EDITOR"), getContext().getSkin());
         btn_map_editor.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -60,7 +60,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_map_editor).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
-        TextButton btn_map_management = new TextButton(Language.getText("LB_MANAGE_MAPS"), getContext().getSkin());
+        TextButton btn_map_management = new TextButton(AER.lang.getText("LB_MANAGE_MAPS"), getContext().getSkin());
         btn_map_management.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -68,7 +68,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_map_management).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
-        TextButton btn_load = new TextButton(Language.getText("LB_LOAD_GAME"), getContext().getSkin());
+        TextButton btn_load = new TextButton(AER.lang.getText("LB_LOAD_GAME"), getContext().getSkin());
         btn_load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -76,7 +76,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_load).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
-        TextButton btn_help = new TextButton(Language.getText("LB_HELP"), getContext().getSkin());
+        TextButton btn_help = new TextButton(AER.lang.getText("LB_HELP"), getContext().getSkin());
         btn_help.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -85,7 +85,7 @@ public class MainMenu extends BasicDialog {
         });
         this.add(btn_help).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
         if (getContext().getPlatform() != Platform.iOS) {
-            TextButton btn_exit = new TextButton(Language.getText("LB_EXIT"), getContext().getSkin());
+            TextButton btn_exit = new TextButton(AER.lang.getText("LB_EXIT"), getContext().getSkin());
             btn_exit.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

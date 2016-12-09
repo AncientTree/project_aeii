@@ -16,9 +16,9 @@ import net.toyknight.aeii.entity.Player;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.widgets.StringList;
 import net.toyknight.aeii.entity.GameSave;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
 import net.toyknight.aeii.utils.GameToolkit;
-import net.toyknight.aeii.utils.Language;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -59,7 +59,7 @@ public class GameLoadDialog extends BasicDialog {
         sp_save_list.setScrollBarPositions(false, true);
         this.addActor(sp_save_list);
 
-        TextButton btn_load = new TextButton(Language.getText("LB_LOAD"), getContext().getSkin());
+        TextButton btn_load = new TextButton(AER.lang.getText("LB_LOAD"), getContext().getSkin());
         btn_load.setBounds(ts / 2, ts / 2, ts * 3, ts);
         btn_load.addListener(new ClickListener() {
             @Override
@@ -69,7 +69,7 @@ public class GameLoadDialog extends BasicDialog {
         });
         addActor(btn_load);
 
-        btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
+        btn_delete = new TextButton(AER.lang.getText("LB_DELETE"), getContext().getSkin());
         btn_delete.setBounds(ts * 4, ts / 2, ts * 3, ts);
         btn_delete.addListener(new ClickListener() {
             @Override
@@ -79,7 +79,7 @@ public class GameLoadDialog extends BasicDialog {
         });
         addActor(btn_delete);
 
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.setBounds(ts * 6 + ts / 2 * 3, ts / 2, ts * 3, ts);
         btn_cancel.addListener(new ClickListener() {
             @Override
@@ -103,7 +103,7 @@ public class GameLoadDialog extends BasicDialog {
                     tryStartRecord(save_file);
                     break;
                 default:
-                    getOwner().showNotification(Language.getText("MSG_ERR_BSF"), null);
+                    getOwner().showNotification(AER.lang.getText("MSG_ERR_BSF"), null);
             }
         }
     }
@@ -111,7 +111,7 @@ public class GameLoadDialog extends BasicDialog {
     public void tryStartGame(FileHandle save_file) {
         GameSave game_save = GameToolkit.loadGame(save_file);
         if (game_save == null) {
-            getOwner().showNotification(Language.getText("MSG_ERR_BSF"), null);
+            getOwner().showNotification(AER.lang.getText("MSG_ERR_BSF"), null);
         } else {
             getContext().getGameManager().getGameRecorder().setEnabled(false);
             GameCore game = game_save.getGame();
@@ -135,7 +135,7 @@ public class GameLoadDialog extends BasicDialog {
     public void tryStartRecord(FileHandle record_file) {
         GameRecord record = GameToolkit.loadRecord(record_file);
         if (record == null) {
-            getOwner().showNotification(Language.getText("MSG_ERR_BSF"), null);
+            getOwner().showNotification(AER.lang.getText("MSG_ERR_BSF"), null);
         } else {
             if (getContext().getVerificationString().equals(record.getVerificationString())) {
                 getContext().getGameManager().getGameRecorder().setEnabled(false);
@@ -148,7 +148,7 @@ public class GameLoadDialog extends BasicDialog {
                 getContext().getRecordPlayer().setRecord(record);
                 getContext().gotoGameScreen(record.getGame());
             } else {
-                getOwner().showNotification(Language.getText("MSG_ERR_RVM"), null);
+                getOwner().showNotification(AER.lang.getText("MSG_ERR_RVM"), null);
             }
         }
     }
@@ -157,7 +157,7 @@ public class GameLoadDialog extends BasicDialog {
         String filename = save_list.getSelected();
         if (filename != null) {
             getOwner().showConfirm(
-                    Language.getText("LB_DELETE") + " " + filename + "?", new ConfirmDialog.ConfirmDialogListener() {
+                    AER.lang.getText("LB_DELETE") + " " + filename + "?", new ConfirmDialog.ConfirmDialogListener() {
                         @Override
                         public void confirmed() {
                             doDeleteSelectedFile();

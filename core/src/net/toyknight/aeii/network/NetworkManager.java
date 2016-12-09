@@ -11,7 +11,7 @@ import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Map;
 import net.toyknight.aeii.manager.GameEvent;
 import net.toyknight.aeii.network.entity.*;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -414,13 +414,13 @@ public class NetworkManager {
         request.put("stage_number", stage_number);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new GameException(Language.getText("MSG_ERR_CCS"));
+            throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
         } else {
             int response_code = response.getInt("response_code");
             if (response_code == NetworkConstants.CODE_OK) {
                 return new LeaderboardRecord(response.getJSONObject("record"));
             } else {
-                throw new GameException(Language.getText("MSG_ERR_AEA") + " [" + response_code + "]");
+                throw new GameException(AER.lang.getText("MSG_ERR_AEA") + " [" + response_code + "]");
             }
         }
     }
@@ -437,10 +437,10 @@ public class NetworkManager {
         request.put("actions", actions);
         JSONObject response = sendRequest(request);
         if (response == null) {
-            throw new GameException(Language.getText("MSG_ERR_CCS"));
+            throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
         } else {
             if (!response.getBoolean("approved")) {
-                throw new GameException(Language.getText("MSG_ERR_AEA") + " [" + NetworkConstants.CODE_REJECTED + "]");
+                throw new GameException(AER.lang.getText("MSG_ERR_AEA") + " [" + NetworkConstants.CODE_REJECTED + "]");
             }
         }
     }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/12/2016.
@@ -32,7 +32,7 @@ public class RootNode extends Tree.Node {
     }
 
     public static RootNode create(int type, Skin skin) {
-        Label label = new Label(Language.getText("WIKI_NODE_ROOT_" + type), skin);
+        Label label = new Label(AER.lang.getText("WIKI_NODE_ROOT_" + type), skin);
         return new RootNode(type, label);
     }
 

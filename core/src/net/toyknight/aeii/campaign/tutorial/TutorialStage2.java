@@ -5,7 +5,7 @@ import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/26/2016.
@@ -21,10 +21,10 @@ public class TutorialStage2 extends StageController {
         getContext().set("occupied_village_right", 0);
 
         getContext().set("occupied", 0);
-        Message message1 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_1"));
-        Message message2 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_2"));
-        Message message3 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_3"));
-        Message message4 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_4"));
+        Message message1 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_1"));
+        Message message2 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_2"));
+        Message message3 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_3"));
+        Message message4 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_4"));
         getContext().message(message1, message2, message3, message4);
     }
 
@@ -59,8 +59,8 @@ public class TutorialStage2 extends StageController {
             getContext().set("repaired_village_right", 1);
         }
         if (getContext().get("repaired_village_left") == 1 && getContext().get("repaired_village_right") == 1) {
-            Message message9 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_9"));
-            Message message10 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_10"));
+            Message message9 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_9"));
+            Message message10 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_10"));
             getContext().message(message9, message10);
         }
     }
@@ -68,10 +68,10 @@ public class TutorialStage2 extends StageController {
     @Override
     public void onTileOccupied(int x, int y, int team) {
         if (x == 4 && y == 7 && team == getPlayerTeam()) {
-            Message message5 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_5"));
-            Message message6 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_6"));
-            Message message7 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_7"));
-            Message message8 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_8"));
+            Message message5 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_5"));
+            Message message6 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_6"));
+            Message message7 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_7"));
+            Message message8 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_8"));
             getContext().message(message5, message6, message7, message8);
         }
         if (x == 2 && y == 7 && team == getPlayerTeam()) {
@@ -84,7 +84,7 @@ public class TutorialStage2 extends StageController {
                 && getContext().get("occupied_village_left") == 1
                 && getContext().get("occupied_village_right") == 1) {
             getContext().set("occupied", 1);
-            Message message11 = new Message(5, Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_11"));
+            Message message11 = new Message(5, AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_MESSAGE_11"));
             getContext().message(message11);
         }
     }
@@ -122,8 +122,8 @@ public class TutorialStage2 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_OBJECTIVE_1"),
-                Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_OBJECTIVE_2")
+                AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_OBJECTIVE_2")
         };
     }
 
@@ -134,7 +134,7 @@ public class TutorialStage2 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_TUTORIAL_STAGE_2_NAME");
+        return AER.lang.getText("CAMPAIGN_TUTORIAL_STAGE_2_NAME");
     }
 
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.ResourceManager;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/16/2016.
@@ -53,10 +53,10 @@ public class EntryNode extends Tree.Node {
         Label label;
         switch (type) {
             case TYPE_ABILITY:
-                label = new Label(Language.getAbilityName(value), context.getSkin());
+                label = new Label(AER.lang.getAbilityName(value), context.getSkin());
                 break;
             case TYPE_STATUS:
-                label = new Label(Language.getStatusName(value), context.getSkin());
+                label = new Label(AER.lang.getStatusName(value), context.getSkin());
                 break;
             case TYPE_TILE:
                 Table tile_label = new Table();
@@ -64,38 +64,38 @@ public class EntryNode extends Tree.Node {
                         ResourceManager.createDrawable(context.getResources().getTileTexture(value), ts, ts);
                 Image image_tile = new Image(drawable_tile);
                 tile_label.add(image_tile);
-                Label tile_name = new Label(Language.getText("LB_TILE_NUMBER") + value, context.getSkin());
+                Label tile_name = new Label(AER.lang.getText("LB_TILE_NUMBER") + value, context.getSkin());
                 tile_label.add(tile_name).padLeft(ts / 8);
                 return new EntryNode(type, value, tile_label);
             case TYPE_UNIT:
-                label = new Label(Language.getUnitName(value), context.getSkin());
+                label = new Label(AER.lang.getUnitName(value), context.getSkin());
                 break;
             case EntryNode.TYPE_GAMEPLAY_ATTACKING:
-                label = new Label(Language.getText("WIKI_NODE_GAMEPLAY_ATTACKING"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_GAMEPLAY_ATTACKING"), context.getSkin());
                 break;
             case EntryNode.TYPE_GAMEPLAY_HEALING:
-                label = new Label(Language.getText("WIKI_NODE_GAMEPLAY_HEALING"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_GAMEPLAY_HEALING"), context.getSkin());
                 break;
             case EntryNode.TYPE_GAMEPLAY_INCOME:
-                label = new Label(Language.getText("WIKI_NODE_GAMEPLAY_INCOME"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_GAMEPLAY_INCOME"), context.getSkin());
                 break;
             case EntryNode.TYPE_GAMEPLAY_OBJECTIVES:
-                label = new Label(Language.getText("WIKI_NODE_GAMEPLAY_OBJECTIVES"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_GAMEPLAY_OBJECTIVES"), context.getSkin());
                 break;
             case EntryNode.TYPE_GAMEPLAY_RECRUITING:
-                label = new Label(Language.getText("WIKI_NODE_GAMEPLAY_RECRUITING"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_GAMEPLAY_RECRUITING"), context.getSkin());
                 break;
             case EntryNode.TYPE_GAMEPLAY_STATUS:
-                label = new Label(Language.getText("WIKI_NODE_GAMEPLAY_STATUS"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_GAMEPLAY_STATUS"), context.getSkin());
                 break;
             case TYPE_MULTIPLAYER_COMMANDS:
-                label = new Label(Language.getText("WIKI_NODE_MULTIPLAYER_COMMANDS"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_MULTIPLAYER_COMMANDS"), context.getSkin());
                 break;
             case TYPE_MULTIPLAYER_CREATE_GAME:
-                label = new Label(Language.getText("WIKI_NODE_MULTIPLAYER_CREATE_GAME"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_MULTIPLAYER_CREATE_GAME"), context.getSkin());
                 break;
             case TYPE_MULTIPLAYER_JOIN_GAME:
-                label = new Label(Language.getText("WIKI_NODE_MULTIPLAYER_JOIN_GAME"), context.getSkin());
+                label = new Label(AER.lang.getText("WIKI_NODE_MULTIPLAYER_JOIN_GAME"), context.getSkin());
                 break;
             default:
                 label = new Label("", context.getSkin());

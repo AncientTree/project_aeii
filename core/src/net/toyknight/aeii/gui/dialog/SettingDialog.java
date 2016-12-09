@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.gui.MainMenuScreen;
 import net.toyknight.aeii.gui.widgets.NumberSpinner;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.InputFilter;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 8/31/2015.
@@ -39,7 +39,7 @@ public class SettingDialog extends BasicDialog {
         Table setting_bar = new Table();
         add(setting_bar).width(ts * 6 + ts / 2).row();
 
-        Label lb_username = new Label(Language.getText("LB_USERNAME"), getContext().getSkin());
+        Label lb_username = new Label(AER.lang.getText("LB_USERNAME"), getContext().getSkin());
         lb_username.setAlignment(Align.right);
         setting_bar.add(lb_username).width(ts * 3);
 
@@ -48,14 +48,14 @@ public class SettingDialog extends BasicDialog {
         input_username.setMaxLength(10);
         setting_bar.add(input_username).width(ts * 3).padLeft(ts / 2).row();
 
-        Label lb_se_volume = new Label(Language.getText("LB_SE_VOLUME"), getContext().getSkin());
+        Label lb_se_volume = new Label(AER.lang.getText("LB_SE_VOLUME"), getContext().getSkin());
         lb_se_volume.setAlignment(Align.right);
         setting_bar.add(lb_se_volume).width(ts * 3).padTop(ts / 2);
 
         spinner_se_volume = new NumberSpinner(getContext(), 0, 100, 10);
         setting_bar.add(spinner_se_volume).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 2).row();
 
-        Label lb_music_volume = new Label(Language.getText("LB_MUSIC_VOLUME"), getContext().getSkin());
+        Label lb_music_volume = new Label(AER.lang.getText("LB_MUSIC_VOLUME"), getContext().getSkin());
         lb_music_volume.setAlignment(Align.right);
         setting_bar.add(lb_music_volume).width(ts * 3).padTop(ts / 2);
 
@@ -65,7 +65,7 @@ public class SettingDialog extends BasicDialog {
         Table button_bar = new Table();
         add(button_bar).size(ts * 6 + ts / 2, ts).padTop(ts / 2);
 
-        TextButton btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
+        TextButton btn_save = new TextButton(AER.lang.getText("LB_SAVE"), getContext().getSkin());
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -75,7 +75,7 @@ public class SettingDialog extends BasicDialog {
         });
         button_bar.add(btn_save).size(ts * 3, ts);
 
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

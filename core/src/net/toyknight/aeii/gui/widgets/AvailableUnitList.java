@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Array;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 5/29/2015.
@@ -122,7 +121,7 @@ public class AvailableUnitList extends AEIIWidget {
                         x + unit_offset, y + itemY - item_height + unit_offset, 0, ts);
             }
             batch.flush();
-            getContext().getFontRenderer().drawTextCenter(batch, Language.getUnitName(unit_index),
+            getContext().getFontRenderer().drawTextCenter(batch, AER.lang.getUnitName(unit_index),
                     x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
             index++;
             itemY -= item_height;

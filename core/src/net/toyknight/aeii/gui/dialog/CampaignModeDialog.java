@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/20/2016.
@@ -17,7 +17,7 @@ public class CampaignModeDialog extends BasicDialog {
 
     public CampaignModeDialog(StageScreen owner) {
         super(owner);
-        TextButton btn_normal = new TextButton(Language.getText("LB_NORMAL"), getContext().getSkin());
+        TextButton btn_normal = new TextButton(AER.lang.getText("LB_NORMAL"), getContext().getSkin());
         btn_normal.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 startCampaign(campaign_code, stage_number, false);
@@ -25,7 +25,7 @@ public class CampaignModeDialog extends BasicDialog {
         });
         add(btn_normal).size(ts * 3, ts).pad(ts / 4).row();
 
-        TextButton btn_ranking = new TextButton(Language.getText("LB_RANKING"), getContext().getSkin());
+        TextButton btn_ranking = new TextButton(AER.lang.getText("LB_RANKING"), getContext().getSkin());
         btn_ranking.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 startCampaign(campaign_code, stage_number, true);
@@ -33,7 +33,7 @@ public class CampaignModeDialog extends BasicDialog {
         });
         add(btn_ranking).size(ts * 3, ts).pad(ts / 4).padTop(0).row();
 
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 close();

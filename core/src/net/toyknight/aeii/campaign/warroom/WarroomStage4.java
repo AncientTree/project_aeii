@@ -6,7 +6,7 @@ import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 
 /**
@@ -25,7 +25,7 @@ public class WarroomStage4 extends StageController {
     @Override
     public void onGameStart() {
         getContext().focus(7, 7);
-        Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1"));
+        Message message = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_1"));
         getContext().message(message);
         getContext().focus(1, 1);
         getContext().reinforce(1,
@@ -34,7 +34,7 @@ public class WarroomStage4 extends StageController {
                 new Reinforcement(0, 1, 0));
         getContext().attack(1 ,1, -1);
         getContext().destroy_unit(1, 1);
-        Message message1 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2"));
+        Message message1 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_2"));
         getContext().message(message1);
         getContext().reinforce(1,
                 new Reinforcement(1, 0, 11),
@@ -48,7 +48,7 @@ public class WarroomStage4 extends StageController {
                 new Reinforcement(0, 6, 1));
         getContext().attack(7 ,1, -1);
         getContext().destroy_unit(7, 1);
-        Message message2 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3"));
+        Message message2 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_3"));
         getContext().message(message2);
         getContext().focus(5, 6);
         getContext().move(5, 6, 5, 3);
@@ -65,13 +65,13 @@ public class WarroomStage4 extends StageController {
         getContext().focus(1, 8);
         getContext().move(1, 8, 1, 10);
         getContext().focus(13, 5);
-        Message message3 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4"));
+        Message message3 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_4"));
         getContext().message(message3);
         getContext().focus(1, 1);
-        Message message4 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5"));
+        Message message4 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_5"));
         getContext().message(message4);
         getContext().focus(7, 7);
-        Message message5 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6"));
+        Message message5 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_6"));
         getContext().message(message5);
 
     }
@@ -111,7 +111,7 @@ public class WarroomStage4 extends StageController {
     public void onTurnStart(int turn) {
         if(turn == 11)
         {
-            Message message6 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7"));
+            Message message6 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_7"));
             getContext().message(message6);
         }
         else if(turn == 13)
@@ -148,7 +148,7 @@ public class WarroomStage4 extends StageController {
                     new Reinforcement(1, 6, 0),
                     new Reinforcement(0, 7, 0),
                     new Reinforcement(0, 6, 1));
-            Message message7 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8"));
+            Message message7 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_MESSAGE_8"));
             getContext().message(message7);
         }
     }
@@ -178,7 +178,7 @@ public class WarroomStage4 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_OBJECTIVE_1"),
         };
     }
 
@@ -189,7 +189,7 @@ public class WarroomStage4 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_WARROOM_STAGE_4_NAME");
+        return AER.lang.getText("CAMPAIGN_WARROOM_STAGE_4_NAME");
     }
 
 

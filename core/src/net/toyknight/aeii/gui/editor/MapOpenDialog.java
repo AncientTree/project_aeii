@@ -14,7 +14,7 @@ import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.dialog.BasicDialog;
 import net.toyknight.aeii.gui.widgets.StringList;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.MapFactory;
 
 /**
@@ -49,7 +49,7 @@ public class MapOpenDialog extends BasicDialog {
         sp_map_list.setScrollBarPositions(false, true);
         this.addActor(sp_map_list);
 
-        TextButton btn_open = new TextButton(Language.getText("LB_OPEN"), getContext().getSkin());
+        TextButton btn_open = new TextButton(AER.lang.getText("LB_OPEN"), getContext().getSkin());
         btn_open.setBounds(ts / 4, ts / 4, ts * 3, ts);
         btn_open.addListener(new ClickListener() {
             @Override
@@ -59,7 +59,7 @@ public class MapOpenDialog extends BasicDialog {
         });
         this.addActor(btn_open);
 
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.setBounds(ts * 8 - ts / 4 - ts * 3, ts / 4, ts * 3, ts);
         btn_cancel.addListener(new ClickListener() {
             @Override
@@ -78,7 +78,7 @@ public class MapOpenDialog extends BasicDialog {
                 getEditor().setMap(map, snapshot.file.nameWithoutExtension());
                 getOwner().closeDialog("open");
             } catch (GameException ex) {
-                getOwner().showNotification(Language.getText("MSG_ERR_BMF"), null);
+                getOwner().showNotification(AER.lang.getText("MSG_ERR_BMF"), null);
             }
         }
     }

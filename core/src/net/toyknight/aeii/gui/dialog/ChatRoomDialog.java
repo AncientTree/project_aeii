@@ -18,7 +18,7 @@ import net.toyknight.aeii.concurrent.MessageSendingTask;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 8/19/2016.
@@ -58,7 +58,7 @@ public class ChatRoomDialog extends BasicDialog {
         Table player_container = new Table();
         sp_bar.add(player_container).size(ts * 3, height - ts * 2 - ts / 2).padTop(ts / 2).padLeft(ts / 2);
 
-        Label label_idle_player = new Label(Language.getText("LB_IDLE_PLAYERS"), getContext().getSkin()) {
+        Label label_idle_player = new Label(AER.lang.getText("LB_IDLE_PLAYERS"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 ResourceManager.setBatchAlpha(batch, 1.0f);
@@ -80,7 +80,7 @@ public class ChatRoomDialog extends BasicDialog {
         Table button_bar = new Table();
         button_bar.pad(ts / 2);
 
-        TextButton btn_message = new TextButton(Language.getText("LB_SEND_MESSAGE"), getContext().getSkin());
+        TextButton btn_message = new TextButton(AER.lang.getText("LB_SEND_MESSAGE"), getContext().getSkin());
         btn_message.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -89,7 +89,7 @@ public class ChatRoomDialog extends BasicDialog {
         });
         button_bar.add(btn_message).size(ts * 3, ts).padRight(ts / 2);
 
-        TextButton btn_clear = new TextButton(Language.getText("LB_CLEAR"), getContext().getSkin());
+        TextButton btn_clear = new TextButton(AER.lang.getText("LB_CLEAR"), getContext().getSkin());
         btn_clear.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,7 +98,7 @@ public class ChatRoomDialog extends BasicDialog {
         });
         button_bar.add(btn_clear).size(ts * 3, ts).padRight(ts / 2);
 
-        btn_refresh = new TextButton(Language.getText("LB_REFRESH"), getContext().getSkin());
+        btn_refresh = new TextButton(AER.lang.getText("LB_REFRESH"), getContext().getSkin());
         btn_refresh.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -107,7 +107,7 @@ public class ChatRoomDialog extends BasicDialog {
         });
         button_bar.add(btn_refresh).size(ts * 3, ts).padRight(ts / 2);
 
-        TextButton btn_close = new TextButton(Language.getText("LB_CLOSE"), getContext().getSkin());
+        TextButton btn_close = new TextButton(AER.lang.getText("LB_CLOSE"), getContext().getSkin());
         btn_close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -136,10 +136,10 @@ public class ChatRoomDialog extends BasicDialog {
     }
 
     public void sendMessage() {
-        if (Language.getLocale().equals("zh_CN")) {
-            Gdx.input.getTextInput(message_input_listener, Language.getText("MSG_INFO_IM"), "", "");
+        if (AER.lang.getLocale().equals("zh_CN")) {
+            Gdx.input.getTextInput(message_input_listener, AER.lang.getText("MSG_INFO_IM"), "", "");
         } else {
-            getOwner().showInput(Language.getText("MSG_INFO_IM"), 256, false, message_input_listener);
+            getOwner().showInput(AER.lang.getText("MSG_INFO_IM"), 256, false, message_input_listener);
         }
     }
 
@@ -172,7 +172,7 @@ public class ChatRoomDialog extends BasicDialog {
 
     private void tryRefreshIdlePlayerList() {
         Gdx.input.setInputProcessor(null);
-        getOwner().showPlaceholder(Language.getText("LB_REFRESHING"));
+        getOwner().showPlaceholder(AER.lang.getText("LB_REFRESHING"));
         getContext().submitAsyncTask(new AsyncTask<Array<PlayerSnapshot>>() {
             @Override
             public Array<PlayerSnapshot> doTask() throws Exception {
@@ -182,7 +182,7 @@ public class ChatRoomDialog extends BasicDialog {
             @Override
             public void onFinish(Array<PlayerSnapshot> result) {
                 if (result == null) {
-                    getOwner().showNotification(Language.getText("MSG_ERR_AEA"), null);
+                    getOwner().showNotification(AER.lang.getText("MSG_ERR_AEA"), null);
                 } else {
                     updateIdlePlayerList(result);
                 }
@@ -192,7 +192,7 @@ public class ChatRoomDialog extends BasicDialog {
             @Override
             public void onFail(String message) {
                 getOwner().closePlaceholder();
-                getOwner().showNotification(Language.getText("MSG_ERR_AEA"), null);
+                getOwner().showNotification(AER.lang.getText("MSG_ERR_AEA"), null);
             }
         });
     }

@@ -1,7 +1,7 @@
 package net.toyknight.aeii.campaign.aei;
 
 import net.toyknight.aeii.campaign.CampaignController;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 7/25/2016.
@@ -26,7 +26,7 @@ public class AEICampaign extends CampaignController {
 
     @Override
     public String getCampaignName() {
-        return Language.getText("CAMPAIGN_AEI_NAME");
+        return AER.lang.getText("CAMPAIGN_AEI_NAME");
     }
 
     @Override

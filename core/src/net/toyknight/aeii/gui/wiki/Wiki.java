@@ -14,7 +14,6 @@ import net.toyknight.aeii.entity.Status;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.dialog.BasicDialog;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 
 import java.util.LinkedList;
 
@@ -189,7 +188,7 @@ public class Wiki extends BasicDialog {
             }
         });
         button_pane.add(btn_next).size(ts * 2, ts / 2).padLeft(ts / 2);
-        TextButton btn_close = new TextButton(Language.getText("LB_CLOSE"), getContext().getSkin());
+        TextButton btn_close = new TextButton(AER.lang.getText("LB_CLOSE"), getContext().getSkin());
         btn_close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -317,39 +316,39 @@ public class Wiki extends BasicDialog {
     private void generateRootPage(int type) {
         switch (type) {
             case RootNode.OVERVIEW:
-                label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
-                Label label_p1 = new Label(Language.getText("WIKI_OVERVIEW_P1"), getContext().getSkin());
+                label_title.setText(AER.lang.getText("WIKI_NODE_ROOT_" + type));
+                Label label_p1 = new Label(AER.lang.getText("WIKI_OVERVIEW_P1"), getContext().getSkin());
                 label_p1.setWrap(true);
                 content_page.add(label_p1).width(ts * 7).padBottom(ts / 8).row();
                 break;
             case RootNode.ABOUT:
-                label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
+                label_title.setText(AER.lang.getText("WIKI_NODE_ROOT_" + type));
                 content_page.add(about_page);
                 break;
             default:
-                label_title.setText(Language.getText("WIKI_NODE_ROOT_" + type));
+                label_title.setText(AER.lang.getText("WIKI_NODE_ROOT_" + type));
         }
     }
 
     private void generateGameplayPage(int type) {
         switch (type) {
             case EntryNode.TYPE_GAMEPLAY_ATTACKING:
-                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_ATTACKING"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_GAMEPLAY_ATTACKING"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_HEALING:
-                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_HEALING"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_GAMEPLAY_HEALING"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_INCOME:
-                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_INCOME"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_GAMEPLAY_INCOME"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_OBJECTIVES:
-                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_OBJECTIVES"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_GAMEPLAY_OBJECTIVES"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_RECRUITING:
-                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_RECRUITING"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_GAMEPLAY_RECRUITING"));
                 break;
             case EntryNode.TYPE_GAMEPLAY_STATUS:
-                label_title.setText(Language.getText("WIKI_NODE_GAMEPLAY_STATUS"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_GAMEPLAY_STATUS"));
                 break;
         }
         gameplay_page.setType(type);
@@ -357,25 +356,25 @@ public class Wiki extends BasicDialog {
     }
 
     private void generateTilePage(int index) {
-        label_title.setText(Language.getText("LB_TILE_NUMBER") + index);
+        label_title.setText(AER.lang.getText("LB_TILE_NUMBER") + index);
         tile_page.setIndex(index);
         content_page.add(tile_page);
     }
 
     private void generateUnitPage(int index) {
-        label_title.setText(Language.getUnitName(index));
+        label_title.setText(AER.lang.getUnitName(index));
         unit_page.setIndex(index);
         content_page.add(unit_page);
     }
 
     private void generateAbilityPage(int ability) {
-        label_title.setText(Language.getAbilityName(ability));
+        label_title.setText(AER.lang.getAbilityName(ability));
         ability_page.setAbility(ability);
         content_page.add(ability_page);
     }
 
     private void generateStatusPage(int status) {
-        label_title.setText(Language.getStatusName(status));
+        label_title.setText(AER.lang.getStatusName(status));
         status_page.setStatus(status);
         content_page.add(status_page);
     }
@@ -383,13 +382,13 @@ public class Wiki extends BasicDialog {
     private void generateMultiplayerPage(int type) {
         switch (type) {
             case EntryNode.TYPE_MULTIPLAYER_COMMANDS:
-                label_title.setText(Language.getText("WIKI_NODE_MULTIPLAYER_COMMANDS"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_MULTIPLAYER_COMMANDS"));
                 break;
             case EntryNode.TYPE_MULTIPLAYER_CREATE_GAME:
-                label_title.setText(Language.getText("WIKI_NODE_MULTIPLAYER_CREATE_GAME"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_MULTIPLAYER_CREATE_GAME"));
                 break;
             case EntryNode.TYPE_MULTIPLAYER_JOIN_GAME:
-                label_title.setText(Language.getText("WIKI_NODE_MULTIPLAYER_JOIN_GAME"));
+                label_title.setText(AER.lang.getText("WIKI_NODE_MULTIPLAYER_JOIN_GAME"));
                 break;
         }
         multiplayer_page.setType(type);

@@ -25,9 +25,9 @@ import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.gui.dialog.ConfirmDialog;
 import net.toyknight.aeii.gui.dialog.MiniMapDialog;
 import net.toyknight.aeii.gui.widgets.StringList;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
 import net.toyknight.aeii.utils.InputFilter;
-import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.MapFactory;
 
 import java.io.IOException;
@@ -61,11 +61,11 @@ public class MapManagementScreen extends StageScreen {
 
         int sp_width = (Gdx.graphics.getWidth() - ts * 3 / 2) / 2;
 
-        Label label_online_map = new Label(Language.getText("LB_ONLINE_MAPS"), getContext().getSkin());
+        Label label_online_map = new Label(AER.lang.getText("LB_ONLINE_MAPS"), getContext().getSkin());
         label_online_map.setAlignment(Align.center);
         label_online_map.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, sp_width, ts);
         addActor(label_online_map);
-        Label label_local_map = new Label(Language.getText("LB_LOCAL_MAPS"), getContext().getSkin());
+        Label label_local_map = new Label(AER.lang.getText("LB_LOCAL_MAPS"), getContext().getSkin());
         label_local_map.setAlignment(Align.center);
         label_local_map.setBounds(sp_width + ts, Gdx.graphics.getHeight() - ts, sp_width, ts);
         addActor(label_local_map);
@@ -114,7 +114,7 @@ public class MapManagementScreen extends StageScreen {
 
         int padding = (Gdx.graphics.getWidth() - ts * 15) / 6;
 
-        btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
+        btn_back = new TextButton(AER.lang.getText("LB_BACK"), getContext().getSkin());
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -123,7 +123,7 @@ public class MapManagementScreen extends StageScreen {
         });
         button_bar.add(btn_back).size(ts * 2, ts);
 
-        btn_refresh = new TextButton(Language.getText("LB_REFRESH"), getContext().getSkin());
+        btn_refresh = new TextButton(AER.lang.getText("LB_REFRESH"), getContext().getSkin());
         btn_refresh.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -132,7 +132,7 @@ public class MapManagementScreen extends StageScreen {
         });
         button_bar.add(btn_refresh).size(ts * 2, ts).padLeft(padding);
 
-        btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
+        btn_preview = new TextButton(AER.lang.getText("LB_PREVIEW"), getContext().getSkin());
         btn_preview.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -145,7 +145,7 @@ public class MapManagementScreen extends StageScreen {
         });
         button_bar.add(btn_preview).size(ts * 2, ts).padLeft(padding);
 
-        btn_download = new TextButton(Language.getText("LB_DOWNLOAD"), getContext().getSkin());
+        btn_download = new TextButton(AER.lang.getText("LB_DOWNLOAD"), getContext().getSkin());
         btn_download.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -154,7 +154,7 @@ public class MapManagementScreen extends StageScreen {
         });
         button_bar.add(btn_download).size(ts * 2, ts).padLeft(padding);
 
-        btn_upload = new TextButton(Language.getText("LB_UPLOAD"), getContext().getSkin());
+        btn_upload = new TextButton(AER.lang.getText("LB_UPLOAD"), getContext().getSkin());
         btn_upload.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -163,7 +163,7 @@ public class MapManagementScreen extends StageScreen {
         });
         button_bar.add(btn_upload).size(ts * 2, ts).padLeft(padding);
 
-        btn_rename = new TextButton(Language.getText("LB_RENAME"), getContext().getSkin());
+        btn_rename = new TextButton(AER.lang.getText("LB_RENAME"), getContext().getSkin());
         btn_rename.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -172,7 +172,7 @@ public class MapManagementScreen extends StageScreen {
         });
         button_bar.add(btn_rename).size(ts * 2, ts).padLeft(padding);
 
-        btn_delete = new TextButton(Language.getText("LB_DELETE"), getContext().getSkin());
+        btn_delete = new TextButton(AER.lang.getText("LB_DELETE"), getContext().getSkin());
         btn_delete.setBounds(Gdx.graphics.getWidth() - ts * 7 - ts / 2, ts / 2, ts * 2, ts);
         btn_delete.addListener(new ClickListener() {
             @Override
@@ -226,13 +226,13 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void rename() {
-        showInput(Language.getText("MSG_INFO_IF"), 20, false, new InputFilter(), new Input.TextInputListener() {
+        showInput(AER.lang.getText("MSG_INFO_IF"), 20, false, new InputFilter(), new Input.TextInputListener() {
             @Override
             public void input(String text) {
                 MapFactory.MapSnapshot snapshot = local_map_list.getSelected();
                 FileHandle target_file = FileProvider.getUserFile("map/" + text + ".aem");
                 if (target_file.exists()) {
-                    showNotification(Language.getText("MSG_ERR_FAE"), new Callable() {
+                    showNotification(AER.lang.getText("MSG_ERR_FAE"), new Callable() {
                         @Override
                         public void call() {
                             rename();
@@ -243,7 +243,7 @@ public class MapManagementScreen extends StageScreen {
                         snapshot.file.moveTo(target_file);
                         refreshLocalMaps();
                     } catch (GdxRuntimeException ex) {
-                        showNotification(Language.getText("MSG_ERR_FRM"), null);
+                        showNotification(AER.lang.getText("MSG_ERR_FRM"), null);
                     }
                 }
             }
@@ -258,7 +258,7 @@ public class MapManagementScreen extends StageScreen {
         if (checkSelectedMap()) {
             final int map_id = ((MapSnapshot) server_map_list.getSelected()).getID();
             final String filename = ((MapSnapshot) server_map_list.getSelected()).getFilename();
-            showPlaceholder(Language.getText("LB_DOWNLOADING"));
+            showPlaceholder(AER.lang.getText("LB_DOWNLOADING"));
             getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
                 public Void doTask() throws Exception {
@@ -268,14 +268,14 @@ public class MapManagementScreen extends StageScreen {
                         tryWriteMap(map, filename);
                         return null;
                     } else {
-                        throw new GameException(Language.getText("MSG_ERR_CCS"));
+                        throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
                     }
                 }
 
                 @Override
                 public void onFinish(Void map) {
                     closePlaceholder();
-                    showNotification(Language.getText("MSG_INFO_MD"), null);
+                    showNotification(AER.lang.getText("MSG_INFO_MD"), null);
                 }
 
                 @Override
@@ -288,7 +288,7 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void uploadSelectedMap() {
-        showPlaceholder(Language.getText("LB_UPLOADING"));
+        showPlaceholder(AER.lang.getText("LB_UPLOADING"));
         getContext().submitAsyncTask(new AsyncTask<Integer>() {
             @Override
             public Integer doTask() throws Exception {
@@ -299,7 +299,7 @@ public class MapManagementScreen extends StageScreen {
                     NetworkManager.disconnect();
                     return code;
                 } else {
-                    throw new GameException(Language.getText("MSG_ERR_CCS"));
+                    throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
                 }
             }
 
@@ -307,9 +307,9 @@ public class MapManagementScreen extends StageScreen {
             public void onFinish(Integer code) {
                 closePlaceholder();
                 if (code == NetworkConstants.CODE_OK) {
-                    showNotification(Language.getText("MSG_INFO_MU"), null);
+                    showNotification(AER.lang.getText("MSG_INFO_MU"), null);
                 } else {
-                    showNotification(Language.getText("MSG_ERR_FUM") + " Error Code [" + code + "]", null);
+                    showNotification(AER.lang.getText("MSG_ERR_FUM") + " Error Code [" + code + "]", null);
                 }
             }
 
@@ -324,16 +324,16 @@ public class MapManagementScreen extends StageScreen {
     private void tryWriteMap(Map map, String filename) {
         FileHandle map_file = FileProvider.getUserFile("map/" + filename);
         if (map == null) {
-            showNotification(Language.getText("MSG_ERR_FDM"), null);
+            showNotification(AER.lang.getText("MSG_ERR_FDM"), null);
         } else {
             if (map_file.exists()) {
-                showNotification(Language.getText("MSG_ERR_MAE"), null);
+                showNotification(AER.lang.getText("MSG_ERR_MAE"), null);
             } else {
                 try {
                     MapFactory.writeMap(map, map_file);
                     refreshLocalMaps();
                 } catch (IOException e) {
-                    showNotification(Language.getText("MSG_ERR_FDM"), null);
+                    showNotification(AER.lang.getText("MSG_ERR_FDM"), null);
                 }
             }
         }
@@ -342,7 +342,7 @@ public class MapManagementScreen extends StageScreen {
     private void previewSelectedServerMap() {
         if (checkSelectedMap()) {
             final int map_id = ((MapSnapshot) server_map_list.getSelected()).getID();
-            showPlaceholder(Language.getText("LB_DOWNLOADING"));
+            showPlaceholder(AER.lang.getText("LB_DOWNLOADING"));
             getContext().submitAsyncTask(new AsyncTask<Map>() {
                 @Override
                 public Map doTask() throws Exception {
@@ -351,7 +351,7 @@ public class MapManagementScreen extends StageScreen {
                         NetworkManager.disconnect();
                         return map;
                     } else {
-                        throw new GameException(Language.getText("MSG_ERR_CCS"));
+                        throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
                     }
                 }
 
@@ -359,7 +359,7 @@ public class MapManagementScreen extends StageScreen {
                 public void onFinish(Map map) {
                     closePlaceholder();
                     if (map == null) {
-                        showNotification(Language.getText("MSG_ERR_FDM"), null);
+                        showNotification(AER.lang.getText("MSG_ERR_FDM"), null);
                     } else {
                         preview(map);
                     }
@@ -381,7 +381,7 @@ public class MapManagementScreen extends StageScreen {
                 Map map = MapFactory.createMap(map_file);
                 preview(map);
             } catch (GameException e) {
-                showNotification(Language.getText("MSG_ERR_BMF"), null);
+                showNotification(AER.lang.getText("MSG_ERR_BMF"), null);
             }
         }
     }
@@ -393,7 +393,7 @@ public class MapManagementScreen extends StageScreen {
     }
 
     private void refresh() {
-        showPlaceholder(Language.getText("LB_REFRESHING"));
+        showPlaceholder(AER.lang.getText("LB_REFRESHING"));
         getContext().submitAsyncTask(new AsyncTask<Array<MapSnapshot>>() {
             @Override
             public Array<MapSnapshot> doTask() throws Exception {
@@ -403,7 +403,7 @@ public class MapManagementScreen extends StageScreen {
                     NetworkManager.disconnect();
                     return map_list;
                 } else {
-                    throw new GameException(Language.getText("MSG_ERR_CCS"));
+                    throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
                 }
             }
 
@@ -411,7 +411,7 @@ public class MapManagementScreen extends StageScreen {
             public void onFinish(Array<MapSnapshot> map_list) {
                 closePlaceholder();
                 if (map_list == null) {
-                    showNotification(Language.getText("MSG_ERR_CCS"), null);
+                    showNotification(AER.lang.getText("MSG_ERR_CCS"), null);
                 } else {
                     map_list.sort();
                     updateServerMapList(map_list);
@@ -449,7 +449,7 @@ public class MapManagementScreen extends StageScreen {
 
     private void delete() {
         if (local_map_list.getSelected() != null) {
-            showConfirm(Language.getText("MSG_INFO_DSM"), new ConfirmDialog.ConfirmDialogListener() {
+            showConfirm(AER.lang.getText("MSG_INFO_DSM"), new ConfirmDialog.ConfirmDialogListener() {
                 @Override
                 public void confirmed() {
                     deleteSelectedMap();

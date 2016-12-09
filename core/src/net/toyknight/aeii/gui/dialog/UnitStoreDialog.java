@@ -18,7 +18,6 @@ import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.gui.GameScreen;
 import net.toyknight.aeii.gui.widgets.AvailableUnitList;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 4/20/2015.
@@ -127,7 +126,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
         Table button_pane = new Table();
 
-        this.btn_recruit = new TextButton(Language.getText("LB_RECRUIT"), skin);
+        this.btn_recruit = new TextButton(AER.lang.getText("LB_RECRUIT"), skin);
         this.btn_recruit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -137,7 +136,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         });
         button_pane.add(btn_recruit).size(ts * 2, ts);
 
-        TextButton btn_close = new TextButton(Language.getText("LB_CLOSE"), skin);
+        TextButton btn_close = new TextButton(AER.lang.getText("LB_CLOSE"), skin);
         btn_close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -196,7 +195,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
             label_move.setText(Integer.toString(selected_unit.getMovementPoint()));
             label_physical_defence.setText(Integer.toString(selected_unit.getPhysicalDefence()));
             label_magic_defence.setText(Integer.toString(selected_unit.getMagicDefence()));
-            label_description.setText(Language.getUnitDescription(selected_unit.getIndex()));
+            label_description.setText(AER.lang.getUnitDescription(selected_unit.getIndex()));
         } else {
             btn_recruit.setVisible(false);
         }

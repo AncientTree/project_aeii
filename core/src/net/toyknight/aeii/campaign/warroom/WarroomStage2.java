@@ -5,7 +5,8 @@ import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
+
 import java.util.Random;
 
 /**
@@ -28,13 +29,13 @@ public class WarroomStage2 extends StageController {
         getContext().alliance(2, 1);
         getContext().alliance(3, 2);
         getContext().focus(7, 1);
-        Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1"));
+        Message message = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_1"));
         getContext().message(message);
         getContext().focus(1, 9);
-        Message message1 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2"));
+        Message message1 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_2"));
         getContext().message(message1);
         getContext().focus(13, 13);
-        Message message2 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3"));
+        Message message2 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_2_MESSAGE_3"));
         getContext().message(message2);
         getContext().gold(3, 3000);
 
@@ -132,8 +133,8 @@ public class WarroomStage2 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1"),
-                Language.getText("CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_2_OBJECTIVE_2"),
         };
     }
 
@@ -144,7 +145,7 @@ public class WarroomStage2 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_WARROOM_STAGE_2_NAME");
+        return AER.lang.getText("CAMPAIGN_WARROOM_STAGE_2_NAME");
     }
 
 

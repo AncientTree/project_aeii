@@ -25,7 +25,6 @@ import net.toyknight.aeii.gui.widgets.CircleButton;
 import net.toyknight.aeii.gui.widgets.MessageBoard;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 import org.json.JSONObject;
 
 /**
@@ -92,7 +91,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     private void initComponents() {
-        this.btn_menu = new TextButton(Language.getText("LB_MENU"), getContext().getSkin());
+        this.btn_menu = new TextButton(AER.lang.getText("LB_MENU"), getContext().getSkin());
         this.btn_menu.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, Gdx.graphics.getHeight() - ts, RIGHT_PANEL_WIDTH, ts);
         this.btn_menu.addListener(new ClickListener() {
             @Override
@@ -101,7 +100,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             }
         });
         this.addActor(btn_menu);
-        this.btn_end_turn = new TextButton(Language.getText("LB_END_TURN"), getContext().getSkin());
+        this.btn_end_turn = new TextButton(AER.lang.getText("LB_END_TURN"), getContext().getSkin());
         this.btn_end_turn.setBounds(Gdx.graphics.getWidth() - RIGHT_PANEL_WIDTH, 0, RIGHT_PANEL_WIDTH, ts);
         this.btn_end_turn.addListener(new ClickListener() {
             @Override
@@ -324,7 +323,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         }
         reconnecting = true;
         closeAllDialogs();
-        showPlaceholder(Language.getText("LB_RECONNECTING"));
+        showPlaceholder(AER.lang.getText("LB_RECONNECTING"));
         getContext().clearAsyncTasks();
         getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
             @Override
@@ -374,7 +373,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     private void onReconnectFail() {
         reconnecting = false;
         closePlaceholder();
-        showNotification(Language.getText("MSG_ERR_DFS"), new Callable() {
+        showNotification(AER.lang.getText("MSG_ERR_DFS"), new Callable() {
             @Override
             public void call() {
                 getContext().gotoMainMenuScreen(true);
@@ -391,12 +390,12 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             if (player.getType() == Player.LOCAL && allocation[team] != NetworkManager.getServiceID()) {
                 player.setType(Player.REMOTE);
                 message_board.appendMessage(null,
-                        String.format(Language.getText("MSG_INFO_LTC"), Language.getText("LB_TEAM_" + team)));
+                        String.format(AER.lang.getText("MSG_INFO_LTC"), AER.lang.getText("LB_TEAM_" + team)));
             }
             if (player.getType() == Player.REMOTE && allocation[team] == NetworkManager.getServiceID()) {
                 player.setType(Player.LOCAL);
                 message_board.appendMessage(null,
-                        String.format(Language.getText("MSG_INFO_GTC"), Language.getText("LB_TEAM_" + team)));
+                        String.format(AER.lang.getText("MSG_INFO_GTC"), AER.lang.getText("LB_TEAM_" + team)));
             }
         }
         update();
@@ -406,7 +405,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void onPlayerJoin(int id, String username) {
         super.onPlayerJoin(id, username);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
-        appendMessage(null, String.format(Language.getText("MSG_INFO_PJ"), username));
+        appendMessage(null, String.format(AER.lang.getText("MSG_INFO_PJ"), username));
         AudioManager.playSE("prompt.mp3");
     }
 
@@ -414,7 +413,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void onPlayerLeave(int id, String username, int host) {
         super.onPlayerLeave(id, username, host);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
-        appendMessage(null, String.format(Language.getText("MSG_INFO_PD"), username));
+        appendMessage(null, String.format(AER.lang.getText("MSG_INFO_PD"), username));
         AudioManager.playSE("prompt.mp3");
     }
 
@@ -422,7 +421,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void onPlayerReconnect(int id, String username) {
         super.onPlayerReconnect(id, username);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
-        appendMessage(null, String.format(Language.getText("MSG_INFO_PR"), username));
+        appendMessage(null, String.format(AER.lang.getText("MSG_INFO_PR"), username));
         AudioManager.playSE("prompt.mp3");
     }
 
@@ -436,7 +435,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         if (message.startsWith("/")) {
             if (message.equals("/cheating")) {
                 cheated = true;
-                appendMessage(username, Language.getText("MSG_INFO_CDCN"));
+                appendMessage(username, AER.lang.getText("MSG_INFO_CDCN"));
             }
         } else {
             appendMessage(username, message);
@@ -446,7 +445,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     public void onCheatingDetected(CheatingException ex) {
         if (!allow_cheating && getGame().getCurrentPlayer().getType() == Player.REMOTE) {
             int team = ex.getTeam();
-            String message = String.format(Language.getText("MSG_INFO_CD"), Language.getText("LB_TEAM_" + team));
+            String message = String.format(AER.lang.getText("MSG_INFO_CD"), AER.lang.getText("LB_TEAM_" + team));
             String cause = String.format(" [%s]", ex.getMessage());
             showConfirm(message + cause, new ConfirmDialog.ConfirmDialogListener() {
                 @Override
@@ -509,7 +508,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         mini_map.updateBounds(0, 0, viewport.width, viewport.height + ts);
         closeAllDialogs();
 
-        appendMessage(null, Language.getText("MSG_INFO_GS"));
+        appendMessage(null, AER.lang.getText("MSG_INFO_GS"));
         update();
     }
 
@@ -814,7 +813,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     private void onEndTurn() {
         if (getContext().getPlatform().isMobile()) {
-            showConfirm(Language.getText("LB_END_TURN") + "?", new ConfirmDialog.ConfirmDialogListener() {
+            showConfirm(AER.lang.getText("LB_END_TURN") + "?", new ConfirmDialog.ConfirmDialogListener() {
                 @Override
                 public void confirmed() {
                     doEndTurn();
@@ -885,7 +884,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
 
     @Override
     public void onRecordPlaybackFinished() {
-        appendMessage(null, Language.getText("MSG_INFO_RPF"));
+        appendMessage(null, AER.lang.getText("MSG_INFO_RPF"));
     }
 
     @Override

@@ -5,7 +5,7 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author blackwave 08/25/2016.
@@ -22,7 +22,7 @@ public class WarroomStage1 extends StageController {
     public void onGameStart() {
         getContext().head(0, 1);
         getContext().head(1, 0);
-        Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1"));
+        Message message = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_1_MESSAGE_1"));
         getContext().message(message);
     }
 
@@ -95,8 +95,8 @@ public class WarroomStage1 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1"),
-                Language.getText("CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2")
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_1_OBJECTIVE_2")
         };
     }
 
@@ -107,7 +107,7 @@ public class WarroomStage1 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_WARROOM_STAGE_1_NAME");
+        return AER.lang.getText("CAMPAIGN_WARROOM_STAGE_1_NAME");
     }
 
 }

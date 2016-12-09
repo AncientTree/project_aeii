@@ -1,7 +1,7 @@
 package net.toyknight.aeii.campaign.toybox;
 
 import net.toyknight.aeii.campaign.CampaignController;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author blackwave 08/25/2016.
@@ -22,7 +22,7 @@ public class ToyboxCampaign extends CampaignController {
 
     @Override
     public String getCampaignName() {
-        return Language.getText("CAMPAIGN_TOYBOX_NAME");
+        return AER.lang.getText("CAMPAIGN_TOYBOX_NAME");
     }
 
     @Override

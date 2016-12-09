@@ -2,7 +2,7 @@ package net.toyknight.aeii.gui.wiki;
 
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.gui.widgets.LabelButton;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/12/2016.
@@ -22,13 +22,13 @@ public class ReferenceLabel extends LabelButton {
         this.value = value;
         switch (type) {
             case TYPE_ABILITY:
-                setText(String.format("[%s]", Language.getAbilityName(value)));
+                setText(String.format("[%s]", AER.lang.getAbilityName(value)));
                 break;
             case TYPE_STATUS:
-                setText(String.format("[%s]", Language.getStatusName(value)));
+                setText(String.format("[%s]", AER.lang.getStatusName(value)));
                 break;
             case TYPE_UNIT:
-                setText(String.format("[%s]", Language.getUnitName(value)));
+                setText(String.format("[%s]", AER.lang.getUnitName(value)));
                 break;
         }
         setColor(162 / 256f, 215 / 256f, 245 / 256f, 1.0f);

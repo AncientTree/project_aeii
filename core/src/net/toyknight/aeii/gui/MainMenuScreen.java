@@ -10,7 +10,7 @@ import net.toyknight.aeii.gui.dialog.MainMenu;
 import net.toyknight.aeii.gui.dialog.ServerListDialog;
 import net.toyknight.aeii.gui.dialog.SettingDialog;
 import net.toyknight.aeii.gui.widgets.CircleButton;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 4/3/2015.
@@ -62,7 +62,7 @@ public class MainMenuScreen extends StageScreen {
         batch.begin();
         batch.draw(getResources().getMainMenuBackgroundTexture(),
                 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getFontRenderer().drawTitleCenter(batch, Language.getText("_TITLE"),
+        getContext().getFontRenderer().drawTitleCenter(batch, AER.lang.getText("_TITLE"),
                 0, Gdx.graphics.getHeight() - 85, Gdx.graphics.getWidth(), 85);
         batch.end();
         super.draw();

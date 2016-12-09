@@ -20,7 +20,7 @@ import net.toyknight.aeii.gui.dialog.MiniMapDialog;
 import net.toyknight.aeii.gui.widgets.Spinner;
 import net.toyknight.aeii.gui.widgets.SpinnerListener;
 import net.toyknight.aeii.gui.widgets.StringList;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.MapFactory;
 
 /**
@@ -47,7 +47,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         int button_width = (Gdx.graphics.getWidth() - ts * 9) / 3;
         int map_list_width = Gdx.graphics.getWidth() - ts * 10 - ts / 2;
 
-        TextButton btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
+        TextButton btn_preview = new TextButton(AER.lang.getText("LB_PREVIEW"), getContext().getSkin());
         btn_preview.setBounds(ts * 7 + ts / 2, ts / 2, button_width, ts);
         btn_preview.addListener(new ClickListener() {
             @Override
@@ -58,7 +58,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
             }
         });
         this.addActor(btn_preview);
-        TextButton btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
+        TextButton btn_back = new TextButton(AER.lang.getText("LB_BACK"), getContext().getSkin());
         btn_back.setBounds(ts * 8 + button_width, ts / 2, button_width, ts);
         btn_back.addListener(new ClickListener() {
             @Override
@@ -67,7 +67,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
             }
         });
         this.addActor(btn_back);
-        TextButton btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
+        TextButton btn_start = new TextButton(AER.lang.getText("LB_START"), getContext().getSkin());
         btn_start.setBounds(ts * 8 + ts / 2 + button_width * 2, ts / 2, button_width, ts);
         btn_start.addListener(new ClickListener() {
             @Override
@@ -112,7 +112,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         spinner_type = new Spinner[4];
         Integer[] alliance_preset = new Integer[]{1, 2, 3, 4};
         String[] player_type_preset = new String[]{
-                Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
+                AER.lang.getText("LB_NONE"), AER.lang.getText("LB_PLAYER"), AER.lang.getText("LB_ROBOT")};
         for (int team = 0; team < 4; team++) {
             TextureRegionDrawable team_color =
                     ResourceManager.createDrawable(getResources().getTeamBackground(team), ts, ts);
@@ -132,10 +132,10 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         gp_setting_pane.setBounds(ts / 2, ts / 2, ts * 6 + ts / 2, ts * 2);
         addActor(gp_setting_pane);
 
-        Label label_gold = new Label(Language.getText("LB_START_GOLD"), getContext().getSkin());
+        Label label_gold = new Label(AER.lang.getText("LB_START_GOLD"), getContext().getSkin());
         label_gold.setAlignment(Align.center);
         gp_setting_pane.add(label_gold).width(ts * 3).height(ts);
-        Label label_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
+        Label label_population = new Label(AER.lang.getText("LB_MAX_POPULATION"), getContext().getSkin());
         label_population.setAlignment(Align.center);
         gp_setting_pane.add(label_population).width(ts * 3).height(ts).padLeft(ts / 2).row();
         spinner_gold = new Spinner<Integer>(getContext());
@@ -153,10 +153,10 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
 
         Label label_empty = new Label("", getContext().getSkin());
         top_pane.add(label_empty).width(ts);
-        Label label_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
+        Label label_team = new Label(AER.lang.getText("LB_TEAM"), getContext().getSkin());
         label_team.setAlignment(Align.center);
         top_pane.add(label_team).width(ts * 3).padLeft(ts / 2);
-        Label label_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
+        Label label_type = new Label(AER.lang.getText("LB_TYPE"), getContext().getSkin());
         label_type.setAlignment(Align.center);
         top_pane.add(label_type).width(ts * 4).padLeft(ts / 2);
     }
@@ -194,7 +194,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
             }
         } catch (GameException ex) {
             selected_map = null;
-            showNotification(Language.getText("MSG_ERR_BMF"), null);
+            showNotification(AER.lang.getText("MSG_ERR_BMF"), null);
         }
     }
 
@@ -206,13 +206,13 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         for (int team = 0; team < 4; team++) {
             if (getContext().getRoomManager().getGame().getMap().hasTeamAccess(team)) {
                 String selected = spinner_type[team].getSelectedItem();
-                if (selected.equals(Language.getText("LB_NONE"))) {
+                if (selected.equals(AER.lang.getText("LB_NONE"))) {
                     getContext().getRoomManager().updatePlayerType(team, Player.NONE);
                 }
-                if (selected.equals(Language.getText("LB_PLAYER"))) {
+                if (selected.equals(AER.lang.getText("LB_PLAYER"))) {
                     getContext().getRoomManager().updatePlayerType(team, Player.LOCAL);
                 }
-                if (selected.equals(Language.getText("LB_ROBOT"))) {
+                if (selected.equals(AER.lang.getText("LB_ROBOT"))) {
                     getContext().getRoomManager().updatePlayerType(team, Player.ROBOT);
                 }
                 int alliance = spinner_alliance[team].getSelectedItem();
@@ -267,7 +267,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         if (selected_map != null && canStart()) {
             getContext().gotoGameScreen(getContext().getRoomManager().getArrangedGame());
         } else {
-            showNotification(Language.getText("MSG_ERR_CNSG"), null);
+            showNotification(AER.lang.getText("MSG_ERR_CNSG"), null);
         }
     }
 
@@ -278,7 +278,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
         getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         if (selected_map == null) {
             getContext().getFontRenderer().drawTextCenter(batch,
-                    Language.getText("MSG_ERR_BMF"),
+                    AER.lang.getText("MSG_ERR_BMF"),
                     ts * 7, ts * 2,
                     Gdx.graphics.getWidth() - ts * 7 - ts / 2, Gdx.graphics.getHeight() - ts * 2 - ts / 2);
         }

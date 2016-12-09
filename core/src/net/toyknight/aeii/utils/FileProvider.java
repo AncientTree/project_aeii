@@ -3,6 +3,7 @@ package net.toyknight.aeii.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import net.toyknight.aeii.system.AER;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -91,7 +92,7 @@ public class FileProvider {
     }
 
     public static FileHandle getUIDefaultFont() {
-        String filename = Language.getFontFilename();
+        String filename = AER.lang.getFontFilename();
         return getAssetsFile("fonts/" + filename);
     }
 

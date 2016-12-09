@@ -6,7 +6,7 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author blackwave 8/25/2016.
@@ -27,9 +27,9 @@ public class WarroomStage3 extends StageController {
         getContext().alliance(2, 1);
         getContext().alliance(3, 1);
         getContext().focus(2, 6);
-        Message message = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1"));
+        Message message = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_3_MESSAGE_1"));
         getContext().message(message);
-        Message message1 = new Message(5, Language.getText("CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2"));
+        Message message1 = new Message(5, AER.lang.getText("CAMPAIGN_WARROOM_STAGE_3_MESSAGE_2"));
         getContext().message(message1);
     }
 
@@ -111,9 +111,9 @@ public class WarroomStage3 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1"),
-                Language.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2"),
-                Language.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_2"),
+                AER.lang.getText("CAMPAIGN_WARROOM_STAGE_3_OBJECTIVE_3"),
         };
     }
 
@@ -124,7 +124,7 @@ public class WarroomStage3 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_WARROOM_STAGE_3_NAME");
+        return AER.lang.getText("CAMPAIGN_WARROOM_STAGE_3_NAME");
     }
 
 }

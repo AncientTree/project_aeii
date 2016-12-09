@@ -195,13 +195,13 @@ public class MapEditor {
         try {
             MapFactory.createTeamAccess(map);
             if (map.getPlayerCount() < 2) {
-                getListener().onError(Language.getText("EDITOR_ERROR_ATT"));
+                getListener().onError(AER.lang.getText("EDITOR_ERROR_ATT"));
                 return;
             }
             for (int team = 0; team < 4; team++) {
                 if (map.getCommanderCount(team) > 1) {
                     String message = String.format(
-                            Language.getText("EDITOR_ERROR_THOMC"), Language.getText("LB_TEAM_" + team));
+                            AER.lang.getText("EDITOR_ERROR_THOMC"), AER.lang.getText("LB_TEAM_" + team));
                     getListener().onError(message);
                     return;
                 }
@@ -209,7 +209,7 @@ public class MapEditor {
             MapFactory.writeMap(map, map_file);
             getListener().onMapSaved();
         } catch (IOException ex) {
-            getListener().onError(Language.getText("EDITOR_ERROR_FSM"));
+            getListener().onError(AER.lang.getText("EDITOR_ERROR_FSM"));
         }
     }
 

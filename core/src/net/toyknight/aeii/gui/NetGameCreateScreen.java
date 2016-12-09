@@ -21,7 +21,7 @@ import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.gui.dialog.MiniMapDialog;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.gui.widgets.PlayerAllocationButton;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.gui.widgets.Spinner;
 import net.toyknight.aeii.gui.widgets.SpinnerListener;
 import net.toyknight.aeii.gui.widgets.StringList;
@@ -76,7 +76,7 @@ public class NetGameCreateScreen extends StageScreen {
         sp_player_list.setBounds(ts / 2, ts * 3 + ts / 2, ts * 3, Gdx.graphics.getHeight() - ts * 4);
         addActor(sp_player_list);
 
-        btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
+        btn_start = new TextButton(AER.lang.getText("LB_START"), getContext().getSkin());
         btn_start.setBounds(ts / 2, ts / 2, ts * 3, ts);
         btn_start.addListener(new ClickListener() {
             @Override
@@ -86,7 +86,7 @@ public class NetGameCreateScreen extends StageScreen {
         });
         addActor(btn_start);
 
-        TextButton btn_message = new TextButton(Language.getText("LB_SEND_MESSAGE"), getContext().getSkin());
+        TextButton btn_message = new TextButton(AER.lang.getText("LB_SEND_MESSAGE"), getContext().getSkin());
         btn_message.setBounds(Gdx.graphics.getWidth() - ts * 3 - ts / 2, ts / 2, ts * 3, ts);
         btn_message.addListener(new ClickListener() {
             @Override
@@ -96,7 +96,7 @@ public class NetGameCreateScreen extends StageScreen {
         });
         addActor(btn_message);
 
-        btn_leave = new TextButton(Language.getText("LB_LEAVE"), getContext().getSkin());
+        btn_leave = new TextButton(AER.lang.getText("LB_LEAVE"), getContext().getSkin());
         btn_leave.setBounds(ts * 4, ts / 2, ts * 3, ts);
         btn_leave.addListener(new ClickListener() {
             @Override
@@ -106,7 +106,7 @@ public class NetGameCreateScreen extends StageScreen {
         });
         addActor(btn_leave);
 
-        TextButton btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
+        TextButton btn_preview = new TextButton(AER.lang.getText("LB_PREVIEW"), getContext().getSkin());
         btn_preview.setBounds(ts / 2, ts * 2, ts * 3, ts);
         btn_preview.addListener(new ClickListener() {
             @Override
@@ -144,13 +144,13 @@ public class NetGameCreateScreen extends StageScreen {
         Table team_setting_header = new Table();
         Label label_space = new Label("", getContext().getSkin());
         team_setting_header.add(label_space).width(ts * 2 + ts / 2);
-        Label label_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
+        Label label_team = new Label(AER.lang.getText("LB_TEAM"), getContext().getSkin());
         label_team.setAlignment(Align.center);
         team_setting_header.add(label_team).width(ts * 3).padLeft(ts / 2);
-        Label label_type = new Label(Language.getText("LB_TYPE"), getContext().getSkin());
+        Label label_type = new Label(AER.lang.getText("LB_TYPE"), getContext().getSkin());
         label_type.setAlignment(Align.center);
         team_setting_header.add(label_type).width(ts * 4).padLeft(ts / 2);
-        Label label_username = new Label(Language.getText("LB_USERNAME"), getContext().getSkin());
+        Label label_username = new Label(AER.lang.getText("LB_USERNAME"), getContext().getSkin());
         label_username.setAlignment(Align.center);
         team_setting_header.add(label_username).width(Gdx.graphics.getWidth() - ts * 14 - ts / 2);
 
@@ -186,7 +186,7 @@ public class NetGameCreateScreen extends StageScreen {
             spinner_alliance[team].setItems(alliance);
 
             String[] type = new String[]{
-                    Language.getText("LB_NONE"), Language.getText("LB_PLAYER"), Language.getText("LB_ROBOT")};
+                    AER.lang.getText("LB_NONE"), AER.lang.getText("LB_PLAYER"), AER.lang.getText("LB_ROBOT")};
             spinner_type[team] = new Spinner<String>(getContext());
             spinner_type[team].setListener(state_change_listener);
             spinner_type[team].setContentWidth(ts * 2);
@@ -252,10 +252,10 @@ public class NetGameCreateScreen extends StageScreen {
     }
 
     public void sendMessage() {
-        if (Language.getLocale().equals("zh_CN")) {
-            Gdx.input.getTextInput(message_input_listener, Language.getText("MSG_INFO_IM"), "", "");
+        if (AER.lang.getLocale().equals("zh_CN")) {
+            Gdx.input.getTextInput(message_input_listener, AER.lang.getText("MSG_INFO_IM"), "", "");
         } else {
-            showInput(Language.getText("MSG_INFO_IM"), 64, false, message_input_listener);
+            showInput(AER.lang.getText("MSG_INFO_IM"), 64, false, message_input_listener);
         }
     }
 
@@ -286,13 +286,13 @@ public class NetGameCreateScreen extends StageScreen {
         for (int team = 0; team < 4; team++) {
             if (getGame().getMap().hasTeamAccess(team)) {
                 String selected = spinner_type[team].getSelectedItem();
-                if (selected.equals(Language.getText("LB_NONE"))) {
+                if (selected.equals(AER.lang.getText("LB_NONE"))) {
                     getRoomManager().updatePlayerType(team, Player.NONE);
                 }
-                if (selected.equals(Language.getText("LB_PLAYER"))) {
+                if (selected.equals(AER.lang.getText("LB_PLAYER"))) {
                     getRoomManager().updatePlayerType(team, Player.LOCAL);
                 }
-                if (selected.equals(Language.getText("LB_ROBOT"))) {
+                if (selected.equals(AER.lang.getText("LB_ROBOT"))) {
                     getRoomManager().updatePlayerType(team, Player.ROBOT);
                 }
                 int alliance = spinner_alliance[team].getSelectedItem();
@@ -323,9 +323,9 @@ public class NetGameCreateScreen extends StageScreen {
             }
         }
         if (record_on) {
-            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_ON"));
+            btn_record.setText(AER.lang.getText("LB_RECORD") + ":" + AER.lang.getText("LB_ON"));
         } else {
-            btn_record.setText(Language.getText("LB_RECORD") + ":" + Language.getText("LB_OFF"));
+            btn_record.setText(AER.lang.getText("LB_RECORD") + ":" + AER.lang.getText("LB_OFF"));
         }
     }
 
@@ -350,7 +350,7 @@ public class NetGameCreateScreen extends StageScreen {
 
     private void tryLeaveRoom() {
         Gdx.input.setInputProcessor(null);
-        btn_leave.setText(Language.getText("LB_LEAVING"));
+        btn_leave.setText(AER.lang.getText("LB_LEAVING"));
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
@@ -360,13 +360,13 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFinish(Void result) {
-                btn_leave.setText(Language.getText("LB_LEAVE"));
+                btn_leave.setText(AER.lang.getText("LB_LEAVE"));
                 getContext().gotoLobbyScreen();
             }
 
             @Override
             public void onFail(String message) {
-                btn_leave.setText(Language.getText("LB_LEAVE"));
+                btn_leave.setText(AER.lang.getText("LB_LEAVE"));
                 showNotification(message, null);
             }
         });
@@ -389,7 +389,7 @@ public class NetGameCreateScreen extends StageScreen {
     private void tryStartGame() {
         //local check
         Gdx.input.setInputProcessor(null);
-        btn_start.setText(Language.getText("LB_STARTING"));
+        btn_start.setText(AER.lang.getText("LB_STARTING"));
         getContext().submitAsyncTask(new AsyncTask<Boolean>() {
             @Override
             public Boolean doTask() throws Exception {
@@ -398,17 +398,17 @@ public class NetGameCreateScreen extends StageScreen {
 
             @Override
             public void onFinish(Boolean success) {
-                btn_start.setText(Language.getText("LB_START"));
+                btn_start.setText(AER.lang.getText("LB_START"));
                 if (success) {
                     createGame();
                 } else {
-                    showNotification(Language.getText("MSG_ERR_CNSG"), null);
+                    showNotification(AER.lang.getText("MSG_ERR_CNSG"), null);
                 }
             }
 
             @Override
             public void onFail(String message) {
-                btn_start.setText(Language.getText("LB_START"));
+                btn_start.setText(AER.lang.getText("LB_START"));
                 showNotification(message, null);
             }
         });
@@ -517,7 +517,7 @@ public class NetGameCreateScreen extends StageScreen {
     public void onPlayerJoin(int id, String username) {
         super.onPlayerJoin(id, username);
         updatePlayers();
-        appendMessage(Language.getText("LB_SYSTEM"), String.format(Language.getText("MSG_INFO_PJR"), username));
+        appendMessage(AER.lang.getText("LB_SYSTEM"), String.format(AER.lang.getText("MSG_INFO_PJR"), username));
         AudioManager.playSE("prompt.mp3");
     }
 
@@ -526,7 +526,7 @@ public class NetGameCreateScreen extends StageScreen {
         super.onPlayerLeave(id, username, host);
         updatePlayers();
         updateButtons();
-        appendMessage(Language.getText("LB_SYSTEM"), String.format(Language.getText("MSG_INFO_PLR"), username));
+        appendMessage(AER.lang.getText("LB_SYSTEM"), String.format(AER.lang.getText("MSG_INFO_PLR"), username));
         AudioManager.playSE("prompt.mp3");
     }
 

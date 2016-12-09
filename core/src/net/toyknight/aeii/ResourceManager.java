@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
-import net.toyknight.aeii.utils.Language;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -153,7 +152,7 @@ public class ResourceManager {
         text_param.fontParameters.color = Color.WHITE;
         text_param.fontParameters.borderColor = Color.BLACK;
         text_param.fontParameters.borderWidth = ts / 24;
-        text_param.fontParameters.characters = Language.createTextCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
+        text_param.fontParameters.characters = AER.lang.createTextCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
         asset_manager.load("text.ttf", BitmapFont.class, text_param);
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter title_param = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
@@ -163,7 +162,7 @@ public class ResourceManager {
         title_param.fontParameters.shadowColor = Color.BLACK;
         title_param.fontParameters.shadowOffsetX = ts / 12;
         title_param.fontParameters.shadowOffsetY = ts / 12;
-        title_param.fontParameters.characters = Language.createTitleCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
+        title_param.fontParameters.characters = AER.lang.createTitleCharset(FreeTypeFontGenerator.DEFAULT_CHARS);
         asset_manager.load("title.ttf", BitmapFont.class, title_param);
 
         asset_manager.load("images/chars_large.png", Texture.class);

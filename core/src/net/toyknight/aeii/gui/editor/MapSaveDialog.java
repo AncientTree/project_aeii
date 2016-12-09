@@ -13,8 +13,8 @@ import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.dialog.BasicDialog;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.InputFilter;
-import net.toyknight.aeii.utils.Language;
 
 /**
  * @author toyknight 7/9/2015.
@@ -37,7 +37,7 @@ public class MapSaveDialog extends BasicDialog {
     private void initComponents() {
         InformationChangeListener change_listener = new InformationChangeListener();
 
-        Label lb_filename = new Label(Language.getText("LB_FILENAME"), getContext().getSkin());
+        Label lb_filename = new Label(AER.lang.getText("LB_FILENAME"), getContext().getSkin());
         this.add(lb_filename).width(ts * 5).align(Align.left).row();
         this.tf_filename = new TextField("", getContext().getSkin());
         this.tf_filename.setTextFieldFilter(new InputFilter());
@@ -46,7 +46,7 @@ public class MapSaveDialog extends BasicDialog {
         this.tf_filename.setMaxLength(20);
         this.add(tf_filename).width(ts * 5).row();
 
-        Label lb_author = new Label(Language.getText("LB_AUTHOR"), getContext().getSkin());
+        Label lb_author = new Label(AER.lang.getText("LB_AUTHOR"), getContext().getSkin());
         this.add(lb_author).width(ts * 5).align(Align.left).padTop(ts / 4).row();
         this.tf_author = new TextField("", getContext().getSkin());
         this.tf_author.setTextFieldFilter(new InputFilter());
@@ -56,7 +56,7 @@ public class MapSaveDialog extends BasicDialog {
         this.add(tf_author).width(ts * 5).row();
 
         Table button_bar = new Table();
-        btn_save = new TextButton(Language.getText("LB_SAVE"), getContext().getSkin());
+        btn_save = new TextButton(AER.lang.getText("LB_SAVE"), getContext().getSkin());
         btn_save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -64,7 +64,7 @@ public class MapSaveDialog extends BasicDialog {
             }
         });
         button_bar.add(btn_save).size(ts * 2, ts);
-        TextButton btn_cancel = new TextButton(Language.getText("LB_CANCEL"), getContext().getSkin());
+        TextButton btn_cancel = new TextButton(AER.lang.getText("LB_CANCEL"), getContext().getSkin());
         btn_cancel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

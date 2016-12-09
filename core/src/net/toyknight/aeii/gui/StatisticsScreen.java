@@ -17,7 +17,7 @@ import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Statistics;
 import net.toyknight.aeii.network.NetworkManager;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/22/2015.
@@ -40,7 +40,7 @@ public class StatisticsScreen extends StageScreen {
     }
 
     private void initComponents() {
-        btn_leave = new TextButton(Language.getText("LB_LEAVE"), getContext().getSkin());
+        btn_leave = new TextButton(AER.lang.getText("LB_LEAVE"), getContext().getSkin());
         btn_leave.setBounds(ts / 2, ts / 2, ts * 3, ts);
         btn_leave.addListener(new ClickListener() {
             @Override
@@ -51,16 +51,16 @@ public class StatisticsScreen extends StageScreen {
         addActor(btn_leave);
 
         header = new Table();
-        Label lb_header_team = new Label(Language.getText("LB_TEAM"), getContext().getSkin());
+        Label lb_header_team = new Label(AER.lang.getText("LB_TEAM"), getContext().getSkin());
         lb_header_team.setAlignment(Align.center);
         header.add(lb_header_team).size(ts * 2, ts);
-        Label lb_header_income = new Label(Language.getText("LB_INCOME"), getContext().getSkin());
+        Label lb_header_income = new Label(AER.lang.getText("LB_INCOME"), getContext().getSkin());
         lb_header_income.setAlignment(Align.center);
         header.add(lb_header_income).size(ts * 3, ts);
-        Label lb_header_destroy = new Label(Language.getText("LB_DUV"), getContext().getSkin());
+        Label lb_header_destroy = new Label(AER.lang.getText("LB_DUV"), getContext().getSkin());
         lb_header_destroy.setAlignment(Align.center);
         header.add(lb_header_destroy).size(ts * 5, ts);
-        Label lb_header_lose = new Label(Language.getText("LB_LUV"), getContext().getSkin());
+        Label lb_header_lose = new Label(AER.lang.getText("LB_LUV"), getContext().getSkin());
         lb_header_lose.setAlignment(Align.center);
         header.add(lb_header_lose).size(ts * 5, ts);
         statistics_table = new Table();
@@ -99,7 +99,7 @@ public class StatisticsScreen extends StageScreen {
     private void tryLeaveGame() {
         if (NetworkManager.isConnected()) {
             Gdx.input.setInputProcessor(null);
-            btn_leave.setText(Language.getText("LB_LEAVING"));
+            btn_leave.setText(AER.lang.getText("LB_LEAVING"));
             getContext().submitAsyncTask(new AsyncTask<Void>() {
                 @Override
                 public Void doTask() throws Exception {
@@ -109,14 +109,14 @@ public class StatisticsScreen extends StageScreen {
 
                 @Override
                 public void onFinish(Void result) {
-                    btn_leave.setText(Language.getText("LB_LEAVE"));
+                    btn_leave.setText(AER.lang.getText("LB_LEAVE"));
                     getContext().gotoLobbyScreen();
                     AudioManager.loopMainTheme();
                 }
 
                 @Override
                 public void onFail(String message) {
-                    btn_leave.setText(Language.getText("LB_LEAVE"));
+                    btn_leave.setText(AER.lang.getText("LB_LEAVE"));
                     showNotification(message, null);
                 }
             });
@@ -147,7 +147,7 @@ public class StatisticsScreen extends StageScreen {
         batch.begin();
         batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getFontRenderer().drawTitleCenter(batch, Language.getText("LB_STATISTICS"),
+        getContext().getFontRenderer().drawTitleCenter(batch, AER.lang.getText("LB_STATISTICS"),
                 0, Gdx.graphics.getHeight() - ts * 2, Gdx.graphics.getWidth(), ts * 2);
         batch.end();
         super.draw();

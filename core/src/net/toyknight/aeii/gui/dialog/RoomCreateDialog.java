@@ -21,9 +21,9 @@ import net.toyknight.aeii.gui.widgets.NumberSpinner;
 import net.toyknight.aeii.gui.widgets.Spinner;
 import net.toyknight.aeii.gui.widgets.StringList;
 import net.toyknight.aeii.entity.GameSave;
+import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
 import net.toyknight.aeii.utils.GameToolkit;
-import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.MapFactory;
 
 /**
@@ -74,7 +74,7 @@ public class RoomCreateDialog extends BasicDialog {
         sp_object_list.setBounds(ts / 2, ts * 2, ts * 6 + ts / 2, getHeight() - ts * 2 - ts / 2);
         addActor(sp_object_list);
 
-        btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
+        btn_back = new TextButton(AER.lang.getText("LB_BACK"), getContext().getSkin());
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -83,7 +83,7 @@ public class RoomCreateDialog extends BasicDialog {
         });
         btn_back.setBounds(ts / 2, ts / 2, ts * 3, ts);
         addActor(btn_back);
-        btn_create = new TextButton(Language.getText("LB_CREATE"), getContext().getSkin());
+        btn_create = new TextButton(AER.lang.getText("LB_CREATE"), getContext().getSkin());
         btn_create.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -92,7 +92,7 @@ public class RoomCreateDialog extends BasicDialog {
         });
         btn_create.setBounds(ts * 4, ts / 2, ts * 3, ts);
         addActor(btn_create);
-        btn_preview = new TextButton(Language.getText("LB_PREVIEW"), getContext().getSkin());
+        btn_preview = new TextButton(AER.lang.getText("LB_PREVIEW"), getContext().getSkin());
         btn_preview.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,24 +106,24 @@ public class RoomCreateDialog extends BasicDialog {
         setting_pane.setBounds(ts * 7 + ts / 2, ts * 2, ts * 3, getHeight() - ts * 2 - ts / 2);
         addActor(setting_pane);
 
-        Label lb_capacity = new Label(Language.getText("LB_CAPACITY"), getContext().getSkin());
+        Label lb_capacity = new Label(AER.lang.getText("LB_CAPACITY"), getContext().getSkin());
         setting_pane.add(lb_capacity).width(ts * 3).padBottom(ts / 4).row();
         spinner_capacity = new NumberSpinner(getContext(), 2, 10, 1);
         setting_pane.add(spinner_capacity).size(ts * 3, ts).padBottom(ts / 4).row();
 
-        lb_initial_gold = new Label(Language.getText("LB_START_GOLD"), getContext().getSkin());
+        lb_initial_gold = new Label(AER.lang.getText("LB_START_GOLD"), getContext().getSkin());
         setting_pane.add(lb_initial_gold).width(ts * 3).padBottom(ts / 4).row();
         spinner_gold = new Spinner<Integer>(getContext());
         spinner_gold.setItems(Rule.GOLD_PRESET);
         setting_pane.add(spinner_gold).size(ts * 3, ts).padBottom(ts / 4).row();
 
-        lb_max_population = new Label(Language.getText("LB_MAX_POPULATION"), getContext().getSkin());
+        lb_max_population = new Label(AER.lang.getText("LB_MAX_POPULATION"), getContext().getSkin());
         setting_pane.add(lb_max_population).width(ts * 3).padBottom(ts / 4).row();
         spinner_population = new Spinner<Integer>(getContext());
         spinner_population.setItems(Rule.POPULATION_PRESET);
         setting_pane.add(spinner_population).size(ts * 3, ts).padBottom(ts / 4).row();
 
-        Label lb_password = new Label(Language.getText("LB_PASSWORD"), getContext().getSkin());
+        Label lb_password = new Label(AER.lang.getText("LB_PASSWORD"), getContext().getSkin());
         setting_pane.add(lb_password).width(ts * 3).padBottom(ts / 4).row();
         input_password = new TextField("", getContext().getSkin());
         input_password.setMaxLength(8);
@@ -162,7 +162,7 @@ public class RoomCreateDialog extends BasicDialog {
                 FileHandle save_file = (FileHandle) object_list.getSelected();
                 GameSave save = GameToolkit.loadGame(save_file);
                 if (save == null) {
-                    getOwner().showNotification(Language.getText("MSG_ERR_BSF"), null);
+                    getOwner().showNotification(AER.lang.getText("MSG_ERR_BSF"), null);
                 } else {
                     getOwner().showMapPreview(save.getGame().getMap());
                 }
@@ -173,7 +173,7 @@ public class RoomCreateDialog extends BasicDialog {
     private void doCreateRoom() {
         if (object_list.getSelected() != null) {
             setEnabled(false);
-            btn_create.setText(Language.getText("LB_CREATING"));
+            btn_create.setText(AER.lang.getText("LB_CREATING"));
             getContext().submitAsyncTask(new AsyncTask<RoomSetting>() {
                 @Override
                 public RoomSetting doTask() throws GameException {
@@ -183,9 +183,9 @@ public class RoomCreateDialog extends BasicDialog {
                 @Override
                 public void onFinish(RoomSetting setting) {
                     setEnabled(true);
-                    btn_create.setText(Language.getText("LB_CREATE"));
+                    btn_create.setText(AER.lang.getText("LB_CREATE"));
                     if (setting == null) {
-                        getOwner().showNotification(Language.getText("MSG_ERR_CNCR"), null);
+                        getOwner().showNotification(AER.lang.getText("MSG_ERR_CNCR"), null);
                     } else {
                         getContext().getRoomManager().initialize(setting);
                         getContext().gotoNetGameCreateScreen();
@@ -195,8 +195,8 @@ public class RoomCreateDialog extends BasicDialog {
                 @Override
                 public void onFail(String message) {
                     setEnabled(true);
-                    btn_create.setText(Language.getText("LB_CREATE"));
-                    getOwner().showNotification(Language.getText("MSG_ERR_CNCR"), null);
+                    btn_create.setText(AER.lang.getText("LB_CREATE"));
+                    getOwner().showNotification(AER.lang.getText("MSG_ERR_CNCR"), null);
                 }
             });
         }

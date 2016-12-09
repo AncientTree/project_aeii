@@ -96,7 +96,6 @@ public class GameContext extends Game implements GameManagerListener {
                     new LinkedBlockingQueue<Runnable>());
             FileProvider.setPlatform(PLATFORM);
             AER.initialize();
-            Language.initialize();
             resource_manager = new ResourceManager();
             resource_manager.prepare(TILE_SIZE);
 
@@ -349,8 +348,8 @@ public class GameContext extends Game implements GameManagerListener {
             int income = game.gainIncome(game.getCurrentTeam());
             if (game.getType() == GameCore.SKIRMISH) {
                 getGameManager().getAnimationDispatcher().submitMessageAnimation(
-                        Language.getText("LB_CURRENT_TURN") + ": " + game.getCurrentTurn(),
-                        Language.getText("LB_INCOME") + ": " + income,
+                        AER.lang.getText("LB_CURRENT_TURN") + ": " + game.getCurrentTurn(),
+                        AER.lang.getText("LB_INCOME") + ": " + income,
                         0.8f);
             }
         }
@@ -369,7 +368,7 @@ public class GameContext extends Game implements GameManagerListener {
             getCampaignContext().getCurrentCampaign().getCurrentStage().getContext().show_objectives();
         } catch (GameException ex) {
             if (getScreen() instanceof StageScreen) {
-                ((StageScreen) getScreen()).showNotification(Language.getText("MSG_ERR_BMF"), null);
+                ((StageScreen) getScreen()).showNotification(AER.lang.getText("MSG_ERR_BMF"), null);
             }
         }
     }

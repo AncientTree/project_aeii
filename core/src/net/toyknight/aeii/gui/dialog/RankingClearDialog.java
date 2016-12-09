@@ -14,7 +14,7 @@ import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/20/2016.
@@ -28,7 +28,7 @@ public class RankingClearDialog extends BasicDialog {
 
     public RankingClearDialog(StageScreen owner) {
         super(owner);
-        Label label_stage_clear = new Label(Language.getText("LB_STAGE_CLEAR"), getContext().getSkin()) {
+        Label label_stage_clear = new Label(AER.lang.getText("LB_STAGE_CLEAR"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -45,14 +45,14 @@ public class RankingClearDialog extends BasicDialog {
 
         Table button_pane = new Table();
         add(button_pane).size(ts * 4 + ts / 2, ts).padBottom(ts / 4);
-        TextButton btn_leave = new TextButton(Language.getText("LB_LEAVE"), getContext().getSkin());
+        TextButton btn_leave = new TextButton(AER.lang.getText("LB_LEAVE"), getContext().getSkin());
         btn_leave.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 leave();
             }
         });
         button_pane.add(btn_leave).size(ts * 2, ts).padRight(ts / 2);
-        btn_upload = new TextButton(Language.getText("LB_UPLOAD"), getContext().getSkin());
+        btn_upload = new TextButton(AER.lang.getText("LB_UPLOAD"), getContext().getSkin());
         btn_upload.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 upload();
@@ -71,7 +71,7 @@ public class RankingClearDialog extends BasicDialog {
     }
 
     private void upload() {
-        getOwner().showPlaceholder(Language.getText("LB_UPLOADING"));
+        getOwner().showPlaceholder(AER.lang.getText("LB_UPLOADING"));
         getContext().submitAsyncTask(new AsyncTask<Void>() {
             @Override
             public Void doTask() throws Exception {
@@ -84,7 +84,7 @@ public class RankingClearDialog extends BasicDialog {
                             getContext().getGame().getCurrentTurn(),
                             getContext().getGame().getStatistics().getActions());
                 } else {
-                    throw new GameException(Language.getText("MSG_ERR_CCS"));
+                    throw new GameException(AER.lang.getText("MSG_ERR_CCS"));
                 }
                 return null;
             }
@@ -94,7 +94,7 @@ public class RankingClearDialog extends BasicDialog {
                 NetworkManager.disconnect();
                 btn_upload.setVisible(false);
                 getOwner().closePlaceholder();
-                getOwner().showNotification(Language.getText("LB_UPLOADED"), null);
+                getOwner().showNotification(AER.lang.getText("LB_UPLOADED"), null);
             }
 
             @Override
@@ -108,9 +108,9 @@ public class RankingClearDialog extends BasicDialog {
 
     @Override
     public void display() {
-        label_clear_turns.setText(Language.getText("LB_TURNS") + ": " + getContext().getGame().getCurrentTurn());
+        label_clear_turns.setText(AER.lang.getText("LB_TURNS") + ": " + getContext().getGame().getCurrentTurn());
         label_clear_actions.setText(
-                Language.getText("LB_ACTIONS") + ": " + getContext().getGame().getStatistics().getActions());
+                AER.lang.getText("LB_ACTIONS") + ": " + getContext().getGame().getStatistics().getActions());
         btn_upload.setVisible(true);
     }
 

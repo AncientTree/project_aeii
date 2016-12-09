@@ -11,7 +11,7 @@ import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.gui.GameScreen;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
@@ -27,7 +27,7 @@ public class ObjectiveDialog extends BasicDialog {
 
         setTopBottomBorderEnabled(true);
 
-        Label label_title = new Label(Language.getText("LB_OBJECTIVE"), getContext().getSkin()) {
+        Label label_title = new Label(AER.lang.getText("LB_OBJECTIVE"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
@@ -40,7 +40,7 @@ public class ObjectiveDialog extends BasicDialog {
         objective_pane = new Table();
         add(objective_pane).width(ts * 6).row();
 
-        TextButton btn_ok = new TextButton(Language.getText("LB_OK"), getContext().getSkin());
+        TextButton btn_ok = new TextButton(AER.lang.getText("LB_OK"), getContext().getSkin());
         btn_ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -66,9 +66,9 @@ public class ObjectiveDialog extends BasicDialog {
                 objective_pane.add(label_objective).width(getOwner().getViewportWidth() - ts).padBottom(ts / 4).row();
             }
         } else {
-            Label label_objective_cu = new Label(Language.getText("OBJECTIVE_CU"), getContext().getSkin());
+            Label label_objective_cu = new Label(AER.lang.getText("OBJECTIVE_CU"), getContext().getSkin());
             label_objective_cu.setWrap(true);
-            Label label_objective_cc = new Label(Language.getText("OBJECTIVE_CC"), getContext().getSkin());
+            Label label_objective_cc = new Label(AER.lang.getText("OBJECTIVE_CC"), getContext().getSkin());
             label_objective_cc.setWrap(true);
             objective_pane.add(label_objective_cu).width(getOwner().getViewportWidth() - ts).padBottom(ts / 4).row();
             objective_pane.add(label_objective_cc).width(getOwner().getViewportWidth() - ts).padBottom(ts / 4);

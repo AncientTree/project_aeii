@@ -10,13 +10,15 @@ public class AER {
     public static Units units;
     public static Tiles tiles;
 
-    public static Language language;
+    public static Language lang;
 
     private AER() {
     }
 
     public static void initialize() throws GameException {
         initializeData();
+        lang = new Language();
+        lang.initialize();
     }
 
     public static void initializeData() throws GameException {

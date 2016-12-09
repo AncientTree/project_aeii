@@ -5,7 +5,7 @@ import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 7/27/2016.
@@ -14,11 +14,11 @@ public class AEIStage6 extends StageController {
 
     @Override
     public void onGameStart() {
-        Message message1 = new Message(-1, Language.getText("CAMPAIGN_AEI_STAGE_6_MESSAGE_1"));
+        Message message1 = new Message(-1, AER.lang.getText("CAMPAIGN_AEI_STAGE_6_MESSAGE_1"));
         getContext().message(message1);
         getContext().focus(13, 13);
-        Message message2 = new Message(5, Language.getText("CAMPAIGN_AEI_STAGE_6_MESSAGE_2"));
-        Message message3 = new Message(0, Language.getText("CAMPAIGN_AEI_STAGE_6_MESSAGE_3"));
+        Message message2 = new Message(5, AER.lang.getText("CAMPAIGN_AEI_STAGE_6_MESSAGE_2"));
+        Message message3 = new Message(0, AER.lang.getText("CAMPAIGN_AEI_STAGE_6_MESSAGE_3"));
         getContext().message(message2, message3);
         getContext().focus(1, 1);
     }
@@ -93,7 +93,7 @@ public class AEIStage6 extends StageController {
 
     @Override
     public String[] getObjectives() {
-        return new String[]{Language.getText("CAMPAIGN_AEI_STAGE_6_OBJECTIVE")};
+        return new String[]{AER.lang.getText("CAMPAIGN_AEI_STAGE_6_OBJECTIVE")};
     }
 
     @Override
@@ -103,7 +103,7 @@ public class AEIStage6 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_AEI_STAGE_6_NAME");
+        return AER.lang.getText("CAMPAIGN_AEI_STAGE_6_NAME");
     }
 
 }

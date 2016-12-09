@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.gui.StageScreen;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 8/22/2016.
@@ -41,7 +41,7 @@ public class NotificationDialog extends Dialog {
         prompt_message.setWrap(true);
         getContentTable().add(prompt_message).width(ts * 6);
         //set the button
-        prompt_btn_ok = new TextButton(Language.getText("LB_OK"), getContext().getSkin());
+        prompt_btn_ok = new TextButton(AER.lang.getText("LB_OK"), getContext().getSkin());
         prompt_btn_ok.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

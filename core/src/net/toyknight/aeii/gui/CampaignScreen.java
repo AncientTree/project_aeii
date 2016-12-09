@@ -15,7 +15,7 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.gui.dialog.CampaignModeDialog;
 import net.toyknight.aeii.gui.dialog.LeaderboardDialog;
 import net.toyknight.aeii.gui.widgets.StringList;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/25/2016.
@@ -41,7 +41,7 @@ public class CampaignScreen extends StageScreen {
         int list_width = (Gdx.graphics.getWidth() - ts / 2 * 3) / 2;
         int button_width = (Gdx.graphics.getWidth() - ts / 2 * 5) / 4;
 
-        Label label_scenarios = new Label(Language.getText("LB_SCENARIOS"), getContext().getSkin());
+        Label label_scenarios = new Label(AER.lang.getText("LB_SCENARIOS"), getContext().getSkin());
         label_scenarios.setAlignment(Align.center);
         label_scenarios.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, list_width, ts);
         addActor(label_scenarios);
@@ -64,7 +64,7 @@ public class CampaignScreen extends StageScreen {
         sp_scenario_list.setBounds(ts / 2, ts * 2, list_width, Gdx.graphics.getHeight() - ts * 3);
         addActor(sp_scenario_list);
 
-        Label label_stages = new Label(Language.getText("LB_STAGES"), getContext().getSkin());
+        Label label_stages = new Label(AER.lang.getText("LB_STAGES"), getContext().getSkin());
         label_stages.setAlignment(Align.center);
         label_stages.setBounds(list_width + ts, Gdx.graphics.getHeight() - ts, list_width, ts);
         addActor(label_stages);
@@ -93,7 +93,7 @@ public class CampaignScreen extends StageScreen {
         label_difficulty.setAlignment(Align.center);
         button_bar.add(label_difficulty).size(button_width, ts).padRight(ts / 2);
 
-        TextButton btn_back = new TextButton(Language.getText("LB_BACK"), getContext().getSkin());
+        TextButton btn_back = new TextButton(AER.lang.getText("LB_BACK"), getContext().getSkin());
         btn_back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -102,7 +102,7 @@ public class CampaignScreen extends StageScreen {
         });
         button_bar.add(btn_back).size(button_width, ts).padRight(ts / 2);
 
-        btn_leaderboard = new TextButton(Language.getText("LB_LEADERBOARD"), getContext().getSkin());
+        btn_leaderboard = new TextButton(AER.lang.getText("LB_LEADERBOARD"), getContext().getSkin());
         btn_leaderboard.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -111,7 +111,7 @@ public class CampaignScreen extends StageScreen {
         });
         button_bar.add(btn_leaderboard).size(button_width, ts).padRight(ts / 2);
 
-        TextButton btn_start = new TextButton(Language.getText("LB_START"), getContext().getSkin());
+        TextButton btn_start = new TextButton(AER.lang.getText("LB_START"), getContext().getSkin());
         btn_start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -174,11 +174,11 @@ public class CampaignScreen extends StageScreen {
         CampaignController.Snapshot scenario_snapshot = scenario_list.getSelected();
         StageController.Snapshot stage_snapshot = stage_list.getSelected();
         if (scenario_snapshot == null) {
-            label_difficulty.setText(Language.getText("LB_DIFFICULTY") + ": -");
+            label_difficulty.setText(AER.lang.getText("LB_DIFFICULTY") + ": -");
             btn_leaderboard.setVisible(false);
         } else {
-            label_difficulty.setText(Language.getText("LB_DIFFICULTY") +
-                    ": " + Language.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
+            label_difficulty.setText(AER.lang.getText("LB_DIFFICULTY") +
+                    ": " + AER.lang.getText("LB_DIFFICULTY_" + scenario_snapshot.difficulty));
             btn_leaderboard.setVisible(stage_snapshot.ranking);
         }
     }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.campaign.Message;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.Language;
 import net.toyknight.aeii.utils.TileValidator;
 import net.toyknight.aeii.utils.UnitToolkit;
 import org.json.JSONArray;
@@ -221,11 +220,11 @@ public class GameEventExecutor {
             case GameEvent.CAMPAIGN_CLEAR:
                 getManager().getGame().setGameOver(true);
                 getManager().getContext().getCampaignContext().getCurrentCampaign().getCurrentStage().setCleared(true);
-                getManager().getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_STAGE_CLEAR"), 1.0f);
+                getManager().getAnimationDispatcher().submitMessageAnimation(AER.lang.getText("LB_STAGE_CLEAR"), 1.0f);
                 break;
             case GameEvent.CAMPAIGN_FAIL:
                 getManager().getGame().setGameOver(true);
-                getManager().getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_STAGE_FAIL"), 1.0f);
+                getManager().getAnimationDispatcher().submitMessageAnimation(AER.lang.getText("LB_STAGE_FAIL"), 1.0f);
                 break;
             case GameEvent.CAMPAIGN_CRYSTAL_STEAL:
                 int map_x = event.getJSONArray("parameters").getInt(0);
@@ -404,8 +403,8 @@ public class GameEventExecutor {
         int team = getGame().getCurrentTeam();
         int income = getGame().gainIncome(team);
         getAnimationDispatcher().submitMessageAnimation(
-                Language.getText("LB_CURRENT_TURN") + ": " + getGame().getCurrentTurn(),
-                Language.getText("LB_INCOME") + ": " + income,
+                AER.lang.getText("LB_CURRENT_TURN") + ": " + getGame().getCurrentTurn(),
+                AER.lang.getText("LB_INCOME") + ": " + income,
                 0.8f);
     }
 
@@ -467,7 +466,7 @@ public class GameEventExecutor {
 
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getCapturedTileIndex(team), target_x, target_y);
-            getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_OCCUPIED"), 0.5f);
+            getAnimationDispatcher().submitMessageAnimation(AER.lang.getText("LB_OCCUPIED"), 0.5f);
 
             onCheckTeamDestroy(target_tile.getTeam());
 
@@ -488,7 +487,7 @@ public class GameEventExecutor {
 
             Tile target_tile = getGame().getMap().getTile(target_x, target_y);
             getGame().setTile(target_tile.getRepairedTileIndex(), target_x, target_y);
-            getAnimationDispatcher().submitMessageAnimation(Language.getText("LB_REPAIRED"), 0.5f);
+            getAnimationDispatcher().submitMessageAnimation(AER.lang.getText("LB_REPAIRED"), 0.5f);
 
             getManager().fireRepairEvent(target_x, target_y);
         } else {

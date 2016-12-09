@@ -6,7 +6,7 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Tile;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/29/2016.
@@ -17,8 +17,8 @@ public class AEIIStage4 extends StageController {
         Tile castle1 = getContext().tile(7, 1);
         Tile castle2 = getContext().tile(13, 9);
         if (getContext().count_unit(1) == 0 && castle1.getTeam() == getPlayerTeam() && castle2.getTeam() == getPlayerTeam()) {
-            Message message6 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_6"));
-            Message message7 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_7"));
+            Message message6 = new Message(5, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_6"));
+            Message message7 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_7"));
             getContext().message(message6, message7);
             getContext().clear();
         }
@@ -27,16 +27,16 @@ public class AEIIStage4 extends StageController {
     @Override
     public void onGameStart() {
         getContext().focus(3, 3);
-        Message message1 = new Message(2, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_1"));
-        Message message2 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_2"));
-        Message message3 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_3"));
+        Message message1 = new Message(2, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_1"));
+        Message message2 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_2"));
+        Message message3 = new Message(5, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_3"));
         getContext().message(message1, message2, message3);
         getContext().focus(6, 10);
         getContext().move(9, 10, 6, 10);
         getContext().attack(4, 9, -1);
         getContext().destroy_tile(4, 9);
-        Message message4 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_4"));
-        Message message5 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_5"));
+        Message message4 = new Message(5, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_4"));
+        Message message5 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_4_MESSAGE_5"));
         getContext().message(message4, message5);
         getContext().focus(7, 1);
     }
@@ -107,7 +107,7 @@ public class AEIIStage4 extends StageController {
 
     @Override
     public String[] getObjectives() {
-        return new String[]{Language.getText("CAMPAIGN_AEII_STAGE_4_OBJECTIVE")};
+        return new String[]{AER.lang.getText("CAMPAIGN_AEII_STAGE_4_OBJECTIVE")};
     }
 
     @Override
@@ -117,7 +117,7 @@ public class AEIIStage4 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_AEII_STAGE_4_NAME");
+        return AER.lang.getText("CAMPAIGN_AEII_STAGE_4_NAME");
     }
 
 }

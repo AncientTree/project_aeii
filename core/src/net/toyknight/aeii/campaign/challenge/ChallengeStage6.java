@@ -5,10 +5,12 @@ import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
+
 import java.util.Random;
+
 /**
- * Created by liuji_000 on 9/19/2016.
+ * @author liuji_000 9/19/2016.
  */
 
 public class ChallengeStage6 extends StageController {
@@ -23,7 +25,7 @@ public class ChallengeStage6 extends StageController {
     public void onGameStart() {
         getContext().alliance(1, 1);
         getContext().alliance(2, 1);
-        Message message = new Message(5, Language.getText("CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1"));
+        Message message = new Message(5, AER.lang.getText("CAMPAIGN_CHALLENGE_STAGE_6_MESSAGE_1"));
         getContext().message(message);
     }
 
@@ -194,7 +196,7 @@ public class ChallengeStage6 extends StageController {
     @Override
     public String[] getObjectives() {
         return new String[]{
-                Language.getText("CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1"),
+                AER.lang.getText("CAMPAIGN_CHALLENGE_STAGE_6_OBJECTIVE_1"),
         };
     }
 
@@ -205,7 +207,7 @@ public class ChallengeStage6 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_CHALLENGE_STAGE_6_NAME");
+        return AER.lang.getText("CAMPAIGN_CHALLENGE_STAGE_6_NAME");
     }
 
 }

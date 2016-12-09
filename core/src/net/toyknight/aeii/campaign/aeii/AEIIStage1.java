@@ -5,7 +5,7 @@ import net.toyknight.aeii.campaign.Reinforcement;
 import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.entity.Rule;
 import net.toyknight.aeii.entity.Unit;
-import net.toyknight.aeii.utils.Language;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/28/2016.
@@ -20,15 +20,15 @@ public class AEIIStage1 extends StageController {
                 new Reinforcement(0, 3, 8),
                 new Reinforcement(1, 3, 10));
         getContext().focus(9, 3);
-        Message message1 = new Message(2, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_1"));
+        Message message1 = new Message(2, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_1"));
         getContext().message(message1);
         getContext().attack(9, 3, -1);
-        Message message2 = new Message(2, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_2"));
+        Message message2 = new Message(2, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_2"));
         getContext().message(message2);
         getContext().destroy_unit(9, 3);
         getContext().focus(4, 9);
-        Message message3 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_3"));
-        Message message4 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_4"));
+        Message message3 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_3"));
+        Message message4 = new Message(5, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_4"));
         getContext().message(message3, message4);
     }
 
@@ -56,14 +56,14 @@ public class AEIIStage1 extends StageController {
                 getContext().reinforce(1, new Reinforcement(1, 1, 1));
                 getContext().move(1, 1, 2, 1);
                 getContext().set("reinforced", 1);
-                Message message5 = new Message(5, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_5"));
-                Message message6 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_6"));
+                Message message5 = new Message(5, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_5"));
+                Message message6 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_6"));
                 getContext().message(message5, message6);
             } else {
-                Message message7 = new Message(2, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_7"));
-                Message message8 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_8"));
-                Message message9 = new Message(2, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_9"));
-                Message message10 = new Message(0, Language.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_10"));
+                Message message7 = new Message(2, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_7"));
+                Message message8 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_8"));
+                Message message9 = new Message(2, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_9"));
+                Message message10 = new Message(0, AER.lang.getText("CAMPAIGN_AEII_STAGE_1_MESSAGE_10"));
                 getContext().message(message7, message8, message9, message10);
                 getContext().clear();
             }
@@ -108,7 +108,7 @@ public class AEIIStage1 extends StageController {
 
     @Override
     public String[] getObjectives() {
-        return new String[]{Language.getText("CAMPAIGN_AEII_STAGE_1_OBJECTIVE")};
+        return new String[]{AER.lang.getText("CAMPAIGN_AEII_STAGE_1_OBJECTIVE")};
     }
 
     @Override
@@ -118,7 +118,7 @@ public class AEIIStage1 extends StageController {
 
     @Override
     public String getStageName() {
-        return Language.getText("CAMPAIGN_AEII_STAGE_1_NAME");
+        return AER.lang.getText("CAMPAIGN_AEII_STAGE_1_NAME");
     }
 
 }
