@@ -3,14 +3,12 @@ package net.toyknight.aeii.utils;
 import net.toyknight.aeii.entity.*;
 import net.toyknight.aeii.system.AER;
 
-import java.util.*;
-
 /**
  * @author toyknight 4/3/2015.
  */
 public class UnitToolkit {
 
-    private static final Random random = new Random(System.currentTimeMillis());
+    private static final Random random = new Random();
 
     private GameCore game;
 
