@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 6/16/2016.
@@ -61,7 +61,7 @@ public class EntryNode extends Tree.Node {
             case TYPE_TILE:
                 Table tile_label = new Table();
                 TextureRegionDrawable drawable_tile =
-                        TextureUtil.createDrawable(AER.resources.getTileTexture(value), ts, ts);
+                        GraphicsUtil.createDrawable(AER.resources.getTileTexture(value), ts, ts);
                 Image image_tile = new Image(drawable_tile);
                 tile_label.add(image_tile);
                 Label tile_name = new Label(AER.lang.getText("LB_TILE_NUMBER") + value, context.getSkin());

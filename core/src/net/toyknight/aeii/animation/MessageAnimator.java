@@ -3,7 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight on 5/25/2015.
@@ -33,7 +33,7 @@ public class MessageAnimator extends MapAnimator {
         int x = 0;
         int y = (getCanvas().getViewportHeight() - height) / 2 + ts;
         AER.font.setTextAlpha(alpha);
-        TextureUtil.setBatchAlpha(batch, alpha);
+        GraphicsUtil.setBatchAlpha(batch, alpha);
         batch.draw(AER.resources.getPanelBackground(), x, y, width, height);
         BorderRenderer.drawTopBottomBorder(batch, x, y, width, height);
         if (message_lower == null) {
@@ -44,7 +44,7 @@ public class MessageAnimator extends MapAnimator {
         }
         //restore alpha
         AER.font.setTextAlpha(1.0f);
-        TextureUtil.setBatchAlpha(batch, 1.0f);
+        GraphicsUtil.setBatchAlpha(batch, 1.0f);
         batch.flush();
     }
 

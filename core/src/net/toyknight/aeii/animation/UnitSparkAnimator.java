@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 5/20/2015.
@@ -31,7 +31,7 @@ public class UnitSparkAnimator extends UnitAnimator {
 
     private void createAnimation() {
         Texture texture_white_spark = AER.resources.getWhiteSparkTexture();
-        spark_animation = new Animation(1f / 15, TextureUtil.createFrames(texture_white_spark, 6, 1));
+        spark_animation = new Animation(1f / 15, GraphicsUtil.createFrames(texture_white_spark, 6, 1));
     }
 
     @Override

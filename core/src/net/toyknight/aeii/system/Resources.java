@@ -1,6 +1,6 @@
 package net.toyknight.aeii.system;
 
-import static net.toyknight.aeii.utils.TextureUtil.*;
+import static net.toyknight.aeii.utils.GraphicsUtil.*;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;

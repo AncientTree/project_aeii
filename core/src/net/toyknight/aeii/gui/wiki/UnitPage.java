@@ -13,7 +13,7 @@ import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.gui.widgets.SmallCircleLabel;
 import net.toyknight.aeii.gui.widgets.UnitFrame;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 6/12/2016.
@@ -76,17 +76,17 @@ public class UnitPage extends Table {
 
         int hs = ts * 11 / 24;
 
-        Image image_price = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(1), hs, hs));
+        Image image_price = new Image(GraphicsUtil.createDrawable(AER.resources.getStatusHudIcon(1), hs, hs));
         hud_pane.add(image_price);
         label_price = new Label("", getWiki().getContext().getSkin());
         hud_pane.add(label_price).width(ts * 2 - hs - ts / 4).padLeft(ts / 4);
 
-        Image image_attack_range = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(2), hs, hs));
+        Image image_attack_range = new Image(GraphicsUtil.createDrawable(AER.resources.getStatusHudIcon(2), hs, hs));
         hud_pane.add(image_attack_range).padLeft(ts / 2);
         label_attack_range = new Label("", getWiki().getContext().getSkin());
         hud_pane.add(label_attack_range).width(ts * 2 - hs - ts / 4).padLeft(ts / 4);
 
-        Image image_occupancy = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(0), hs, hs));
+        Image image_occupancy = new Image(GraphicsUtil.createDrawable(AER.resources.getStatusHudIcon(0), hs, hs));
         hud_pane.add(image_occupancy).padLeft(ts / 2);
         label_occupancy = new Label("", getWiki().getContext().getSkin());
         hud_pane.add(label_occupancy).width(ts * 2 - hs - ts / 4).padLeft(ts / 4);

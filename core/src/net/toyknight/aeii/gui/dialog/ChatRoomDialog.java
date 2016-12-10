@@ -18,7 +18,7 @@ import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 8/19/2016.
@@ -61,10 +61,10 @@ public class ChatRoomDialog extends BasicDialog {
         Label label_idle_player = new Label(AER.lang.getText("LB_IDLE_PLAYERS"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                TextureUtil.setBatchAlpha(batch, 1.0f);
+                GraphicsUtil.setBatchAlpha(batch, 1.0f);
                 batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
                 batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
-                TextureUtil.setBatchAlpha(batch, parentAlpha);
+                GraphicsUtil.setBatchAlpha(batch, parentAlpha);
                 super.draw(batch, parentAlpha);
             }
         };

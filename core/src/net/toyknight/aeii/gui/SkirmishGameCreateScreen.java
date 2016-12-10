@@ -22,7 +22,7 @@ import net.toyknight.aeii.gui.widgets.StringList;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.MapFactory;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 6/21/2015.
@@ -116,7 +116,7 @@ public class SkirmishGameCreateScreen extends StageScreen implements StringList.
                 AER.lang.getText("LB_NONE"), AER.lang.getText("LB_PLAYER"), AER.lang.getText("LB_ROBOT")};
         for (int team = 0; team < 4; team++) {
             TextureRegionDrawable team_color =
-                    TextureUtil.createDrawable(AER.resources.getTeamBackground(team), ts, ts);
+                    GraphicsUtil.createDrawable(AER.resources.getTeamBackground(team), ts, ts);
             team_image[team] = new Image(team_color);
 
             spinner_alliance[team] = new Spinner<Integer>(getContext().getSkin());

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 5/17/2015.
@@ -29,7 +29,7 @@ public class DustAriseAnimator extends MapAnimator {
 
     private void createAnimation() {
         Texture texture_dust = AER.resources.getDustTexture();
-        dust_animation = new Animation(1f / 15, TextureUtil.createFrames(texture_dust, 4, 1));
+        dust_animation = new Animation(1f / 15, GraphicsUtil.createFrames(texture_dust, 4, 1));
     }
 
     @Override

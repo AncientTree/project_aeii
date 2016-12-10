@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 4/19/2015.
@@ -17,7 +17,7 @@ public class AttackCursorAnimator extends MapAnimator {
 
     public AttackCursorAnimator() {
         Texture attack_cursor_texture = AER.resources.getAttackCursorTexture();
-        this.attack_cursor_animation = TextureUtil.createAnimation(attack_cursor_texture, 3, 1, 0.3f);
+        this.attack_cursor_animation = GraphicsUtil.createAnimation(attack_cursor_texture, 3, 1, 0.3f);
     }
 
     @Override

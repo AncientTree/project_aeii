@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 /**
  * @author toyknight 12/9/2016.
  */
-public class TextureUtil {
+public class GraphicsUtil {
 
-    private TextureUtil() {
+    private GraphicsUtil() {
     }
 
     public static TextureRegion[] createFrames(Texture sheet, int cols, int rows) {

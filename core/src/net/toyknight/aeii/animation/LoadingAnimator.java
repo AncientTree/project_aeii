@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import net.toyknight.aeii.utils.FileProvider;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 4/2/2015.
@@ -19,7 +19,7 @@ public class LoadingAnimator extends Animator {
 
     public LoadingAnimator() {
         Texture texture_loading = new Texture(FileProvider.getAssetsFile("images/loading.png"));
-        animation = TextureUtil.createAnimation(texture_loading, 18, 1, 0.065f);
+        animation = GraphicsUtil.createAnimation(texture_loading, 18, 1, 0.065f);
         shape_renderer = new ShapeRenderer();
         shape_renderer.setAutoShapeType(true);
     }

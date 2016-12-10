@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.toyknight.aeii.manager.MapEditor;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 7/9/2015.
@@ -27,7 +27,7 @@ public class UnitSelector extends Container<ScrollPane> {
         int ts = AER.ts;
         ImageButton[] btn_team = new ImageButton[4];
         for (int i = 0; i < 4; i++) {
-            TextureRegionDrawable team_bg = TextureUtil.createDrawable(AER.resources.getTeamBackground(i));
+            TextureRegionDrawable team_bg = GraphicsUtil.createDrawable(AER.resources.getTeamBackground(i));
             team_bg.setMinWidth(ts);
             team_bg.setMinHeight(ts);
             btn_team[i] = new ImageButton(team_bg);

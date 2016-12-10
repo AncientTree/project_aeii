@@ -24,7 +24,7 @@ import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.gui.widgets.Spinner;
 import net.toyknight.aeii.gui.widgets.SpinnerListener;
 import net.toyknight.aeii.gui.widgets.StringList;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 8/28/2015.
@@ -71,7 +71,7 @@ public class NetGameCreateScreen extends StageScreen {
                 super.draw(batch, parentAlpha);
             }
         };
-        sp_player_list.getStyle().background = TextureUtil.createDrawable(AER.resources.getListBackground());
+        sp_player_list.getStyle().background = GraphicsUtil.createDrawable(AER.resources.getListBackground());
         sp_player_list.setScrollingDisabled(true, false);
         sp_player_list.setBounds(ts / 2, ts * 3 + ts / 2, ts * 3, Gdx.graphics.getHeight() - ts * 4);
         addActor(sp_player_list);
@@ -238,7 +238,7 @@ public class NetGameCreateScreen extends StageScreen {
             }
         };
         sp_message.setScrollingDisabled(true, false);
-        sp_message.getStyle().background = TextureUtil.createDrawable(AER.resources.getListBackground());
+        sp_message.getStyle().background = GraphicsUtil.createDrawable(AER.resources.getListBackground());
         sp_message.setBounds(ts * 7 + ts / 2, ts / 2, Gdx.graphics.getWidth() - ts * 11 - ts / 2, ts * 2 + ts / 2);
         addActor(sp_message);
     }

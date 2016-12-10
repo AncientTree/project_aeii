@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 12/9/2016.
@@ -34,9 +34,9 @@ public class Font {
 
     public void initialize() {
         Texture sheet_small_chars = AER.resources.getSmallCharacterTexture();
-        small_chars = TextureUtil.createFrames(sheet_small_chars, 12, 1);
+        small_chars = GraphicsUtil.createFrames(sheet_small_chars, 12, 1);
         Texture sheet_large_chars = AER.resources.getLargeCharacterTexture();
-        large_chars = TextureUtil.createFrames(sheet_large_chars, 13, 1);
+        large_chars = GraphicsUtil.createFrames(sheet_large_chars, 13, 1);
 
     }
 

@@ -17,7 +17,7 @@ import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.gui.GameScreen;
 import net.toyknight.aeii.gui.widgets.AvailableUnitList;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 4/20/2015.
@@ -78,17 +78,17 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
         int hs = ts * 11 / 24;
 
-        Image image_price = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(1), hs, hs));
+        Image image_price = new Image(GraphicsUtil.createDrawable(AER.resources.getStatusHudIcon(1), hs, hs));
         hud_pane.add(image_price);
         label_price = new Label("", getContext().getSkin());
         hud_pane.add(label_price).width(ts).height(hs);
 
-        Image image_attack_range = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(2), hs, hs));
+        Image image_attack_range = new Image(GraphicsUtil.createDrawable(AER.resources.getStatusHudIcon(2), hs, hs));
         hud_pane.add(image_attack_range);
         label_attack_range = new Label("", getContext().getSkin());
         hud_pane.add(label_attack_range).width(ts).height(hs);
 
-        Image image_occupancy = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(0), hs, hs));
+        Image image_occupancy = new Image(GraphicsUtil.createDrawable(AER.resources.getStatusHudIcon(0), hs, hs));
         hud_pane.add(image_occupancy);
         label_occupancy = new Label("", getContext().getSkin());
         hud_pane.add(label_occupancy).width(ts).height(hs);

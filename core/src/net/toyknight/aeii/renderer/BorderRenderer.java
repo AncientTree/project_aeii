@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import net.toyknight.aeii.system.AER;
-import net.toyknight.aeii.utils.TextureUtil;
+import net.toyknight.aeii.utils.GraphicsUtil;
 
 /**
  * @author toyknight 4/6/2015.
@@ -17,7 +17,7 @@ public class BorderRenderer {
 
     public static void initialize() {
         Texture border_texture_sheet = AER.resources.getBorderTexture();
-        borders = TextureUtil.createFrames(border_texture_sheet, 8, 1);
+        borders = GraphicsUtil.createFrames(border_texture_sheet, 8, 1);
         border_size = AER.ts * AER.resources.getBorderTexture().getHeight() / 48;
     }
 
