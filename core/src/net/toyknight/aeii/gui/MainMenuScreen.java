@@ -38,7 +38,7 @@ public class MainMenuScreen extends StageScreen {
         this.setting_dialog = new SettingDialog(this);
         this.addDialog("setting", setting_dialog);
 
-        this.btn_setting = new CircleButton(getContext(), CircleButton.LARGE, getResources().getMenuIcon(4));
+        this.btn_setting = new CircleButton(CircleButton.LARGE, AER.resources.getMenuIcon(4));
         this.btn_setting.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -60,9 +60,9 @@ public class MainMenuScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(getResources().getMainMenuBackgroundTexture(),
+        batch.draw(AER.resources.getMainMenuBackgroundTexture(),
                 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getFontRenderer().drawTitleCenter(batch, AER.lang.getText("_TITLE"),
+        AER.font.drawTitleCenter(batch, AER.lang.getText("_TITLE"),
                 0, Gdx.graphics.getHeight() - 85, Gdx.graphics.getWidth(), 85);
         batch.end();
         super.draw();

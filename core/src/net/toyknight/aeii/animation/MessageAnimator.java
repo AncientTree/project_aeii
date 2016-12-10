@@ -1,8 +1,9 @@
 package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
  * @author toyknight on 5/25/2015.
@@ -15,12 +16,11 @@ public class MessageAnimator extends MapAnimator {
 
     private float alpha = 1.0f;
 
-    public MessageAnimator(GameContext context, String message, float delay) {
-        this(context, message, null, delay);
+    public MessageAnimator(String message, float delay) {
+        this(message, null, delay);
     }
 
-    public MessageAnimator(GameContext context, String message_upper, String message_lower, float delay) {
-        super(context);
+    public MessageAnimator(String message_upper, String message_lower, float delay) {
         this.delay = delay;
         this.message_upper = message_upper;
         this.message_lower = message_lower;
@@ -32,19 +32,19 @@ public class MessageAnimator extends MapAnimator {
         int height = message_lower == null ? ts : 2 * ts;
         int x = 0;
         int y = (getCanvas().getViewportHeight() - height) / 2 + ts;
-        getContext().getFontRenderer().setTextAlpha(alpha);
-        ResourceManager.setBatchAlpha(batch, alpha);
-        batch.draw(getResources().getPanelBackground(), x, y, width, height);
-        getContext().getBorderRenderer().drawTopBottomBorder(batch, x, y, width, height);
+        AER.font.setTextAlpha(alpha);
+        TextureUtil.setBatchAlpha(batch, alpha);
+        batch.draw(AER.resources.getPanelBackground(), x, y, width, height);
+        BorderRenderer.drawTopBottomBorder(batch, x, y, width, height);
         if (message_lower == null) {
-            getContext().getFontRenderer().drawTextCenter(batch, message_upper, x, y, width, height);
+            AER.font.drawTextCenter(batch, message_upper, x, y, width, height);
         } else {
-            getContext().getFontRenderer().drawTextCenter(batch, message_upper, x, y + height / 2, width, height / 2);
-            getContext().getFontRenderer().drawTextCenter(batch, message_lower, x, y, width, height / 2);
+            AER.font.drawTextCenter(batch, message_upper, x, y + height / 2, width, height / 2);
+            AER.font.drawTextCenter(batch, message_lower, x, y, width, height / 2);
         }
         //restore alpha
-        getContext().getFontRenderer().setTextAlpha(1.0f);
-        ResourceManager.setBatchAlpha(batch, 1.0f);
+        AER.font.setTextAlpha(1.0f);
+        TextureUtil.setBatchAlpha(batch, 1.0f);
         batch.flush();
     }
 

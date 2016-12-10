@@ -1,4 +1,6 @@
-package net.toyknight.aeii;
+package net.toyknight.aeii.system;
+
+import static net.toyknight.aeii.utils.TextureUtil.*;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -6,7 +8,6 @@ import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -14,17 +15,16 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
+import net.toyknight.aeii.utils.ShaderLoader;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * @author toyknight 6/11/2016.
+ * @author toyknight 12/9/2016.
  */
-public class ResourceManager {
+public class Resources {
 
     private final AssetManager asset_manager = new AssetManager();
 
@@ -78,7 +78,7 @@ public class ResourceManager {
     private Color color_magic_attack;
 
     private ShaderProgram grayscale_shader;
-    private ShaderProgram color_filter_shader;
+    private ShaderProgram white_mask_shader;
 
     private BitmapFont font_title;
     private BitmapFont font_text;
@@ -167,17 +167,23 @@ public class ResourceManager {
 
         asset_manager.load("images/chars_large.png", Texture.class);
         asset_manager.load("images/chars_small.png", Texture.class);
+
         //skin
         SkinLoader.SkinParameter skin_parameter = new SkinLoader.SkinParameter("skin/aeii_skin.atlas");
         asset_manager.load("skin/aeii_skin.atlas", TextureAtlas.class);
         asset_manager.load("skin/aeii_skin.json", Skin.class, skin_parameter);
+
         //shader
-        grayscale_shader = new ShaderProgram(
-                FileProvider.getAssetsFile("shaders/Shader.VERT").readString(),
-                FileProvider.getAssetsFile("shaders/Grayscale.FRAG").readString());
-        color_filter_shader = new ShaderProgram(
-                FileProvider.getAssetsFile("shaders/Shader.VERT").readString(),
-                FileProvider.getAssetsFile("shaders/WhiteMask.FRAG").readString());
+        asset_manager.setLoader(ShaderProgram.class, ".fx", new ShaderLoader(file_resolver));
+        ShaderLoader.ShaderParameter grayscale_param = new ShaderLoader.ShaderParameter();
+        grayscale_param.vert_file = "shaders/Shader.VERT";
+        grayscale_param.frag_file = "shaders/Grayscale.FRAG";
+        asset_manager.load("grayscale_shader.fx", ShaderProgram.class, grayscale_param);
+
+        ShaderLoader.ShaderParameter white_mask_param = new ShaderLoader.ShaderParameter();
+        white_mask_param.vert_file = "shaders/Shader.VERT";
+        white_mask_param.frag_file = "shaders/WhiteMask.FRAG";
+        asset_manager.load("white_mask_shader.fx", ShaderProgram.class, white_mask_param);
     }
 
     public void initialize() {
@@ -247,6 +253,9 @@ public class ResourceManager {
         texture_portraits = createFrames(sheet_portraits, 6, 1);
         texture_main_menu_background = asset_manager.get("images/main_menu_background.png", Texture.class);
 
+        grayscale_shader = asset_manager.get("grayscale_shader.fx", ShaderProgram.class);
+        white_mask_shader = asset_manager.get("white_mask_shader.fx", ShaderProgram.class);
+
         bg_list_selected = new Texture(createColoredPixmap(Color.GRAY));
         bg_list_unselected = new Texture(createColoredPixmap(Color.DARK_GRAY));
         bg_panel = new Texture(createColoredPixmap(new Color(36 / 256f, 42 / 256f, 69 / 256f, 1f)));
@@ -275,64 +284,6 @@ public class ResourceManager {
     }
 
     public void dispose() {
-        texture_tiles = null;
-        texture_top_tiles = null;
-        texture_small_tiles = null;
-        texture_tomb = null;
-        texture_alpha = null;
-        texture_normal_cursor = null;
-        texture_attack_cursor = null;
-        texture_move_target_cursor = null;
-        icons_unit_preview = null;
-
-        texture_units = null;
-        texture_heads = null;
-        texture_status = null;
-        texture_level = null;
-
-        if (texture_map_editor_icons != null) {
-            texture_map_editor_icons.clear();
-        }
-
-        texture_border = null;
-
-        texture_big_circle = null;
-        texture_small_circle = null;
-
-        icons_arrow = null;
-        icons_action = null;
-        icons_hud_status = null;
-        icons_hud_battle = null;
-        icons_main_menu = null;
-
-        texture_dust = null;
-        texture_smoke = null;
-        texture_spark_attack = null;
-        texture_spark_white = null;
-        texture_portraits = null;
-
-        texture_main_menu_background = null;
-
-        bg_list_selected = null;
-        bg_list_unselected = null;
-        bg_panel = null;
-        bg_team = null;
-        bg_text = null;
-        color_move_path = null;
-        color_white = null;
-        color_border_dark = null;
-        color_border_light = null;
-
-        color_physical_attack = null;
-        color_magic_attack = null;
-
-        grayscale_shader = null;
-        color_filter_shader = null;
-
-        font_title = null;
-        font_text = null;
-        texture_chars_large = null;
-        texture_chars_small = null;
         asset_manager.dispose();
     }
 
@@ -504,10 +455,10 @@ public class ResourceManager {
     }
 
     public ShaderProgram getWhiteMaskShader(float scale) {
-        color_filter_shader.begin();
-        grayscale_shader.setUniformf("grayscale", scale);
-        color_filter_shader.end();
-        return color_filter_shader;
+        white_mask_shader.begin();
+        white_mask_shader.setUniformf("grayscale", scale);
+        white_mask_shader.end();
+        return white_mask_shader;
     }
 
     public BitmapFont getTextFont() {
@@ -524,53 +475,6 @@ public class ResourceManager {
 
     public Texture getSmallCharacterTexture() {
         return texture_chars_small;
-    }
-
-    public static TextureRegion[] createFrames(Texture sheet, int cols, int rows) {
-        TextureRegion[][] tmp = TextureRegion.split(
-                sheet,
-                sheet.getWidth() / cols,
-                sheet.getHeight() / rows);
-        TextureRegion[] frames = new TextureRegion[cols * rows];
-        int index = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                frames[index++] = tmp[i][j];
-            }
-        }
-        return frames;
-    }
-
-    public static Animation createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
-        TextureRegion[] frames = createFrames(sheet, cols, rows);
-        return new Animation(frame_duration, frames);
-    }
-
-    public static TextureRegionDrawable createDrawable(Texture texture) {
-        return createDrawable(texture, texture.getWidth(), texture.getHeight());
-    }
-
-    public static TextureRegionDrawable createDrawable(Texture texture, int width, int height) {
-        return createDrawable(new TextureRegion(texture), width, height);
-    }
-
-    public static TextureRegionDrawable createDrawable(TextureRegion texture, int width, int height) {
-        TextureRegionDrawable drawable = new TextureRegionDrawable(texture);
-        drawable.setMinWidth(width);
-        drawable.setMinHeight(height);
-        return drawable;
-    }
-
-    public static void setBatchAlpha(Batch batch, float alpha) {
-        Color color = batch.getColor();
-        batch.setColor(color.r, color.g, color.b, alpha);
-    }
-
-    public static Pixmap createColoredPixmap(Color color) {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(color);
-        pixmap.fill();
-        return pixmap;
     }
 
     private int getTopTileCount() {

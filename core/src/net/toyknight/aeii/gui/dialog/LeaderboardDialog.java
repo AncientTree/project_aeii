@@ -35,7 +35,7 @@ public class LeaderboardDialog extends BasicDialog {
     public LeaderboardDialog(StageScreen owner) {
         super(owner);
         label_campaign_name = new Label("", getContext().getSkin());
-        label_campaign_name.setColor(getContext().getResources().getPhysicalAttackColor());
+        label_campaign_name.setColor(AER.resources.getPhysicalAttackColor());
         label_campaign_name.setAlignment(Align.center);
         add(label_campaign_name).width(ts * 6).pad(ts / 4).row();
         label_stage_name = new Label("", getContext().getSkin());
@@ -46,8 +46,8 @@ public class LeaderboardDialog extends BasicDialog {
         Label label_online_record = new Label(AER.lang.getText("LB_ONLINE_RECORD"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -61,8 +61,8 @@ public class LeaderboardDialog extends BasicDialog {
         Label label_local_record = new Label(AER.lang.getText("LB_LOCAL_RECORD"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

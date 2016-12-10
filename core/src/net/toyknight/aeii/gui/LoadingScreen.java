@@ -39,10 +39,10 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (getContext().getResources().update()) {
+        if (AER.resources.update()) {
             if (getContext().initialized()) {
                 if (bg_fade_animator.isAnimationFinished()) {
-                    if (AER.lang.getLocale().equals("zh_CN") && getContext().getPlatform() == Platform.Android) {
+                    if (AER.lang.getLocale().equals("zh_CN") && AER.platform == Platform.Android) {
                         getContext().gotoMainMenuScreen(true, true);
                     } else {
                         getContext().gotoMainMenuScreen(true, false);

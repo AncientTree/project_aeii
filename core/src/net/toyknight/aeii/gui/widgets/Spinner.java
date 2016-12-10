@@ -2,14 +2,17 @@ package net.toyknight.aeii.gui.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 8/31/2015.
  */
-public class Spinner<T> extends AEIITable {
+public class Spinner<T> extends Table {
 
     private float prefWidth;
     private final float prefHeight;
@@ -22,13 +25,13 @@ public class Spinner<T> extends AEIITable {
     private TextButton btn_left;
     private TextButton btn_right;
 
-    public Spinner(GameContext context) {
-        super(context);
+    public Spinner(Skin skin) {
+        int ts = AER.ts;
         this.prefWidth = ts * 3;
         this.setWidth(prefWidth);
         this.prefHeight = ts;
         this.setHeight(prefHeight);
-        this.btn_left = new TextButton("<", getContext().getSkin());
+        this.btn_left = new TextButton("<", skin);
         this.btn_left.setBounds(0, 0, ts, ts);
         this.btn_left.addListener(new ClickListener() {
             @Override
@@ -40,7 +43,7 @@ public class Spinner<T> extends AEIITable {
             }
         });
         this.addActor(btn_left);
-        this.btn_right = new TextButton(">", getContext().getSkin());
+        this.btn_right = new TextButton(">", skin);
         this.btn_right.setBounds(ts * 2, 0, ts, ts);
         this.btn_right.addListener(new ClickListener() {
             @Override
@@ -55,6 +58,7 @@ public class Spinner<T> extends AEIITable {
     }
 
     public void setContentWidth(int width) {
+        int ts = AER.ts;
         this.prefWidth = width + ts * 2;
         this.setWidth(prefWidth);
         this.btn_right.setBounds(ts + width, 0, ts, ts);
@@ -100,9 +104,10 @@ public class Spinner<T> extends AEIITable {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getResources().getBorderDarkColor(),
+        int ts = AER.ts;
+        batch.draw(AER.resources.getBorderDarkColor(),
                 getX() + ts / 2, getY() + ts / 24, getWidth() - ts, getHeight() - ts / 12);
-        getContext().getFontRenderer().drawTextCenter(
+        AER.font.drawTextCenter(
                 batch, getSelectedItem().toString(), getX() + ts, getY(), getWidth() - ts * 2, getHeight());
         batch.flush();
         super.draw(batch, parentAlpha);

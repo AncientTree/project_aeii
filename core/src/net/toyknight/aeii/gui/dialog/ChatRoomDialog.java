@@ -12,13 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.concurrent.MessageSendingTask;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
  * @author toyknight 8/19/2016.
@@ -48,7 +48,7 @@ public class ChatRoomDialog extends BasicDialog {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        getResources().getBorderDarkColor(),
+                        AER.resources.getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
@@ -61,10 +61,10 @@ public class ChatRoomDialog extends BasicDialog {
         Label label_idle_player = new Label(AER.lang.getText("LB_IDLE_PLAYERS"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                ResourceManager.setBatchAlpha(batch, 1.0f);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
-                ResourceManager.setBatchAlpha(batch, parentAlpha);
+                TextureUtil.setBatchAlpha(batch, 1.0f);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                TextureUtil.setBatchAlpha(batch, parentAlpha);
                 super.draw(batch, parentAlpha);
             }
         };

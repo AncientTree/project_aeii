@@ -3,12 +3,13 @@ package net.toyknight.aeii.gui.widgets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.toyknight.aeii.GameContext;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/12/2016.
  */
-public class SmallCircleLabel extends AEIIWidget {
+public class SmallCircleLabel extends Widget {
 
     private final TextureRegion icon;
 
@@ -26,8 +27,8 @@ public class SmallCircleLabel extends AEIIWidget {
     private String text;
     private Color color_text;
 
-    public SmallCircleLabel(GameContext context, TextureRegion icon) {
-        super(context);
+    public SmallCircleLabel(TextureRegion icon) {
+        int ts = AER.ts;
         this.icon = icon;
         scw = ts * 20 / 24;
         sch = ts * 21 / 24;
@@ -55,13 +56,13 @@ public class SmallCircleLabel extends AEIIWidget {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(getResources().getTextBackground(), x + tfp, y + tfp, width - tfp, tfh);
-        batch.draw(getResources().getSmallCircleTexture(0), x, y, scw, sch);
+        batch.draw(AER.resources.getTextBackground(), x + tfp, y + tfp, width - tfp, tfh);
+        batch.draw(AER.resources.getSmallCircleTexture(0), x, y, scw, sch);
         batch.draw(icon, x + ipx, y + ipy, iw, ih);
-        getContext().getFontRenderer().setTextColor(color_text);
-        getContext().getFontRenderer().drawText(batch, text,
-                x + scw + ts / 12, y + height - (height - getResources().getTextFont().getCapHeight()) / 2);
-        getContext().getFontRenderer().setTextColor(Color.WHITE);
+        AER.font.setTextColor(color_text);
+        AER.font.drawText(batch, text,
+                x + scw + AER.ts / 12, y + height - (height - AER.resources.getTextFont().getCapHeight()) / 2);
+        AER.font.setTextColor(Color.WHITE);
     }
 
 }

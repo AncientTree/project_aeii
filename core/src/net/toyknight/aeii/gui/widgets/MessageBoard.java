@@ -4,25 +4,29 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import net.toyknight.aeii.GameContext;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/7/2015.
  */
-public class MessageBoard extends AEIITable {
+public class MessageBoard extends Table {
 
     private final float content_width;
+
+    private final Skin skin;
 
     private boolean fading;
 
     private float alpha = 3f;
 
-    public MessageBoard(GameContext context, float content_width) {
-        super(context);
+    public MessageBoard(float content_width, Skin skin) {
         this.bottom();
+        this.skin = skin;
         this.fading = true;
         this.content_width = content_width;
-        this.setSize(content_width, Gdx.graphics.getHeight() - ts * 57 / 24);
+        this.setSize(content_width, Gdx.graphics.getHeight() - AER.ts * 57 / 24);
         this.setCullingArea(new Rectangle(0, 0, getWidth(), getHeight()));
     }
 
@@ -46,9 +50,9 @@ public class MessageBoard extends AEIITable {
 
     public void appendMessage(String username, String message) {
         String content = username == null ? ">" + message : ">" + username + ": " + message;
-        Label label_message = new Label(content, getContext().getSkin());
+        Label label_message = new Label(content, skin);
         label_message.setWrap(true);
-        add(label_message).width(content_width).padLeft(ts / 8).padBottom(ts / 8).row();
+        add(label_message).width(content_width).padLeft(AER.ts / 8).padBottom(AER.ts / 8).row();
         display();
     }
 

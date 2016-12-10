@@ -3,9 +3,9 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Position;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 
 /**
  * @author toyknight 6/24/2016.
@@ -23,8 +23,7 @@ public class ReinforceAnimator extends UnitAnimator {
 
     private float offset = 0f;
 
-    public ReinforceAnimator(GameContext context, Array<Unit> reinforcements, int from_x, int from_y) {
-        super(context);
+    public ReinforceAnimator(Array<Unit> reinforcements, int from_x, int from_y) {
         this.from_x = from_x;
         this.from_y = from_y;
         unit_count = reinforcements.size;
@@ -50,9 +49,9 @@ public class ReinforceAnimator extends UnitAnimator {
                     Position position = animation_positions.get("unit" + i);
                     Unit unit = getUnit("unit" + i);
                     if (unit.isAt(position.x, position.y)) {
-                        getCanvas().getRenderer().drawUnitWithInformation(batch, unit, position.x, position.y);
+                        CanvasRenderer.drawUnitWithInformation(batch, unit, position.x, position.y);
                     } else {
-                        getCanvas().getRenderer().drawUnitWithInformation(batch, unit,
+                        CanvasRenderer.drawUnitWithInformation(batch, unit,
                                 position.x, position.y,
                                 getOffsetX(position.x, unit.getX()),
                                 getOffsetY(position.x, position.y, unit.getX(), unit.getY()));
@@ -65,7 +64,7 @@ public class ReinforceAnimator extends UnitAnimator {
                 for (int i = 0; i <= n; i++) {
                     if (i < unit_count) {
                         Unit unit = getUnit("unit" + i);
-                        getCanvas().getRenderer().drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
+                        CanvasRenderer.drawUnitWithInformation(batch, unit, unit.getX(), unit.getY());
                     }
                 }
             }

@@ -3,8 +3,9 @@ package net.toyknight.aeii.gui.dialog;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.gui.StageScreen;
+import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 9/17/2015.
@@ -23,10 +24,6 @@ public class BasicDialog extends Table {
 
     public GameContext getContext() {
         return getOwner().getContext();
-    }
-
-    public ResourceManager getResources() {
-        return getContext().getResources();
     }
 
     public StageScreen getOwner() {
@@ -53,11 +50,11 @@ public class BasicDialog extends Table {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getResources().getPanelBackground(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(AER.resources.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         if (top_bottom_border_enabled) {
-            getContext().getBorderRenderer().drawTopBottomBorder(batch, getX(), getY(), getWidth(), getHeight());
+            BorderRenderer.drawTopBottomBorder(batch, getX(), getY(), getWidth(), getHeight());
         } else {
-            getContext().getBorderRenderer().drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+            BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
         }
         batch.flush();
         drawCustom(batch, parentAlpha);

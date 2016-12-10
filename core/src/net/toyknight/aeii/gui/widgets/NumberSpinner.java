@@ -1,18 +1,18 @@
 package net.toyknight.aeii.gui.widgets;
 
-import net.toyknight.aeii.GameContext;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * @author toyknight 6/10/2016.
  */
 public class NumberSpinner extends Spinner<Integer> {
 
-    public NumberSpinner(GameContext context, int min_value, int max_value) {
-        this(context, min_value, max_value, 1);
+    public NumberSpinner(int min_value, int max_value, Skin skin) {
+        this(min_value, max_value, 1, skin);
     }
 
-    public NumberSpinner(GameContext context, int min_value, int max_value, int step) {
-        super(context);
+    public NumberSpinner(int min_value, int max_value, int step, Skin skin) {
+        super(skin);
         int length = (max_value - min_value) / step + 1;
         Integer[] values = new Integer[length];
         for (int i = 0; i < length; i++) {

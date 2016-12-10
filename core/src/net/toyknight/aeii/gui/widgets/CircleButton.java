@@ -3,12 +3,13 @@ package net.toyknight.aeii.gui.widgets;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.toyknight.aeii.GameContext;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 5/30/2015.
  */
-public class CircleButton extends AEIIButton {
+public class CircleButton extends Button {
 
     public static final int SMALL = 0x1;
     public static final int LARGE = 0x2;
@@ -17,12 +18,11 @@ public class CircleButton extends AEIIButton {
     private final TextureRegion icon;
     private boolean is_held;
 
-    public CircleButton(GameContext context, int type, Texture icon) {
-        this(context, type, new TextureRegion(icon, icon.getWidth(), icon.getHeight()));
+    public CircleButton(int type, Texture icon) {
+        this(type, new TextureRegion(icon, icon.getWidth(), icon.getHeight()));
     }
 
-    public CircleButton(GameContext context, int type, TextureRegion icon) {
-        super(context);
+    public CircleButton(int type, TextureRegion icon) {
         this.type = type;
         this.icon = icon;
         this.is_held = false;
@@ -34,9 +34,9 @@ public class CircleButton extends AEIIButton {
     public float getPrefWidth() {
         switch (type) {
             case SMALL:
-                return ts * 20 / 24;
+                return AER.ts * 20 / 24;
             case LARGE:
-                return ts * 32 / 24;
+                return AER.ts * 32 / 24;
             default:
                 return super.getPrefWidth();
         }
@@ -46,9 +46,9 @@ public class CircleButton extends AEIIButton {
     public float getPrefHeight() {
         switch (type) {
             case SMALL:
-                return ts * 21 / 24;
+                return AER.ts * 21 / 24;
             case LARGE:
-                return ts * 33 / 24;
+                return AER.ts * 33 / 24;
             default:
                 return super.getPrefHeight();
         }
@@ -64,14 +64,15 @@ public class CircleButton extends AEIIButton {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        int ts = AER.ts;
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
         int circle_index = isPressed() || isHeld() ? 1 : 0;
         switch (type) {
             case SMALL:
-                batch.draw(getResources().getSmallCircleTexture(circle_index), x, y, width, height);
+                batch.draw(AER.resources.getSmallCircleTexture(circle_index), x, y, width, height);
                 break;
             case LARGE:
-                batch.draw(getResources().getBigCircleTexture(circle_index), x, y, width, height);
+                batch.draw(AER.resources.getBigCircleTexture(circle_index), x, y, width, height);
                 break;
         }
         float scale = width / getPrefWidth();

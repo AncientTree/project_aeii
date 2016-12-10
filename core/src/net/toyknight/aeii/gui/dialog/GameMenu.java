@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.toyknight.aeii.GameException;
-import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.GameCore;
@@ -154,7 +153,7 @@ public class GameMenu extends BasicDialog {
     private void doLeaveGame() {
         if (getContext().getGame().getType() == GameCore.CAMPAIGN) {
             getContext().gotoCampaignScreen();
-            AudioManager.loopMainTheme();
+            AER.audio.loopMainTheme();
         } else {
             getContext().gotoStatisticsScreen(getOwner().getGame());
         }

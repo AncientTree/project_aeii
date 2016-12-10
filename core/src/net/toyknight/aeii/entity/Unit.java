@@ -14,6 +14,8 @@ public class Unit implements Serializable, Verifiable {
     public static final int ATTACK_PHYSICAL = 0;
     public static final int ATTACK_MAGIC = 1;
 
+    private static final String DEFAULT_U_CODE = "#";
+
     private static final int[] LEVEL_EXPERIENCE = {0, 100, 300, 600};
 
     private final Definition definition;
@@ -45,6 +47,7 @@ public class Unit implements Serializable, Verifiable {
 
     public Unit(Definition definition, int index) {
         this.index = index;
+        this.u_code = DEFAULT_U_CODE;
         this.definition = definition;
     }
 

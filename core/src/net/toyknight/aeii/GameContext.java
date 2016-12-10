@@ -21,7 +21,6 @@ import net.toyknight.aeii.network.ServerConfiguration;
 import net.toyknight.aeii.record.GameRecordPlayer;
 import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.renderer.CanvasRenderer;
-import net.toyknight.aeii.renderer.FontRenderer;
 import net.toyknight.aeii.gui.*;
 import net.toyknight.aeii.gui.wiki.Wiki;
 import net.toyknight.aeii.system.AER;
@@ -44,9 +43,6 @@ public class GameContext extends Game implements GameManagerListener {
     public static final ServerConfiguration CAMPAIGN_SERVER = MAIN_SERVER;
     private static final String TAG = "Main";
 
-    private final int TILE_SIZE;
-    private final Platform PLATFORM;
-
     private boolean initialized = false;
 
     private ThreadPoolExecutor executor;
@@ -54,8 +50,6 @@ public class GameContext extends Game implements GameManagerListener {
     private Skin skin;
 
     private ObjectMap<String, String> configuration;
-
-    private ResourceManager resource_manager;
 
     private GameManager game_manager;
 
@@ -66,12 +60,6 @@ public class GameContext extends Game implements GameManagerListener {
     private RoomManager room_manager;
 
     private Wiki wiki;
-
-    private FontRenderer font_renderer;
-
-    private CanvasRenderer canvas_renderer;
-
-    private BorderRenderer border_renderer;
 
     private MainMenuScreen main_menu_screen;
     private MapEditorScreen map_editor_screen;
@@ -84,8 +72,8 @@ public class GameContext extends Game implements GameManagerListener {
     private CampaignScreen campaign_screen;
 
     public GameContext(Platform platform, int ts) {
-        this.TILE_SIZE = ts;
-        this.PLATFORM = platform;
+        AER.ts = ts;
+        AER.platform = platform;
     }
 
     @Override
@@ -94,10 +82,7 @@ public class GameContext extends Game implements GameManagerListener {
             executor = new ThreadPoolExecutor(1, 1,
                     0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<Runnable>());
-            FileProvider.setPlatform(PLATFORM);
             AER.initialize();
-            resource_manager = new ResourceManager();
-            resource_manager.prepare(TILE_SIZE);
 
             LoadingScreen loading_screen = new LoadingScreen(this);
             Gdx.input.setCatchBackKey(true);
@@ -111,23 +96,24 @@ public class GameContext extends Game implements GameManagerListener {
         if (!initialized) {
             try {
                 loadConfiguration();
-                AudioManager.setSEVolume(getSEVolume());
-                AudioManager.setMusicVolume(getMusicVolume());
-                resource_manager.initialize();
+                AER.audio.setSEVolume(getSEVolume());
+                AER.audio.setMusicVolume(getMusicVolume());
+                AER.resources.initialize();
+                AER.font.initialize();
+
+                CanvasRenderer.initialize();
+                BorderRenderer.initialize();
+
                 TileValidator.initialize();
 
-                skin = getResources().getSkin();
-                skin.get(TextButton.TextButtonStyle.class).font = getResources().getTextFont();
-                skin.get(TextField.TextFieldStyle.class).font = getResources().getTextFont();
-                skin.get(Label.LabelStyle.class).font = getResources().getTextFont();
-                skin.get(Dialog.WindowStyle.class).titleFont = getResources().getTextFont();
-                skin.get(List.ListStyle.class).font = getResources().getTextFont();
+                skin = AER.resources.getSkin();
+                skin.get(TextButton.TextButtonStyle.class).font = AER.resources.getTextFont();
+                skin.get(TextField.TextFieldStyle.class).font = AER.resources.getTextFont();
+                skin.get(Label.LabelStyle.class).font = AER.resources.getTextFont();
+                skin.get(Dialog.WindowStyle.class).titleFont = AER.resources.getTextFont();
+                skin.get(List.ListStyle.class).font = AER.resources.getTextFont();
 
-                font_renderer = new FontRenderer(this);
-                canvas_renderer = new CanvasRenderer(this);
-                border_renderer = new BorderRenderer(this);
-
-                game_manager = new GameManager(this, new AnimationManager(this));
+                game_manager = new GameManager(this, new AnimationManager());
                 game_manager.getGameEventExecutor().setCheckEventValue(true);
                 game_manager.setListener(this);
 
@@ -158,22 +144,6 @@ public class GameContext extends Game implements GameManagerListener {
 
     public boolean initialized() {
         return initialized;
-    }
-
-    public ResourceManager getResources() {
-        return resource_manager;
-    }
-
-    public FontRenderer getFontRenderer() {
-        return font_renderer;
-    }
-
-    public CanvasRenderer getCanvasRenderer() {
-        return canvas_renderer;
-    }
-
-    public BorderRenderer getBorderRenderer() {
-        return border_renderer;
     }
 
     public Wiki getWiki() {
@@ -214,11 +184,7 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public int getTileSize() {
-        return TILE_SIZE;
-    }
-
-    public Platform getPlatform() {
-        return PLATFORM;
+        return AER.ts;
     }
 
     public ObjectMap<String, String> getConfiguration() {
@@ -323,7 +289,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void gotoMainMenuScreen(boolean restart_bgm, boolean show_announcement) {
         if (restart_bgm) {
-            AudioManager.loopMainTheme();
+            AER.audio.loopMainTheme();
         }
         gotoScreen(main_menu_screen);
         if (show_announcement) {
@@ -333,12 +299,12 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void gotoMapEditorScreen() {
-        AudioManager.stopCurrentBGM();
+        AER.audio.stopCurrentBGM();
         gotoScreen(map_editor_screen);
     }
 
     public void gotoGameScreen(GameCore game) {
-        AudioManager.playRandomBGM("bg_good.mp3");
+        AER.audio.playRandomBGM("bg_good.mp3");
         NetworkManager.resetEventQueue();
         if (game.initialized()) {
             getGameManager().setGame(game);
@@ -378,7 +344,7 @@ public class GameContext extends Game implements GameManagerListener {
     }
 
     public void gotoNetGameCreateScreen() {
-        AudioManager.stopCurrentBGM();
+        AER.audio.stopCurrentBGM();
         gotoScreen(net_game_create_screen);
     }
 
@@ -403,7 +369,7 @@ public class GameContext extends Game implements GameManagerListener {
 
     public void gotoScreen(Screen screen) {
         if (screen instanceof MapCanvas) {
-            getCanvasRenderer().setCanvas((MapCanvas) screen);
+            CanvasRenderer.setCanvas((MapCanvas) screen);
         }
         this.setScreen(screen);
     }
@@ -494,7 +460,7 @@ public class GameContext extends Game implements GameManagerListener {
             }
         } else {
             gotoCampaignScreen();
-            AudioManager.loopMainTheme();
+            AER.audio.loopMainTheme();
         }
     }
 
@@ -510,7 +476,7 @@ public class GameContext extends Game implements GameManagerListener {
     @Override
     public void dispose() {
         super.dispose();
-        getResources().dispose();
+        AER.resources.dispose();
     }
 
     public static void setButtonEnabled(Button button, boolean enabled) {

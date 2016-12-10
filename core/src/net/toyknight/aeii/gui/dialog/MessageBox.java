@@ -39,13 +39,13 @@ public class MessageBox extends BasicDialog {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        getResources().getBorderDarkColor(),
+                        AER.resources.getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_player_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(AER.resources.getListBackground()));
         sp_player_list.setScrollBarPositions(false, true);
         sp_player_list.setFadeScrollBars(false);
         add(sp_player_list).size(ts * 6 + ts / 2, ts * 6).padTop(ts / 2).padLeft(ts / 2).padRight(ts / 2).row();

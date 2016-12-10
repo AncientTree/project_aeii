@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
 import net.toyknight.aeii.animation.*;
@@ -84,8 +83,8 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.right_panel_renderer = new RightPanelRenderer(this, ts);
         this.attack_info_renderer = new AttackInformationRenderer(this);
 
-        this.cursor = new CursorAnimator(getContext());
-        this.attack_cursor = new AttackCursorAnimator(getContext());
+        this.cursor = new CursorAnimator();
+        this.attack_cursor = new AttackCursorAnimator();
 
         initComponents();
     }
@@ -117,11 +116,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         this.addDialog("message", message_box);
 
         //message board
-        this.message_board = new MessageBoard(getContext(), message_box.getX() - ts / 8);
+        this.message_board = new MessageBoard(message_box.getX() - ts / 8, getContext().getSkin());
         this.message_board.setPosition(0, ts);
         addActor(message_board);
 
-        this.btn_message = new CircleButton(getContext(), CircleButton.LARGE, getResources().getMenuIcon(7));
+        this.btn_message = new CircleButton(CircleButton.LARGE, AER.resources.getMenuIcon(7));
         this.btn_message.setPosition(0, Gdx.graphics.getHeight() - btn_message.getPrefHeight());
         this.btn_message.addListener(new ClickListener() {
             @Override
@@ -183,17 +182,17 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
             switch (getGameManager().getState()) {
                 case GameManager.STATE_REMOVE:
                 case GameManager.STATE_MOVE:
-                    getRenderer().drawMoveAlpha(batch, getGameManager().getMovablePositions());
-                    getRenderer().drawMovePath(
+                    CanvasRenderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
+                    CanvasRenderer.drawMovePath(
                             batch, getGameManager().getMovePath(getCursorMapX(), getCursorMapY()));
                     break;
                 case GameManager.STATE_PREVIEW:
-                    getRenderer().drawMoveAlpha(batch, getGameManager().getMovablePositions());
+                    CanvasRenderer.drawMoveAlpha(batch, getGameManager().getMovablePositions());
                     break;
                 case GameManager.STATE_ATTACK:
                 case GameManager.STATE_SUMMON:
                 case GameManager.STATE_HEAL:
-                    getRenderer().drawAttackAlpha(batch, getGameManager().getAttackablePositions());
+                    CanvasRenderer.drawAttackAlpha(batch, getGameManager().getAttackablePositions());
                     break;
                 default:
                     //do nothing
@@ -217,11 +216,11 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 int sy = getYOnScreen(y);
                 if (isWithinPaintArea(sx, sy)) {
                     int index = getGame().getMap().getTileIndex(x, y);
-                    getRenderer().drawTile(batch, index, sx + offset_x, sy + offset_y);
+                    CanvasRenderer.drawTile(batch, index, sx + offset_x, sy + offset_y);
                     Tile tile = AER.tiles.getTile(index);
                     if (tile.getTopTileIndex() != -1) {
                         int top_tile_index = tile.getTopTileIndex();
-                        getRenderer().drawTopTile(batch, top_tile_index, sx + offset_x, sy + ts() + offset_y);
+                        CanvasRenderer.drawTopTile(batch, top_tile_index, sx + offset_x, sy + ts() + offset_y);
                     }
                 }
             }
@@ -232,7 +231,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         for (Tomb tomb : getGame().getMap().getTombs()) {
             int tomb_sx = getXOnScreen(tomb.x);
             int tomb_sy = getYOnScreen(tomb.y);
-            batch.draw(getResources().getTombTexture(), tomb_sx, tomb_sy, ts(), ts());
+            batch.draw(AER.resources.getTombTexture(), tomb_sx, tomb_sy, ts(), ts());
             batch.flush();
         }
     }
@@ -248,7 +247,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
                 int sx = getXOnScreen(unit_x);
                 int sy = getYOnScreen(unit_y);
                 if (isWithinPaintArea(sx, sy)) {
-                    getRenderer().drawUnitWithInformation(batch, unit, unit_x, unit_y, offset_x, offset_y);
+                    CanvasRenderer.drawUnitWithInformation(batch, unit, unit_x, unit_y, offset_x, offset_y);
                 }
             }
         }
@@ -406,7 +405,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.onPlayerJoin(id, username);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(AER.lang.getText("MSG_INFO_PJ"), username));
-        AudioManager.playSE("prompt.mp3");
+        AER.audio.playSE("prompt.mp3");
     }
 
     @Override
@@ -414,7 +413,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.onPlayerLeave(id, username, host);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(AER.lang.getText("MSG_INFO_PD"), username));
-        AudioManager.playSE("prompt.mp3");
+        AER.audio.playSE("prompt.mp3");
     }
 
     @Override
@@ -422,7 +421,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         super.onPlayerReconnect(id, username);
         message_box.setPlayers(getContext().getRoomManager().getPlayers());
         appendMessage(null, String.format(AER.lang.getText("MSG_INFO_PR"), username));
-        AudioManager.playSE("prompt.mp3");
+        AER.audio.playSE("prompt.mp3");
     }
 
     @Override
@@ -469,7 +468,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
         mini_map.update(delta);
         cursor.update(delta);
         attack_cursor.update(delta);
-        getRenderer().update(delta);
+        CanvasRenderer.update(delta);
         updateViewport();
         super.act(delta);
 
@@ -812,7 +811,7 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     }
 
     private void onEndTurn() {
-        if (getContext().getPlatform().isMobile()) {
+        if (AER.platform.isMobile()) {
             showConfirm(AER.lang.getText("LB_END_TURN") + "?", new ConfirmDialog.ConfirmDialogListener() {
                 @Override
                 public void confirmed() {
@@ -890,11 +889,6 @@ public class GameScreen extends StageScreen implements MapCanvas, GameRecordPlay
     @Override
     public Map getMap() {
         return getGame().getMap();
-    }
-
-    @Override
-    public CanvasRenderer getRenderer() {
-        return getContext().getCanvasRenderer();
     }
 
     @Override

@@ -4,37 +4,24 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
  * @author toyknight 4/6/2015.
  */
 public class BorderRenderer {
 
-    private final GameContext context;
+    private static int border_size;
+    private static TextureRegion[] borders;
 
-    private final int border_size;
-    private TextureRegion[] borders;
-
-    public BorderRenderer(GameContext context) {
-        this.context = context;
-
-        Texture border_texture_sheet = getResources().getBorderTexture();
-        borders = ResourceManager.createFrames(border_texture_sheet, 8, 1);
-        int ts = getContext().getTileSize();
-        border_size = ts * getResources().getBorderTexture().getHeight() / 48;
+    public static void initialize() {
+        Texture border_texture_sheet = AER.resources.getBorderTexture();
+        borders = TextureUtil.createFrames(border_texture_sheet, 8, 1);
+        border_size = AER.ts * AER.resources.getBorderTexture().getHeight() / 48;
     }
 
-    public GameContext getContext() {
-        return context;
-    }
-
-    public ResourceManager getResources() {
-        return getContext().getResources();
-    }
-
-    public void drawBorder(Batch batch, float x, float y, float width, float height) {
+    public static void drawBorder(Batch batch, float x, float y, float width, float height) {
         batch.draw(borders[0], x, y + height - border_size, border_size, border_size);
         batch.draw(borders[1], x + border_size, y + height - border_size, width - border_size * 2, border_size);
         batch.draw(borders[2], x + width - border_size, y + height - border_size, border_size, border_size);
@@ -46,13 +33,13 @@ public class BorderRenderer {
         batch.flush();
     }
 
-    public void drawTopBottomBorder(Batch batch, float x, float y, float width, float height) {
+    public static void drawTopBottomBorder(Batch batch, float x, float y, float width, float height) {
         batch.draw(borders[1], x, y + height - border_size, width, border_size);
         batch.draw(borders[6], x, y, width, border_size);
         batch.flush();
     }
 
-    public void drawRoundedBackground(
+    public static void drawRoundedBackground(
             ShapeRenderer shape_renderer, float x, float y, float width, float height, float radius) {
         // Central rectangle
         shape_renderer.setColor(36 / 256f, 42 / 256f, 69 / 256f, 1f);

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.gui.StageScreen;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/24/2016.
@@ -60,7 +61,7 @@ public class CampaignMessageDialog extends BasicDialog {
     protected void drawCustom(Batch batch, float parentAlpha) {
         int portrait = getContext().getGameManager().getCurrentCampaignMessage().getPortrait();
         if (portrait >= 0) {
-            batch.draw(getResources().getPortraitTexture(portrait), 0, 5, ts * 85 / 24, ts * 85 / 24);
+            batch.draw(AER.resources.getPortraitTexture(portrait), 0, 5, ts * 85 / 24, ts * 85 / 24);
         }
     }
 

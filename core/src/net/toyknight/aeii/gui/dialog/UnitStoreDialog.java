@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.gui.StageScreen;
@@ -18,6 +17,7 @@ import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.gui.GameScreen;
 import net.toyknight.aeii.gui.widgets.AvailableUnitList;
 import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
  * @author toyknight 4/20/2015.
@@ -56,19 +56,19 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
     }
 
     private void initComponents(Skin skin) {
-        this.unit_list = new AvailableUnitList(getContext());
+        this.unit_list = new AvailableUnitList();
         this.unit_list.setUnitListListener(this);
         sp_unit_list = new ScrollPane(unit_list, skin) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        getResources().getBorderDarkColor(),
+                        AER.resources.getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_unit_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(AER.resources.getListBackground()));
         sp_unit_list.setScrollBarPositions(false, true);
         add(sp_unit_list).size(ts * 5, ts * 3 / 2 * 5);
 
@@ -78,17 +78,17 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
 
         int hs = ts * 11 / 24;
 
-        Image image_price = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(1), hs, hs));
+        Image image_price = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(1), hs, hs));
         hud_pane.add(image_price);
         label_price = new Label("", getContext().getSkin());
         hud_pane.add(label_price).width(ts).height(hs);
 
-        Image image_attack_range = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(2), hs, hs));
+        Image image_attack_range = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(2), hs, hs));
         hud_pane.add(image_attack_range);
         label_attack_range = new Label("", getContext().getSkin());
         hud_pane.add(label_attack_range).width(ts).height(hs);
 
-        Image image_occupancy = new Image(ResourceManager.createDrawable(getResources().getStatusHudIcon(0), hs, hs));
+        Image image_occupancy = new Image(TextureUtil.createDrawable(AER.resources.getStatusHudIcon(0), hs, hs));
         hud_pane.add(image_occupancy);
         label_occupancy = new Label("", getContext().getSkin());
         hud_pane.add(label_occupancy).width(ts).height(hs);
@@ -98,21 +98,21 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
         Table data_pane = new Table() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
 
-        label_attack = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(0));
+        label_attack = new SmallCircleLabel(AER.resources.getBattleHudIcon(0));
         data_pane.add(label_attack).width(ts * 2 + ts / 8).padTop(ts / 8);
-        label_move = new SmallCircleLabel(getContext(), getResources().getActionIcon(4));
+        label_move = new SmallCircleLabel(AER.resources.getActionIcon(4));
         label_move.setTextColor(Color.WHITE);
         data_pane.add(label_move).width(ts * 2 + ts / 8).padLeft(ts / 4).padTop(ts / 8).row();
-        label_physical_defence = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(1));
+        label_physical_defence = new SmallCircleLabel(AER.resources.getBattleHudIcon(1));
         label_physical_defence.setTextColor(Color.WHITE);
         data_pane.add(label_physical_defence).width(ts * 2 + ts / 8).padTop(ts / 4).padBottom(ts / 8);
-        label_magic_defence = new SmallCircleLabel(getContext(), getResources().getBattleHudIcon(2));
+        label_magic_defence = new SmallCircleLabel(AER.resources.getBattleHudIcon(2));
         label_magic_defence.setTextColor(Color.WHITE);
         data_pane.add(label_magic_defence).width(ts * 2 + ts / 8).padLeft(ts / 4).padTop(ts / 4).padBottom(ts / 8);
 
@@ -191,7 +191,7 @@ public class UnitStoreDialog extends BasicDialog implements UnitListListener {
             label_attack_range.setText(selected_unit.getMinAttackRange() + "-" + selected_unit.getMaxAttackRange());
             label_attack.setText(Integer.toString(selected_unit.getAttack()));
             label_attack.setTextColor(selected_unit.getAttackType() == Unit.ATTACK_PHYSICAL ?
-                    getResources().getPhysicalAttackColor() : getResources().getMagicalAttackColor());
+                    AER.resources.getPhysicalAttackColor() : AER.resources.getMagicalAttackColor());
             label_move.setText(Integer.toString(selected_unit.getMovementPoint()));
             label_physical_defence.setText(Integer.toString(selected_unit.getPhysicalDefence()));
             label_magic_defence.setText(Integer.toString(selected_unit.getMagicDefence()));

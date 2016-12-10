@@ -25,6 +25,7 @@ import net.toyknight.aeii.network.entity.MapSnapshot;
 import net.toyknight.aeii.gui.dialog.ConfirmDialog;
 import net.toyknight.aeii.gui.dialog.MiniMapDialog;
 import net.toyknight.aeii.gui.widgets.StringList;
+import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
 import net.toyknight.aeii.utils.FileProvider;
 import net.toyknight.aeii.utils.InputFilter;
@@ -70,10 +71,10 @@ public class MapManagementScreen extends StageScreen {
         label_local_map.setBounds(sp_width + ts, Gdx.graphics.getHeight() - ts, sp_width, ts);
         addActor(label_local_map);
 
-        server_map_list = new StringList<Object>(getContext(), ts);
+        server_map_list = new StringList<Object>(ts);
         sp_server_map_list = new ScrollPane(server_map_list, getContext().getSkin());
         sp_server_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(AER.resources.getListBackground()));
         sp_server_map_list.setScrollBarPositions(true, true);
         sp_server_map_list.setBounds(ts / 2, ts * 2, sp_width, Gdx.graphics.getHeight() - ts * 3);
         server_map_list.setListener(new StringList.SelectionListener() {
@@ -89,10 +90,10 @@ public class MapManagementScreen extends StageScreen {
             }
         });
         addActor(sp_server_map_list);
-        local_map_list = new StringList<MapFactory.MapSnapshot>(getContext(), ts);
+        local_map_list = new StringList<MapFactory.MapSnapshot>(ts);
         sp_local_map_list = new ScrollPane(local_map_list, getContext().getSkin());
         sp_local_map_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(AER.resources.getListBackground()));
         sp_local_map_list.setScrollBarPositions(true, true);
         sp_local_map_list.setBounds(sp_width + ts, ts * 2, sp_width, Gdx.graphics.getHeight() - ts * 3);
         local_map_list.setListener(new StringList.SelectionListener() {
@@ -482,14 +483,14 @@ public class MapManagementScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(AER.resources.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(
-                getResources().getBorderDarkColor(),
+                AER.resources.getBorderDarkColor(),
                 sp_server_map_list.getX() - ts / 24, sp_server_map_list.getY() - ts / 24,
                 sp_server_map_list.getWidth() + ts / 12, sp_server_map_list.getHeight() + ts / 12);
         batch.draw(
-                getResources().getBorderDarkColor(),
+                AER.resources.getBorderDarkColor(),
                 sp_local_map_list.getX() - ts / 24, sp_local_map_list.getY() - ts / 24,
                 sp_local_map_list.getWidth() + ts / 12, sp_local_map_list.getHeight() + ts / 12);
         batch.end();

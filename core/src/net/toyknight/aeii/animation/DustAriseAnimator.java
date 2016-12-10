@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.ObjectSet;
-import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Position;
+import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
  * @author toyknight 5/17/2015.
@@ -15,13 +15,12 @@ public class DustAriseAnimator extends MapAnimator {
 
     private Animation dust_animation;
 
-    public DustAriseAnimator(GameContext context, int map_x, int map_y) {
-        super(context, map_x, map_y);
+    public DustAriseAnimator(int map_x, int map_y) {
+        super(map_x, map_y);
         createAnimation();
     }
 
-    public DustAriseAnimator(GameContext context, ObjectSet<Position> positions) {
-        super(context);
+    public DustAriseAnimator(ObjectSet<Position> positions) {
         createAnimation();
         for (Position position : positions) {
             addLocation(position);
@@ -29,8 +28,8 @@ public class DustAriseAnimator extends MapAnimator {
     }
 
     private void createAnimation() {
-        Texture texture_dust = getResources().getDustTexture();
-        dust_animation = new Animation(1f / 15, ResourceManager.createFrames(texture_dust, 4, 1));
+        Texture texture_dust = AER.resources.getDustTexture();
+        dust_animation = new Animation(1f / 15, TextureUtil.createFrames(texture_dust, 4, 1));
     }
 
     @Override

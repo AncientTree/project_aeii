@@ -30,13 +30,13 @@ public class MapResizeDialog extends BasicDialog {
         Label lb_width = new Label(AER.lang.getText("LB_WIDTH"), getContext().getSkin());
         lb_width.setAlignment(Align.center);
         this.add(lb_width).size(ts * 3, ts);
-        this.spinner_width = new NumberSpinner(getContext(), 5, 21);
+        this.spinner_width = new NumberSpinner(5, 21, getContext().getSkin());
         this.add(spinner_width).size(ts * 3, ts).padLeft(ts / 2).row();
 
         Label lb_height = new Label(AER.lang.getText("LB_HEIGHT"), getContext().getSkin());
         lb_height.setAlignment(Align.center);
         this.add(lb_height).size(ts * 3, ts).padTop(ts / 4);
-        this.spinner_height = new NumberSpinner(getContext(), 5, 21);
+        this.spinner_height = new NumberSpinner(5, 21, getContext().getSkin());
         this.add(spinner_height).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 4).row();
 
         TextButton btn_confirm = new TextButton(AER.lang.getText("LB_CONFIRM"), getContext().getSkin());

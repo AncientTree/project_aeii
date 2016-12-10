@@ -8,12 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Status;
 import net.toyknight.aeii.gui.StageScreen;
 import net.toyknight.aeii.gui.dialog.BasicDialog;
 import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 import java.util.LinkedList;
 
@@ -82,8 +82,8 @@ public class Wiki extends BasicDialog {
                 onNodeSelected(content_list.getSelection().first());
             }
         });
-        content_list.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
-        content_list.getStyle().selection = ResourceManager.createDrawable(getResources().getListSelectedBackground());
+        content_list.getStyle().background = TextureUtil.createDrawable(AER.resources.getListBackground());
+        content_list.getStyle().selection = TextureUtil.createDrawable(AER.resources.getListSelectedBackground());
 
         RootNode node_overview = RootNode.create(RootNode.OVERVIEW, getContext().getSkin());
         RootNode node_gameplay = RootNode.create(RootNode.GAMEPLAY, getContext().getSkin());
@@ -155,7 +155,7 @@ public class Wiki extends BasicDialog {
         content_list.add(node_about);
 
         sp_content_list = new ScrollPane(content_list, getContext().getSkin());
-        sp_content_list.getStyle().background = ResourceManager.createDrawable(getResources().getListBackground());
+        sp_content_list.getStyle().background = TextureUtil.createDrawable(AER.resources.getListBackground());
         sp_content_list.setScrollingDisabled(true, false);
         add(sp_content_list).size(ts * 6, height - ts / 2).padLeft(ts / 4);
 

@@ -4,15 +4,16 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.GameContext;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 8/25/2015.
  */
-public class StringList<T> extends AEIIWidget {
+public class StringList<T> extends Widget {
 
     protected final int item_height;
     protected final float text_offset;
@@ -24,10 +25,9 @@ public class StringList<T> extends AEIIWidget {
 
     private SelectionListener listener;
 
-    public StringList(GameContext context, int item_height) {
-        super(context);
+    public StringList(int item_height) {
         this.item_height = item_height;
-        this.text_offset = (item_height - getResources().getTextFont().getCapHeight()) / 2;
+        this.text_offset = (item_height - AER.resources.getTextFont().getCapHeight()) / 2;
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -102,7 +102,7 @@ public class StringList<T> extends AEIIWidget {
     public void updateList() {
         float max_width = 0;
         for (T item : items) {
-            float width = text_offset * 2 + getContext().getFontRenderer().getTextLayout(item.toString()).width;
+            float width = text_offset * 2 + AER.font.getTextLayout(item.toString()).width;
             if (width > max_width) {
                 max_width = width;
             }
@@ -139,11 +139,11 @@ public class StringList<T> extends AEIIWidget {
         for (int index = 0; index < items.size; index++) {
             T item = items.get(index);
             if (selection.contains(item)) {
-                batch.draw(getResources().getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
+                batch.draw(AER.resources.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
-            getContext().getFontRenderer().setTextColor(Color.WHITE);
-            getContext().getFontRenderer().drawText(batch, toString(item),
-                    x + text_offset, y + itemY - item_height + text_offset + getResources().getTextFont().getCapHeight());
+            AER.font.setTextColor(Color.WHITE);
+            AER.font.drawText(batch, toString(item),
+                    x + text_offset, y + itemY - item_height + text_offset + AER.resources.getTextFont().getCapHeight());
             itemY -= item_height;
         }
         super.draw(batch, parentAlpha);

@@ -1,4 +1,4 @@
-package net.toyknight.aeii.renderer;
+package net.toyknight.aeii.system;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,17 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
- * @author toyknight 4/2/2015.
+ * @author toyknight 12/9/2016.
  */
-public class FontRenderer {
+public class Font {
 
     private final int[] SIZE_TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE};
-
-    private final GameContext context;
 
     private final int schar_width;
     private final int schar_height;
@@ -28,31 +25,27 @@ public class FontRenderer {
 
     private GlyphLayout font_layout = new GlyphLayout();
 
-    public FontRenderer(GameContext context) {
-        this.context = context;
-
-        int ts = getContext().getTileSize();
-
-        Texture sheet_small_chars = getContext().getResources().getSmallCharacterTexture();
-        small_chars = ResourceManager.createFrames(sheet_small_chars, 12, 1);
-        Texture sheet_large_chars = getContext().getResources().getLargeCharacterTexture();
-        large_chars = ResourceManager.createFrames(sheet_large_chars, 13, 1);
+    protected Font(int ts) {
         schar_width = ts * 6 / 24;
         schar_height = ts * 7 / 24;
         lchar_width = ts * 8 / 24;
         lchar_height = ts * 11 / 24;
     }
 
-    public GameContext getContext() {
-        return context;
+    public void initialize() {
+        Texture sheet_small_chars = AER.resources.getSmallCharacterTexture();
+        small_chars = TextureUtil.createFrames(sheet_small_chars, 12, 1);
+        Texture sheet_large_chars = AER.resources.getLargeCharacterTexture();
+        large_chars = TextureUtil.createFrames(sheet_large_chars, 13, 1);
+
     }
 
     public BitmapFont getTitleFont() {
-        return getContext().getResources().getTitleFont();
+        return AER.resources.getTitleFont();
     }
 
     public BitmapFont getTextFont() {
-        return getContext().getResources().getTextFont();
+        return AER.resources.getTextFont();
     }
 
     public void setTitleAlpha(float alpha) {

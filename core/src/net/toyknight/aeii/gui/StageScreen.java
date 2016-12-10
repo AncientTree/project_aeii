@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.Callable;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.network.NetworkListener;
 import net.toyknight.aeii.network.NetworkManager;
 import net.toyknight.aeii.gui.dialog.*;
@@ -144,10 +143,6 @@ public class StageScreen extends Stage implements Screen, NetworkListener {
 
     public GameContext getContext() {
         return context;
-    }
-
-    public ResourceManager getResources() {
-        return getContext().getResources();
     }
 
     public void addDialog(String name, BasicDialog dialog) {

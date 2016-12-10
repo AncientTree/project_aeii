@@ -3,15 +3,16 @@ package net.toyknight.aeii.gui.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Array;
-import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.GameCore;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 5/29/2015.
  */
-public class AvailableUnitList extends AEIIWidget {
+public class AvailableUnitList extends Widget {
 
     private final int item_height;
 
@@ -31,8 +32,8 @@ public class AvailableUnitList extends AEIIWidget {
 
     private UnitListListener listener;
 
-    public AvailableUnitList(GameContext context) {
-        super(context);
+    public AvailableUnitList() {
+        int ts = AER.ts;
         this.item_height = ts / 2 * 3;
         this.big_circle_width = ts * 32 / 24;
         this.big_circle_height = ts * 33 / 24;
@@ -104,24 +105,25 @@ public class AvailableUnitList extends AEIIWidget {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        int ts = AER.ts;
         int index = 0;
         int current_team = getGame().getCurrentTeam();
         float x = getX(), y = getY(), width = getWidth();
         float itemY = getHeight();
         for (Integer unit_index : available_units) {
             if (index == selected_index) {
-                batch.draw(getResources().getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
+                batch.draw(AER.resources.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
-            batch.draw(getResources().getBigCircleTexture(0),
+            batch.draw(AER.resources.getBigCircleTexture(0),
                     x + bc_offset, y + itemY - item_height + bc_offset, big_circle_width, big_circle_height);
-            batch.draw(getResources().getUnitTexture(current_team, unit_index, 0),
+            batch.draw(AER.resources.getUnitTexture(current_team, unit_index, 0),
                     x + unit_offset, y + itemY - item_height + unit_offset, ts, ts);
             if (AER.units.isCommander(unit_index)) {
-                getContext().getCanvasRenderer().drawHead(batch, getGame().getCommander(current_team).getHead(),
+                CanvasRenderer.drawHead_(batch, getGame().getCommander(current_team).getHead(),
                         x + unit_offset, y + itemY - item_height + unit_offset, 0, ts);
             }
             batch.flush();
-            getContext().getFontRenderer().drawTextCenter(batch, AER.lang.getUnitName(unit_index),
+            AER.font.drawTextCenter(batch, AER.lang.getUnitName(unit_index),
                     x + big_circle_width + bc_offset, y + itemY - item_height, width - big_circle_width - bc_offset, item_height);
             index++;
             itemY -= item_height;

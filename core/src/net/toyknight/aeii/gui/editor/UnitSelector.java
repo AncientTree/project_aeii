@@ -3,34 +3,31 @@ package net.toyknight.aeii.gui.editor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.manager.MapEditor;
-import net.toyknight.aeii.gui.widgets.AEIIContainer;
+import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class UnitSelector extends AEIIContainer {
+public class UnitSelector extends Container<ScrollPane> {
 
     private final MapEditor editor;
 
-    public UnitSelector(GameContext context, MapEditor editor) {
-        super(context);
+    public UnitSelector(MapEditor editor) {
         this.editor = editor;
         this.initComponents();
     }
 
     private void initComponents() {
+        int ts = AER.ts;
         ImageButton[] btn_team = new ImageButton[4];
         for (int i = 0; i < 4; i++) {
-            TextureRegionDrawable team_bg = ResourceManager.createDrawable(getResources().getTeamBackground(i));
+            TextureRegionDrawable team_bg = TextureUtil.createDrawable(AER.resources.getTeamBackground(i));
             team_bg.setMinWidth(ts);
             team_bg.setMinHeight(ts);
             btn_team[i] = new ImageButton(team_bg);
@@ -69,7 +66,7 @@ public class UnitSelector extends AEIIContainer {
         //add units
         int index = 0;
         for (int i = 0; i < AER.units.getUnitCount(); i++) {
-            UnitButton btn_unit = new UnitButton(getContext(), editor, AER.units.getSample(i));
+            UnitButton btn_unit = new UnitButton(editor, AER.units.getSample(i));
             if (index % 2 == 0) {
                 unit_table.add(btn_unit).padTop(ts / 4);
             } else {
@@ -84,7 +81,7 @@ public class UnitSelector extends AEIIContainer {
         sp_unit_table.setBounds(
                 Gdx.graphics.getWidth() - ts * 2 - ts / 4 * 3, ts,
                 ts * 2 - ts / 4 * 3, Gdx.graphics.getHeight() - ts);
-        this.setActor(sp_unit_table);
+        setActor(sp_unit_table);
     }
 
     public void setSelectedTeam(int team) {
@@ -93,9 +90,9 @@ public class UnitSelector extends AEIIContainer {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getResources().getPanelBackground(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(AER.resources.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
-        getContext().getBorderRenderer().drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
         batch.flush();
     }
 

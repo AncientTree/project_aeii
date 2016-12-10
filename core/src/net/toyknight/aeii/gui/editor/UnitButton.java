@@ -2,22 +2,22 @@ package net.toyknight.aeii.gui.editor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.MapEditor;
-import net.toyknight.aeii.gui.widgets.AEIIButton;
+import net.toyknight.aeii.renderer.CanvasRenderer;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class UnitButton extends AEIIButton {
+public class UnitButton extends Button {
 
     private final Unit unit;
     private final MapEditor editor;
 
-    public UnitButton(GameContext context, MapEditor editor, Unit unit) {
-        super(context);
+    public UnitButton(MapEditor editor, Unit unit) {
         this.unit = unit;
         this.editor = editor;
         setStyle(new ButtonStyle());
@@ -35,12 +35,12 @@ public class UnitButton extends AEIIButton {
 
     @Override
     public float getPrefWidth() {
-        return ts;
+        return AER.ts;
     }
 
     @Override
     public float getPrefHeight() {
-        return ts;
+        return AER.ts;
     }
 
     @Override
@@ -48,12 +48,12 @@ public class UnitButton extends AEIIButton {
         if (getEditor().getBrushType() == MapEditor.TYPE_UNIT
                 && getEditor().getSelectedUnit().getIndex() == unit.getIndex()) {
             batch.draw(
-                    getResources().getBorderLightColor(),
+                    AER.resources.getBorderLightColor(),
                     getX(), getY(), getWidth(), getHeight());
         }
         unit.setTeam(getEditor().getSelectedTeam());
         unit.setHead(getEditor().getSelectedTeam());
-        getContext().getCanvasRenderer().drawUnit_(batch, unit, getX(), getY(), 0, ts);
+        CanvasRenderer.drawUnit_(batch, unit, getX(), getY(), 0, AER.ts);
         super.draw(batch, parentAlpha);
     }
 

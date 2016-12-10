@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.gui.MainMenuScreen;
 import net.toyknight.aeii.gui.widgets.NumberSpinner;
 import net.toyknight.aeii.system.AER;
@@ -52,14 +51,14 @@ public class SettingDialog extends BasicDialog {
         lb_se_volume.setAlignment(Align.right);
         setting_bar.add(lb_se_volume).width(ts * 3).padTop(ts / 2);
 
-        spinner_se_volume = new NumberSpinner(getContext(), 0, 100, 10);
+        spinner_se_volume = new NumberSpinner(0, 100, 10, getContext().getSkin());
         setting_bar.add(spinner_se_volume).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 2).row();
 
         Label lb_music_volume = new Label(AER.lang.getText("LB_MUSIC_VOLUME"), getContext().getSkin());
         lb_music_volume.setAlignment(Align.right);
         setting_bar.add(lb_music_volume).width(ts * 3).padTop(ts / 2);
 
-        spinner_music_volume = new NumberSpinner(getContext(), 0, 100, 10);
+        spinner_music_volume = new NumberSpinner(0, 100, 10, getContext().getSkin());
         setting_bar.add(spinner_music_volume).size(ts * 3, ts).padLeft(ts / 2).padTop(ts / 2);
 
         Table button_bar = new Table();
@@ -93,10 +92,10 @@ public class SettingDialog extends BasicDialog {
             getContext().updateConfiguration("username", "undefined");
         }
         float se_volume = spinner_se_volume.getSelectedItem() / 100f;
-        AudioManager.setSEVolume(se_volume);
+        AER.audio.setSEVolume(se_volume);
         getContext().updateConfiguration("se_volume", Float.toString(se_volume));
         float music_volume = spinner_music_volume.getSelectedItem() / 100f;
-        AudioManager.setMusicVolume(music_volume);
+        AER.audio.setMusicVolume(music_volume);
         getContext().updateConfiguration("music_volume", Float.toString(music_volume));
         getContext().saveConfiguration();
     }

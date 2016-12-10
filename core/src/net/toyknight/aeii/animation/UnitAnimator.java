@@ -12,10 +12,6 @@ public class UnitAnimator extends MapAnimator {
 
     private final ObjectMap<String, Unit> units = new ObjectMap<String, Unit>();
 
-    public UnitAnimator(GameContext context) {
-        super(context);
-    }
-
     public void addUnit(Unit unit, String key) {
         if (unit != null) {
             units.put(key, AER.units.cloneUnit(unit));

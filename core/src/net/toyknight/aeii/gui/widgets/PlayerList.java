@@ -7,6 +7,7 @@ import net.toyknight.aeii.entity.Player;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.manager.RoomManager;
 import net.toyknight.aeii.network.entity.PlayerSnapshot;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.system.AER;
 
 /**
@@ -24,8 +25,8 @@ public class PlayerList extends StringList<PlayerSnapshot> {
     private final int unit_offset;
 
     public PlayerList(GameContext context, int item_height, int ts) {
-        super(context, item_height);
-        this.room_manager = getContext().getRoomManager();
+        super(item_height);
+        this.room_manager = context.getRoomManager();
 
         this.commanders = new Unit[4];
         for (int team = 0; team < 4; team++) {
@@ -51,27 +52,28 @@ public class PlayerList extends StringList<PlayerSnapshot> {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        int ts = AER.ts;
         float x = getX(), y = getY(), width = getWidth();
         float itemY = getHeight();
         for (int index = 0; index < items.size; index++) {
             PlayerSnapshot player = items.get(index);
             if (selection.contains(player)) {
-                batch.draw(getResources().getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
+                batch.draw(AER.resources.getListSelectedBackground(), x, y + itemY - item_height, width, item_height);
             }
-            getContext().getFontRenderer().setTextColor(Color.WHITE);
+            AER.font.setTextColor(Color.WHITE);
             String user_string = player.toString();
-            getContext().getFontRenderer().drawText(batch, user_string,
-                    x + ts / 4, y + itemY - item_height + text_offset + getResources().getTextFont().getCapHeight());
+            AER.font.drawText(batch, user_string,
+                    x + ts / 4, y + itemY - item_height + text_offset + AER.resources.getTextFont().getCapHeight());
 
-            float s_width = getContext().getFontRenderer().getTextLayout(user_string).width;
+            float s_width = AER.font.getTextLayout(user_string).width;
             int ti = 0;
             for (int team = 0; team < 4; team++) {
                 if (hasTeamAccess(player.id, team) && getPlayerType(team) != Player.ROBOT) {
-                    batch.draw(getResources().getBigCircleTexture(0),
+                    batch.draw(AER.resources.getBigCircleTexture(0),
                             x + ts / 4 + s_width + bc_offset + ti * (bc_offset + big_circle_width),
                             y + itemY - item_height + bc_offset,
                             big_circle_width, big_circle_height);
-                    getContext().getCanvasRenderer().drawUnit_(batch, commanders[team],
+                    CanvasRenderer.drawUnit_(batch, commanders[team],
                             x + ts / 4 + s_width + bc_offset + ti * (bc_offset + big_circle_width) + unit_offset,
                             y + itemY - item_height + bc_offset + unit_offset,
                             0, ts);

@@ -2,36 +2,36 @@ package net.toyknight.aeii.gui.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ObjectMap;
-import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.manager.MapEditor;
-import net.toyknight.aeii.gui.widgets.AEIIContainer;
+import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 7/9/2015.
  */
-public class TileSelector extends AEIIContainer {
+public class TileSelector extends Container<ScrollPane> {
 
     private final MapEditor editor;
     private final ObjectMap<Short, TileButton> buttons;
 
-    public TileSelector(GameContext context, MapEditor editor) {
-        super(context);
+    public TileSelector(MapEditor editor) {
         this.editor = editor;
         this.buttons = new ObjectMap<Short, TileButton>();
         this.initComponents();
     }
 
     private void initComponents() {
+        int ts = AER.ts;
         int index = 0;
         Table tile_table = new Table();
         tile_table.padBottom(ts / 4);
         for (short i = 0; i < AER.tiles.getTileCount(); i++) {
             if ((0 <= i && i <= 2) || (15 <= i && i <= 45) || (80 <= i && i < AER.tiles.getTileCount())) {
-                TileButton t_btn = new TileButton(getContext(), getEditor(), i);
+                TileButton t_btn = new TileButton(getEditor(), i);
                 switch (index % 3) {
                     case 0:
                     case 1:
@@ -59,9 +59,9 @@ public class TileSelector extends AEIIContainer {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getResources().getPanelBackground(), getX(), getY(), getWidth(), getHeight());
+        batch.draw(AER.resources.getPanelBackground(), getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
-        getContext().getBorderRenderer().drawBorder(batch, getX(), getY(), getWidth(), getHeight());
+        BorderRenderer.drawBorder(batch, getX(), getY(), getWidth(), getHeight());
     }
 
 }

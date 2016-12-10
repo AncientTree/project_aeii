@@ -43,19 +43,19 @@ public class GameLoadDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        save_list = new StringList<String>(getContext(), ts);
+        save_list = new StringList<String>(ts);
         ScrollPane sp_save_list = new ScrollPane(save_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        getResources().getBorderDarkColor(),
+                        AER.resources.getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_save_list.setBounds(ts / 2, ts * 2, getWidth() - ts, getHeight() - ts * 2 - ts / 2);
         sp_save_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(AER.resources.getListBackground()));
         sp_save_list.setScrollBarPositions(false, true);
         this.addActor(sp_save_list);
 

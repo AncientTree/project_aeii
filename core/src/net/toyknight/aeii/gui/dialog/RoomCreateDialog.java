@@ -58,18 +58,18 @@ public class RoomCreateDialog extends BasicDialog {
     }
 
     private void initComponents() {
-        object_list = new StringList<Object>(getContext(), ts);
+        object_list = new StringList<Object>(ts);
         sp_object_list = new ScrollPane(object_list, getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
                 batch.draw(
-                        getResources().getBorderDarkColor(),
+                        AER.resources.getBorderDarkColor(),
                         getX() - ts / 24, getY() - ts / 24, getWidth() + ts / 12, getHeight() + ts / 12);
                 super.draw(batch, parentAlpha);
             }
         };
         sp_object_list.getStyle().background =
-                new TextureRegionDrawable(new TextureRegion(getResources().getListBackground()));
+                new TextureRegionDrawable(new TextureRegion(AER.resources.getListBackground()));
         sp_object_list.setScrollingDisabled(true, false);
         sp_object_list.setBounds(ts / 2, ts * 2, ts * 6 + ts / 2, getHeight() - ts * 2 - ts / 2);
         addActor(sp_object_list);
@@ -108,18 +108,18 @@ public class RoomCreateDialog extends BasicDialog {
 
         Label lb_capacity = new Label(AER.lang.getText("LB_CAPACITY"), getContext().getSkin());
         setting_pane.add(lb_capacity).width(ts * 3).padBottom(ts / 4).row();
-        spinner_capacity = new NumberSpinner(getContext(), 2, 10, 1);
+        spinner_capacity = new NumberSpinner(2, 10, 1, getContext().getSkin());
         setting_pane.add(spinner_capacity).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_initial_gold = new Label(AER.lang.getText("LB_START_GOLD"), getContext().getSkin());
         setting_pane.add(lb_initial_gold).width(ts * 3).padBottom(ts / 4).row();
-        spinner_gold = new Spinner<Integer>(getContext());
+        spinner_gold = new Spinner<Integer>(getContext().getSkin());
         spinner_gold.setItems(Rule.GOLD_PRESET);
         setting_pane.add(spinner_gold).size(ts * 3, ts).padBottom(ts / 4).row();
 
         lb_max_population = new Label(AER.lang.getText("LB_MAX_POPULATION"), getContext().getSkin());
         setting_pane.add(lb_max_population).width(ts * 3).padBottom(ts / 4).row();
-        spinner_population = new Spinner<Integer>(getContext());
+        spinner_population = new Spinner<Integer>(getContext().getSkin());
         spinner_population.setItems(Rule.POPULATION_PRESET);
         setting_pane.add(spinner_population).size(ts * 3, ts).padBottom(ts / 4).row();
 

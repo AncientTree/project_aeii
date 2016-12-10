@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
 import net.toyknight.aeii.entity.GameCore;
@@ -11,14 +12,15 @@ import net.toyknight.aeii.manager.GameManager;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.gui.GameScreen;
-import net.toyknight.aeii.utils.Platform;
+import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.system.AER;
 
 import java.util.HashMap;
 
 /**
  * @author toyknight 4/26/2015.
  */
-public class ActionButtonBar extends AEIIHorizontalGroup {
+public class ActionButtonBar extends HorizontalGroup {
 
     private final GameScreen screen;
     private final int PADDING_LEFT;
@@ -32,11 +34,11 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
     private float margin_left;
 
     public ActionButtonBar(GameScreen screen) {
-        super(screen.getContext());
+        int ts = AER.ts;
         this.screen = screen;
-        this.PADDING_LEFT = getPlatform().isDesktop() ? ts / 8 : ts / 4;
-        this.BUTTON_WIDTH = getPlatform().isDesktop() ? ts / 24 * 20 : ts / 24 * 40;
-        this.BUTTON_HEIGHT = getPlatform().isDesktop() ? ts / 24 * 21 : ts / 24 * 42;
+        this.PADDING_LEFT = AER.platform.isDesktop() ? ts / 8 : ts / 4;
+        this.BUTTON_WIDTH = AER.platform.isDesktop() ? ts / 24 * 20 : ts / 24 * 40;
+        this.BUTTON_HEIGHT = AER.platform.isDesktop() ? ts / 24 * 21 : ts / 24 * 42;
         this.buttons = new HashMap<String, CircleButton>();
         this.shape_renderer = new ShapeRenderer();
         this.shape_renderer.setAutoShapeType(true);
@@ -44,7 +46,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
     }
 
     private void initComponents() {
-        CircleButton btn_buy = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(0));
+        CircleButton btn_buy = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(0));
         btn_buy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -53,7 +55,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("buy", btn_buy);
-        CircleButton btn_occupy = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(1));
+        CircleButton btn_occupy = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(1));
         btn_occupy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -62,7 +64,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("occupy", btn_occupy);
-        CircleButton btn_repair = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(1));
+        CircleButton btn_repair = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(1));
         btn_repair.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -71,7 +73,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("repair", btn_repair);
-        CircleButton btn_attack = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(2));
+        CircleButton btn_attack = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(2));
         btn_attack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -80,7 +82,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("attack", btn_attack);
-        CircleButton btn_summon = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(3));
+        CircleButton btn_summon = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(3));
         btn_summon.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -89,7 +91,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("summon", btn_summon);
-        CircleButton btn_move = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(4));
+        CircleButton btn_move = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(4));
         btn_move.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,7 +100,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("move", btn_move);
-        CircleButton btn_standby = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(5));
+        CircleButton btn_standby = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(5));
         btn_standby.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -107,7 +109,7 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
             }
         });
         buttons.put("standby", btn_standby);
-        CircleButton btn_heal = new CircleButton(getContext(), CircleButton.SMALL, getResources().getActionIcon(7));
+        CircleButton btn_heal = new CircleButton(CircleButton.SMALL, AER.resources.getActionIcon(7));
         btn_heal.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -120,10 +122,6 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
 
     private GameManager getManager() {
         return screen.getContext().getGameManager();
-    }
-
-    private Platform getPlatform() {
-        return screen.getContext().getPlatform();
     }
 
     private GameCore getGame() {
@@ -209,15 +207,16 @@ public class ActionButtonBar extends AEIIHorizontalGroup {
 
     @Override
     public void draw(Batch batch, float parent_alpha) {
+        int ts = AER.ts;
         if (getChildren().size > 0) {
-            if (getPlatform().isDesktop()) {
+            if (AER.platform.isDesktop()) {
                 batch.end();
                 shape_renderer.begin(ShapeRenderer.ShapeType.Filled);
                 int btn_count = getChildren().size;
                 int background_width = btn_count * BUTTON_WIDTH + (btn_count + 1) * PADDING_LEFT;
-                int background_height = getPlatform().isDesktop() ? ts / 2 : ts;
-                int background_radius = getPlatform().isDesktop() ? ts / 8 : ts / 4;
-                getContext().getBorderRenderer().drawRoundedBackground(shape_renderer,
+                int background_height = AER.platform.isDesktop() ? ts / 2 : ts;
+                int background_radius = AER.platform.isDesktop() ? ts / 8 : ts / 4;
+                BorderRenderer.drawRoundedBackground(shape_renderer,
                         getX() + margin_left, getY() - ts / 12, background_width, background_height, background_radius);
                 shape_renderer.end();
                 batch.begin();

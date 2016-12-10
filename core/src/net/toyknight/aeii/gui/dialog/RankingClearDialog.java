@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.GameException;
-import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.network.NetworkManager;
@@ -31,8 +30,8 @@ public class RankingClearDialog extends BasicDialog {
         Label label_stage_clear = new Label(AER.lang.getText("LB_STAGE_CLEAR"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -67,7 +66,7 @@ public class RankingClearDialog extends BasicDialog {
     private void leave() {
         getContext().onCampaignNextStage();
         getContext().gotoCampaignScreen();
-        AudioManager.loopMainTheme();
+        AER.audio.loopMainTheme();
     }
 
     private void upload() {

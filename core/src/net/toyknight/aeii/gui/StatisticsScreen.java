@@ -11,12 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import net.toyknight.aeii.AudioManager;
 import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.concurrent.AsyncTask;
 import net.toyknight.aeii.entity.GameCore;
 import net.toyknight.aeii.entity.Statistics;
 import net.toyknight.aeii.network.NetworkManager;
+import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
 
 /**
@@ -73,7 +73,7 @@ public class StatisticsScreen extends StageScreen {
         lb_destroy = new Label[4];
         lb_lose = new Label[4];
         for (int team = 0; team < 4; team++) {
-            Texture color = getResources().getTeamBackground(team);
+            Texture color = AER.resources.getTeamBackground(team);
             team_color[team] = new Image(new TextureRegion(color, ts, ts));
             lb_income[team] = new Label("", getContext().getSkin());
             lb_income[team].setAlignment(Align.center);
@@ -85,7 +85,7 @@ public class StatisticsScreen extends StageScreen {
             team_table[team] = new Table() {
                 @Override
                 public void draw(Batch batch, float parentAlpha) {
-                    batch.draw(getResources().getBorderDarkColor(), getX(), getY(), getWidth(), getHeight());
+                    batch.draw(AER.resources.getBorderDarkColor(), getX(), getY(), getWidth(), getHeight());
                     super.draw(batch, parentAlpha);
                 }
             };
@@ -111,7 +111,7 @@ public class StatisticsScreen extends StageScreen {
                 public void onFinish(Void result) {
                     btn_leave.setText(AER.lang.getText("LB_LEAVE"));
                     getContext().gotoLobbyScreen();
-                    AudioManager.loopMainTheme();
+                    AER.audio.loopMainTheme();
                 }
 
                 @Override
@@ -145,9 +145,9 @@ public class StatisticsScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getFontRenderer().drawTitleCenter(batch, AER.lang.getText("LB_STATISTICS"),
+        batch.draw(AER.resources.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        AER.font.drawTitleCenter(batch, AER.lang.getText("LB_STATISTICS"),
                 0, Gdx.graphics.getHeight() - ts * 2, Gdx.graphics.getWidth(), ts * 2);
         batch.end();
         super.draw();

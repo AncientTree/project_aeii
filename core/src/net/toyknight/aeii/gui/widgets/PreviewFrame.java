@@ -1,26 +1,27 @@
 package net.toyknight.aeii.gui.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import net.toyknight.aeii.GameContext;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import net.toyknight.aeii.entity.Status;
+import net.toyknight.aeii.renderer.BorderRenderer;
+import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
  */
-public class PreviewFrame extends AEIIWidget {
+public class PreviewFrame extends Widget {
 
     private int tile_index;
     private int unit_index;
 
     private int status;
 
-    public PreviewFrame(GameContext context) {
-        this(context, 0, 0, -1);
+    public PreviewFrame() {
+        this(0, 0, -1);
     }
 
-    public PreviewFrame(GameContext context, int tile_index, int unit_index, int status) {
-        super(context);
+    public PreviewFrame(int tile_index, int unit_index, int status) {
         this.tile_index = tile_index;
         this.unit_index = unit_index;
         this.status = status;
@@ -40,37 +41,38 @@ public class PreviewFrame extends AEIIWidget {
 
     @Override
     public float getPrefWidth() {
-        return ts;
+        return AER.ts;
     }
 
     @Override
     public float getPrefHeight() {
-        return ts;
+        return AER.ts;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        int ts = AER.ts;
         float x = getX(), y = getY(), width = getWidth(), height = getHeight();
-        batch.draw(getResources().getTileTexture(tile_index), x, y, width, height);
-        getContext().getBorderRenderer().drawBorder(batch, x, y, width, height);
+        batch.draw(AER.resources.getTileTexture(tile_index), x, y, width, height);
+        BorderRenderer.drawBorder(batch, x, y, width, height);
         if (unit_index >= 0) {
-            getContext().getCanvasRenderer().drawUnit_(batch, AER.units.getSample(unit_index), x, y, 0, ts);
+            CanvasRenderer.drawUnit_(batch, AER.units.getSample(unit_index), x, y, 0, ts);
         }
 
-        int sw = ts * getResources().getStatusTexture(0).getRegionWidth() / 24;
-        int sh = ts * getResources().getStatusTexture(0).getRegionHeight() / 24;
+        int sw = ts * AER.resources.getStatusTexture(0).getRegionWidth() / 24;
+        int sh = ts * AER.resources.getStatusTexture(0).getRegionHeight() / 24;
         switch (status) {
             case Status.BLINDED:
-                batch.draw(getResources().getStatusTexture(3), x, y + height - sh, sw, sh);
+                batch.draw(AER.resources.getStatusTexture(3), x, y + height - sh, sw, sh);
                 break;
             case Status.INSPIRED:
-                batch.draw(getResources().getStatusTexture(1), x, y + height - sh, sw, sh);
+                batch.draw(AER.resources.getStatusTexture(1), x, y + height - sh, sw, sh);
                 break;
             case Status.POISONED:
-                batch.draw(getResources().getStatusTexture(0), x, y + height - sh, sw, sh);
+                batch.draw(AER.resources.getStatusTexture(0), x, y + height - sh, sw, sh);
                 break;
             case Status.SLOWED:
-                batch.draw(getResources().getStatusTexture(2), x, y + height - sh, sw, sh);
+                batch.draw(AER.resources.getStatusTexture(2), x, y + height - sh, sw, sh);
                 break;
         }
         batch.flush();

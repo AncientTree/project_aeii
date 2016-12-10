@@ -4,14 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import net.toyknight.aeii.entity.Tile;
-import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.gui.widgets.PreviewFrame;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
  */
-public class TilePage extends AEIITable {
+public class TilePage extends Table {
 
     private final Wiki wiki;
 
@@ -22,17 +21,17 @@ public class TilePage extends AEIITable {
     private final Label label_hp_recovery_value;
 
     public TilePage(Wiki wiki) {
-        super(wiki.getContext());
+        int ts = AER.ts;
         this.wiki = wiki;
 
-        tile_preview = new PreviewFrame(getContext());
+        tile_preview = new PreviewFrame();
         tile_preview.setUnitIndex(-1);
         add(tile_preview).padBottom(ts / 8).row();
 
         Table data_pane = new Table() {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

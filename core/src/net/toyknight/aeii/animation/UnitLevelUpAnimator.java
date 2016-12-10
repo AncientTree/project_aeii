@@ -1,8 +1,9 @@
 package net.toyknight.aeii.animation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import net.toyknight.aeii.GameContext;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.renderer.CanvasRenderer;
+import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 5/20/2015.
@@ -11,8 +12,7 @@ public class UnitLevelUpAnimator extends UnitAnimator {
 
     private int current_frame = 0;
 
-    public UnitLevelUpAnimator(GameContext context, Unit unit) {
-        super(context);
+    public UnitLevelUpAnimator(Unit unit) {
         addUnit(unit, "target");
     }
 
@@ -22,11 +22,11 @@ public class UnitLevelUpAnimator extends UnitAnimator {
         int screen_x = getCanvas().getXOnScreen(unit.getX());
         int screen_y = getCanvas().getYOnScreen(unit.getY());
         if (current_frame <= 10) {
-            batch.setShader(getResources().getWhiteMaskShader((10 - current_frame) * 0.1f));
+            batch.setShader(AER.resources.getWhiteMaskShader((10 - current_frame) * 0.1f));
         } else {
-            batch.setShader(getResources().getWhiteMaskShader((current_frame - 10) * 0.1f));
+            batch.setShader(AER.resources.getWhiteMaskShader((current_frame - 10) * 0.1f));
         }
-        getCanvas().getRenderer().drawUnit_(batch, unit, screen_x, screen_y, 0, ts());
+        CanvasRenderer.drawUnit_(batch, unit, screen_x, screen_y, 0, ts());
         batch.setShader(null);
         batch.flush();
     }

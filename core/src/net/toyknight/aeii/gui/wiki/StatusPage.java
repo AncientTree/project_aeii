@@ -2,14 +2,14 @@ package net.toyknight.aeii.gui.wiki;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import net.toyknight.aeii.gui.widgets.AEIITable;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import net.toyknight.aeii.gui.widgets.PreviewFrame;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
  */
-public class StatusPage extends AEIITable {
+public class StatusPage extends Table {
 
     private final Wiki wiki;
 
@@ -18,10 +18,10 @@ public class StatusPage extends AEIITable {
     private final Label label_description;
 
     public StatusPage(Wiki wiki) {
-        super(wiki.getContext());
+        int ts = AER.ts;
         this.wiki = wiki;
 
-        status_preview = new PreviewFrame(getContext());
+        status_preview = new PreviewFrame();
         status_preview.setTileIndex(18);
         status_preview.setUnitIndex(0);
         add(status_preview).size(ts, ts).padBottom(ts / 8).row();
@@ -29,8 +29,8 @@ public class StatusPage extends AEIITable {
         label_description = new Label("", getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(),
-                        this.getX(), this.getY() + this.getHeight() + ts / 8, this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(),
+                        this.getX(), this.getY() + this.getHeight() + AER.ts / 8, this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

@@ -19,7 +19,6 @@ public class BackgroundFadeAnimator extends Animator {
     private ShapeRenderer shape_renderer;
 
     public BackgroundFadeAnimator(float r, float g, float b) {
-        super(null);
         this.start_r = r;
         this.start_g = g;
         this.start_b = b;

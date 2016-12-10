@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import net.toyknight.aeii.GameContext;
-import net.toyknight.aeii.ResourceManager;
 import net.toyknight.aeii.entity.Unit;
+import net.toyknight.aeii.renderer.CanvasRenderer;
+import net.toyknight.aeii.system.AER;
+import net.toyknight.aeii.utils.TextureUtil;
 
 import java.util.Random;
 
@@ -34,9 +35,8 @@ public class HavensFuryAnimator extends UnitAnimator {
 
     private float shake_delay = 0f;
 
-    public HavensFuryAnimator(GameContext context, Unit target) {
-        super(context);
-        smoke_frames = ResourceManager.createFrames(getResources().getSmokeTexture(), 4, 1);
+    public HavensFuryAnimator(Unit target) {
+        smoke_frames = TextureUtil.createFrames(AER.resources.getSmokeTexture(), 4, 1);
         smoke_offset_x = new float[4][4];
         smoke_offset_y = new float[4][4];
         for (int index = 0; index < 4; index++) {
@@ -45,8 +45,8 @@ public class HavensFuryAnimator extends UnitAnimator {
                 smoke_offset_y[index][frame] = 0f;
             }
         }
-        Texture texture_white_spark = getResources().getWhiteSparkTexture();
-        this.spark_animation = new Animation(1f / 15, ResourceManager.createFrames(texture_white_spark, 6, 1));
+        Texture texture_white_spark = AER.resources.getWhiteSparkTexture();
+        this.spark_animation = new Animation(1f / 15, TextureUtil.createFrames(texture_white_spark, 6, 1));
         target_screen_x = getCanvas().getXOnScreen(target.getX());
         target_screen_y = getCanvas().getYOnScreen(target.getY());
         spark_screen_y = Gdx.graphics.getHeight();
@@ -56,7 +56,7 @@ public class HavensFuryAnimator extends UnitAnimator {
     @Override
     public void render(Batch batch) {
         Unit target = getUnit("target");
-        getCanvas().getRenderer().drawUnitWithInformation(batch, target, target.getX(), target.getY());
+        CanvasRenderer.drawUnitWithInformation(batch, target, target.getX(), target.getY());
         for (int frame = 0; frame < 4; frame++) {
             for (int index = 0; index < 4 - frame; index++) {
                 batch.draw(smoke_frames[frame],

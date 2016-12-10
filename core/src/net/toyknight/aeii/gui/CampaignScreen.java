@@ -15,6 +15,7 @@ import net.toyknight.aeii.campaign.StageController;
 import net.toyknight.aeii.gui.dialog.CampaignModeDialog;
 import net.toyknight.aeii.gui.dialog.LeaderboardDialog;
 import net.toyknight.aeii.gui.widgets.StringList;
+import net.toyknight.aeii.renderer.BorderRenderer;
 import net.toyknight.aeii.system.AER;
 
 /**
@@ -46,7 +47,7 @@ public class CampaignScreen extends StageScreen {
         label_scenarios.setBounds(ts / 2, Gdx.graphics.getHeight() - ts, list_width, ts);
         addActor(label_scenarios);
 
-        scenario_list = new StringList<CampaignController.Snapshot>(getContext(), ts);
+        scenario_list = new StringList<CampaignController.Snapshot>(ts);
         scenario_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
@@ -69,7 +70,7 @@ public class CampaignScreen extends StageScreen {
         label_stages.setBounds(list_width + ts, Gdx.graphics.getHeight() - ts, list_width, ts);
         addActor(label_stages);
 
-        stage_list = new StringList<StageController.Snapshot>(getContext(), ts);
+        stage_list = new StringList<StageController.Snapshot>(ts);
         stage_list.setListener(new StringList.SelectionListener() {
             @Override
             public void onSelect(int index, Object value) {
@@ -194,14 +195,14 @@ public class CampaignScreen extends StageScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(getResources().getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        getContext().getBorderRenderer().drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(AER.resources.getPanelBackground(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        BorderRenderer.drawBorder(batch, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(
-                getResources().getBorderDarkColor(),
+                AER.resources.getBorderDarkColor(),
                 sp_scenario_list.getX() - ts / 24, sp_scenario_list.getY() - ts / 24,
                 sp_scenario_list.getWidth() + ts / 12, sp_scenario_list.getHeight() + ts / 12);
         batch.draw(
-                getResources().getBorderDarkColor(),
+                AER.resources.getBorderDarkColor(),
                 sp_stage_list.getX() - ts / 24, sp_stage_list.getY() - ts / 24,
                 sp_stage_list.getWidth() + ts / 12, sp_stage_list.getHeight() + ts / 12);
         batch.end();

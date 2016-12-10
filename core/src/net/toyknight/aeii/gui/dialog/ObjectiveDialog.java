@@ -30,7 +30,7 @@ public class ObjectiveDialog extends BasicDialog {
         Label label_title = new Label(AER.lang.getText("LB_OBJECTIVE"), getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };

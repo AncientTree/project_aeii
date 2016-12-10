@@ -2,19 +2,19 @@ package net.toyknight.aeii.gui.wiki;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/17/2016.
  */
-public class AboutPage extends AEIITable {
+public class AboutPage extends Table {
 
     private final Wiki wiki;
 
     public AboutPage(Wiki wiki) {
-        super(wiki.getContext());
+        int ts = AER.ts;
         this.wiki = wiki;
 
         Label label_about_p1 = new Label(AER.lang.getText("WIKI_ABOUT_P1"), getWiki().getContext().getSkin());
@@ -27,8 +27,8 @@ public class AboutPage extends AEIITable {
         Label label_credits = new Label(AER.lang.getText("LB_CREDITS"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -71,7 +71,7 @@ public class AboutPage extends AEIITable {
     }
 
     private void addName(String name) {
-        add(new Label(name, getWiki().getContext().getSkin())).width(ts * 7).padBottom(ts / 8).row();
+        add(new Label(name, getWiki().getContext().getSkin())).width(AER.ts * 7).padBottom(AER.ts / 8).row();
     }
 
     public Wiki getWiki() {

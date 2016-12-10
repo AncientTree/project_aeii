@@ -84,7 +84,7 @@ public class MainMenu extends BasicDialog {
             }
         });
         this.add(btn_help).width(BUTTON_WIDTH).height(BUTTON_HEIGHT).pad(MARGIN).padTop(0).row();
-        if (getContext().getPlatform() != Platform.iOS) {
+        if (AER.platform != Platform.iOS) {
             TextButton btn_exit = new TextButton(AER.lang.getText("LB_EXIT"), getContext().getSkin());
             btn_exit.addListener(new ClickListener() {
                 @Override

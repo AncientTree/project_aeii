@@ -1,4 +1,4 @@
-package net.toyknight.aeii;
+package net.toyknight.aeii.system;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -8,17 +8,18 @@ import net.toyknight.aeii.utils.FileProvider;
 import java.util.Random;
 
 /**
- * @author Zeo 4/7/15.
+ * @author Zeo 07/04/2015.
  */
-public class AudioManager {
-    private static final String AUDIO_PATH = "audio/";
-    private static final String MUSIC_PATH = "music/";
-    private static final String SE_PATH = "se/";
-    private static final String MAIN_THEME = "main_theme.mp3";
-    private static final String[] BGM_LIST = new String[]{"bg_good.mp3", "bg_bad.mp3"};
+public class Audio {
 
-    public static float musicVolume = 1.0f;
-    public static float seVolume = 0.8f;
+    private final String AUDIO_PATH = "audio/";
+    private final String MUSIC_PATH = "music/";
+    private final String SE_PATH = "se/";
+    private final String MAIN_THEME = "main_theme.mp3";
+    private final String[] BGM_LIST = new String[]{"bg_good.mp3", "bg_bad.mp3"};
+
+    public float musicVolume = 1.0f;
+    public float seVolume = 0.8f;
 
     private static Music music;
 
@@ -27,7 +28,7 @@ public class AudioManager {
      *
      * @param fileName the music file name(with extension)
      */
-    public static void playBGM(String fileName, boolean loop) {
+    public void playBGM(String fileName, boolean loop) {
         if (musicVolume > 0f) {
             String pathToFile = AUDIO_PATH + MUSIC_PATH + fileName;
 
@@ -54,14 +55,14 @@ public class AudioManager {
      * Play main theme music.
      */
 
-    public static void loopMainTheme() {
+    public void loopMainTheme() {
         playBGM(MAIN_THEME, true);
     }
 
     /**
      * Stop and dispose current music.
      */
-    public static void stopCurrentBGM() {
+    public void stopCurrentBGM() {
         if (music != null) {
             if (music.isPlaying()) {
                 music.stop();
@@ -75,7 +76,7 @@ public class AudioManager {
      *
      * @param volume the volume of music
      */
-    public static void setMusicVolume(float volume) {
+    public void setMusicVolume(float volume) {
         musicVolume = volume;
         if (music == null) {
             if (volume > 0f) {
@@ -96,14 +97,14 @@ public class AudioManager {
      *
      * @param volume the volume of sound effects
      */
-    public static void setSEVolume(float volume) {
+    public void setSEVolume(float volume) {
         seVolume = volume;
     }
 
     /**
      * Play music randomly. All audio files are in "asset/music/" directory in project.
      */
-    public static void playRandomBGM() {
+    public void playRandomBGM() {
         if (musicVolume > 0f) {
             stopCurrentBGM();
 
@@ -126,7 +127,7 @@ public class AudioManager {
      *
      * @param startBGM the starting music file name(with extension)
      */
-    public static void playRandomBGM(String startBGM) {
+    public void playRandomBGM(String startBGM) {
         if (musicVolume > 0f) {
             String pathToFile = AUDIO_PATH + MUSIC_PATH + startBGM;
 
@@ -152,7 +153,7 @@ public class AudioManager {
      * @param fileName the sound file name(with extension)
      * @return the ID of sound
      */
-    public static long playSE(String fileName) {
+    public long playSE(String fileName) {
         String pathToFile = AUDIO_PATH + SE_PATH + fileName;
 
         Sound se = Gdx.audio.newSound(FileProvider.getAssetsFile(pathToFile));
@@ -163,14 +164,14 @@ public class AudioManager {
     /**
      * Mute music.
      */
-    public static void muteBGM() {
+    public void muteBGM() {
         setMusicVolume(0f);
     }
 
     /**
      * Mute sound.
      */
-    public static void muteSE() {
+    public void muteSE() {
         seVolume = 0.0f;
     }
 
@@ -179,7 +180,7 @@ public class AudioManager {
      *
      * @return the bgm path
      */
-    private static String getRandomBgmPath() {
+    private String getRandomBgmPath() {
         Random random = new Random();
         return AUDIO_PATH + MUSIC_PATH + BGM_LIST[random.nextInt(BGM_LIST.length)];
     }

@@ -9,13 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import net.toyknight.aeii.entity.Ability;
 import net.toyknight.aeii.entity.Status;
-import net.toyknight.aeii.gui.widgets.AEIITable;
 import net.toyknight.aeii.system.AER;
 
 /**
  * @author toyknight 6/16/2016.
  */
-public class AbilityPage extends AEIITable {
+public class AbilityPage extends Table {
 
     private final Wiki wiki;
 
@@ -28,7 +27,7 @@ public class AbilityPage extends AEIITable {
     private final Label label_none;
 
     public AbilityPage(Wiki wiki) {
-        super(wiki.getContext());
+        int ts = AER.ts;
         this.wiki = wiki;
 
         label_description = new Label("", getWiki().getContext().getSkin());
@@ -38,8 +37,8 @@ public class AbilityPage extends AEIITable {
         Label label_uha = new Label(AER.lang.getText("LB_UHA"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -52,8 +51,8 @@ public class AbilityPage extends AEIITable {
         Label label_references = new Label(AER.lang.getText("LB_REFERENCES"), getWiki().getContext().getSkin()) {
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
-                batch.draw(getResources().getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY(), this.getWidth(), 1);
+                batch.draw(AER.resources.getWhiteColor(), this.getX(), this.getY() + this.getHeight(), this.getWidth(), 1);
                 super.draw(batch, parentAlpha);
             }
         };
@@ -71,6 +70,7 @@ public class AbilityPage extends AEIITable {
     }
 
     public void setAbility(int ability) {
+        int ts = AER.ts;
         label_description.setText(AER.lang.getAbilityDescription(ability));
 
         int count = 0;
@@ -78,7 +78,7 @@ public class AbilityPage extends AEIITable {
         for (int index = 0; index < AER.units.getUnitCount(); index++) {
             if (AER.units.getSample(index).hasAbility(ability)) {
                 ReferenceLabel reference_unit =
-                        new ReferenceLabel(getContext(), ReferenceLabel.TYPE_UNIT, index);
+                        new ReferenceLabel(ReferenceLabel.TYPE_UNIT, index, getWiki().getContext().getSkin());
                 reference_unit.addListener(unit_reference_click_listener);
                 unit_references.add(reference_unit).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 count++;
@@ -115,19 +115,19 @@ public class AbilityPage extends AEIITable {
                 break;
             case Ability.ATTACK_AURA:
                 ReferenceLabel reference_status = new ReferenceLabel(
-                        getContext(), ReferenceLabel.TYPE_STATUS, Status.INSPIRED);
+                        ReferenceLabel.TYPE_STATUS, Status.INSPIRED, getWiki().getContext().getSkin());
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.BLINDER:
                 reference_status = new ReferenceLabel(
-                        getContext(), ReferenceLabel.TYPE_STATUS, Status.BLINDED);
+                        ReferenceLabel.TYPE_STATUS, Status.BLINDED, getWiki().getContext().getSkin());
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.MARKSMAN:
                 ReferenceLabel reference_ability = new ReferenceLabel(
-                        getContext(), ReferenceLabel.TYPE_ABILITY, Ability.AIR_FORCE);
+                        ReferenceLabel.TYPE_ABILITY, Ability.AIR_FORCE, getWiki().getContext().getSkin());
                 reference_ability.addListener(content_reference_click_listener);
                 content_references.add(reference_ability).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
@@ -136,13 +136,13 @@ public class AbilityPage extends AEIITable {
             case Ability.REHABILITATION:
             case Ability.UNDEAD:
                 reference_status = new ReferenceLabel(
-                        getContext(), ReferenceLabel.TYPE_STATUS, Status.POISONED);
+                        ReferenceLabel.TYPE_STATUS, Status.POISONED, getWiki().getContext().getSkin());
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;
             case Ability.SLOWING_AURA:
                 reference_status = new ReferenceLabel(
-                        getContext(), ReferenceLabel.TYPE_STATUS, Status.SLOWED);
+                        ReferenceLabel.TYPE_STATUS, Status.SLOWED, getWiki().getContext().getSkin());
                 reference_status.addListener(content_reference_click_listener);
                 content_references.add(reference_status).width(ts * 7 - ts / 4).padBottom(ts / 8).row();
                 break;

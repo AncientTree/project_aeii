@@ -17,13 +17,7 @@ public class FileProvider {
 
     private static final String user_home = System.getProperty("user.home") + "/.aeii/";
 
-    private static Platform platform = Platform.Desktop;
-
     private FileProvider() {
-    }
-
-    public static void setPlatform(Platform platform) {
-        FileProvider.platform = platform;
     }
 
     public static FileHandle getAssetsFile(String path) {
@@ -32,7 +26,7 @@ public class FileProvider {
 
     public static FileHandle getUserFile(String path) {
         FileHandle file;
-        switch (platform) {
+        switch (AER.platform) {
             case Android:
             case iOS:
                 file = Gdx.files.local(".aeii/" + path);
@@ -47,7 +41,7 @@ public class FileProvider {
 
     public static FileHandle getUserDir(String path) {
         FileHandle dir;
-        switch (platform) {
+        switch (AER.platform) {
             case Android:
             case iOS:
                 dir = Gdx.files.local(".aeii/" + path);
@@ -64,7 +58,7 @@ public class FileProvider {
         FileHandle save_dir = getUserDir("save");
         validateDirectory(save_dir);
         FileHandle file;
-        switch (platform) {
+        switch (AER.platform) {
             case Android:
             case iOS:
                 file = Gdx.files.local(".aeii/save/" + filename);
