@@ -71,6 +71,10 @@ public class GameContext extends Game implements GameManagerListener {
     private MapManagementScreen map_management_screen;
     private CampaignScreen campaign_screen;
 
+    public GameContext(Platform platform) {
+        this(platform, -1);
+    }
+
     public GameContext(Platform platform, int ts) {
         AER.ts = ts;
         AER.platform = platform;

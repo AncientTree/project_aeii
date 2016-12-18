@@ -1,5 +1,6 @@
 package net.toyknight.aeii.system;
 
+import com.badlogic.gdx.Gdx;
 import net.toyknight.aeii.GameException;
 import net.toyknight.aeii.utils.Platform;
 
@@ -26,6 +27,7 @@ public class AER {
     }
 
     public static void initialize() throws GameException {
+        ts = ts < 0 ? Gdx.graphics.getHeight() / 10 : ts;
         initializeData();
         lang = new Language();
         lang.initialize();

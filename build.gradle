@@ -1,10 +1,13 @@
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'org.multi-os-engine:moe-gradle:1.2.3'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.2.0'
     }
 }
@@ -16,12 +19,8 @@ allprojects {
     version = '1.3.0.1'
     ext {
         appName = 'project_aeii'
-        gdxVersion = '1.9.3'
+        gdxVersion = '1.9.5'
         roboVMVersion = '2.2.0'
-        box2DLightsVersion = '1.3'
-        ashleyVersion = '1.3.1'
-        aiVersion = '1.5.0'
-        rhinoVersion = '1.7R2'
         kryonetVersion = '2.22.0-RC1'
         jsonVersion = '20151123'
     }
@@ -77,6 +76,19 @@ project(":ios") {
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+    }
+}
+
+project(":ios-moe") {
+    apply plugin: "moe"
+
+    configurations { natives }
+
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
     }
 }
 
