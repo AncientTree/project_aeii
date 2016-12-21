@@ -397,6 +397,10 @@ public class CampaignContext {
             return getContext().getGame().getPlayer(team).getGold();
         }
 
+        public int get_income(int team) {
+            return getContext().getGame().calcIncome(team);
+        }
+
         public int current_team() {
             return getContext().getGame().getCurrentTeam();
         }

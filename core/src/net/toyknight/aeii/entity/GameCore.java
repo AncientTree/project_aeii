@@ -340,7 +340,7 @@ public class GameCore implements Serializable {
         getPlayer(team).setPopulation(population);
     }
 
-    private int calcIncome(int team) {
+    public int calcIncome(int team) {
         int income = 0;
         for (Position position : getMap().getCastlePositions()) {
             if (getMap().getTile(position).getTeam() == team) {
