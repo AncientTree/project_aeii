@@ -24,7 +24,7 @@ public class HavensFuryAnimator extends UnitAnimator {
     private final float[][] smoke_offset_x;
     private final float[][] smoke_offset_y;
 
-    private final Animation spark_animation;
+    private final Animation<TextureRegion> spark_animation;
 
     private final float target_screen_x;
     private final float target_screen_y;
@@ -46,7 +46,7 @@ public class HavensFuryAnimator extends UnitAnimator {
             }
         }
         Texture texture_white_spark = AER.resources.getWhiteSparkTexture();
-        this.spark_animation = new Animation(1f / 15, GraphicsUtil.createFrames(texture_white_spark, 6, 1));
+        this.spark_animation = new Animation<TextureRegion>(1f / 15, GraphicsUtil.createFrames(texture_white_spark, 6, 1));
         target_screen_x = getCanvas().getXOnScreen(target.getX());
         target_screen_y = getCanvas().getYOnScreen(target.getY());
         spark_screen_y = Gdx.graphics.getHeight();

@@ -3,6 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectSet;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.renderer.CanvasRenderer;
@@ -14,7 +15,7 @@ import net.toyknight.aeii.utils.GraphicsUtil;
  */
 public class UnitSparkAnimator extends UnitAnimator {
 
-    private Animation spark_animation;
+    private Animation<TextureRegion> spark_animation;
 
     public UnitSparkAnimator(Unit unit) {
         createAnimation();
@@ -31,7 +32,7 @@ public class UnitSparkAnimator extends UnitAnimator {
 
     private void createAnimation() {
         Texture texture_white_spark = AER.resources.getWhiteSparkTexture();
-        spark_animation = new Animation(1f / 15, GraphicsUtil.createFrames(texture_white_spark, 6, 1));
+        spark_animation = new Animation<TextureRegion>(1f / 15, GraphicsUtil.createFrames(texture_white_spark, 6, 1));
     }
 
     @Override

@@ -12,7 +12,7 @@ import net.toyknight.aeii.utils.GraphicsUtil;
  */
 public class CursorAnimator extends MapAnimator {
 
-    private final Animation cursor_animation;
+    private final Animation<TextureRegion> cursor_animation;
 
     public CursorAnimator() {
         Texture cursor_texture = AER.resources.getNormalCursorTexture();

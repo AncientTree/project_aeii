@@ -3,6 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.system.AER;
@@ -16,7 +17,7 @@ public class SummonAnimator extends UnitAnimator {
     private final int target_x;
     private final int target_y;
 
-    private final Animation spark_animation;
+    private final Animation<TextureRegion> spark_animation;
 
     public SummonAnimator(Unit summoner, int target_x, int target_y) {
         this.target_x = target_x;

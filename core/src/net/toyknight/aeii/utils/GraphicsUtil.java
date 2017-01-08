@@ -31,9 +31,9 @@ public class GraphicsUtil {
         return frames;
     }
 
-    public static Animation createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
+    public static Animation<TextureRegion> createAnimation(Texture sheet, int cols, int rows, float frame_duration) {
         TextureRegion[] frames = createFrames(sheet, cols, rows);
-        return new Animation(frame_duration, frames);
+        return new Animation<TextureRegion>(frame_duration, frames);
     }
 
     public static TextureRegionDrawable createDrawable(Texture texture) {

@@ -3,6 +3,7 @@ package net.toyknight.aeii.animation;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.toyknight.aeii.entity.Unit;
 import net.toyknight.aeii.renderer.CanvasRenderer;
 import net.toyknight.aeii.system.AER;
@@ -28,11 +29,11 @@ public class UnitAttackAnimator extends UnitAnimator {
     private int target_dy = 0;
     private int current_step = 0;
 
-    private final Animation attack_spark_animation;
+    private final Animation<TextureRegion> attack_spark_animation;
 
     public UnitAttackAnimator(Unit attacker, Unit target, int damage) {
         Texture texture_attack_spark = AER.resources.getAttackSparkTexture();
-        this.attack_spark_animation = new Animation(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
+        this.attack_spark_animation = new Animation<TextureRegion>(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(attacker, ATTACKER_KEY);
         this.addUnit(target, TARGET_KEY);
         this.target_x = target.getX();
@@ -42,7 +43,7 @@ public class UnitAttackAnimator extends UnitAnimator {
 
     public UnitAttackAnimator(Unit attacker, int target_x, int target_y) {
         Texture texture_attack_spark = AER.resources.getAttackSparkTexture();
-        this.attack_spark_animation = new Animation(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
+        this.attack_spark_animation = new Animation<TextureRegion>(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(attacker, ATTACKER_KEY);
         this.damage = -1;
         this.target_x = target_x;
@@ -51,7 +52,7 @@ public class UnitAttackAnimator extends UnitAnimator {
 
     public UnitAttackAnimator(Unit target, int damage) {
         Texture texture_attack_spark = AER.resources.getAttackSparkTexture();
-        this.attack_spark_animation = new Animation(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
+        this.attack_spark_animation = new Animation<TextureRegion>(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
         this.addUnit(target, TARGET_KEY);
         this.damage = damage;
         this.target_x = target.getX();
@@ -60,7 +61,7 @@ public class UnitAttackAnimator extends UnitAnimator {
 
     public UnitAttackAnimator(int target_x, int target_y) {
         Texture texture_attack_spark = AER.resources.getAttackSparkTexture();
-        this.attack_spark_animation = new Animation(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
+        this.attack_spark_animation = new Animation<TextureRegion>(1f / 30, GraphicsUtil.createFrames(texture_attack_spark, 6, 1));
         this.damage = -1;
         this.target_x = target_x;
         this.target_y = target_y;

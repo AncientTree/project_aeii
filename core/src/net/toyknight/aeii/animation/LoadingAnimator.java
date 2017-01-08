@@ -14,7 +14,7 @@ import net.toyknight.aeii.utils.GraphicsUtil;
  */
 public class LoadingAnimator extends Animator {
 
-    private final Animation animation;
+    private final Animation<TextureRegion> animation;
     private final ShapeRenderer shape_renderer;
 
     public LoadingAnimator() {

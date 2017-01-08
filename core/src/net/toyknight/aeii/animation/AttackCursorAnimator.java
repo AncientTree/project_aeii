@@ -13,7 +13,7 @@ import net.toyknight.aeii.utils.GraphicsUtil;
 public class AttackCursorAnimator extends MapAnimator {
 
 
-    private final Animation attack_cursor_animation;
+    private final Animation<TextureRegion> attack_cursor_animation;
 
     public AttackCursorAnimator() {
         Texture attack_cursor_texture = AER.resources.getAttackCursorTexture();
