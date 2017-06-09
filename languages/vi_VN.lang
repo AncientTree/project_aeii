@@ -1,0 +1,170 @@
+
+#Specifies the font used for this language
+font=vi_VN.ttf
+
+#For prefix C = Campaign, L = Label, M = Message, P = Paragraph, T = Title
+
+L_ABILITIES=Khả Năng
+L_CAMPAIGN=Chiến Dịch
+L_CONNECTING=Đang Kết Nối...
+L_CREDITS=Tín Dụng
+L_CURRENT_TURN=Số Lượt
+L_DIFFICULTY=Chế Độ
+L_END_TURN=Kết Thúc Lượt
+L_EXIT=Thoát
+L_HEIGHT=Chiều Cao
+L_HELP=Giúp
+L_INCOME=Thu Nhập
+L_LEAVE_GAME=Thoát Trò Chơi
+L_LOAD_GAME=Tải Trò Chơi
+L_MAP_EDITOR=Chỉnh Sửa Bản Đồ
+L_MUSIC_VOLUME=Nhạc Nền
+L_NONE=Không Có Gì
+L_OBJECTIVES=Mục Tiêu
+L_OPEN=Mở Ra
+L_PLAYER_NONE=Không Có Gì
+L_PLAYER_ROBOT=Máy
+L_PLAYER_TYPE=Kiểu
+L_PREVIEW=Xem Trước
+L_RECRUIT=Chiêu Mộ
+L_REFERENCES=Tài Liệu Tham Khảo
+L_SAVE=Lưu
+L_SAVE_GAME=Lưu
+L_SAVING=Đang Lưu...
+L_SCENARIOS=Cốt Truyện
+L_SE_VOLUME=Nhạc Hành Động
+L_SKIRMISH=Giao Tranh
+L_STAGES=Tiến Trình
+L_TEAM=Đội
+L_UHA=Các Đơn Vị Có Khả Năng Này
+L_USERNAME=Tên Đăng Nhập
+L_WIDTH=Chiều Ngang
+L_ZOOM_IN=Zoom In
+L_ZOOM_OUT=Zoom Out
+
+#ability names
+L_ABILITY_NAME_0=Chiếm Giữ
+L_ABILITY_NAME_1=Chiến Binh Của Nước
+L_ABILITY_NAME_2=Chiến Binh Của Núi
+L_ABILITY_NAME_3=Chiến Binh Của Rừng
+L_ABILITY_NAME_4=Phá Hủy
+L_ABILITY_NAME_5=Không Quân
+L_ABILITY_NAME_6=Thầy Gọi Hồn
+L_ABILITY_NAME_7=Chữa Trị
+L_ABILITY_NAME_8=Đánh Rồi Chạy
+L_ABILITY_NAME_9=Tẩm Thuốc Độc
+L_ABILITY_NAME_10=Thợ Sửa Chữa
+L_ABILITY_NAME_11=Bất Tử
+L_ABILITY_NAME_12=Thiện Xạ
+L_ABILITY_NAME_13=Con Của Nước
+L_ABILITY_NAME_14=Con Của Núi
+L_ABILITY_NAME_15=Con Của Rừng
+L_ABILITY_NAME_16=Đi Qua Nhanh
+L_ABILITY_NAME_17=Khí Tê Liệt
+L_ABILITY_NAME_18=Chỉ Huy
+L_ABILITY_NAME_19=Máy Hạng Nặng
+L_ABILITY_NAME_20=Khí Tấn Công
+L_ABILITY_NAME_21=Khát Máu
+L_ABILITY_NAME_22=Bảo Vệ
+L_ABILITY_NAME_23=Khí Tươi Tỉnh
+L_ABILITY_NAME_24=Chúa Tể Của Sự Khủng Khiếp
+L_ABILITY_NAME_25=Phản Đòn Điên Cuồng
+L_ABILITY_NAME_26=Tấn Công Mù Lòa
+L_ABILITY_NAME_27=Sự Phục Hồi
+L_ABILITY_NAME_28=Hard Skin
+L_ABILITY_NAME_29=Soft Body
+
+#status names
+L_STATUS_NAME_0=Thuốc độc
+L_STATUS_NAME_1=Tê Liệt
+L_STATUS_NAME_2=Cảm hứng
+L_STATUS_NAME_3=Mù lòa
+
+#unit names
+L_UNIT_NAME_0=Binh Lính
+L_UNIT_NAME_1=Cung Thủ
+L_UNIT_NAME_2=Nguyên Tố
+L_UNIT_NAME_3=Nữ Phù Thủy
+L_UNIT_NAME_4=Tinh Linh
+L_UNIT_NAME_5=Chó Sói
+L_UNIT_NAME_6=Khổng lồ
+L_UNIT_NAME_7=Máy Ném Đá
+L_UNIT_NAME_8=Rồng
+L_UNIT_NAME_9=Chỉ Huy
+L_UNIT_NAME_10=Bộ Xương
+L_UNIT_NAME_11=Pha Lê
+L_UNIT_NAME_12=Hiệp Sĩ Giang Hồ
+L_UNIT_NAME_13=Kẻ Náo Loạn
+L_UNIT_NAME_14=Bóng Ma
+L_UNIT_NAME_15=Pháp Sư Đen
+L_UNIT_NAME_16=Cung Cưỡi Sói
+L_UNIT_NAME_17=Nguyên Tố Băng
+L_UNIT_NAME_18=Bùn Đất
+
+M_CONFIRM_EXIT_GAME=Exit Game?
+M_INFO_HAVENS_FURY_ACTIVATE=KHỞI ĐỘNG CƠN GIẬN CHÚA TRỜI
+M_INFO_HAVENS_FURY_TARGET=XÁC ĐỊNH MỤC TIÊU...
+M_INFO_OCCUPIED=Chiếm Giữ
+M_INFO_REPAIRED=Sửa Chữa
+M_INFO_STAGE_CLEARED=Hoàn Thành Tiến Trình
+M_INFO_STAGE_FAILED=Tiến Trình Thất Bại
+M_OBJECTIVE_SKIRMISH_1=Tiêu diệt tất cả kẻ thù
+M_OBJECTIVE_SKIRMISH_2=Chiếm giữ tất cả lâu đài kẻ thù
+
+P_ABILITY_DESCRIPTION_0=Đơn vị này có khả năng chiếm giữ làng.
+P_ABILITY_DESCRIPTION_1=Đơn vị này có khả năng tăng 10 tấn công / phòng thủ dưới nước.
+P_ABILITY_DESCRIPTION_2=Đơn vị này có khả năng tăng 10 tấn công / phòng thủ trong rừng.
+P_ABILITY_DESCRIPTION_3=Đơn vị này có khả năng tăng 10 tấn công / phòng thủ trên núi.
+P_ABILITY_DESCRIPTION_4=Đơn vị này có khả năng phá hủy làng.
+P_ABILITY_DESCRIPTION_5=Đơn vị này có khả năng di chuyển tự do mọi địa hình, và có thể di chuyển qua đơn vị [bộ quân] đối phương.
+P_ABILITY_DESCRIPTION_6=Thầy gọi hồn có khả năng triệu tập những bộ xương của đơn vị đã tử vong , đồng thời họ sẽ không thể triệu tập nếu đứng trên bia mộ
+P_ABILITY_DESCRIPTION_7=Đơn vị này có khả năng chữa trị các đồng minh, và số lượng chữa trị sẽ tăng lên khi lên cấp, LƯU Ý: thầy lang chữa trị có thể vượt trội HP của mục tiêu.
+P_ABILITY_DESCRIPTION_8=Các đơn vị có khả năng này, một khi họ đã hoàn thành hành động của họ, họ có thể sử dụng điểm di chuyển còn lại của mình để di chuyển một lần nữa.
+P_ABILITY_DESCRIPTION_9=Các đơn vị có khả năng này, các cuộc tấn công của họ sẽ đính kèm trạng thái [tẩm thuốc độc] lên kẻ địch trong 2 lượt. Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
+P_ABILITY_DESCRIPTION_10=Đơn vị có khả năng sửa chữa làng bị phá hỏng.
+P_ABILITY_DESCRIPTION_11=Các đơn vị có khả năng này, bia mộ sẽ không xuất hiện trên bản đồ khi họ tử vong. Hơn nữa, khi họ [tẩm thuốc độc] họ vẫn có thể nhận được lành từ các địa hình và các thiệt hại độc sẽ trở nên lành. Tuy nhiên lành từ các đồng minh sẽ trở thành thiệt hại cho họ.
+P_ABILITY_DESCRIPTION_12=Đối với các đơn vị có khả năng này, họ có được 15 tấn công khi tấn công kẻ thù [không quân].
+P_ABILITY_DESCRIPTION_13=Đơn vị này có thể di chuyển qua các địa hình nước ,và khi họ đang ở dưới nước ,khi đến lượt ,họ được phục hồi 10 HP
+P_ABILITY_DESCRIPTION_14=Đơn vị này có thể di chuyển qua các địa hình rừng, và khi họ đang ở trong rừng ,khi đến lượt, họ được phục hồi 10 HP.
+P_ABILITY_DESCRIPTION_15=Đơn vị này có thể di chuyển qua các địa hình núi, và khi họ đang ở trên núi ,khi đến lượt, họ được phục hồi 10 HP
+P_ABILITY_DESCRIPTION_16=Đơn vị này có thể di chuyển tự do trên các địa hình đất
+P_ABILITY_DESCRIPTION_17=Đơn vị có khả năng này, khi họ tấn công sẽ có trạng thái [Tê Liệt] kẻ thù và giảm 2 ô di chuyển của mục tiêu Tuy nhiên các đơn vị có khả năng này sẽ không ảnh hưởng lẫn nhau.
+P_ABILITY_DESCRIPTION_18=Đơn vị có khả năng chiếm giữ lâu đài.
+P_ABILITY_DESCRIPTION_19=Đơn vị không thể hành động khi di chuyển và không bị dính bất cứ trạng thái nào
+P_ABILITY_DESCRIPTION_20=Đối với các đơn vị có khả năng này, khi họ chờ họ sẽ đính kèm trạng thái [Cảm Hứng] cho các đồng minh trong vòng 2 ô
+P_ABILITY_DESCRIPTION_21=For units who have this ability, they gain 10 attack bonus and 5 physical defence bonus for each enemy units within 2 blocks.
+P_ABILITY_DESCRIPTION_22=Các đơn vị có khả năng này, khi về làng và lâu đài đồng minh , họ sẽ được 5 phòng thủ
+P_ABILITY_DESCRIPTION_23=Các đơn vị có khả năng này, khi họ chờ họ sẽ xóa trạng thái xấu của các đồng minh trong vòng 2 ô và chữa trị cho họ một chút. Lượng chữa trị sẽ tăng lên khi lên cấp
+P_ABILITY_DESCRIPTION_24=Các đơn vị có khả năng này, các cuộc tấn công cận chiến của họ sẽ mạnh hơn 1,5 lần.
+P_ABILITY_DESCRIPTION_25=Các đơn vị có khả năng này, nếu kẻ tấn công là trong vòng 2 ô họ có thể thực hiện phản đòn.
+P_ABILITY_DESCRIPTION_26=Các đơn vị có khả năng này, các cuộc tấn công của họ sẽ đính kèm trạng thái [mù lòa]. Tuy nhiên các đơn vị có khả năng điều này sẽ không ảnh hưởng lẫn nhau.
+P_ABILITY_DESCRIPTION_27=Các đơn vị có khả năng này sẽ phục hồi tối đa 25% HP khi đến lượt, bất kể là có [tẩm thuốc độc] hay không.
+P_ABILITY_DESCRIPTION_28=Các đơn vị có khả năng này, họ sẽ giảm 50% sát thương từ các cuộc tấn công tầm xa.
+P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less damage from physical attacks.
+
+P_STATUS_DESCRIPTION_0=Các đơn vị đã bị ngộ độc sẽ mất 10 HP khi đến lượt và không thể nhận chữa trị.
+P_STATUS_DESCRIPTION_1=Đối với đơn vị đã bị Tê Liệt, ô di chuyển của họ sẽ được giảm xuống còn 1.
+P_STATUS_DESCRIPTION_2=Đối với đơn vị đã được truyền cảm hứng, sẽ tăng 5 tấn công của họ.
+P_STATUS_DESCRIPTION_3=Đối với đơn vị đã được mù lòa thì họ không thể tấn công 
+
+P_UNIT_DESCRIPTION_0=TÀI NĂNG BINH LÍNH : (1) sữa chữa ngôi làng...........(2) chiếm giữ ngôi làng.
+P_UNIT_DESCRIPTION_1=TÀI NĂNG CUNG THỦ : (1) tấn công xa 2 đến 3 ô..........(2) sát thương cao hơn với kẻ thù bay.
+P_UNIT_DESCRIPTION_2=TÀI NĂNG NGUYÊN TỐ : (1) thêm tấn công /phòng thủ trong nước.........(2) hồi phục 10 HP khi dưới nước.
+P_UNIT_DESCRIPTION_3=TÀI NĂNG NỮ PHÙ THỦY : (1) triệu tập bộ xương từ ngôi mộ.........(2) tấn công xa 1 đến 2 ô.
+P_UNIT_DESCRIPTION_4=TÀI NĂNG TINH LINH: (1) loại bỏ trạng thái xấu.........(2) cấp 1 hồi 10 HP cho đội........(3) cấp 1 rút 10 HP Bộ Xương và Bóng Ma ,(3 KN bị động) này hoạt động trong 2 ô.........(4) tấn công xa 1 đến 2 ô
+P_UNIT_DESCRIPTION_5=TÀI NĂNG CHÓ SÓI: (1) làm trạng thái độc, giảm 10 HP đối thủ..........(2) dùng ô di chuyển còn lại để chạy.
+P_UNIT_DESCRIPTION_6=TÀI NĂNG KHỔNG LỒ : (1) làm trạng thái Tê Liệt , giảm di chuyển đối thủ trong vòng 2 ô (KN bị động)...........(2) hồi phục 10 HP khi trên núi.
+P_UNIT_DESCRIPTION_7=TÀI NĂNG MÁY NÉM ĐÁ : (1) tấn công xa 3 đến 7 ô..........(2) phá hủy làng...........(3) không dính bất cứ trạng thái nào. ĐIỂM YẾU : không thể tấn công khi vừa di chuyển xong.
+P_UNIT_DESCRIPTION_8=TÀI NĂNG RỒNG : (1) tấn công xa trong vòng 2 ô..........(2) dùng ô di chuyển còn lại để chạy.
+P_UNIT_DESCRIPTION_9=TÀI NĂNG CHỈ HUY : (1) sửa chữa làng............(2) chiếm giữ làng.............(3) chiếm lâu đài.
+P_UNIT_DESCRIPTION_10=TÀI NĂNG BỘ XƯƠNG : (1) làm trạng thái độc giảm 10 HP đối thủ......... ĐIỂM YẾU : đứng gần Tinh Linh cấp 1 bị trừ 10 HP.
+P_UNIT_DESCRIPTION_11=không có gì
+P_UNIT_DESCRIPTION_12=TÀI NĂNG HIỆP SĨ GIANG HỒ : (1) cấp 1 chữa trị 40 HP cho đội và 50 HP cho bản thân, số chữa sẽ trị tăng khi lên cấp.........(2) chiếm giữ làng.
+P_UNIT_DESCRIPTION_13=TÀI NĂNG KẺ NÁO LOẠN : (1) làm trạng thái cảm hứng tăng 10 tấn công cho đồng đội...........(2) tấn công và phòng thủ vật lý sẽ tăng lên khi kẻ thù bao vây.
+P_UNIT_DESCRIPTION_14=TÀI NĂNG BÓNG MA : (1) làm trạng thái mù lòa cho đối phương không thể tấn công.........(2) bay qua bộ quân đối phương. ĐIỂM YẾU : đứng gần Tinh Linh bị trừ 10 HP
+P_UNIT_DESCRIPTION_15=TÀI NĂNG PHÁP SƯ ĐEN : (1) tấn công và phòng thủ phép cao.........(2) tấn công xa 1 đến 2 ô.
+P_UNIT_DESCRIPTION_16=TÀI NĂNG CUNG THỦ CƯỠI SÓI : (1) làm trạng thái mù lòa cho đối phương không thể tấn công..........(2) tấn công xa 2 đến 3 ô
+P_UNIT_DESCRIPTION_17=TÀI NĂNG NGUYÊN TỐ BĂNG : (1) địa hình nào cũng được hồi HP.........(2) tấn công xa 1 đến 3 ô
+P_UNIT_DESCRIPTION_18=TÀI NĂNG BÙN ĐẤT : (1) hồi phục ít HP mỗi lượt.........
+
+T_GAME_TITLE=Ancient Empires Reloaded

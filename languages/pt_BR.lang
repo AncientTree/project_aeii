@@ -1,0 +1,170 @@
+
+#Specifies the font used for this language
+font=Latin_WesternEuropean.ttf
+
+#For prefix C = Campaign, L = Label, M = Message, P = Paragraph, T = Title
+
+L_ABILITIES=Habilidades
+L_CAMPAIGN=Campanha
+L_CONNECTING=Conectando...
+L_CREDITS=Créditos
+L_CURRENT_TURN=Turno Atual
+L_DIFFICULTY=Dificultade
+L_END_TURN=Fim do Turno
+L_EXIT=Sair
+L_HEIGHT=Altura
+L_HELP=Ajuda
+L_INCOME=Rendimento
+L_LEAVE_GAME=Sair do Jogo
+L_LOAD_GAME=Load Game
+L_MAP_EDITOR=Editor de Mapa
+L_MUSIC_VOLUME=Music Volume
+L_NONE=Nenhum
+L_OBJECTIVES=Objetivo
+L_OPEN=Aberto
+L_PLAYER_NONE=Nenhum
+L_PLAYER_ROBOT=Robô
+L_PLAYER_TYPE=Tipo
+L_PREVIEW=Visualizar
+L_RECRUIT=Recrutar
+L_REFERENCES=Referências
+L_SAVE=Salvar
+L_SAVE_GAME=Salvar
+L_SAVING=Salvando...
+L_SCENARIOS=Cenários
+L_SE_VOLUME=Sound Volume
+L_SKIRMISH=Skirmish
+L_STAGES=Estágios
+L_TEAM=Time
+L_UHA=Unidades com essa habilidade
+L_USERNAME=Usuário
+L_WIDTH=Largura
+L_ZOOM_IN=Zoom In
+L_ZOOM_OUT=Zoom Out
+
+#ability names
+L_ABILITY_NAME_0=Conqueror
+L_ABILITY_NAME_1=Fighter of the Water
+L_ABILITY_NAME_2=Fighter of the Forest
+L_ABILITY_NAME_3=Fighter of the Mountain
+L_ABILITY_NAME_4=Destroyer
+L_ABILITY_NAME_5=Air Force
+L_ABILITY_NAME_6=Necromancer
+L_ABILITY_NAME_7=Healer
+L_ABILITY_NAME_8=Charger
+L_ABILITY_NAME_9=Poisoner
+L_ABILITY_NAME_10=Repairer
+L_ABILITY_NAME_11=Undead
+L_ABILITY_NAME_12=Marksman
+L_ABILITY_NAME_13=Son of the Water
+L_ABILITY_NAME_14=Son of the Forest
+L_ABILITY_NAME_15=Son of the Mountain
+L_ABILITY_NAME_16=Fleet-footed
+L_ABILITY_NAME_17=Slowing Aura
+L_ABILITY_NAME_18=Commander
+L_ABILITY_NAME_19=Heavy Machine
+L_ABILITY_NAME_20=Attack Aura
+L_ABILITY_NAME_21=Bloodthirsty
+L_ABILITY_NAME_22=Guardian
+L_ABILITY_NAME_23=Refresh Aura
+L_ABILITY_NAME_24=Lord of Terror
+L_ABILITY_NAME_25=Counter Madness
+L_ABILITY_NAME_26=Blinding Attack
+L_ABILITY_NAME_27=Rehabilitation
+L_ABILITY_NAME_28=Hard Skin
+L_ABILITY_NAME_29=Soft Body
+
+#status names
+L_STATUS_NAME_0=Poisoned
+L_STATUS_NAME_1=Slowed
+L_STATUS_NAME_2=Inspired
+L_STATUS_NAME_3=Blinded
+
+#unit names
+L_UNIT_NAME_0=Soldier
+L_UNIT_NAME_1=Archer
+L_UNIT_NAME_2=Aqua Elemental
+L_UNIT_NAME_3=Sorceress
+L_UNIT_NAME_4=Spirit
+L_UNIT_NAME_5=Wolf
+L_UNIT_NAME_6=Golem
+L_UNIT_NAME_7=Catapult
+L_UNIT_NAME_8=Dragon
+L_UNIT_NAME_9=Commander
+L_UNIT_NAME_10=Skeleton
+L_UNIT_NAME_11=Crystal
+L_UNIT_NAME_12=Paladin
+L_UNIT_NAME_13=Berserker
+L_UNIT_NAME_14=Ghost
+L_UNIT_NAME_15=Black Mage
+L_UNIT_NAME_16=Wolfarcher
+L_UNIT_NAME_17=Ice Elemental
+L_UNIT_NAME_18=Slime
+
+M_CONFIRM_EXIT_GAME=Exit Game?
+M_INFO_HAVENS_FURY_ACTIVATE=HEAVEN'S FURY ACTIVATED
+M_INFO_HAVENS_FURY_TARGET=TARGET AQUIRED...
+M_INFO_OCCUPIED=Ocupado
+M_INFO_REPAIRED=Reconstruído
+M_INFO_STAGE_CLEARED=Vitória
+M_INFO_STAGE_FAILED=Derrota
+M_OBJECTIVE_SKIRMISH_1=Destruir todas unidades inimigas
+M_OBJECTIVE_SKIRMISH_2=Capturar todos os castelos inimigos
+
+P_ABILITY_DESCRIPTION_0=Unidades com essa habilidade podem capturar vilas.
+P_ABILITY_DESCRIPTION_1=Unidades com essa habilidade ganham 10 ataque/defesa bônus quando estão em água.
+P_ABILITY_DESCRIPTION_2=Unidades com essa habilidade ganham 10 ataque/defesa bônus quando estão em floresta.
+P_ABILITY_DESCRIPTION_3=Unidades com essa habilidade ganham 10 ataque/defesa bônus quando estão em montanha.
+P_ABILITY_DESCRIPTION_4=Unidades com essa habilidade podem destruir vilas.
+P_ABILITY_DESCRIPTION_5=Unidades com essa habilidade movem por qualquer terrenos usando 1 ponto de movimento, podendo mover até por unidades terrestes inimigas, mas eles não recebem bônus de defesa de terrenos.
+P_ABILITY_DESCRIPTION_6=Sorceres podem convocar esqueletos da lápide de outras unidades. Além disso eles não ficam com status [Poisoned] se ficarem em cima de lápides.
+P_ABILITY_DESCRIPTION_7=Unidades com essa habilidade podem curar aliados. A quantidade de cura aumenta conforme seu level. Note que a cura pode exceder o máximo de HP da unidade curada.
+P_ABILITY_DESCRIPTION_8=Unidades com essa habilidade podem usar o resto de seus pontos de movimentos para continuar movendo após terminarem sua ação.
+P_ABILITY_DESCRIPTION_9=Unidades com essa habilidade deixam os inimigos atacados com status [Poisoned] por 2 turnos. Entretanto unidades com essa habilidade não podem ser afetada por ela.
+P_ABILITY_DESCRIPTION_10=Unidades com essa habilidade podem reparar vilas destruídas.
+P_ABILITY_DESCRIPTION_11=Unidades com essa habilidade não deixa lápides quando morrem. Além disso, quando eles recebem status [Poisoned] elas ainda podem ser curadas pelo terreno e recebem cura ao invés de dano do [Poison]. Entretanto cura dos aliados se tornará dano para eles.
+P_ABILITY_DESCRIPTION_12=Unidades com essa habilidade ganham 15 ataque bônus quando atacando inimigos com a habilidade [Air Force].
+P_ABILITY_DESCRIPTION_13=Unidades com essa habilidade podem mover pelo terrenos de água usando 1 ponto de movimento, e quando estão na água ganham 10 hp no início do turno.
+P_ABILITY_DESCRIPTION_14=Unidades com essa habilidade podem mover por terrenos de floresta usando 1 ponto de movimento, e quando estão em floresta ganham 10 hp no início do turno.
+P_ABILITY_DESCRIPTION_15=Unidades com essa habilidade podem mover por terrenos de montanha usando 1 ponto de movimento, e quando estão em montanha eles ganham 10 hp no início do turno.
+P_ABILITY_DESCRIPTION_16=Unidades com essa habilidade podem mover por terrenos terrestres usando 1 ponto de movimento.
+P_ABILITY_DESCRIPTION_17=Quando unidades com essa habilidade terminam seu movimento deixam inimigos a dois blocos de distância com status [Slowed] por um turno. Entretanto unidades com essa habilidade não podem ser afetada por ela.
+P_ABILITY_DESCRIPTION_18=Unidades com essa habilidade podem capturar castelos.
+P_ABILITY_DESCRIPTION_19=Unidades com essa habilidade não podem realizar nenhuma ação quando se movem e não podem receber nenhum status.
+P_ABILITY_DESCRIPTION_20=Quando unidades com essa habilidade terminam seu movimento, deixam os aliados que estão a até 2 blocos de distância com status [Inspired] até o final do turno.
+P_ABILITY_DESCRIPTION_21=For units who have this ability, they gain 10 attack bonus and 5 physical defence bonus for each enemy units within 2 blocks.
+P_ABILITY_DESCRIPTION_22=Unidades com essa habilidade ganham um bônus de 5 de defesa quando estão em vilas ou castelos aliados.
+P_ABILITY_DESCRIPTION_23=Unidades com essa habilidade tiram status negativos e curam os aliados que estão a até 2 blocos de distância, após terminarem seu movimento. A quantidade de cura aumenta conforme o level.
+P_ABILITY_DESCRIPTION_24=Unidades com essa habilidade tem o ataques corpo-a-corpo 1,5 vezes mais forte.
+P_ABILITY_DESCRIPTION_25=Unidades com essa habilidade contra atacam qualquer ataque feito de uma distância de até 2 blocos.
+P_ABILITY_DESCRIPTION_27=Unidades com essa habilidade regeneram 25% do total de seu HP no início de seu turno, independente de estarem com [Poisoned].
+P_ABILITY_DESCRIPTION_26=Unidades com essa habilidade cegam os inimigos atacados, atribiundo o status [Blinded] a eles. Entretanto unidades com essa habilidade não podem ser afetada por ela.
+P_ABILITY_DESCRIPTION_28=Unidades com essa habilidade recebem 50% a menos de dano de ataques à distância.
+P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less damage from physical attacks.
+
+P_STATUS_DESCRIPTION_0=Unidades que forem poisoned perderão 10 HP no início do turno e não podem receber heal.
+P_STATUS_DESCRIPTION_1=Unidades que foram slowed tem os pontos de movimento reduzidos para 1.
+P_STATUS_DESCRIPTION_2=Unidades que foram inspired ganham 5 de ataque bônus.
+P_STATUS_DESCRIPTION_3=Unidades que foram blinded tem o alcance de ataque reduzidos para 0.
+
+P_UNIT_DESCRIPTION_0=Soldiers são sólidos combatentes que podem capturar e reconstruir vilas.
+P_UNIT_DESCRIPTION_1=Com suas poderosas flechas, archers podem atacar à distância e são especialmente eficiêntes contra inimigos aéreos.
+P_UNIT_DESCRIPTION_2=Aqua Elementals são seres aquáticos. Quando estão na água eles se tornam muito mais fotes.
+P_UNIT_DESCRIPTION_3=Elas são habilidosas na arte da necromancia. Sorceress são fracas em combates corpo-a-corpo, mas podem convocar Skeletons dos mortos para te ajudar na batalha.
+P_UNIT_DESCRIPTION_4=Estes seres místicos de luz tem uma aura que pode curar e remover efeitos negativos de seus aliados.
+P_UNIT_DESCRIPTION_5=Wolves são caçadores temíveis com alta mobilidade. Eles viajam rápido sobre a terra e matam seus inimigos com suas mordidas venenosas.
+P_UNIT_DESCRIPTION_6=Golems são seres ancestrais, com uma incrível defesa física que fica ainda mais forte quando estão nas montanhas.
+P_UNIT_DESCRIPTION_7=Catapults deixam um rastro de destrição com seu ataque à enormes distâncias. Entretanto elas tem uma mobilidade muito baixa.
+P_UNIT_DESCRIPTION_8=Estas enormes criaturas voadoras dominam os céus desde a antiguidade. Elas tem alta mobilidade e um ataque corpo-a-corpo mortal.
+P_UNIT_DESCRIPTION_9=Commander é o coração de um exército. Ele é habilidoso em batalhas corpo-a-corpo e pode capturar castelos inimigos.
+P_UNIT_DESCRIPTION_10=Skeletons são seres do submundo convocados por Sorceress. Eles não são muito fortes, mas infectam seus inimigos com seu ataque venenoso.
+P_UNIT_DESCRIPTION_11=<none>
+P_UNIT_DESCRIPTION_12=Paladins são tropas sacras, habilidosas na arte da cura e que também podem apturar vilas como Soldiers.
+P_UNIT_DESCRIPTION_13=Berserkers são combatentes natos. Quanto mais rodeado de inimigos, mais fortes eles ficam.
+P_UNIT_DESCRIPTION_14=Ghosts são místicas criatudas do submundo. Eles flutuam acima do chão and podem cegar inimigos com seus ataques.
+P_UNIT_DESCRIPTION_15=Black Mages são habilidosos com magia negra. Seus ataques são poderosos contra aqueles com pouca defesa mágica.
+P_UNIT_DESCRIPTION_16=Wolfarchers são uma versão de arqueiras com alta mobilidade. Elas podem atacar em quase qualquer lugar que você quiser.
+P_UNIT_DESCRIPTION_17=Ice Elementals são seres místicos. Aparentemente eles podem lutar bem dentro e fora d'água.
+P_UNIT_DESCRIPTION_18=Mystic creatures. It seems their soft body can absorb a lot of damages.
+
+T_GAME_TITLE=Ancient Empires Reloaded

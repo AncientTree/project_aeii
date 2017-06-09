@@ -1,0 +1,39 @@
+
+C_CH_NAME=Challenge
+
+C_CH_STAGE_1_NAME=Grand Siege
+C_CH_STAGE_1_OBJECTIVE_1=VITÓRIA: Destruir todas unidades inimigas.
+C_CH_STAGE_1_OBJECTIVE_2=DERROTA: Seu comandante ser derrotado.
+C_CH_STAGE_1_MESSAGE_1=Enemies são coming, prepare yourself!
+
+C_CH_STAGE_2_NAME=Blitzkrieg
+C_CH_STAGE_2_OBJECTIVE_1=VITÓRIA: Capture todos os castelos inimigos.
+C_CH_STAGE_2_OBJECTIVE_2=DERROTA: Seu comandante ser derrotado.
+C_CH_STAGE_2_OBJECTIVE_3=DERROTA: Turno exceder o número 32.
+C_CH_STAGE_2_MESSAGE_1=It's one of the inimigos' key cities. Enemy reinforcement is on the way, we need to hurry. Capture all blue army castelos within 32 turns to win the stage!
+
+C_CH_STAGE_3_NAME=The Last Stand
+C_CH_STAGE_3_OBJECTIVE_1=VITÓRIA: Capture todos os castelos inimigos.
+C_CH_STAGE_3_OBJECTIVE_2=DERROTA: Seu comandante ser derrotado.
+C_CH_STAGE_3_MESSAGE_1=Damn, the enemy cities have noticed us! The ambush operation has failed, we must fight them head on. Capture all their castelos!
+
+C_CH_STAGE_4_NAME=Rock Valley
+C_CH_STAGE_4_OBJECTIVE_1=VITÓRIA: Destruir todos inimigos and capturar todos seus castelos.
+C_CH_STAGE_4_OBJECTIVE_2=DERROTA: Seu comandante ser derrotado.
+C_CH_STAGE_4_OBJECTIVE_3=DERROTA: Turno exceder o número 200.
+C_CH_STAGE_4_MESSAGE_1=Sua Majestade, bandidos estão na fortaleza da montanha, precisamos eliminá-los e proteger as vilas!
+
+C_CH_STAGE_5_NAME=Endless Trail
+C_CH_STAGE_5_OBJECTIVE_1=VITÓRIA: Destruir todos inimigos and capturar todos seus castelos.
+C_CH_STAGE_5_OBJECTIVE_2=DERROTA: Seu comandante ser derrotado.
+C_CH_STAGE_5_MESSAGE_1=Your majesty, our enemy get power from the evil ritual, how do we defeat them?
+
+C_CH_STAGE_6_NAME=Blasted Lands
+C_CH_STAGE_6_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
+C_CH_STAGE_6_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_CH_STAGE_6_MESSAGE_1=Your majesty, this land is cursed, our undamaged troops is demoted each turn, be careful!
+
+C_CH_STAGE_7_NAME=On Protracted War
+C_CH_STAGE_7_OBJECTIVE_1=VICTORY: Defeat all red units..
+C_CH_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_CH_STAGE_7_MESSAGE_1=Your majesty, we are not able to capture any property this time, or we will lose our troop!

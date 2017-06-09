@@ -1,0 +1,92 @@
+
+C_AEII_NAME=Trận Chiến Thorin (phần 2)
+
+C_AEII_STAGE_1_NAME=Cung Điện Courage
+C_AEII_STAGE_1_OBJECTIVE=Ngăn chặn kẻ cướp, Vua Galamar phải sống.
+C_AEII_STAGE_1_MESSAGE_1=Cứu chúng tôi với ! Chúng tôi đang bị tấn công! Những bộ xương này đang đánh cắp Pha Lê của cung điện Courage, chúng tôi thề sẽ bảo vệ!
+C_AEII_STAGE_1_MESSAGE_2=Aargh... chúng tôi đã thất bại!
+C_AEII_STAGE_1_MESSAGE_3=Đội trưởng, chúng ta phải ngăn chặn mối đe dọa này ngay lập tức!
+C_AEII_STAGE_1_MESSAGE_4=Hãy tiến quân về phía trước, chúng ta nhất định bắt kẻ cướp này phải trả giá!
+C_AEII_STAGE_1_MESSAGE_5=Kẻ cướp đã đến nhiều hơn!
+C_AEII_STAGE_1_MESSAGE_6=Đây không giống quân cướp! Họ trông giống như quân địch! Hãy cẩn thận, đội trưởng!
+C_AEII_STAGE_1_MESSAGE_7=Xin cảm ơn, tâu Bệ Hạ, ngài phải giúp chúng ta đem Pha Lê trở lại càng nhanh càng tốt. một di tích quan trọng như vậy không thể rơi vào tay kẻ xấu!
+C_AEII_STAGE_1_MESSAGE_8=Chúng tôi có thể giúp bạn. bạn có thể nói cho tôi biết tác dụng của Pha Lê ?
+C_AEII_STAGE_1_MESSAGE_9=Chỉ sợ bọn tội phạm này sử dụng Pha Lê làm điều ác. Chúng ta sẽ hỏi linh mục tại Cung Điện Wisdom. Anh ta có thể biết nhiều hơn về điều này.
+C_AEII_STAGE_1_MESSAGE_10=Tôi sẽ gửi anh trai tôi Valadorn đến đó ngay lập tức. Tôi sẽ đưa quân đội của tôi và lần theo dấu vết của những kẻ tấn công đã trốn thoát.
+
+C_AEII_STAGE_2_NAME=Cung Điện Wisdom
+C_AEII_STAGE_2_OBJECTIVE=Tiêu diệt tất cả kẻ thù, Chiếm giữ lâu đài.
+C_AEII_STAGE_2_MESSAGE_1=Làm sao có thể như vậy? Cung Điện Wisdom cũng đang bị tấn công!
+C_AEII_STAGE_2_MESSAGE_2=Tốt , tốt ... Valadorn, ngươi đến để nộp mạng cho ta sao ?
+C_AEII_STAGE_2_MESSAGE_3=Thưa ngài, một phần của lực lượng của kẻ thù đang rút lui!
+C_AEII_STAGE_2_MESSAGE_4=Bọn chúng đang cướp pha lê của Wisdom! Đừng để bọn chúng thoát khỏi!
+C_AEII_STAGE_2_MESSAGE_5=Aarrghh!
+C_AEII_STAGE_2_MESSAGE_6=Thưa ngài, chúng ta phải đuổi theo bọn chúng!
+C_AEII_STAGE_2_MESSAGE_7=Chúng ta phải nhanh chóng chặn cuộc tấn công này, vì các lính bảo vệ cung điện không thể tiến lên
+C_AEII_STAGE_2_MESSAGE_8=Chúng ta hãy tiến lên tới lâu đài này
+C_AEII_STAGE_2_MESSAGE_9=Tốt lắm, Đội Trưởng. Nhưng không có thời gian để nghỉ ngơi. Pha Lê của Life cũng có thể gặp nguy hiểm. Chúng ta phải báo tin đến vua Galamar!
+C_AEII_STAGE_2_MESSAGE_10=Vâng thưa ngài. Tôi sẽ sẵn sàng quân đội.
+
+C_AEII_STAGE_3_NAME=Rừng Sương Mù
+C_AEII_STAGE_3_OBJECTIVE=Di chuyển một cách an toàn thông qua rừng. Tiêu diệt tất cả sự cản trở. Vua Galamar phải tồn tại.
+C_AEII_STAGE_3_MESSAGE_1=Bệ hạ, khu rừng này được biết đến là nhà của thần linh, Nguyên Tố , và các sinh vật ma thuật khác. Đi du lịch vào ban đêm là không an toàn.
+C_AEII_STAGE_3_MESSAGE_2=Đội trưởng, theo tin báo từ Valadorn, chúng tôi nhất định phải qua khu rừng này, không có thời gian suy nghĩ khi Cung Điện Life đang gặp nạn
+C_AEII_STAGE_3_MESSAGE_3=Đã hiểu. Quân đội, hãy bảo vệ vua Galamar!
+C_AEII_STAGE_3_MESSAGE_4=Có rất nhiều con sói! tâu Bệ hạ, tôi cảm thấy điều này không tốt ...
+C_AEII_STAGE_3_MESSAGE_5=Trời ơi, chuyện gì sẽ xảy ra nữa đay!
+C_AEII_STAGE_3_MESSAGE_6=Chào mừng, người đàn ông của Thorin! Chúng tôi là Tinh Linh và Nguyên Tố, chúng tôi đã nghe nói về cuộc điều tra của ngài để bảo vệ vùng đất của chúng ta khỏi quỷ dữ và đay là lời đề nghị của Vua và lòng trung thành chúng tôi sẽ hợp tác với ngài.
+C_AEII_STAGE_3_MESSAGE_7=Chúng tôi sẵn sàng chấp nhận đề nghị của bạn. lòng trung thành của bạn đến vương quốc chúng tôi sẽ không quên!
+
+C_AEII_STAGE_4_NAME=Cung Điện Life
+C_AEII_STAGE_4_OBJECTIVE=Bảo vệ Cung Điện Life , tiêu diệt tất cả kẻ thù, và chiếm giữ lâu đài.
+C_AEII_STAGE_4_MESSAGE_1=Bệ hạ, cảm ơn các bạn ở đây! Hãy giúp chúng ta bảo vệ Pha Lê!
+C_AEII_STAGE_4_MESSAGE_2=Chỉ trong những pháo đài canh gác nghiêm ngặt của Thorin Pha Lê sẽ được an toàn. Chúng ta phải chuyển giao Pha Lê đến đó.
+C_AEII_STAGE_4_MESSAGE_3=Tâu Bệ hạ, các tàu do thám của chúng ta báo cáo quân địch gần đó!
+C_AEII_STAGE_4_MESSAGE_4=kẻ thù đang phá hủy làng của chúng ta để làm tê liệt cung cấp vàng của chúng ta ! Phải ngăn chặn bọn chúng lại!
+C_AEII_STAGE_4_MESSAGE_5=Đội trưởng, chúng ta phải cất giữ Pha Lê , chuẩn bị quân đội để chiến đấu!
+C_AEII_STAGE_4_MESSAGE_6=Bệ hạ, Chúng ta đã ngừng các cuộc tấn công.
+C_AEII_STAGE_4_MESSAGE_7=Tốt lắm, đội trưởng! Chuẩn bị các quân để khởi hành đến Thorin!
+
+C_AEII_STAGE_5_NAME=Hành Trình Đến Thorin
+C_AEII_STAGE_5_OBJECTIVE=Chuyển giao Pha Lê phía nam đến thành phố của Thorin. Vua Galamar phải tồn tại.
+C_AEII_STAGE_5_MESSAGE_1=Tâu bệ hạ , tôi thấy khu rừng này có nguy hiểm ,chúng ta phải cẩn thận!
+C_AEII_STAGE_5_MESSAGE_2=Rất tốt, Đội trưởng. Hãy để chúng tôi đi theo con đường này và hãy ở lại trên bảo vệ vua của bạn.
+C_AEII_STAGE_5_MESSAGE_3=Phục kích! Bảo vệ Pha Lê và tất cả các chi phí!
+C_AEII_STAGE_5_MESSAGE_4=Điều này có vẻ là người cuối cùng của bọn chúng ....
+
+C_AEII_STAGE_6_NAME=Cánh Cổng Thorin
+C_AEII_STAGE_6_OBJECTIVE=Chiếm giữ lâu đài của kẻ thù và tiêu diệt tất cả kẻ thù.
+C_AEII_STAGE_6_MESSAGE_1=Kẻ thù đang có kế hoạch tấn công vua Galamar trước khi ông đến Thorin! Chúng ta phải đánh bại bọn chúng!
+C_AEII_STAGE_6_MESSAGE_2=Hãy để đó cho chúng tôi, nhanh lên phía Bắc để hỗ trợ Galamar. Kẻ thù đã biết kế hoạch của ông và ông có thể cần sự giúp đỡ.
+
+C_AEII_STAGE_7_NAME=Bên Ngoài Thành Phố
+C_AEII_STAGE_7_OBJECTIVE_1=Hộ tống Pha Lê phía nam đến thành phố của Thorin. Vua Galamar phải tồn tại.
+C_AEII_STAGE_7_OBJECTIVE_2=Khắc một con đường về phía tây qua quân địch, đánh bại chỉ huy của họ và chiếm tất cả các lâu đài!
+C_AEII_STAGE_7_MESSAGE_1=Thưa ngài, quân đội đang kiệt sức! Tôi đề nghị chúng ta phải nghĩ ngơi qua đêm.
+C_AEII_STAGE_7_MESSAGE_2=Chúng ta không được chậm trễ, Đội Trưởng. Chúng ta phải đến Thorin càng sớm càng tốt. Các binh sĩ có thể nghỉ ngơi khi chúng ta được an toàn..
+C_AEII_STAGE_7_MESSAGE_3=Một phục kích! Đừng để Pha Lê rời khỏi tầm mắt của chúng ta!
+C_AEII_STAGE_7_MESSAGE_4=Quân đội! Có con rồng đang hướng về phía chúng ta , hãy bảo vệ nhà vua!
+C_AEII_STAGE_7_MESSAGE_5=Ôi Không, nó nhắm vào Pha Lê ! Có thể là Đấng Tạo Hóa bảo vệ chúng ta!
+C_AEII_STAGE_7_MESSAGE_6=Hỡi con người đáng thương, hãy chạy đi trước khi quá muộn!
+C_AEII_STAGE_7_MESSAGE_7=Lực lượng kẻ thù trông thật ghê gớm, chúng ta nên rút lui.
+C_AEII_STAGE_7_MESSAGE_8=Chúng ta không có sự lựa chọn, nhưng trước khi đi, chúng ta phải có được Pha Lê
+C_AEII_STAGE_7_MESSAGE_9=Galamar! Chúng tôi đã đến nhanh nhất có thể! Chúng ta sẽ chiến đấu cùng nhau !
+
+C_AEII_STAGE_8_NAME=Cấm Thành - Ẩn Náu Cuối Cùng
+C_AEII_STAGE_8_OBJECTIVE=Đánh bại Saeth và tay sai của chúng!
+C_AEII_STAGE_8_MESSAGE_1=Các tàn tích của thành cổ ... và Saeth! Với các Pha Lê!
+C_AEII_STAGE_8_MESSAGE_2=Hahaha, Cuối cùng đã đến, Galamar và Valadorn! ta rất khen ngợi lòng dũng cảm của các ngươi khi dám đối đầu với ta!
+C_AEII_STAGE_8_MESSAGE_3=Tất cả chìa khoá và con át chủ bài nay được đưa ra, và sức mạnh lớn nhất từng được tạo ra trên trái đất này sẽ gầm thét và sẽ uốn cong theo ý muốn của ta. tiêu diệt các ngươi sẽ được minh chứng cho sức mạnh và vinh quang của nó!
+C_AEII_STAGE_8_MESSAGE_4=Mưu kế của ngươi sẽ không thể lừa được ta đau , Saeth!
+C_AEII_STAGE_8_MESSAGE_5=Ngươi không tin ta sao? tốt thôi! Ta đoán là ngươi chỉ nhìn thoáng qua của sức mạnh cổ xưa này. xem đay!
+C_AEII_STAGE_8_MESSAGE_6=Trời ơi, năng lượng khủng khiếp này là gì!
+C_AEII_STAGE_8_MESSAGE_7=Con người đáng thương, đây là vật cổ xưa ngươi sẽ không hiểu ngay cả khi ngươi sống thêm một ngàn năm nữa ! ta đặt tên cho nó là Cơn Giận Chúa Trời!
+C_AEII_STAGE_8_MESSAGE_8=Galamar! Chúng ta phải nhanh lên nếu quân đội của chúng ta có một cơ hội!
+C_AEII_STAGE_8_MESSAGE_9=Chắc chắn, chúng ta nên tấn công các lâu đài đầu tiên trước khi chúng ta khởi động một cuộc tấn công vào Saeth và tàn tích.
+C_AEII_STAGE_8_MESSAGE_10=Con người đáng thương. ngươi sẽ không sống đủ lâu để bảo vệ Vương Quốc quý báu của ngươi mãi đâu ...
+C_AEII_STAGE_8_MESSAGE_11=Saeth! lần này ngươi đã thất bại hoàn toàn rồi.
+C_AEII_STAGE_8_MESSAGE_12=hừm.... cũng có thể.... nhưng giờ mọi thứ đã đi vào hoạt động, thế lực vô hình xuyên thời gian nằm ngoài tầm hiểu biết của các ngươi ,khi ta quay lại, các ngươi sẽ không thể ngăn ta được đau
+C_AEII_STAGE_8_MESSAGE_13=Bệ hạ, tàn tích đang văng ra khắp nơi ! Chúng ta nên đi khỏi đay ngay lập tức!
+C_AEII_STAGE_8_MESSAGE_14=Nhưng những viên Pha Lê.... vẫn còn ở trong đó!
+C_AEII_STAGE_8_MESSAGE_15=Không kịp đau, trước hết hãy bảo vệ chính mình!
+C_AEII_STAGE_8_MESSAGE_16=Các bạn đã làm rất tốt . Bây giờ rời khỏi đay thôi !

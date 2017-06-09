@@ -1,0 +1,39 @@
+
+C_WR_NAME=黑波的战术学堂
+
+C_WR_STAGE_1_NAME=幽灵岛
+C_WR_STAGE_1_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
+C_WR_STAGE_1_OBJECTIVE_2=失败条件: 指挥官被击败
+C_WR_STAGE_1_MESSAGE_1=指挥官，这个小岛看起来十分的诡异，我们务必要小心！
+
+C_WR_STAGE_2_NAME=精灵圣坛
+C_WR_STAGE_2_OBJECTIVE_1=胜利条件: 占领圣坛
+C_WR_STAGE_2_OBJECTIVE_2=失败条件: 指挥官被击败
+C_WR_STAGE_2_MESSAGE_1=陛下，我们正在接近精灵族的圣坛，他们会潜伏在树林里并伏击任何试图接近圣坛的敌人！
+C_WR_STAGE_2_MESSAGE_2=我们的哨兵发现在西边有一个亡灵的据点，他们是不可击败的！
+C_WR_STAGE_2_MESSAGE_3=占领圣坛边上的城堡我们就赢了，出发吧，指挥官！！！
+
+C_WR_STAGE_3_NAME=远征
+C_WR_STAGE_3_OBJECTIVE_1=胜利条件: 击败红队
+C_WR_STAGE_3_OBJECTIVE_2=失败条件: 指挥官被击败
+C_WR_STAGE_3_OBJECTIVE_3=失败条件: 回合数超过50
+C_WR_STAGE_3_MESSAGE_1=陛下，我们的目标是击败红色队伍，但是我们只有50回合
+C_WR_STAGE_3_MESSAGE_2=（我们可以通过击败其他队伍来节省时间）
+
+C_WR_STAGE_4_NAME=进退两难
+C_WR_STAGE_4_OBJECTIVE_1=VICTORY:.胜利条件: 击败红队
+C_WR_STAGE_4_OBJECTIVE_2=DEFEAT: 失败条件: 指挥官被击败
+C_WR_STAGE_4_MESSAGE_1=陛下，我们来到了北境，大部分敌方领主都投降了，我们即将跟他们决战!
+C_WR_STAGE_4_MESSAGE_2=敌袭!
+C_WR_STAGE_4_MESSAGE_3=敌军从背后偷袭，占领了我们的城堡，我们必须夺回城堡
+C_WR_STAGE_4_MESSAGE_4=陛下，我们现在可以尝试攻占前方的城堡
+C_WR_STAGE_4_MESSAGE_5=或者撤退去占回我们的城堡
+C_WR_STAGE_4_MESSAGE_6=但是凛冬将至，我们在这里停留的越久，损失就会越大
+C_WR_STAGE_4_MESSAGE_7=陛下，暴风雪就要来了，做好准备
+C_WR_STAGE_4_MESSAGE_8=时机到了，杀光他们
+
+C_WR_STAGE_5_NAME=崎岖峡谷
+C_WR_STAGE_5_OBJECTIVE_1=VICTORY:.胜利条件: 击败红队
+C_WR_STAGE_5_OBJECTIVE_2=DEFEAT: 失败条件: 指挥官被击败
+C_WR_STAGE_5_MESSAGE_1=陛下，我们的敌人占据了有利地形，这将是一场苦战，我们必须消灭他们的投石车才能取胜!
+C_WR_STAGE_5_MESSAGE_2=陛下，他们的投石车被摧毁了，我们要赢了！

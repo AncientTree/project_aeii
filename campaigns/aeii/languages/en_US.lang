@@ -1,0 +1,92 @@
+
+C_AEII_NAME=Battle of Thorin
+
+C_AEII_STAGE_1_NAME=The Temple of Courage
+C_AEII_STAGE_1_OBJECTIVE=Stop the raiders, King Galamar must survive.
+C_AEII_STAGE_1_MESSAGE_1=Help us! We are under attack! These skeleton raiders have stolen the Crystal of Courage we swore to protect!
+C_AEII_STAGE_1_MESSAGE_2=Aargh... we've failed!
+C_AEII_STAGE_1_MESSAGE_3=Captain, we must stop this menace at once!
+C_AEII_STAGE_1_MESSAGE_4=Forward troops! Make these raiders pay!
+C_AEII_STAGE_1_MESSAGE_5=More attackers!
+C_AEII_STAGE_1_MESSAGE_6=These are no raiders! They look like enemy troops! Be careful, Captain!
+C_AEII_STAGE_1_MESSAGE_7=Thank you, your Majesty, you must help us return the Crystal as quickly as possible. Such an important relic must not fall into the wrong hands!
+C_AEII_STAGE_1_MESSAGE_8=I am at your service. Who could possibly be after the Crystal?
+C_AEII_STAGE_1_MESSAGE_9=I fear these criminals may be allied to a greater evil. It would be wise to consult with the High Priest at the Temple of Wisdom. He may know more of this.
+C_AEII_STAGE_1_MESSAGE_10=I shall send my brother Valadorn there immediately. I will take my troops and follow the attackers who got away.
+
+C_AEII_STAGE_2_NAME=The Temple of Wisdom
+C_AEII_STAGE_2_OBJECTIVE=Destroy all attacking enemy troops, occupy both castles.
+C_AEII_STAGE_2_MESSAGE_1=How can this be? The Temple of Wisdom is also under attack!
+C_AEII_STAGE_2_MESSAGE_2=Well, well... Valadorn, I presume? Prepare to be defeated!
+C_AEII_STAGE_2_MESSAGE_3=Sir, a part of the enemy force is retreating!
+C_AEII_STAGE_2_MESSAGE_4=The Crystal of Wisdom! Do not let them escape!
+C_AEII_STAGE_2_MESSAGE_5=Aarrghh!
+C_AEII_STAGE_2_MESSAGE_6=Sir, we must follow them!
+C_AEII_STAGE_2_MESSAGE_7=Let us stop this attack first. The temple guards will not stand a chance otherwise!
+C_AEII_STAGE_2_MESSAGE_8=Let us make our stand at this castle!
+C_AEII_STAGE_2_MESSAGE_9=Well done, Captain. But there is no time to rest. The Crystal of Life may also be in danger. We must warn King Galamar!
+C_AEII_STAGE_2_MESSAGE_10=Yes, Sir. I will ready the troops.
+
+C_AEII_STAGE_3_NAME=Forest of Mists
+C_AEII_STAGE_3_OBJECTIVE=Navigate safely through the forest. Destroy all opposition. King Galamar must survive.
+C_AEII_STAGE_3_MESSAGE_1=Your Majesty, this forest is known to be home of spirits, elementals, and other magical creatures. Travelling at night is not safe.
+C_AEII_STAGE_3_MESSAGE_2=Captain, you heard Valadorn's messenger - we must press on! Nothing must stand between us and the Temple of Life.
+C_AEII_STAGE_3_MESSAGE_3=Understood. Troops, keep your eyes open and protect King Galamar!
+C_AEII_STAGE_3_MESSAGE_4=More wolves! Your Majesty, this does not look good...
+C_AEII_STAGE_3_MESSAGE_5=By the Creator! What are those things!
+C_AEII_STAGE_3_MESSAGE_6=Greetings, men of Thorin! We, the Elementals, have heard of your quest to protect our lands from evil and offer our allegiance to our King.
+C_AEII_STAGE_3_MESSAGE_7=We gladly accept your offer. Your loyalty to the kingdom shall not be forgotten.
+
+C_AEII_STAGE_4_NAME=The Temple of Life
+C_AEII_STAGE_4_OBJECTIVE=Protect the Temple of Life - destroy all enemy units, occupy the enemy castle!
+C_AEII_STAGE_4_MESSAGE_1=Your Majesty, thank the Creator you are here! Please help us protect the Crystal!
+C_AEII_STAGE_4_MESSAGE_2=Only in the heavily guarded fortresses of Thorin will the Crystal be safe. We must deliver it there.
+C_AEII_STAGE_4_MESSAGE_3=Your Majesty, our scouts report enemy troops nearby!
+C_AEII_STAGE_4_MESSAGE_4=They are destroying our buildings to cripple our supply of gold! They must be stopped!
+C_AEII_STAGE_4_MESSAGE_5=Captain, we must save the Crystal, prepare the troops for battle!
+C_AEII_STAGE_4_MESSAGE_6=Your Majesty, We have stopped the attack.
+C_AEII_STAGE_4_MESSAGE_7=Well done, Captain! Prepare the troops to march to Thorin!
+
+C_AEII_STAGE_5_NAME=Pathway to Thorin
+C_AEII_STAGE_5_OBJECTIVE=Deliver the Crystal south to the city of Thorin. King Galamar must survive.
+C_AEII_STAGE_5_MESSAGE_1=Your Highness, I do not like the look of this forest, we must be careful!
+C_AEII_STAGE_5_MESSAGE_2=Very well, Captain. Let us follow this path and stay on our guard.
+C_AEII_STAGE_5_MESSAGE_3=Ambush! Protect the Crystal at all cost!
+C_AEII_STAGE_5_MESSAGE_4=This seems to be the last of them...
+
+C_AEII_STAGE_6_NAME=The Gates of Thorin
+C_AEII_STAGE_6_OBJECTIVE=Occupy the enemy castle and destroy all enemy troops.
+C_AEII_STAGE_6_MESSAGE_1=The enemy is planning to attack King Galamar before he reaches Thorin! We must defeat them!
+C_AEII_STAGE_6_MESSAGE_2=Let us hurry North to meet Galamar. The enemy knows of his plans and he may need help!
+
+C_AEII_STAGE_7_NAME=Outside the City
+C_AEII_STAGE_7_OBJECTIVE_1=Escort the Crystal south to the city of Thorin. King Galamar must survive.
+C_AEII_STAGE_7_OBJECTIVE_2=Carve a path to the west through the enemy troops, defeat their commander and occupy all castles!
+C_AEII_STAGE_7_MESSAGE_1=Your Highness, the troops are exhausted! I suggest we camp here for the night.
+C_AEII_STAGE_7_MESSAGE_2=We must not delay, Captain. The sooner we get to Thorin the better. The troops can rest when we are safe.
+C_AEII_STAGE_7_MESSAGE_3=Another ambush! Don't let the Crystal leave your sight!
+C_AEII_STAGE_7_MESSAGE_4=Troops! That dragon is heading towards us - protect the King!
+C_AEII_STAGE_7_MESSAGE_5=It is the Crystal it is after! May the Creator protect us!
+C_AEII_STAGE_7_MESSAGE_6=Run, pitiful human, before it is too late!
+C_AEII_STAGE_7_MESSAGE_7=The enemy force looks formidable, I recommend retreat.
+C_AEII_STAGE_7_MESSAGE_8=We have no choice but to attack - we must go after the Crystal!
+C_AEII_STAGE_7_MESSAGE_9=Galamar! We came as fast as we could! Let us fight side by side!
+
+C_AEII_STAGE_8_NAME=The Ancient Citadel
+C_AEII_STAGE_8_OBJECTIVE=Defeat Saeth and his minions!
+C_AEII_STAGE_8_MESSAGE_1=The Ruins of the Ancient Citadel... and Saeth! With the Crystals!
+C_AEII_STAGE_8_MESSAGE_2=At last, Galamar and Valadorn! How very brave of you to confront me!
+C_AEII_STAGE_8_MESSAGE_3=All the keys are now in place, and soon the greatest power ever created on this earth will roar and bend to my will. Your destruction will be testimony to its might and glory!
+C_AEII_STAGE_8_MESSAGE_4=Your ruses can no longer fool us, Saeth!
+C_AEII_STAGE_8_MESSAGE_5=You do not believe me? Fools! I will favour you with a glimpse of this ancient power. Behold!
+C_AEII_STAGE_8_MESSAGE_6=What in the name of the Creator is that!
+C_AEII_STAGE_8_MESSAGE_7=Pathetic creatures, this is something ancient that you would not understand even if you lived a thousand years! Witness the power of Heaven's Fury!
+C_AEII_STAGE_8_MESSAGE_8=Galamar! We must hurry if our troops are to stand a chance!
+C_AEII_STAGE_8_MESSAGE_9=Sire, we should attack these castles first before we launch an attack on the Saeth and the Ruins.
+C_AEII_STAGE_8_MESSAGE_10=Pitiful wretches. You will not live long enough to see your precious Kingdom engulfed in shadow...
+C_AEII_STAGE_8_MESSAGE_11=Saeth! This time your defeat is complete!
+C_AEII_STAGE_8_MESSAGE_12=In your insignificant life and narrow mind, perhaps... Nevertheless everything is now set in motion - the invisible forces that govern time are beyond your knowledge. You cannot stop me from rising again!
+C_AEII_STAGE_8_MESSAGE_13=Your Majesty, the Ruins are falling apart! We should leave immediately!
+C_AEII_STAGE_8_MESSAGE_14=But the Crystals... They are still in there!
+C_AEII_STAGE_8_MESSAGE_15=The only thing we can save now is ourselves!
+C_AEII_STAGE_8_MESSAGE_16=You have served me well. Now move!
