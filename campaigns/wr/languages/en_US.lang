@@ -3,7 +3,7 @@ C_WR_NAME=BW's Warroom
 
 C_WR_STAGE_1_NAME=Ghost Island
 C_WR_STAGE_1_OBJECTIVE_1=VICTORY: Defeat all enemies and capture all enemy castle.
-C_WR_STAGE_1_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_WR_STAGE_1_OBJECTIVE_2=DEFEAT: Lost all castles and troops.
 C_WR_STAGE_1_MESSAGE_1=Commander, this island looks strange, we should be careful!
 
 C_WR_STAGE_2_NAME=Forest Shrine
@@ -22,7 +22,7 @@ C_WR_STAGE_3_MESSAGE_2=(Defeat other teams to save turns)
 
 C_WR_STAGE_4_NAME=Dilemma
 C_WR_STAGE_4_OBJECTIVE_1=VICTORY: Defeat the red team to win..
-C_WR_STAGE_4_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_WR_STAGE_4_OBJECTIVE_2=DEFEAT: Lost all castles and troops.
 C_WR_STAGE_4_MESSAGE_1=Your majesty, we have arrived the north. Most of lords have surrendered, we are going to have our final battle!
 C_WR_STAGE_4_MESSAGE_2=Enemy Attack!!!
 C_WR_STAGE_4_MESSAGE_3=Enemy captured our castle! We must defense!
@@ -34,6 +34,13 @@ C_WR_STAGE_4_MESSAGE_8=It's time! Kill them all!
 
 C_WR_STAGE_5_NAME=Rugged Canyon
 C_WR_STAGE_5_OBJECTIVE_1=VICTORY: Defeat the red team to win.
-C_WR_STAGE_5_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_WR_STAGE_5_OBJECTIVE_2=DEFEAT: Lost all castles and troops.
 C_WR_STAGE_5_MESSAGE_1=Your majesty, our enemy has taken the terrain, the battle will be tough. Destroy their catapult will boost our morale!
 C_WR_STAGE_5_MESSAGE_2=Your majesty, the enemy catapult has been destroyed, we shall win the fight!
+
+C_WR_STAGE_6_NAME=A friend in need
+C_WR_STAGE_6_OBJECTIVE_1=VICTORY: Defeat the red team and black team to win.
+C_WR_STAGE_6_OBJECTIVE_2=DEFEAT: Blue team or green team lost all castles and troops.
+C_WR_STAGE_6_MESSAGE_1=Commander, we need to help our ally.
+C_WR_STAGE_6_MESSAGE_2=Galamar: Thanks for your help, I'll provide you gold support
+C_WR_STAGE_6_MESSAGE_3=Receive gold support from Galamar.

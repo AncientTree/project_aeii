@@ -3,7 +3,7 @@ C_WR_NAME=黑波的战术学堂
 
 C_WR_STAGE_1_NAME=幽灵岛
 C_WR_STAGE_1_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
-C_WR_STAGE_1_OBJECTIVE_2=失败条件: 指挥官被击败
+C_WR_STAGE_1_OBJECTIVE_2=失败条件: 我军被全灭并且失去所有城堡
 C_WR_STAGE_1_MESSAGE_1=指挥官，这个小岛看起来十分的诡异，我们务必要小心！
 
 C_WR_STAGE_2_NAME=精灵圣坛
@@ -19,10 +19,13 @@ C_WR_STAGE_3_OBJECTIVE_2=失败条件: 指挥官被击败
 C_WR_STAGE_3_OBJECTIVE_3=失败条件: 回合数超过50
 C_WR_STAGE_3_MESSAGE_1=陛下，我们的目标是击败红色队伍，但是我们只有50回合
 C_WR_STAGE_3_MESSAGE_2=（我们可以通过击败其他队伍来节省时间）
+C_WR_STAGE_3_MESSAGE_3= 我们消灭了一伙敌军，移动到下一个据点吧。
+
 
 C_WR_STAGE_4_NAME=进退两难
+C_WR_STAGE_4_OBJECTIVE_1=胜利条件: 击败红队
+C_WR_STAGE_4_OBJECTIVE_2=失败条件: 我军被全灭并且失去所有城堡
 C_WR_STAGE_4_OBJECTIVE_1=VICTORY:.胜利条件: 击败红队
-C_WR_STAGE_4_OBJECTIVE_2=DEFEAT: 失败条件: 指挥官被击败
 C_WR_STAGE_4_MESSAGE_1=陛下，我们来到了北境，大部分敌方领主都投降了，我们即将跟他们决战!
 C_WR_STAGE_4_MESSAGE_2=敌袭!
 C_WR_STAGE_4_MESSAGE_3=敌军从背后偷袭，占领了我们的城堡，我们必须夺回城堡
@@ -33,7 +36,27 @@ C_WR_STAGE_4_MESSAGE_7=陛下，暴风雪就要来了，做好准备
 C_WR_STAGE_4_MESSAGE_8=时机到了，杀光他们
 
 C_WR_STAGE_5_NAME=崎岖峡谷
-C_WR_STAGE_5_OBJECTIVE_1=VICTORY:.胜利条件: 击败红队
-C_WR_STAGE_5_OBJECTIVE_2=DEFEAT: 失败条件: 指挥官被击败
+C_WR_STAGE_5_OBJECTIVE_1=胜利条件: 击败红队
+C_WR_STAGE_5_OBJECTIVE_2=失败条件: 我军被全灭并且失去所有城堡
 C_WR_STAGE_5_MESSAGE_1=陛下，我们的敌人占据了有利地形，这将是一场苦战，我们必须消灭他们的投石车才能取胜!
 C_WR_STAGE_5_MESSAGE_2=陛下，他们的投石车被摧毁了，我们要赢了！
+C_WR_STAGE_5_MESSAGE_3=陛下，我们开出了回复大礼包
+C_WR_STAGE_5_MESSAGE_4=陛下，我们开出了金币大礼包
+C_WR_STAGE_5_MESSAGE_5=陛下，我们开出了升级大礼包
+C_WR_STAGE_5_MESSAGE_6=陛下，我们开出了诅咒大礼包
+
+C_WR_STAGE_6_NAME=患难与共
+C_WR_STAGE_6_OBJECTIVE_1=胜利条件: 击败红色和黑色队伍
+C_WR_STAGE_6_OBJECTIVE_2=失败条件: 我军或者蓝色军队被歼灭
+C_WR_STAGE_6_MESSAGE_1=指挥官，我们的友军需要支援，我们需要帮助他们夺回他们的领地。
+C_WR_STAGE_6_MESSAGE_2=格拉玛：谢谢你的援助，我将会为你提供金币支援
+C_WR_STAGE_6_MESSAGE_3=得到了格拉玛国王援助的金币。
+
+
+
+
+
+
+
+
+

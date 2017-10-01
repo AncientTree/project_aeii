@@ -2,37 +2,38 @@
 C_CH_NAME=挑战
 
 C_CH_STAGE_1_NAME=围攻
-C_CH_STAGE_1_OBJECTIVE_1=失败条件：指挥官被击败
+C_CH_STAGE_1_OBJECTIVE_1=胜利条件：击败所有来犯的敌军
+C_CH_STAGE_1_OBJECTIVE_2=失败条件：指挥官被击败
 C_CH_STAGE_1_MESSAGE_1=敌人就要来了，请做好准备！
 
 C_CH_STAGE_2_NAME=闪电战
 C_CH_STAGE_2_OBJECTIVE_1=胜利条件：占领所有敌军的城堡
-C_CH_STAGE_2_OBJECTIVE_2=失败条件：你的指挥官被击败
+C_CH_STAGE_2_OBJECTIVE_2=失败条件：失去所有城堡和部队
 C_CH_STAGE_2_OBJECTIVE_3=失败条件：回合数超过32
 C_CH_STAGE_2_MESSAGE_1=这是敌人的重镇之一，敌人的援军已经在路上了，我们必须要抓紧。在32回合内占领所有蓝军的城堡来赢得胜利！
 
 C_CH_STAGE_3_NAME=背水一战
 C_CH_STAGE_3_OBJECTIVE_1=胜利条件：占领所有的敌军城堡
-C_CH_STAGE_3_OBJECTIVE_2=失败条件: 指挥官被击败
+C_CH_STAGE_3_OBJECTIVE_2=失败条件: 失去所有城堡和部队
 C_CH_STAGE_3_MESSAGE_1=可恶，我们的部队被敌方城市发现了！伏击计划已失败，我们必须与敌军迎面战斗了。占领他们所有的城堡！
 
 C_CH_STAGE_4_NAME=岩石峡谷
 C_CH_STAGE_4_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
-C_CH_STAGE_4_OBJECTIVE_2=失败条件: 指挥官被击败
+C_CH_STAGE_4_OBJECTIVE_2=失败条件: 失去所有城堡和部队
 C_CH_STAGE_4_OBJECTIVE_3=失败条件: 回合数超过200
 C_CH_STAGE_4_MESSAGE_1=陛下，在这个山里有一个山贼的据点，我们需要剿灭他们来保护这个小镇！
 
 C_CH_STAGE_5_NAME=俄罗斯套娃
 C_CH_STAGE_5_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
-C_CH_STAGE_5_OBJECTIVE_2=失败条件: 指挥官被击败
+C_CH_STAGE_5_OBJECTIVE_2=失败条件: 失去所有城堡和部队
 C_CH_STAGE_5_MESSAGE_1=陛下，我们的敌人从俄罗斯套娃中获得了启发，我们必须通过一次次击败来彻底消灭敌人！
 
 C_CH_STAGE_6_NAME=诅咒之地
 C_CH_STAGE_6_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
-C_CH_STAGE_6_OBJECTIVE_2=失败条件: 指挥官被击败
+C_CH_STAGE_6_OBJECTIVE_2=失败条件: 失去所有城堡和部队
 C_CH_STAGE_6_MESSAGE_1=陛下，这片大地被诅咒了，所有我方满生命值的部队将会受到诅咒！
 
 C_CH_STAGE_7_NAME=持久战
 C_CH_STAGE_7_OBJECTIVE_1=胜利条件: 击败红色所有的部队
-C_CH_STAGE_7_OBJECTIVE_2=失败条件: 指挥官被击败
+C_CH_STAGE_7_OBJECTIVE_2=失败条件: 失去所有城堡和部队
 C_CH_STAGE_7_MESSAGE_1=陛下，这次我们不能占领任何据点，否则我们的部队就会被控制！

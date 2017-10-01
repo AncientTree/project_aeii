@@ -1,9 +1,10 @@
 
-C_HF_NAME=远古城塞作战日志
+C_HF_NAME=天堂之怒
 
 C_HF_STAGE_1_NAME=突出重围
 C_HF_STAGE_1_OBJECTIVE_1=胜利：击败敌军指挥官
 C_HF_STAGE_1_OBJECTIVE_2=失败: 格拉玛或沃拉顿被击败
+C_CH_STAGE_2_OBJECTIVE_3=失败条件：回合数超过21
 C_HF_STAGE_1_MESSAGE_1=到达远古城塞之后格拉玛和沃拉顿亲眼目睹了天堂之怒的威力。
 C_HF_STAGE_1_MESSAGE_2=与此同时西斯的爪牙包围了格拉玛的先头部队，战况变得十分危急！
 C_HF_STAGE_1_MESSAGE_3=可怜的格拉玛和沃拉顿，你们来的太晚了。准备被我们伟大的主人击败吧！

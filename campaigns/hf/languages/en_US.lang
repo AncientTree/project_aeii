@@ -1,9 +1,10 @@
 
-C_HF_NAME=Journal of The Ancient Citadel
+C_HF_NAME=Haven's Fury
 
 C_HF_STAGE_1_NAME=Break Through
 C_HF_STAGE_1_OBJECTIVE_1=VICTORY: Defeat enemy commander.
 C_HF_STAGE_1_OBJECTIVE_2=DEFEAT: Galamar or Valadorn is defeated.
+C_HF_STAGE_1_OBJECTIVE_3=DEFEAT: Turn number exceeds 21.
 C_HF_STAGE_1_MESSAGE_1=After arriving the ancient citadel Galamar and Valadorn witnessed the immense power of Haven's Fury.
 C_HF_STAGE_1_MESSAGE_2=At the meantime Saeth's evil army surrounded Galamar's spearhead. The situation became extremely intense.
 C_HF_STAGE_1_MESSAGE_3=Poor Galamar and Valadorn. You just came too late, prepare to be defeated by the glorious power of our master!
