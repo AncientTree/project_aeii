@@ -4,7 +4,7 @@
 * **languages** / All general game language texts go here.
 * **fonts** / All the fonts used to render texts.
 
-# Language File Naming
+# Language File Naming Policy
 
 Use `[locale code].lang` for language file name. e.g. `ru_RU.lang` represents for Russian.
 
