@@ -174,9 +174,10 @@ P_UNIT_DESCRIPTION_17=神秘莫测的冰元素由纯冰组成，它似乎是一�
 P_UNIT_DESCRIPTION_18=神秘的生物，他们的身体似乎可以吸收大量的伤害。
 
 T_GAME_TITLE=远古帝国 重装上阵
-T_ROOM_NAME=%s的游戏
 
 #2.0.0
+
+T_ROOM_NAME=%s的游戏
 
 L_ACCEPT=同意
 L_ACTIONS=操作
@@ -422,3 +423,9 @@ P_WIKI_TERRAINS_L1=大部分的地形都会为单位提供防御加成。但是�
 P_WIKI_TERRAINS_L2=请记住，当单位处于特定的地形上的时候，一些技能可以使其获得攻击／防御加成，有时候甚至影响移动力的消耗。
 
 P_WIKI_UNITS_OVERVIEW=在此可以查看所有单位的基本信息，包括其技能。但不包含单位的属性成长信息，请自行发掘:)
+
+#2.0.1
+
+L_SERVER_REGION=服务器地区
+L_SERVER_REGION_CN=中国
+L_SERVER_REGION_NA=北美

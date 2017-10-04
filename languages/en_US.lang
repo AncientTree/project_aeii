@@ -174,9 +174,10 @@ P_UNIT_DESCRIPTION_17=Ice elementals are mystical beings formed by pure ice. It 
 P_UNIT_DESCRIPTION_18=Slimes' soft bodies can absorb a lot of physical damages. However they are pretty weak against magic units.
 
 T_GAME_TITLE=Ancient Empires Reloaded
-T_ROOM_NAME=%s's game
 
 #2.0.0
+
+T_ROOM_NAME=%s's game
 
 L_ACCEPT=Accept
 L_ACTIONS=Actions
@@ -422,3 +423,9 @@ P_WIKI_TERRAINS_L1=Most of the terrains will provide defence bonus to units. But
 P_WIKI_TERRAINS_L2=Keep in mind that some abilities will let units gain additional attack/defence bonuses while on specific type of terrains, sometimes even movement point cost will be affected.
 
 P_WIKI_UNITS_OVERVIEW=You can find all basic units information here, including their abilities. Anyway unit attributes growths are not included in here, try to find them by yourself :)
+
+#2.0.1
+
+L_SERVER_REGION=Server Region
+L_SERVER_REGION_CN=China
+L_SERVER_REGION_NA=North America
