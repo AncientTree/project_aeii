@@ -1,7 +1,7 @@
 
-C_WR_NAME=Vòng Đen, Làng Chiến Tranh
+C_WR_NAME="BW" Chiến Đấu Vì Làng
 
-C_WR_STAGE_1_NAME=Hòn đảo ma
+C_WR_STAGE_1_NAME=Hòn Đảo Ma Ám
 C_WR_STAGE_1_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 C_WR_STAGE_1_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 C_WR_STAGE_1_MESSAGE_1=Chỉ huy, hòn đảo này có vẻ kỳ lạ, chúng ta nên cẩn thận!
@@ -13,7 +13,7 @@ C_WR_STAGE_2_MESSAGE_1=Tâu bệ hạ, chúng ta đang tiếp cận ngôi đền
 C_WR_STAGE_2_MESSAGE_2=trinh sát của chúng ta nhận thấy rằng có một đội quân bất tử ở phía tây, họ có khả năng bất tử !
 C_WR_STAGE_2_MESSAGE_3=Chiếm giữ ngôi đền để giành chiến thắng !!!
 
-C_WR_STAGE_3_NAME=Cuộc Hành Trình Dài
+C_WR_STAGE_3_NAME=Hành Trình Vô Tận
 C_WR_STAGE_3_OBJECTIVE_1=(1): Đánh bại đội đỏ để giành chiến thắng...
 C_WR_STAGE_3_OBJECTIVE_2=(2): Chỉ huy bạn phải sống
 C_WR_STAGE_3_OBJECTIVE_3=(3): số lượt không vượt quá 50.
@@ -24,7 +24,7 @@ C_WR_STAGE_4_NAME=Tiến Thoái Lưỡng Nan
 C_WR_STAGE_4_OBJECTIVE_1=(1): Tiêu diệt đội đỏ..
 C_WR_STAGE_4_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống.
 C_WR_STAGE_4_MESSAGE_1=Tâu bệ hạ, chúng ta đã đến phía bắc. Hầu hết các lãnh chúa đã đầu hàng, đây là trận đấu cuối cùng của chúng ta !
-C_WR_STAGE_4_MESSAGE_2=Kẻ thù tấn công!!!
+C_WR_STAGE_4_MESSAGE_2=Kẻ thù đang tấn công!!!
 C_WR_STAGE_4_MESSAGE_3=Kẻ thù đang chiếm lâu đài của chúng ta, chúng ta phải bảo vệ.
 C_WR_STAGE_4_MESSAGE_4=Tâu bệ hạ, chúng ta có thể cố gắng chiếm giữ những lâu đài trước.
 C_WR_STAGE_4_MESSAGE_5=Hoặc chúng ta có thể rút lui để lấy lâu đài của chúng ta trở lại!
@@ -37,3 +37,10 @@ C_WR_STAGE_5_OBJECTIVE_1=(1): Tiêu diệt đội đỏ.
 C_WR_STAGE_5_OBJECTIVE_2=(2): Chỉ huy bạn phải sống
 C_WR_STAGE_5_MESSAGE_1=Tâu bệ hạ, kẻ thù của chúng tôi đã đưa ra những địa hình, cuộc chiến sẽ rất khó khăn. Phá hủy máy ném đá của kẻ thù sẽ thúc đẩy tinh thần của bạn!
 C_WR_STAGE_5_MESSAGE_2=Tâu bệ hạ, máy ném đá kẻ thù đã bị phá hủy, chúng tôi sẽ giành chiến thắng trong cuộc chiến!
+
+C_WR_STAGE_6_NAME=Hoạn Nạn Có Nhau
+C_WR_STAGE_6_OBJECTIVE_1=(1): Tiêu diệt đội đỏ và đen.
+C_WR_STAGE_6_OBJECTIVE_2=(2): 2 Đội xanh phải chiếm tất cả lâu đài
+C_WR_STAGE_6_MESSAGE_1=Tâu bệ hạ, chúng ta cần thêm sự giúp đỡ đồng minh.
+C_WR_STAGE_6_MESSAGE_2=Vua Galamar: Cảm ơn sự giúp đỡ của anh, em sẽ cung cấp vàng và hỗ trợ cho anh.
+C_WR_STAGE_6_MESSAGE_3=Nhận được sự hỗ trợ từ  Vua Galamar.
