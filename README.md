@@ -22,15 +22,15 @@ For each language there is a master file in the `languages` folder which defines
 
 Simply speaking, language files just contain `<key>=<text>` pairs. For master file though, there's a font specified at the top of the file which defines the font to be used for that language. One notable thing is that, the keys (which are on the left) are not supposed to be modified, and you are only meant to translate the right part.
 
+### Where Translation Works Need to Go?
+
+* If you want to add a missing language support to the game.
+* If there are any non-translated texts in the language files.
+* If you found any translation errors.
+
 ### How to Submit Translation?
 
 For those already know how to use GitHub I will say no more, just fork the project, make the translation and open PRs to `master` branch. If you are not familiar with GitHub work flow, I recommend you take a look at [this tutorial](https://guides.github.com/activities/forking/). Anyway if you find yourself just not willing to figure out how GitHub works, you can download the project and send me your translation through email (with your name of course).
-
-### Where Translation Works Need to Go?
-
-1. If you want to add a missing language support to the game.
-2. If there are any non-translated texts in the language files.
-3. If you found any translation errors.
 
 ### Keep in Mind
 
