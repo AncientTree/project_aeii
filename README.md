@@ -26,6 +26,12 @@ Simply speaking, language files just contain `<key>=<text>` pairs. For master fi
 
 For those already know how to use GitHub I will say no more, just fork the project, make the translation and open PRs to `master` branch. If you are not familiar with GitHub work flow, I recommend you take a look at [this tutorial](https://guides.github.com/activities/forking/). Anyway if you found yourself just don't want to figure out how GitHub works, you can download the project and send me your translation through email (with your name of course).
 
+### Where Translation Works Needs to Go?
+
+1. If you want to add a missing language support to the game.
+2. If there are any non-translated texts in the language files.
+3. If you found any translation errors.
+
 ### Keep in Mind
 
 1. Reserve an empty line at the top of each language file, or it will cause problem for the game to load it.
