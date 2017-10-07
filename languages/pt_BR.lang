@@ -144,7 +144,7 @@ P_ABILITY_DESCRIPTION_25=Unidades com essa habilidade contra atacam qualquer ata
 P_ABILITY_DESCRIPTION_27=Unidades com essa habilidade regeneram 25% do total de seu HP no início de seu turno, independente de estarem com [Poisoned].
 P_ABILITY_DESCRIPTION_26=Unidades com essa habilidade cegam os inimigos atacados, atribiundo o status [Blinded] a eles. Entretanto unidades com essa habilidade não podem ser afetada por ela.
 P_ABILITY_DESCRIPTION_28=Unidades com essa habilidade recebem 50% a menos de dano de ataques à distância.
-P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less damage from physical attacks.
+P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less damage from physical attacks but 50% more damage from magic attacks.
 
 P_STATUS_DESCRIPTION_0=Unidades que forem poisoned perderão 10 HP no início do turno e não podem receber heal.
 P_STATUS_DESCRIPTION_1=Unidades que foram slowed tem os pontos de movimento reduzidos para 1.
