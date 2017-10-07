@@ -146,7 +146,7 @@ P_ABILITY_DESCRIPTION_25=For units who have this ability, if the attacker is wit
 P_ABILITY_DESCRIPTION_26=For units who have this ability, their attacks will attach [Blinded] status to enemies. However units with this ability will not affect each other.
 P_ABILITY_DESCRIPTION_27=Units with this ability will recover 25% max HP at turn start, regardless of being [Poisoned] or not.
 P_ABILITY_DESCRIPTION_28=For units who have this ability, they receive 50% less damage from ranged attacks.
-P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less damage from physical attacks.
+P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less damage from physical attacks but 50% more damage from magic attacks.
 
 P_STATUS_DESCRIPTION_0=Units who have been poisoned will lose 10 HP at turn start and cannot receive heal.
 P_STATUS_DESCRIPTION_1=For units who have been slowed, their movement points will be reduced to 1.
