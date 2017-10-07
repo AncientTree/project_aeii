@@ -34,6 +34,6 @@ For those already know how to use GitHub I will say no more, just fork the proje
 
 ### Keep in Mind
 
-1. Reserve an empty line at the top of each language file, or it will cause problem for the game to load it.
-2. Do not replace placeholders (`%s`, `%d`, etc)in the language file and you need to keep their order during translation.
-3. You can use `\n` to create a new line for messages and paragraphs (not recommended for labels).
+* Reserve an empty line at the top of each language file, or it will cause problem for the game to load it.
+* Do not replace placeholders (`%s`, `%d`, etc)in the language file and you need to keep their order during translation.
+* You can use `\n` to create a new line for messages and paragraphs (not recommended for labels).
