@@ -1,5 +1,5 @@
-#Specifies the font used for this language
 
+#Specifies the font used for this language
 font=vi_VN.ttf
 
 #For prefix C = Campaign, L = Label, M = Message, P = Paragraph, T = Title
