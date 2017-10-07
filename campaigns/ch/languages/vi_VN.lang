@@ -1,23 +1,23 @@
 
 C_CH_NAME=Thử Thách
 
-C_CH_STAGE_1_NAME=Anh Hùng bao vây 
+C_CH_STAGE_1_NAME=Vòng Vây Xiết Chặt
 C_CH_STAGE_1_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù
 C_CH_STAGE_1_OBJECTIVE_2=(2): Chỉ huy của bạn phải sống
 C_CH_STAGE_1_MESSAGE_1=Kẻ thù đang đến, mọi người hãy chuẩn bị !
 
-C_CH_STAGE_2_NAME=Chiến tranh chớp nhoáng
+C_CH_STAGE_2_NAME=Chiến Tranh Chớp Nhoáng
 C_CH_STAGE_2_OBJECTIVE_1=(1): Chiếm giữ tất cả lâu đài của kẻ thù
 C_CH_STAGE_2_OBJECTIVE_2=(2): Chỉ huy của bạn phải sống
 C_CH_STAGE_2_OBJECTIVE_3=(3): số lượt không vượt quá 32.
 C_CH_STAGE_2_MESSAGE_1=Đó là một trong những thành phố quan trọng của kẻ thù. Quân tiếp viện của kẻ thù rải rác trên đường đi, chúng ta cần phải nhanh lên. năm bắt tất cả các lâu đài quân đội màu xanh trong vòng 32 lượt để giành chiến thắng!
 
-C_CH_STAGE_3_NAME=Phán quyết cuối cùng
+C_CH_STAGE_3_NAME=Phán Quyết Cuối Cùng
 C_CH_STAGE_3_OBJECTIVE_1=(1): Chiếm giữ tất cả lâu đài kẻ thù
 C_CH_STAGE_3_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 C_CH_STAGE_3_MESSAGE_1=Chết tiệt, các thành phố của kẻ thù đã nhận thấy chúng tôi! Các hoạt động phục kích đã thất bại, chúng ta phải đấu tranh với họ phía trước. Chiếm giữ tất cả các lâu đài của kẻ thù!
 
-C_CH_STAGE_4_NAME=Thung lũng rung chuyển
+C_CH_STAGE_4_NAME=Thung Lũng Rung Chuyển
 C_CH_STAGE_4_OBJECTIVE_1=(1): Tiêu diệt tất cả kẻ thù và chiếm giữ tất cả lâu đài
 C_CH_STAGE_4_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
 C_CH_STAGE_4_OBJECTIVE_3=(3): số lượt không vượt quá 200
@@ -33,7 +33,7 @@ C_CH_STAGE_6_OBJECTIVE_1=(1): Tiêu diệt tất cã kẻ thù và chiếm giữ
 C_CH_STAGE_6_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống.
 C_CH_STAGE_6_MESSAGE_1=Tâu bệ hạ, hòn đảo này đã bị nguyền rủa, quân đội không bị thương của chúng ta sẽ gián cấp mỗi lượt, hãy cẩn thận!
 
-C_CH_STAGE_7_NAME=On Protracted War
-C_CH_STAGE_7_OBJECTIVE_1=VICTORY: Defeat all red units..
-C_CH_STAGE_7_OBJECTIVE_2=DEFEAT: Your commander is defeated.
-C_CH_STAGE_7_MESSAGE_1=Your majesty, we are not able to capture any property this time, or we will lose our troop!
+C_CH_STAGE_7_NAME=Trận Chiến Không Hồi Kết
+C_CH_STAGE_7_OBJECTIVE_1=(1): Đánh bại tất cả quân đỏ
+C_CH_STAGE_7_OBJECTIVE_2=(2): Chỉ huy của bạn phải còn sống
+C_CH_STAGE_7_MESSAGE_1=Tâu bệ hạ.chúng ta không thể chiếm giữ bất kỳ tài sản nào trong thời gian này, hoặc chúng ta sẽ mất quân đội !
