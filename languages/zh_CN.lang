@@ -146,7 +146,7 @@ P_ABILITY_DESCRIPTION_25=拥有该能力的单位2格及以内都能反击。
 P_ABILITY_DESCRIPTION_26=拥有该能力的单位攻击时会给对方附加[致盲]状态持续1回合，同样拥有该能力的单位之间不会生效。
 P_ABILITY_DESCRIPTION_27=拥有该能力的单位在回合开始时会回复25%最大生命值，在[中毒]时依然有效。
 P_ABILITY_DESCRIPTION_28=拥有该能力的单位受到的远程伤害减半。
-P_ABILITY_DESCRIPTION_29=拥有该能力的单位受到的物理伤害减半。
+P_ABILITY_DESCRIPTION_29=拥有该能力的单位受到的物理伤害减半，但是受到的魔法伤害增加50%。
 
 P_STATUS_DESCRIPTION_0=中毒的单位在回合开始会损失10点血量，并且无法接受治疗。
 P_STATUS_DESCRIPTION_1=被减速的单位移动力降至1。
