@@ -429,3 +429,9 @@ P_WIKI_UNITS_OVERVIEW=在此可以查看所有单位的基本信息，包括其�
 L_SERVER_REGION=服务器地区
 L_SERVER_REGION_CN=中国
 L_SERVER_REGION_NA=北美
+
+#2.1.0
+
+L_SERVER_REGION_TEST=测试
+
+M_INFO_GAME_CLOSE_ADMIN=[%s的游戏] 被管理员关闭了\n\n相关用户\n[%s]

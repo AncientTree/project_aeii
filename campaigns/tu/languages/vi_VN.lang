@@ -1,0 +1,48 @@
+
+C_TU_NAME=Hướng Dẫn
+
+C_TU_STAGE_1_NAME=Di chuyển & Tấn công
+C_TU_STAGE_1_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù
+C_TU_STAGE_1_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải còn sống
+C_TU_STAGE_1_MESSAGE_1=Chào mừng chỉ huy mới! Tôi là một huấn luyện viên từ trại quân đội. Trong giai đoạn này, tôi sẽ dạy cho bạn những cơ bản nhất của cuộc chiến: di chuyển và tấn công.
+C_TU_STAGE_1_MESSAGE_2=Như bạn có thể nhìn thấy bạn đang ở phía bên trái của bản đồ và có hai kẻ thù ở phía bên phải mà bạn cần phải đánh bại.
+C_TU_STAGE_1_MESSAGE_3=Tuy nhiên điểm chuyển động của bạn không đủ để tiếp cận họ, do đó, hãy di chuyển đến ngôi làng ở giữa bản đồ đầu tiên.
+C_TU_STAGE_1_MESSAGE_4=Để di chuyển một đơn vị, bạn cần phải bấm vào nó đầu tiên và một số hình vuông màu vàng sẽ xuất hiện trên bản đồ cho thấy nơi bạn có thể di chuyển.
+C_TU_STAGE_1_MESSAGE_5=Bằng cách di chuyển con trỏ đến một trong các hình vuông màu vàng một con đường đến đích sẽ xuất hiện. Nhấp vào đích để di chuyển ở đó.
+C_TU_STAGE_1_MESSAGE_6=Bây giờ là thời gian để thực hành, di chuyển chỉ huy của mình vào làng ở giữa!
+C_TU_STAGE_1_MESSAGE_7=Tốt, bây giờ bạn có thể nhấp vào nút chế độ chờ (nút có biểu tượng mũi tên xuống) để cho chỉ huy của bạn ở chế độ chờ.
+C_TU_STAGE_1_MESSAGE_8=C_TU_STAGE_1_MESSAGE_8=Good. And since there's nothing for you to do you can click the status bar at the bottom to end your turn.
+C_TU_STAGE_1_MESSAGE_9=Bây giờ là thời gian cho bạn để tấn công kẻ thù. Để tấn công một kẻ thù, di chuyển chỉ huy của bạn bên cạnh và một nút với biểu tượng thanh kiếm sẽ xuất hiện.
+C_TU_STAGE_1_MESSAGE_10=Nhấn vào nút này sau đó di chuyển con trỏ đến một trong những kẻ thù trong phạm vi tấn công và nhấp vào kẻ thù để tấn công.
+C_TU_STAGE_1_MESSAGE_11=Tuyệt vời, bây giờ bạn đã học được làm thế nào để di chuyển và tấn công, hãy tiêu diệt tất cả các kẻ thù để giành chiến thắng trong giai đoạn!
+
+C_TU_STAGE_2_NAME=Sửa chữa, Chiếm giữ & Chiêu mộ
+C_TU_STAGE_2_OBJECTIVE_1=VICTORY: Tiêu diệt tất cả kẻ thù
+C_TU_STAGE_2_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải con sống
+C_TU_STAGE_2_MESSAGE_1=Chào mừng bạn đến một giai đoạn mới! Trong giai đoạn này, tôi sẽ dạy cho bạn tất cả những gì về sửa chữa, chiếm giữ và chiêu mộ.
+C_TU_STAGE_2_MESSAGE_2=Bạn có thể thấy có rất nhiều đơn vị kẻ thù ở phía bên kia của con sông và kẻ thù có quá nhiều cho chỉ huy của bạn để đánh bại.
+C_TU_STAGE_2_MESSAGE_3=Vì vậy, bạn cần một lâu đài để chiêu mộ các đơn vị để giúp bạn chiến đấu chống lại kẻ thù. Và may mắn thay có một lâu đài gần dưới cùng của bản đồ. Hãy đi đến đó.
+C_TU_STAGE_2_MESSAGE_4=Để chiếm lâu đài này, bạn cần phải di chuyển chỉ huy của bạn ở trên nó và nhấp vào nút chiếm giữ (nút có biểu tượng ngôi nhà)
+C_TU_STAGE_2_MESSAGE_5=Tốt, bây giờ lâu đài này là của bạn, nó sẽ cung cấp 100 vàng mỗi lượt, và bạn có thể sử dụng nó để chiêu mộ các đơn vị để chống lại kẻ thù.
+C_TU_STAGE_2_MESSAGE_6=Nhưng đừng quá vội vàng, có hai di tích làng gần lâu đài, vì vậy hãy chiêu mộ một số binh sĩ để sửa chữa chúng trước tiên.
+C_TU_STAGE_2_MESSAGE_7=Để chiêu mộ một đơn vị, chỉ cần nhấp vào lâu đài sau đó chọn đơn vị bạn muốn chiêu mộ và bấm nút "chiêu mộ".
+C_TU_STAGE_2_MESSAGE_8=Bây giờ là thời gian để thực hành, vì hành động sửa chữa là khá tương tự hành động chiếm giữ , tôi nghĩ bạn có thể thử nó.
+C_TU_STAGE_2_MESSAGE_9=Tuyệt vời, vì mỗi ngôi làng bị chiếm giữ có thể cung cấp 50 vàng mỗi lượt, hãy chiếm chúng trong lượt tiếp theo của bạn.
+C_TU_STAGE_2_MESSAGE_10=Và có vẻ như vẫn còn một số vàng còn lại hãy cố gắng chiêu mộ một số đơn vị nhiều hơn để tăng cường quân đội của bạn.
+C_TU_STAGE_2_MESSAGE_11=Tuyệt diệu, bây giờ bạn đã đạt được thu nhập cao hơn và không cần phải sợ kẻ thù. Tiêu diệt tất cả các kẻ thù để giành chiến thắng trong giai đoạn!
+
+C_TU_STAGE_3_NAME=Sẵn sàng cho trận chiến!
+C_TU_STAGE_3_OBJECTIVE_1=VICTORY: Đánh bại tất cả kẻ địch và chiếm giữ lâu đài của đối phương.
+C_TU_STAGE_3_OBJECTIVE_2=DEFEAT: Chỉ huy của bạn phải sống
+C_TU_STAGE_3_MESSAGE_1=Bây giờ là thời gian cho bạn để đặt những gì bạn đã học được vào trận chiến thực sự. Như bạn có thể nhìn thấy kẻ thù cũng có một chỉ huy và một lâu đài có nghĩa là có nhiều khó khăn để đánh bại hơn trước.
+C_TU_STAGE_3_MESSAGE_2=Chìa khóa để chiến thắng là đặc tính và khả năng của đơn vị ". Nếu bạn chú ý đến thì các trận chiến có thể được dễ dàng hơn nhiều.
+C_TU_STAGE_3_MESSAGE_3=Để đưa ra một lời giải thích ngắn gọn, có hai loại tấn công: vật lý"màu đỏ" & ma thuật "màu lam" và một đơn vị chỉ có thể có một kiểu tấn công.
+C_TU_STAGE_3_MESSAGE_4=Và mỗi đơn vị cũng có phòng thủ vật lý và phép thuật. phòng thủ vật lý có một biểu tượng cái khiên màu đỏ trong khi phòng thủ ma thuật là khiên màu xanh.
+C_TU_STAGE_3_MESSAGE_5=trong khi tấn công, hãy nhớ chọn đối thủ của bạn một cách khôn ngoan. tùy theo cách của bạn
+C_TU_STAGE_3_MESSAGE_6=Ngoài ra còn có thêm hai đơn vị có sẵn cho việc chiêu mộ trong giai đoạn này: Nguyên Tố & phù thủy.
+C_TU_STAGE_3_MESSAGE_7=Nguyên Tố này thích ở dưới nước, vì vậy họ có thể chiến đấu tốt hơn nhiều khi dưới nước. Và phù thủy có thể triệu tập những bộ xương từ các đơn vị đã tử vong ,nên khá hữu ích.
+C_TU_STAGE_3_MESSAGE_8=Hãy sử dụng những gì bạn đã học được trong giai đoạn trước đó để đánh bại tất cả kẻ thù và chiếm giữ lâu đài của kẻ thù!
+C_TU_STAGE_3_MESSAGE_9=Tuyệt diệu, có vẻ như bạn đang nhận được tốt hơn ở trận chiến. Nhưng đừng chủ quan, bạn vẫn còn có một con đường dài để đi.
+C_TU_STAGE_3_MESSAGE_10=Có rất nhiều đơn vị hơn và khả năng cho bạn khám phá. Hãy nhớ kiểm tra wiki trong game nếu bạn có bất kỳ câu hỏi. Để tốt cuộc hành trình của bạn!
+
+

@@ -429,3 +429,9 @@ P_WIKI_UNITS_OVERVIEW=You can find all basic units information here, including t
 L_SERVER_REGION=Server Region
 L_SERVER_REGION_CN=China
 L_SERVER_REGION_NA=North America
+
+#2.1.0
+
+L_SERVER_REGION_TEST=Test
+
+M_INFO_GAME_CLOSE_ADMIN=[%s's game] has been closed by administrator.\n\nResponsible\n[%s]

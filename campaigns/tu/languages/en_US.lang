@@ -1,0 +1,46 @@
+
+C_TU_NAME=Tutorial
+
+C_TU_STAGE_1_NAME=Move & Attack
+C_TU_STAGE_1_OBJECTIVE_1=VICTORY: Defeat all enemy units.
+C_TU_STAGE_1_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_TU_STAGE_1_MESSAGE_1=Welcome new commander! I am a trainer from military camp. In this stage I will teach you the most basic of battle: move and attack.
+C_TU_STAGE_1_MESSAGE_2=As you can see you are on the left side of the map and there are two enemies on the right side which you need to defeat.
+C_TU_STAGE_1_MESSAGE_3=However your movement point is not enough to reach them, so lets move to the village in the middle of the map first.
+C_TU_STAGE_1_MESSAGE_4=To move a unit, you need to click it first and some yellow squares will appear on the map showing where you can move.
+C_TU_STAGE_1_MESSAGE_5=By moving the cursor to one of the yellow squares a path to the destination will appear. Click the destination to move there.
+C_TU_STAGE_1_MESSAGE_6=Now it's time for practice, move your commander to the village in the middle!
+C_TU_STAGE_1_MESSAGE_7=Good, now you can click the standby button (the button with a down arrow icon) to let your commander standby.
+C_TU_STAGE_1_MESSAGE_8=Good. And since there's nothing for you to do you can click the status bar at the bottom to end your turn.
+C_TU_STAGE_1_MESSAGE_9=Now it's time for you to attack the enemies. To attack an enemy, move your commander next to him and a button with a sword icon will appear.
+C_TU_STAGE_1_MESSAGE_10=Click this button then move the cursor to one of the enemies within attack range and click the enemy to attack.
+C_TU_STAGE_1_MESSAGE_11=Great, now you have have learned how to move and attack, there's nothing to hold you back. Destroy all the enemies to win the stage!
+
+C_TU_STAGE_2_NAME=Repair, Occupy & Recruit
+C_TU_STAGE_2_OBJECTIVE_1=VICTORY: Defeat all enemy units.
+C_TU_STAGE_2_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_TU_STAGE_2_MESSAGE_1=Welcome to a new stage! In this stage I will teach you all the things about repair, occupy and recruit.
+C_TU_STAGE_2_MESSAGE_2=You can see there are many enemy units on the other side of the river and they are too many for your commander to defeat.
+C_TU_STAGE_2_MESSAGE_3=So you need a castle to recruit units to help you fight the enemies. And fortunately there's a castle near the bottom of the map. Let's go for that.
+C_TU_STAGE_2_MESSAGE_4=To occupy this castle, you need to move your commander above it and click the occupy button (button with a house icon).
+C_TU_STAGE_2_MESSAGE_5=Good, now this castle is yours, it will provide 100 gold per turn and you can use it to recruit units to fight enemies.
+C_TU_STAGE_2_MESSAGE_6=But don't be so hasty, there are two village ruins near the castle, so let's recruit some soldiers to repair them first.
+C_TU_STAGE_2_MESSAGE_7=To recruit a unit, just click the castle then choose the unit you want to recruit and click the confirm button on the bottom.
+C_TU_STAGE_2_MESSAGE_8=Now it's time for practice, since repair action is quite similar to occupy action, I think you can try it yourself.
+C_TU_STAGE_2_MESSAGE_9=Great, since each occupied village can provide 50 gold per turn, make sure to occupy them on your next turn.
+C_TU_STAGE_2_MESSAGE_10=And it seems there are still some gold left so try recruiting some more units to strengthen your army.
+C_TU_STAGE_2_MESSAGE_11=Fantastic, now you have gained more income and there's no need to fear the enemies. Destroy all the enemies to win the stage!
+
+C_TU_STAGE_3_NAME=Prepare for battle!
+C_TU_STAGE_3_OBJECTIVE_1=VICTORY: Defeat all enemy units and capture enemy castle.
+C_TU_STAGE_3_OBJECTIVE_2=DEFEAT: Your commander is defeated.
+C_TU_STAGE_3_MESSAGE_1=Now it's time for you to put what you have learned into real battle. As you can see enemies also have a commander and a castle which means they are more difficult to defeat then before.
+C_TU_STAGE_3_MESSAGE_2=The key to victory is units' properties and abilities. If you pay attention to that then the battle can be more easier.
+C_TU_STAGE_3_MESSAGE_3=To give a brief explanation, there are two types of attack: physical & magic and one unit can only have one type of attack. Physical attack power will be displayed in red while magic in blue.
+C_TU_STAGE_3_MESSAGE_4=And each unit also have physical and magic defence. Physical defence has a red shield icon while magic defence has a blue one.
+C_TU_STAGE_3_MESSAGE_5=So while attacking, remember to choose your opponent wisely. If you choose an enemy weak to your unit's attack type, then you can deal more damage.
+C_TU_STAGE_3_MESSAGE_6=Also there are two more units available for recruiting in this stage: element & sorceress.
+C_TU_STAGE_3_MESSAGE_7=Elements are made of pure aqua, so they can fight much better when in water. And sorceresses can summon skeletons from fallen units which turns out to be quite useful.
+C_TU_STAGE_3_MESSAGE_8=Keep those in mind, use what you have learned in previous stages to defeat all enemies and capture their castle!
+C_TU_STAGE_3_MESSAGE_9=Fantastic, it seems you are getting better at battle. But do not grow arrogant, you still have a long road to go.
+C_TU_STAGE_3_MESSAGE_10=There are many more units and abilities for you to explore. Remember to check the in-game wiki if you have any questions. Good journey to you!

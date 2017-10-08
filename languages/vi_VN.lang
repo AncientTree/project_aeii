@@ -429,3 +429,9 @@ P_WIKI_UNITS_OVERVIEW=Bạn có thể tìm thấy tất cả các đơn vị cơ
 L_SERVER_REGION=Vùng Máy Chủ
 L_SERVER_REGION_CN=Trung Quốc
 L_SERVER_REGION_NA=Vùng Bắc Mỹ
+
+#2.1.0
+
+L_SERVER_REGION_TEST=Test
+
+M_INFO_GAME_CLOSE_ADMIN=[%s's game] has been closed by administrator.\n\nResponsible\n[%s]
