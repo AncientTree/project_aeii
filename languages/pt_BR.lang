@@ -430,6 +430,11 @@ L_SERVER_REGION_NA=North America
 
 #2.1.0
 
+L_PLAYER_DAMAGE_REDUCTION=Player Damage Reduction (Offline)
 L_SERVER_REGION_TEST=Test
 
+L_UNIT_NAME_19=Mermaid
+
 M_INFO_GAME_CLOSE_ADMIN=[%s's game] has been closed by administrator.\n\nResponsible\n[%s]
+
+P_UNIT_DESCRIPTION_19=Mermaids are like soldiers but can move really fast on water. They can occupy and repair villages like normal soldiers do, so you can use them to gain control over the water!

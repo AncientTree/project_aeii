@@ -432,6 +432,11 @@ L_SERVER_REGION_NA=北美
 
 #2.1.0
 
+L_PLAYER_DAMAGE_REDUCTION=玩家伤害减免(单机)
 L_SERVER_REGION_TEST=测试
 
+L_UNIT_NAME_19=人鱼
+
 M_INFO_GAME_CLOSE_ADMIN=[%s的游戏] 被管理员关闭了\n\n相关用户\n[%s]
+
+P_UNIT_DESCRIPTION_19=人鱼是水面上的士兵，她们可以占领以及修复村庄，所以你可以使用她们来获取制海权!
