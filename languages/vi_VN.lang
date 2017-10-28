@@ -177,7 +177,7 @@ T_GAME_TITLE=Ancient Empires Reloaded
 
 #2.0.0
 
-T_ROOM_NAME=còn %s giây vào trò chơi
+T_ROOM_NAME=( %s ) là chủ phòng
 
 L_ACCEPT=Chấp nhận
 L_ACTIONS=Hành động
@@ -190,7 +190,7 @@ L_AUTHOR=Sáng tạo
 L_AUTO_START_MOVE=Vào tự động
 L_BOTTOM=Dưới
 L_CHANGE_PASSWORD=Thay đổi mật khẩu
-L_CREATE=Lập trình
+L_CREATE=Tạo phòng
 L_CREDITS_ARTS=Đồ họa
 L_CREDITS_PROGRAM=Kế hoạch
 L_CREDITS_SERVER=Máy chủ
@@ -270,7 +270,7 @@ L_REGISTER=Đăng ký
 L_REJECT=Từ chối
 L_RETRY=Thử lại
 L_RIGHT=Phải
-L_ROOM_CAPACITY=Năng suất 
+L_ROOM_CAPACITY=Số lượng người
 L_ROOM_STATUS_OPEN=Mở
 L_ROOM_STATUS_STARTED=Bắt đầu
 L_ROOM_STATUS_CLOSED=Đóng
@@ -280,7 +280,7 @@ L_ROOM_TYPE_PRIVATE=Riêng tư
 L_ROOM_TYPE_RANKED=Xếp hạng
 L_SAVED_GAMES=Trò chơi đã lưu
 L_SEARCH=Tìm kiếm
-L_SET_RECOMMENDED_GOLD=Đặt vàng được đề xuất
+L_SET_RECOMMENDED_GOLD=Số vàng mặc định
 L_SKIP_AI_ANIMATION=Tua nhanh (BOT)
 L_SKIRMISH_SUMMARY=Tóm tắt trận chiến giao tranh
 L_SORT_BY_DOWNLOADS=Xếp theo lượt tải
@@ -298,7 +298,7 @@ L_TIMEOUT_NORMAL=6 Tiếng
 L_TIMEOUT_SLOW=12 Tiếng
 L_TOMBSTONES=Bia mộ
 L_TOP=Trên
-L_TURN_TIMEOUT=Hết giờ/Lượt
+L_TURN_TIMEOUT=Thời gian/Lượt
 L_UN_RECOMMEND=Không thể tiến cử
 L_VICTORY=Thắng lợi
 L_WIKI_ABOUT=Nói chung
@@ -355,8 +355,8 @@ M_INFO_FRIEND_REQUEST_ACCEPT=[%s] đã chấp nhận yêu cầu kết bạn.
 M_INFO_FRIEND_REQUEST_ALREADY_SENT=Bạn đã gửi một yêu cầu kết bạn đến '%s'.
 M_INFO_FRIEND_REQUEST_REJECT=[%s] đã từ chối yêu cầu kết bạn.
 M_INFO_FRIEND_REQUEST_SENT=Bạn đã gửi yêu cầu kết bạn đến '%s'.
-M_INFO_GAME_CLOSE_HOST_LEAVE=Phòng [%s's] đã bị đóng do chủ nhà.\n\n[%s]
-M_INFO_GAME_CLOSE_TIMEOUT=Phòng [%s's] đã bị đóng do hết thời gian chờ của người chơi.\n\n[%s]
+M_INFO_GAME_CLOSE_HOST_LEAVE=Phòng của\n[%s's]\nđã bị đóng do chủ nhà.\n\n[%s]\nChính Là Hung Thủ
+M_INFO_GAME_CLOSE_TIMEOUT=Phòng của\n[%s's]\nđã bị đóng do hết thời gian chờ.\n\n[%s]\nChính Là Hung Thủ
 M_INFO_GAME_INVITATION='%s' muốn mời bạn chơi cùng.
 M_INFO_GAME_INVITATION_ALREADY_SENT=Bạn đã gửi lời mời đến '%s'.
 M_INFO_GAME_INVITATION_SENT=Lời mời trò chơi được gửi tới '%s'.
@@ -437,6 +437,6 @@ L_SERVER_REGION_TEST=Thử nghiệm
 
 L_UNIT_NAME_19=Mỹ Nhân Ngư
 
-M_INFO_GAME_CLOSE_ADMIN=Phòng [%s's] bị đóng bởi quản trị viên.\n\n[%s]
+M_INFO_GAME_CLOSE_ADMIN=Phòng của\n[%s's]\nbị đóng bởi quản trị viên.\n\n[%s]\nChịu Trách Nhiệm
 
 P_UNIT_DESCRIPTION_19=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)) Chiếm giữ làng.\nKỸ NĂNG TỰ ĐỘNG:\n((3)) Hồi HP khi ở dưới nước.\n((4)) Tấn công xa 1 đến 2 ô
