@@ -19,6 +19,7 @@ C_WR_STAGE_3_OBJECTIVE_2=DEFEAT: Your commander is defeated.
 C_WR_STAGE_3_OBJECTIVE_3=DEFEAT: Turn number exceeds 50.
 C_WR_STAGE_3_MESSAGE_1=Your majesty, our goal is to defeat the red team, but we only have 50 turns!
 C_WR_STAGE_3_MESSAGE_2=(Defeat other teams to save turns)
+C_WR_STAGE_3_MESSAGE_3=We have destroyed one team of enemy, time to move on to the next!
 
 C_WR_STAGE_4_NAME=Dilemma
 C_WR_STAGE_4_OBJECTIVE_1=VICTORY: Defeat the red team to win..
@@ -37,8 +38,12 @@ C_WR_STAGE_5_OBJECTIVE_1=VICTORY: Defeat the red team to win.
 C_WR_STAGE_5_OBJECTIVE_2=DEFEAT: Lost all castles and troops.
 C_WR_STAGE_5_MESSAGE_1=Your majesty, our enemy has taken the terrain, the battle will be tough. Destroy their catapult will boost our morale!
 C_WR_STAGE_5_MESSAGE_2=Your majesty, the enemy catapult has been destroyed, we shall win the fight!
+C_WR_STAGE_5_MESSAGE_3=Your majesty, we got a recovery bundle!
+C_WR_STAGE_5_MESSAGE_4=Your majesty, we got a gold bundle!
+C_WR_STAGE_5_MESSAGE_5=Your majesty, we got a level up bundle!
+C_WR_STAGE_5_MESSAGE_6=Your majesty, we got a curse bundle!
 
-C_WR_STAGE_6_NAME=A friend in need
+C_WR_STAGE_6_NAME=A Friend In Need
 C_WR_STAGE_6_OBJECTIVE_1=VICTORY: Defeat the red team and black team to win.
 C_WR_STAGE_6_OBJECTIVE_2=DEFEAT: Blue team or green team lost all castles and troops.
 C_WR_STAGE_6_MESSAGE_1=Commander, we need to help our ally.
