@@ -19,6 +19,7 @@ C_WR_STAGE_3_OBJECTIVE_2=Поражение: потерять собственн
 C_WR_STAGE_3_OBJECTIVE_3=Поражение: не успеть победить за 50 ходов.
 C_WR_STAGE_3_MESSAGE_1=Командир, нам надо очистить эту землю от красных.
 C_WR_STAGE_3_MESSAGE_2=(зеленых и черных тоже придется устранить, чтобы не мешали)
+C_WR_STAGE_3_MESSAGE_3=We have destroyed one enemy team, time to move on to the next!
 
 C_WR_STAGE_4_NAME=Дилемма
 C_WR_STAGE_4_OBJECTIVE_1=Победа: уничтожить красных.
@@ -37,3 +38,14 @@ C_WR_STAGE_5_OBJECTIVE_1=Победа: уничтожить красных..
 C_WR_STAGE_5_OBJECTIVE_2=Поражение: потерять собственного командира.
 C_WR_STAGE_5_MESSAGE_1=Ваше величество, враг укрепился на местности, нам предстоит жестокая битва. Уничтожение вражеских катапульт усилит нашу мораль.
 C_WR_STAGE_5_MESSAGE_2=Господин, вам удалось уничтожить катапульты! Теперь мы обязательно победим!
+C_WR_STAGE_5_MESSAGE_3=Your majesty, we got a recovery bundle!
+C_WR_STAGE_5_MESSAGE_4=Your majesty, we got a gold bundle!
+C_WR_STAGE_5_MESSAGE_5=Your majesty, we got a level up bundle!
+C_WR_STAGE_5_MESSAGE_6=Your majesty, we got a curse bundle!
+
+C_WR_STAGE_6_NAME=A Friend In Need
+C_WR_STAGE_6_OBJECTIVE_1=VICTORY: Defeat the red team and black team to win.
+C_WR_STAGE_6_OBJECTIVE_2=DEFEAT: Blue team or green team lost all castles and troops.
+C_WR_STAGE_6_MESSAGE_1=Commander, we need to help our ally.
+C_WR_STAGE_6_MESSAGE_2=Galamar: Thanks for your help, I'll provide you gold support
+C_WR_STAGE_6_MESSAGE_3=Receive gold support from Galamar.

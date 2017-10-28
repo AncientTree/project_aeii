@@ -19,8 +19,7 @@ C_WR_STAGE_3_OBJECTIVE_2=失败条件: 指挥官被击败
 C_WR_STAGE_3_OBJECTIVE_3=失败条件: 回合数超过50
 C_WR_STAGE_3_MESSAGE_1=陛下，我们的目标是击败红色队伍，但是我们只有50回合
 C_WR_STAGE_3_MESSAGE_2=（我们可以通过击败其他队伍来节省时间）
-C_WR_STAGE_3_MESSAGE_3= 我们消灭了一伙敌军，移动到下一个据点吧。
-
+C_WR_STAGE_3_MESSAGE_3=我们消灭了一伙敌军，移动到下一个据点吧。
 
 C_WR_STAGE_4_NAME=进退两难
 C_WR_STAGE_4_OBJECTIVE_1=胜利条件: 击败红队
@@ -51,12 +50,3 @@ C_WR_STAGE_6_OBJECTIVE_2=失败条件: 我军或者蓝色军队被歼灭
 C_WR_STAGE_6_MESSAGE_1=指挥官，我们的友军需要支援，我们需要帮助他们夺回他们的领地。
 C_WR_STAGE_6_MESSAGE_2=格拉玛：谢谢你的援助，我将会为你提供金币支援
 C_WR_STAGE_6_MESSAGE_3=得到了格拉玛国王援助的金币。
-
-
-
-
-
-
-
-
-
