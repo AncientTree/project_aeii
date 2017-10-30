@@ -19,7 +19,7 @@ C_WR_STAGE_3_OBJECTIVE_2=(2): Chỉ huy bạn phải sống
 C_WR_STAGE_3_OBJECTIVE_3=(3): số lượt không vượt quá 50.
 C_WR_STAGE_3_MESSAGE_1=Tâu bệ hạ, mục tiêu của chúng tôi là để đánh bại đội đỏ, nhưng chúng tôi chỉ có 50 lượt!
 C_WR_STAGE_3_MESSAGE_2=(Đánh bại các đội khác để lưu lượt)
-C_WR_STAGE_3_MESSAGE_3=We have destroyed one enemy team, time to move on to the next!
+C_WR_STAGE_3_MESSAGE_3=Chúng ta đã tiêu diệt một đội quân địch rồi, bây giờ tất cả tiến lên !
 
 C_WR_STAGE_4_NAME=Tiến Thoái Lưỡng Nan
 C_WR_STAGE_4_OBJECTIVE_1=(1): Tiêu diệt đội đỏ..
@@ -38,10 +38,10 @@ C_WR_STAGE_5_OBJECTIVE_1=(1): Tiêu diệt đội đỏ.
 C_WR_STAGE_5_OBJECTIVE_2=(2): Chỉ huy bạn phải sống
 C_WR_STAGE_5_MESSAGE_1=Tâu bệ hạ, kẻ thù của chúng tôi đã đưa ra những địa hình, cuộc chiến sẽ rất khó khăn. Phá hủy máy ném đá của kẻ thù sẽ thúc đẩy tinh thần của bạn!
 C_WR_STAGE_5_MESSAGE_2=Tâu bệ hạ, máy ném đá kẻ thù đã bị phá hủy, chúng tôi sẽ giành chiến thắng trong cuộc chiến!
-C_WR_STAGE_5_MESSAGE_3=Your majesty, we got a recovery bundle!
-C_WR_STAGE_5_MESSAGE_4=Your majesty, we got a gold bundle!
-C_WR_STAGE_5_MESSAGE_5=Your majesty, we got a level up bundle!
-C_WR_STAGE_5_MESSAGE_6=Your majesty, we got a curse bundle!
+C_WR_STAGE_5_MESSAGE_3=Tâu bệ ha, chúng ta đã có một túi phục hồi !
+C_WR_STAGE_5_MESSAGE_4=Tâu bệ hạ, chúng ta đã có một túi vàng !
+C_WR_STAGE_5_MESSAGE_5=Tâu bệ ha, chúng ta đã có một túi kinh nghiệm !
+C_WR_STAGE_5_MESSAGE_6=Tâu bệ hạ, chúng ta đã có một túi nguyền rủa !
 
 C_WR_STAGE_6_NAME=Hoạn Nạn Có Nhau
 C_WR_STAGE_6_OBJECTIVE_1=(1): Tiêu diệt đội đỏ và đen.
