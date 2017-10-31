@@ -125,7 +125,6 @@ P_ABILITY_DESCRIPTION_4=Đơn vị này có khả năng phá hủy ngôi làng.
 P_ABILITY_DESCRIPTION_5=Đơn vị này đi tự do qua mọi địa hình và có thể đi xuyên qua các đơn vị đối phương. Nhưng họ sẽ không nhận được gì từ các địa hình.
 P_ABILITY_DESCRIPTION_6=Thầy chiêu hồn có thể triệu tập bộ xương từ các đơn vị bị ngã, đồng thời họ sẽ không bị [Trúng Độc] khi chờ đợi trên bia mộ.
 P_ABILITY_DESCRIPTION_7=Đơn vị có khả năng hồi máu cho đồng minh, và lượng hồi máu sẽ tăng khi lên cấp. Lưu ý rằng lượng máu có thể vượt quá giới hạn HP của mục tiêu một lần.
-P_ABILITY_DESCRIPTION_8=Đơn vị này có khả năng đánh xong rồi sử dụng ô di chuyển còn lại để chạy.
 P_ABILITY_DESCRIPTION_9=Đơn vị này khi tấn công sẽ gắn trạng thái [Trúng Độc] lên kẻ thù trong 2 lượt. Và đối thủ có cùng kỹ năng sẽ không bị ảnh hưởng.
 P_ABILITY_DESCRIPTION_10=Đơn vị có khả năng sửa chữa những ngôi làng bị hủy hoại.
 P_ABILITY_DESCRIPTION_11=Đơn vị này khi chết sẽ không xuất hiện bia mộ trên bản đồ. Hơn nữa, khi bị [Trúng Độc] họ vẫn được hồi máu từ các địa hình, Nên tránh xa các đơn vị [Chữa Trị].
@@ -150,7 +149,7 @@ P_ABILITY_DESCRIPTION_29=Những đơn vị này có khả năng giảm 50% sát
 
 P_STATUS_DESCRIPTION_0=Những đơn vị đã bị đầu độc sẽ mất 10 HP khi đến lượt.
 P_STATUS_DESCRIPTION_1=Những đơn vị đã bị tê liệt, điểm di chuyển của họ sẽ bị giảm xuống còn lại 1 ô
-P_STATUS_DESCRIPTION_2=Những đơn vị có trạng thái cảm hứng, sẽ được thêm 5 điểm tấn công.
+P_STATUS_DESCRIPTION_2=Những đơn vị có trạng thái cảm hứng, sẽ được thêm 10 điểm tấn công.
 P_STATUS_DESCRIPTION_3=Những đơn vị đã bị mù lòa thì không thể tấn công.
 
 P_UNIT_DESCRIPTION_0=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa ngôi làng.\n((2)) Chiếm giữ ngôi làng.
@@ -440,3 +439,7 @@ L_UNIT_NAME_19=Mỹ Nhân Ngư
 M_INFO_GAME_CLOSE_ADMIN=Phòng của\n[%s's]\nbị đóng bởi quản trị viên.\n\n[%s]\nChịu Trách Nhiệm
 
 P_UNIT_DESCRIPTION_19=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)) Chiếm giữ làng.\nKỸ NĂNG TỰ ĐỘNG:\n((3)) Hồi HP khi ở dưới nước.\n((4)) Tấn công xa 1 đến 2 ô
+
+#2.1.2
+
+P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.

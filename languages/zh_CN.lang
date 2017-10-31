@@ -125,7 +125,6 @@ P_ABILITY_DESCRIPTION_4=拥有该能力的单位可以摧毁城镇。
 P_ABILITY_DESCRIPTION_5=拥有该能力的单位移动时无视地形，并且可以穿过敌军的地面单位，但是无法接受地形的防御加成。
 P_ABILITY_DESCRIPTION_6=拥有该能力的单位可以从墓碑中召唤骷髅，并且在墓碑上待机时不会[中毒]。
 P_ABILITY_DESCRIPTION_7=拥有该能力的单位可以使用治疗技能给友军回复血量，并且治疗量会随等级提升。注意治疗师的治疗可以超出目标单位血量上限一次。
-P_ABILITY_DESCRIPTION_8=拥有该能力的单位行动完毕之后可以使用剩余的移动力再移动一次。
 P_ABILITY_DESCRIPTION_9=拥有该能力的单位攻击时会给对方附加[中毒]状态持续2回合，同样拥有该能力的单位之间不会生效。
 P_ABILITY_DESCRIPTION_10=拥有该能力的单位可以修复被摧毁的城镇。
 P_ABILITY_DESCRIPTION_11=拥有该能力的单位死亡时不会留下墓碑，[中毒]时依然可以接受地形治疗并且[中毒]伤害会变成血量回复，不过友军的治疗对他们会变成伤害。
@@ -150,7 +149,7 @@ P_ABILITY_DESCRIPTION_29=拥有该能力的单位受到的物理伤害减半，�
 
 P_STATUS_DESCRIPTION_0=中毒的单位在回合开始会损失10点血量，并且无法接受治疗。
 P_STATUS_DESCRIPTION_1=被减速的单位移动力降至1。
-P_STATUS_DESCRIPTION_2=被鼓舞的单位会获得5点攻击力加成。
+P_STATUS_DESCRIPTION_2=被鼓舞的单位会获得10点攻击力加成。
 P_STATUS_DESCRIPTION_3=被致盲的单位射程降至0。
 
 P_UNIT_DESCRIPTION_0=战士是全能的单位，他们能占领或是修复城镇来增加玩家的收入。
@@ -440,3 +439,7 @@ L_UNIT_NAME_19=人鱼
 M_INFO_GAME_CLOSE_ADMIN=[%s的游戏] 被管理员关闭了\n\n相关用户\n[%s]
 
 P_UNIT_DESCRIPTION_19=人鱼是水面上的士兵，她们可以占领以及修复村庄，所以你可以使用她们来获取制海权!
+
+#2.1.2
+
+P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.

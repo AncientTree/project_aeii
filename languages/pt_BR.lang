@@ -123,7 +123,6 @@ P_ABILITY_DESCRIPTION_4=Unidades com essa habilidade podem destruir vilas.
 P_ABILITY_DESCRIPTION_5=Unidades com essa habilidade movem por qualquer terrenos usando 1 ponto de movimento, podendo mover até por unidades terrestes inimigas, mas eles não recebem bônus de defesa de terrenos.
 P_ABILITY_DESCRIPTION_6=Sorceres podem convocar esqueletos da lápide de outras unidades. Além disso eles não ficam com status [Poisoned] se ficarem em cima de lápides.
 P_ABILITY_DESCRIPTION_7=Unidades com essa habilidade podem curar aliados. A quantidade de cura aumenta conforme seu level. Note que a cura pode exceder o máximo de HP da unidade curada.
-P_ABILITY_DESCRIPTION_8=Unidades com essa habilidade podem usar o resto de seus pontos de movimentos para continuar movendo após terminarem sua ação.
 P_ABILITY_DESCRIPTION_9=Unidades com essa habilidade deixam os inimigos atacados com status [Poisoned] por 2 turnos. Entretanto unidades com essa habilidade não podem ser afetada por ela.
 P_ABILITY_DESCRIPTION_10=Unidades com essa habilidade podem reparar vilas destruídas.
 P_ABILITY_DESCRIPTION_11=Unidades com essa habilidade não deixa lápides quando morrem. Além disso, quando eles recebem status [Poisoned] elas ainda podem ser curadas pelo terreno e recebem cura ao invés de dano do [Poison]. Entretanto cura dos aliados se tornará dano para eles.
@@ -148,7 +147,7 @@ P_ABILITY_DESCRIPTION_29=For units who have this ability, they receive 50% less 
 
 P_STATUS_DESCRIPTION_0=Unidades que forem poisoned perderão 10 HP no início do turno e não podem receber heal.
 P_STATUS_DESCRIPTION_1=Unidades que foram slowed tem os pontos de movimento reduzidos para 1.
-P_STATUS_DESCRIPTION_2=Unidades que foram inspired ganham 5 de ataque bônus.
+P_STATUS_DESCRIPTION_2=Unidades que foram inspired ganham 10 de ataque bônus.
 P_STATUS_DESCRIPTION_3=Unidades que foram blinded tem o alcance de ataque reduzidos para 0.
 
 P_UNIT_DESCRIPTION_0=Soldiers são sólidos combatentes que podem capturar e reconstruir vilas.
@@ -438,3 +437,7 @@ L_UNIT_NAME_19=Mermaid
 M_INFO_GAME_CLOSE_ADMIN=[%s's game] has been closed by administrator.\n\nResponsible\n[%s]
 
 P_UNIT_DESCRIPTION_19=Mermaids are like soldiers but can move really fast on water. They can occupy and repair villages like normal soldiers do, so you can use them to gain control over the water!
+
+#2.1.2
+
+P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.
