@@ -18,9 +18,9 @@ L_HELP=Trợ giúp
 L_INCOME=Thu nhập
 L_JOIN=Tham gia
 L_LEAVE_GAME=Rời khỏi trò chơi
-L_LOAD_GAME=Nạp trò chơi
+L_LOAD_GAME=Tiếp tục trò chơi
 L_MAP_EDITOR=Tạo bản đồ mới
-L_MULTIPLAYER=Nhiều người chơi
+L_MULTIPLAYER=Chơi cùng bạn bè
 L_MUSIC_VOLUME=Nhạc nền
 L_NONE=Trống
 L_OBJECTIVES=Nhiệm vụ
@@ -71,7 +71,7 @@ L_ABILITY_NAME_19=Cổ máy hạng nặng
 L_ABILITY_NAME_20=Khí tấn công
 L_ABILITY_NAME_21=Xát thủ khác máu
 L_ABILITY_NAME_22=Người bảo vệ
-L_ABILITY_NAME_23=Khí tươi tỉnh
+L_ABILITY_NAME_23=Khí hưng phấn
 L_ABILITY_NAME_24=Chúa tể của sự khủng bố
 L_ABILITY_NAME_25=Phản đòn điên cuồng
 L_ABILITY_NAME_26=Che mắt đối thủ
@@ -82,7 +82,7 @@ L_ABILITY_NAME_29=Cơ thể mềm mại
 #status names
 L_STATUS_NAME_0=Độc dược
 L_STATUS_NAME_1=Tê liệt
-L_STATUS_NAME_2=Cảm hứng
+L_STATUS_NAME_2=Hưng phấn
 L_STATUS_NAME_3=Mù lòa
 
 #unit names
@@ -136,7 +136,7 @@ P_ABILITY_DESCRIPTION_16=Đơn vị này đi tự do trên địa hình đất l
 P_ABILITY_DESCRIPTION_17=Nếu đứng gần đơn vị này trong 2 ô , sẽ bị dính trạng thái [Tê Liệt] . Và đối thủ có cùng kỹ năng sẽ không ảnh hưởng.
 P_ABILITY_DESCRIPTION_18=Đơn vị có khả năng chiếm giữ lâu đài.
 P_ABILITY_DESCRIPTION_19=Đơn vị này không thể tấn công khi di chuyển xong, và không thể dính trạng thái nào cả.
-P_ABILITY_DESCRIPTION_20=Đơn vị này khi xong lượt đi sẽ gắn trạng thái [Cảm Hứng] cho đồng minh trong vòng 2 ô.
+P_ABILITY_DESCRIPTION_20=Đơn vị này khi xong lượt đi sẽ gắn trạng thái [Hưng Phấn] cho đồng minh trong vòng 2 ô.
 P_ABILITY_DESCRIPTION_21=Mỗi 1 đơn vị của đối phương đứng gần đơn vị này trong 2 ô, sẽ nhận thêm 10 điểm tấn công và 5 điểm phòng thủ vật lý.
 P_ABILITY_DESCRIPTION_22=Khi ở trong làng hay lâu đài của đồng minh, sẽ nhận được 5 điểm phòng thủ.
 P_ABILITY_DESCRIPTION_23=Đơn vị này khi đi xong họ sẽ giải trừ trạng thái xấu cho các đồng minh trong vòng 2 khối và chữa trị cho họ một chút. Số lượng chữa bệnh sẽ tăng lên khi lên cấp.
@@ -149,14 +149,14 @@ P_ABILITY_DESCRIPTION_29=Những đơn vị này có khả năng giảm 50% sát
 
 P_STATUS_DESCRIPTION_0=Những đơn vị đã bị đầu độc sẽ mất 10 HP khi đến lượt.
 P_STATUS_DESCRIPTION_1=Những đơn vị đã bị tê liệt, điểm di chuyển của họ sẽ bị giảm xuống còn lại 1 ô
-P_STATUS_DESCRIPTION_2=Những đơn vị có trạng thái cảm hứng, sẽ được thêm 10 điểm tấn công.
+P_STATUS_DESCRIPTION_2=Những đơn vị có trạng thái hưng phấn, sẽ được thêm 10 điểm tấn công.
 P_STATUS_DESCRIPTION_3=Những đơn vị đã bị mù lòa thì không thể tấn công.
 
 P_UNIT_DESCRIPTION_0=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa ngôi làng.\n((2)) Chiếm giữ ngôi làng.
 P_UNIT_DESCRIPTION_1=KỸ NĂNG TỰ ĐỘNG:\n((1)) Tấn công xa 2 đến 3 ô.\n((2)) Thêm sát thương lên đơn vị bay.
 P_UNIT_DESCRIPTION_2=KỸ NĂNG TỰ ĐỘNG:\n((1)) Thêm công, thủ dưới nước.\n((2)) Tự hồi HP khi ở dưới nước.
 P_UNIT_DESCRIPTION_3=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Triệu Tập Bộ Xương từ bia mộ trong 2 ô.\n((2)) tấn công xa 1 đến 2 ô.
-P_UNIT_DESCRIPTION_4=KỸ NĂNG TỰ ĐỘNG:\n((1)) bỏ trạng thái xấu và hồi HP cho đội trong 2 ô.\n((2)) rút HP đơn vị bất tử trong 2 ô.\n ((3)) tấn công xa 1 đến 2 ô.
+P_UNIT_DESCRIPTION_4=KỸ NĂNG TỰ ĐỘNG:\n((1)) bỏ trạng thái xấu và hồi HP cho đội trong 2 ô.\n((2)) rút HP đơn vị bất tử trong 2 ô.\n((3)) tấn công xa 1 đến 2 ô.
 P_UNIT_DESCRIPTION_5=KỸ NĂNG:\n((1)) Mỗi vết cắn đều có độc.\n((2)) dùng ô di chuyển còn lại để chạy.
 P_UNIT_DESCRIPTION_6=KỸ NĂNG TỰ ĐỘNG:\n((1)) Gắn trạng thái [Tê Liệt] trong vòng 2 ô.\n((2)) Tự hồi HP khi ở trên núi.
 P_UNIT_DESCRIPTION_7=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Tấn công xa 3 đến 7 ô.\n((2)) Phá hủy ngôi làng.\n((3)) Không thể dính trạng thái xấu.\nĐIỂM YẾU: Không thể tấn công khi vừa di chuyển xong.
@@ -442,4 +442,4 @@ P_UNIT_DESCRIPTION_19=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)
 
 #2.1.2
 
-P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.
+P_ABILITY_DESCRIPTION_8=Đơn vị này khi đánh xong thì họ có thể sử dụng những điểm di chuyển còn lại để đi tiếp. Nhưng kinh nghiệm bị giảm 50%.
