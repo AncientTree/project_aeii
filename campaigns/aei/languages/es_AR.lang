@@ -1,0 +1,63 @@
+
+C_AEI_NAME=Battle of Thorin Prequel
+
+C_AEI_STAGE_1_NAME=Regroup
+C_AEI_STAGE_1_OBJECTIVE=King Galamar must occupy castle, keep all troops alive.
+C_AEI_STAGE_1_MESSAGE_1=The Kingdom of Thorin is divided. Betrayed by his own twin brother Valadorn, King Galamar has fled into the borderlands of the east.
+C_AEI_STAGE_1_MESSAGE_2=Only the Blue guard, Galamar's personal troops, have remained loyal and stand ready to reclaim the land...
+C_AEI_STAGE_1_MESSAGE_3=Sire, your troops are weary after last night's battle. It would be wise to regroup at the abandoned castle.
+C_AEI_STAGE_1_MESSAGE_4=Sound advice, captain. Ready the troops - we should not let the enemy catch us unprepared.
+C_AEI_STAGE_1_MESSAGE_5=Valadorn's army should be easy to spot with their red uniforms.
+C_AEI_STAGE_1_MESSAGE_6=Spies!! Valadorn and his Red legion must know where we are! Quickly, protect the King!
+
+C_AEI_STAGE_2_NAME=Friends & Enemies
+C_AEI_STAGE_2_OBJECTIVE_1=Occupy the castle and at least one village, produce at least one new unit of troops.
+C_AEI_STAGE_2_OBJECTIVE_2=Defeat all the wolves to help the Element Chief.
+C_AEI_STAGE_2_MESSAGE_1=King Galamar has survived Valadorn's attack. However, before Galamar can try to reclaim his kingdom he must first travel north to seek new allies.
+C_AEI_STAGE_2_MESSAGE_2=Forward, troops. But first, occupy these two buildings. We can rest once we reach the next village.
+C_AEI_STAGE_2_MESSAGE_3=Sire, our scouts report that the element people of the north are under attack!
+C_AEI_STAGE_2_MESSAGE_4=Then we must act quickly! The Element Chief is an old ally, and he will be sure to help us if we can save him.
+C_AEI_STAGE_2_MESSAGE_5=Sire, these elements bring news from their village. They are under attack from forest wolves!
+C_AEI_STAGE_2_MESSAGE_6=Wolves? Then we will have to use the terrain to our advantage - rushing to attack would be foolish.
+C_AEI_STAGE_2_MESSAGE_7=Be careful your majesty - the wolves attack is poisonous!
+
+C_AEI_STAGE_3_NAME=Escort
+C_AEI_STAGE_3_OBJECTIVE=Galamar and the Element Chief must reach the Grey Tower.
+C_AEI_STAGE_3_MESSAGE_1=The Element Chief agrees to join Galamar's forces. Now Galamar's thoughts turn to the wizards of the Grey Tower.
+C_AEI_STAGE_3_MESSAGE_2=If the Element Chief can persuade them to help, their magic would be a great asset to his growing forces.
+C_AEI_STAGE_3_MESSAGE_3=Sire, the bridge has been destroyed!
+C_AEI_STAGE_3_MESSAGE_4=Valadorn must be expecting us - we must find another way across. This could be a trap.
+C_AEI_STAGE_3_MESSAGE_5=Troops! Keep your eyes open and protect the Element Chief at all cost.
+
+C_AEI_STAGE_4_NAME=Reinforcements
+C_AEI_STAGE_4_OBJECTIVE=Save the city: destroy all enemy units!
+C_AEI_STAGE_4_MESSAGE_1=Having reached the Grey Tower the High Wizard agrees to help Galamar. However, Galamar's troops have no time to rest, as a message arrives from the nearby city of Var Telan, telling of a surprise attack by Valadorn's Red legion.
+C_AEI_STAGE_4_MESSAGE_2=Your majesty, the Red legion! Watch out for their long range catapult!
+C_AEI_STAGE_4_MESSAGE_3=What is this treachery! The city has turned against us!
+C_AEI_STAGE_4_MESSAGE_4=As predictable as ever, brother! I have you now!
+C_AEI_STAGE_4_MESSAGE_5=Retreat!! Curse you Galamar! You won't be so lucky next time!
+
+C_AEI_STAGE_5_NAME=Dragon Rescue!
+C_AEI_STAGE_5_OBJECTIVE=Destroy enemy commander and free the dragons.
+C_AEI_STAGE_5_MESSAGE_1=As Galamar's forces settle into the city castle, a scout patrol discovers some flying serpents called dragons being held captive at an enemy campsite nearby.
+C_AEI_STAGE_5_MESSAGE_2=Could the dragons be used against Valadorn and his forces? To find out, Galamar will have to rescue them.
+C_AEI_STAGE_5_MESSAGE_3=Sources indicate that the dragons are being held in this castle.
+C_AEI_STAGE_5_MESSAGE_4=Be careful, your Majesty, dragons can be formidable enemies as well as powerful allies.
+C_AEI_STAGE_5_MESSAGE_5=Look your Majesty, the dragons have broken free! They are now under our command!
+
+C_AEI_STAGE_6_NAME=Siege!
+C_AEI_STAGE_6_OBJECTIVE=Destroy all enemy units!
+C_AEI_STAGE_6_MESSAGE_1=With the powerful dragons adding to his forces, Galamar is ready to fight back against Valadorn. He decides to mount a surprise attack on the main command outpost outside Thorin city.
+C_AEI_STAGE_6_MESSAGE_2=The city is well defended, your Majesty.
+C_AEI_STAGE_6_MESSAGE_3=So it seems. We may have to alter our battle plan.
+
+C_AEI_STAGE_7_NAME=Final Assault
+C_AEI_STAGE_7_OBJECTIVE=Destroy all enemy units and save the kingdom!
+C_AEI_STAGE_7_MESSAGE_1=Galamar is on the verge of recapturing the city when suddenly a huge explosion splits the ground.
+C_AEI_STAGE_7_MESSAGE_2=Valadorn's troops appearing everywhere?! What kind of evil magic is this?
+C_AEI_STAGE_7_MESSAGE_3=So, twin brother, it seems our positions are reversed! Submit now or be destroyed!
+C_AEI_STAGE_7_MESSAGE_4=Never! Whatever dark power is controlling you, I will defeat it!
+C_AEI_STAGE_7_MESSAGE_5=Galamar... what have I done?
+C_AEI_STAGE_7_MESSAGE_6=The spell! It's broken!
+C_AEI_STAGE_7_MESSAGE_7=With Galamar victorious, the spell controlling Valadorn is broken. The evil force is none other than Saeth, the shadow demon!
+C_AEI_STAGE_7_MESSAGE_8=His plan defeated, with a terrible roar he orders his dark army to attack Galamar. Will the newly united Kingdom of Thorin withstand this attack? Can Galamar and his brother banish the evil Saeth once and for all?

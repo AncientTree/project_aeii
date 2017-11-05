@@ -1,0 +1,35 @@
+
+C_HF_NAME=Haven's Fury
+
+C_HF_STAGE_1_NAME=Break Through
+C_HF_STAGE_1_OBJECTIVE_1=VICTORY: Defeat enemy commander.
+C_HF_STAGE_1_OBJECTIVE_2=DEFEAT: Galamar or Valadorn is defeated.
+C_HF_STAGE_1_OBJECTIVE_3=DEFEAT: Turn number exceeds 35.
+C_HF_STAGE_1_MESSAGE_1=After arriving the ancient citadel Galamar and Valadorn witnessed the immense power of Haven's Fury.
+C_HF_STAGE_1_MESSAGE_2=At the meantime Saeth's evil army surrounded Galamar's spearhead. The situation became extremely intense.
+C_HF_STAGE_1_MESSAGE_3=Poor Galamar and Valadorn. You just came too late, prepare to be defeated by the glorious power of our master!
+C_HF_STAGE_1_MESSAGE_4=Brother, our main force haven't arrived yet. We must break through this siege or we won't stand a chance!
+C_HF_STAGE_1_MESSAGE_5=Agreed. All troops, prepare for battle!
+C_HF_STAGE_1_MESSAGE_6=Your majesty, this place is under siege and we won't get any income out of that. Please be careful on any choices!
+C_HF_STAGE_1_MESSAGE_7=No! Our castle is destroyed by Saeth's evil power!
+C_HF_STAGE_1_MESSAGE_8=Damn it! Saeth won't give us a peace. Everyone, stand ground!
+
+C_HF_STAGE_2_NAME=Darkness Before the Dawn
+C_HF_STAGE_2_OBJECTIVE_1=VICTORY: Capture enemy castle.
+C_HF_STAGE_2_OBJECTIVE_2=DEFEAT: Galamar or Valadorn is defeated.
+C_HF_STAGE_2_MESSAGE_1=The castle there! We should capture it and make it the base for our next assault!
+C_HF_STAGE_2_MESSAGE_2=We have had some of our main forces joined with us, but we cannot wait any longer. Attack soldiers!
+C_HF_STAGE_2_MESSAGE_3=Your majesty, since we have broken through enemies' siege we now can earn income! I think we can take some advantage out of that!
+
+C_HF_STAGE_3_NAME=The Armageddon
+C_HF_STAGE_3_OBJECTIVE_1=VICTORY: Defeat Saeth!
+C_HF_STAGE_3_OBJECTIVE_2=DEFEAT: Galamar or Valadorn is defeated.
+C_HF_STAGE_3_MESSAGE_1=Very well Galamar and Valadorn! I'm quite impressed that you have gone so far. But your story will be no more, prepare to be defeated by the greatest power of this world!
+C_HF_STAGE_3_MESSAGE_2=We are not afraid of you, we will fight!
+C_HF_STAGE_3_MESSAGE_3=Pitiful wretches. You will not live long enough to see your precious Kingdom engulfed in shadow...
+C_HF_STAGE_3_MESSAGE_4=Saeth! This time your defeat is complete!
+C_HF_STAGE_3_MESSAGE_5=In your insignificant life and narrow mind, perhaps... Nevertheless everything is now set in motion - the invisible forces that govern time are beyond your knowledge. You cannot stop me from rising again!
+C_HF_STAGE_3_MESSAGE_6=Your Majesty, the Ruins are falling apart! We should leave immediately!
+C_HF_STAGE_3_MESSAGE_7=But the Crystals... They are still in there!
+C_HF_STAGE_3_MESSAGE_8=The only thing we can save now is ourselves!
+C_HF_STAGE_3_MESSAGE_9=You have served me well. Now move!
