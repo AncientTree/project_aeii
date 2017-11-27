@@ -1,63 +1,63 @@
 
 C_AEI_NAME=Trận Chiến Thorin (phần 1)
 
-C_AEI_STAGE_1_NAME=Tập Hợp Lại.
+C_AEI_STAGE_1_NAME=Tập Hợp Quân Đội.
 C_AEI_STAGE_1_OBJECTIVE=Vua Galamar phải chiếm giữ lâu đài, giữ tất cả binh lính còn sống.
-C_AEI_STAGE_1_MESSAGE_1=Vương quốc Thorin đã bị tách ra, bởi người em song sinh của mình là Valadorn phản bội, nên Vua Galamar phải trốn vào biên giới phía đông.
-C_AEI_STAGE_1_MESSAGE_2=Chỉ có quân đội màu xanh của Vua Galamar , vẫn trung thành và luôn sẵn sàng dành lại vương quốc...
-C_AEI_STAGE_1_MESSAGE_3=Tâu bệ hạ, đội quân vẫn còn mệt mỏi sau trận chiến đêm qua. Chúng ta nên nghĩ ngơi tại lâu đài bị bỏ hoang phí trước.
-C_AEI_STAGE_1_MESSAGE_4="1 âm thanh vang lên ", Tướng quân. Hãy sẵn sàng quân đội ,chúng ta nên cảnh giác với kẻ thù.
+C_AEI_STAGE_1_MESSAGE_1=Ngày xưa, trên một Vương quốc nhỏ, có hai em song sinh sống với nhau, bỗng nhiên, người em Valadorn phản bội, tranh giành Vương quốc, nên Vua Galamar phải trốn vào biên giới phía đông.
+C_AEI_STAGE_1_MESSAGE_2=Quân đội màu xanh của Vua Galamar , vẫn trung thành và luôn sẵn sàng hi sinh để dành lại vương quốc...
+C_AEI_STAGE_1_MESSAGE_3=Tâu bệ hạ, đội quân vẫn còn mệt mỏi sau trận chiến đêm qua. Chúng ta nên nghĩ ngơi tại lâu đài bị bỏ hoang phía trước.
+C_AEI_STAGE_1_MESSAGE_4=! ÂM THANH LẠ !!! Tướng Quân. Chúng ta nên cảnh giác, vì kẻ thù sẽ tấn công chúng ta bất cứ lúc nào.
 C_AEI_STAGE_1_MESSAGE_5=Chú ý, quân đội của Valadorn có đồng phục màu đỏ.
-C_AEI_STAGE_1_MESSAGE_6=Gián điệp !! đội quân Valadorn đã biết chúng ta ở đây! Nhanh chóng, bảo vệ nhà vua!
+C_AEI_STAGE_1_MESSAGE_6=! TUẦN TRA !!! đội quân Valadorn đã biết chúng ta ở đây ! Toàn Quân, hãy bảo vệ nhà vua !
 
 C_AEI_STAGE_2_NAME=Bạn Bè & Kẻ Thù
 C_AEI_STAGE_2_OBJECTIVE_1=Chiếm giữ lâu đài và ngôi làng, chiêu mộ một đơn vị.
 C_AEI_STAGE_2_OBJECTIVE_2=Tiêu diệt sói rừng để giải cứu Nguyên Tố Trưởng
-C_AEI_STAGE_2_MESSAGE_1=Vua Galamar đã sống sót sau cuộc tấn công của Valadorn. Tuy nhiên, Vua Galamar phải đi về phía bắc để tìm kiếm đồng minh mới.
-C_AEI_STAGE_2_MESSAGE_2=Quân đội, hãy chiếm giữ hai ngôi làng này. Chúng ta có thể nghỉ ngơi trước khi tiếp cận ngôi làng tiếp theo.
-C_AEI_STAGE_2_MESSAGE_3=Tâu bệ hạ, các do thám đã báo cáo rằng nhân dân Nguyên Tố miền Bắc đang bị tấn công !
-C_AEI_STAGE_2_MESSAGE_4=Chúng ta phải hành động thật nhanh ! Nguyên Tố trưởng là một đồng minh cũ, và anh chắc chắn sẽ giúp chúng ta nếu chúng ta cứu anh ta.
+C_AEI_STAGE_2_MESSAGE_1=Vua Galamar đã sống sót sau cuộc tấn công của Valadorn. Vì kẻ thù quá mạnh, nên Vua Galamar phải đi về phía bắc để tìm thêm đồng minh mới.
+C_AEI_STAGE_2_MESSAGE_2=Toàn quân, hãy tiếp cận hai ngôi làng này. Chúng ta có thể nghỉ ngơi trước khi tiếp cận ngôi làng tiếp theo.
+C_AEI_STAGE_2_MESSAGE_3=Tâu bệ hạ, Tuần Tra đã báo cáo rằng, nhân dân Nguyên Tố miền Bắc đang bị tấn công !
+C_AEI_STAGE_2_MESSAGE_4=Chúng ta phải nhanh lên ! Nguyên Tố trưởng là một đồng minh cũ , chúng ta không thể làm ngơ được.
 C_AEI_STAGE_2_MESSAGE_5=Tâu bệ hạ, các Nguyên Tố báo cáo rằng ngôi làng của họ đang bị tấn công bởi chó sói rừng !
-C_AEI_STAGE_2_MESSAGE_6=Sói ? chúng ta phải sử dụng địa hình để tìm cơ hội tấn công, nếu ào ạt tấn công sẽ rất nguy hiểm.
+C_AEI_STAGE_2_MESSAGE_6=Sói ? chúng ta phải lợi dụng địa hình để tìm cơ hội tấn công, nếu ào ạt tấn công sẽ rất nguy hiểm.
 C_AEI_STAGE_2_MESSAGE_7=Hãy cẩn thận ,những vết cắn của Sói luôn có độc !
 
 C_AEI_STAGE_3_NAME=Hộ Tống
 C_AEI_STAGE_3_OBJECTIVE=Galamar và Nguyên Tố Trưởng phải còn sống.
 C_AEI_STAGE_3_MESSAGE_1=Nguyên Tố Trưởng đã đồng ý liên minh với Vua Galamar. Bây giờ Vua Galamar đang tới lâu đài xám , nơi ở của Phù Thủy.
-C_AEI_STAGE_3_MESSAGE_2=Nếu Nguyên Tố Trưởng có thể thuyết phục họ để giúp đỡ, thì phép thuật của họ sẽ là một sức mạnh rất lớn.
+C_AEI_STAGE_3_MESSAGE_2=Nếu Nguyên Tố Trưởng có thể thuyết phục họ giúp đỡ, thì phép thuật của họ sẽ là một sức mạnh rất lớn.
 C_AEI_STAGE_3_MESSAGE_3=Tâu bệ hạ, cây cầu đã bị phá hủy !
-C_AEI_STAGE_3_MESSAGE_4=Đây có thể là một cái bẫy của Valadorn ,chúng ta phải tìm cách khác để qua đó. 
+C_AEI_STAGE_3_MESSAGE_4=Có thể đây là một cái bẫy của Valadorn ,chúng ta phải tìm cách khác để qua đó. 
 C_AEI_STAGE_3_MESSAGE_5=Quân đội !! hãy bảo vệ Nguyên Tố trưởng và Vua.
 
 C_AEI_STAGE_4_NAME=Quân Tiếp Viện
 C_AEI_STAGE_4_OBJECTIVE=Bảo vệ thành phố: tiêu diệt tất cả kẻ thù!
-C_AEI_STAGE_4_MESSAGE_1=Sau khi đạt được lâu đài Xám, các phù thủy mạnh mẽ đã đồng ý giúp Vua Galamar. Tuy nhiên, quân đội của Galamar không có thời gian để nghỉ ngơi, có một thông điệp đến từ làng bên cạnh Var Telan, báo rằng Valadorn đã tấn công bất ngờ.
+C_AEI_STAGE_4_MESSAGE_1=Sau khi đạt được lâu đài Xám, các phù thủy mạnh mẽ đã đồng ý giúp Vua Galamar. Tuy nhiên, quân đội của Galamar không có thời gian để nghỉ ngơi, có một thông điệp đến từ làng bên cạnh Var Telan, báo rằng Valadorn đã bất ngờ tấn công.
 C_AEI_STAGE_4_MESSAGE_2=Tâu bệ hạ, hãy xem các Máy Ném Đá của bọn chúng !
-C_AEI_STAGE_4_MESSAGE_3=Valadorn ! Tại sao em lại phản bội anh ?
+C_AEI_STAGE_4_MESSAGE_3=Valadorn !! Em bị sao vậy ! Tại sao em lại phản bội mọi người ?
 C_AEI_STAGE_4_MESSAGE_4=Anh có thể đoán ra mà , anh trai ! em sẽ hạ được anh ngay bây giờ !
 C_AEI_STAGE_4_MESSAGE_5=Rút Quân !! ta nguyền rủa ngươi Galamar ! trong thời gian tới, ngươi sẽ không được may mắn như vậy nữa đau !!
 
 C_AEI_STAGE_5_NAME=Giải Cứu Rồng !
 C_AEI_STAGE_5_OBJECTIVE=Tiêu diệt chỉ huy của kẻ thù và giải phóng những con rồng.
-C_AEI_STAGE_5_MESSAGE_1=Khi lực lượng Galamar đã cư trú vào lâu đài, một tuần tra trinh thám phát hiện ra một số con rồng đang bị giam giữ tại một khu cắm trại của địch gần đó.
+C_AEI_STAGE_5_MESSAGE_1=Khi lực lượng Galamar đã cư trú vào lâu đài, một Tuần Tra phát hiện ra một số con rồng đang bị giam giữ tại một khu cắm trại của địch gần đó.
 C_AEI_STAGE_5_MESSAGE_2=Chúng ta có thể thêm những con rồng vào lực lượng để chống lại Valadorn hay không ? Để tìm hiểu, Galamar sẽ phải giải cứu họ.
-C_AEI_STAGE_5_MESSAGE_3=Nguồn tin cho rằng những con rồng đang được giam giữ tại lâu đài này.
-C_AEI_STAGE_5_MESSAGE_4=Hãy cẩn thận, thưa bệ hạ , những con rồng có thể là kẻ thù ghê gớm hoặc là các đồng minh mạnh mẽ.
+C_AEI_STAGE_5_MESSAGE_3=Nguồn tin báo rằng những con rồng đang được giam giữ tại lâu đài này.
+C_AEI_STAGE_5_MESSAGE_4=Hãy thận trọng, thưa bệ hạ , những con rồng có thể là kẻ thù ghê gớm hoặc là các đồng minh mạnh mẽ.
 C_AEI_STAGE_5_MESSAGE_5=Bệ hạ hãy xem, những con rồng đã được giải cứu ! Bây giờ chúng đã nghe lời chúng ta !
 
 C_AEI_STAGE_6_NAME=Bao Vây !
 C_AEI_STAGE_6_OBJECTIVE=Tiêu diệt tất cả kẻ thù
 C_AEI_STAGE_6_MESSAGE_1=Cùng những con rồng mạnh mẽ thêm vào lực lượng của mình, Galamar đã sẵn sàng để chiến đấu chống lại Valadorn. Anh quyết định tấn công bất ngờ vào tuyền tuyến bên ngoài Thorin
 C_AEI_STAGE_6_MESSAGE_2=Tâu bệ hạ, Cung Điện này cũng cần được bảo vệ !!
-C_AEI_STAGE_6_MESSAGE_3=Đúng vậy. Chúng ta phải thay đổi kế hoạch chiến đấu.
+C_AEI_STAGE_6_MESSAGE_3=Đúng vậy. Chúng ta phải lập một kế hoạch để chiến đấu.
 
-C_AEI_STAGE_7_NAME=Đột Kích Cuối Cùng
+C_AEI_STAGE_7_NAME=Trận Chiến Cuối Cùng !
 C_AEI_STAGE_7_OBJECTIVE=Tiêu diệt tất cả kẻ thù và giành lấy Vương Quốc
 C_AEI_STAGE_7_MESSAGE_1=Galamar trên bờ vực chiếm lại thành phố thì đột nhiên có một vụ nổ lớn khiến mãnh đất tách ra.
-C_AEI_STAGE_7_MESSAGE_2=Đội quân của Valadorn xuất hiện ở khắp nơi ?! Loại phép thuật ma quái này là gì ?
-C_AEI_STAGE_7_MESSAGE_3=Đúng là như vậy đó, người anh em sinh đôi, có vẻ như ta đã lật ngược tình thế ! bay giờ muốn đầu hàng hay bị tiêu diệt!
+C_AEI_STAGE_7_MESSAGE_2=Đội quân của Valadorn xuất hiện ở khắp nơi ?! Đây là loại phép thuật ma quái sao ?
+C_AEI_STAGE_7_MESSAGE_3=Đúng là như vậy đó, người anh trai, có vẻ như ta đã lật ngược tình thế ! bay giờ muốn đầu hàng hay bị tiêu diệt !
 C_AEI_STAGE_7_MESSAGE_4=Không bao giờ ! anh đã biết có sức mạnh đen tối nào đó đang kiểm soát em, anh sẽ đánh bại nó !
-C_AEI_STAGE_7_MESSAGE_5=Galamar...  em đã làm điều gì sao ?
-C_AEI_STAGE_7_MESSAGE_6=Em đã bị kiểm soát bởi Câu Thần Chú ! và bây giờ tất cả đều ổn !
+C_AEI_STAGE_7_MESSAGE_5=Galamar...  em... đã làm điều gì sao ?
+C_AEI_STAGE_7_MESSAGE_6=Em đã bị kiểm soát bởi Câu Thần Chú ! Nhưng bây giờ tất cả đều ổn !
 C_AEI_STAGE_7_MESSAGE_7=Vua Galamar đã chiến thắng, những phép kiểm soát Valadorn đã không còn tác dụng nữa. Các lực lượng độc ác không ai khác ,đó là Saeth, chúa quỷ bóng tối !
-C_AEI_STAGE_7_MESSAGE_8=Kế hoạch của chúa quỷ đã bị thất bại, với một tiếng gầm vang khủng khiếp, ông ra lệnh cho quân đội đen tối của mình để tấn công Galamar. Vương quốc Thorin sẽ chịu được cuộc tấn công lần này ? Galamar và Valadorn có thể trục xuất chúa quỷ Saeth độc ác này một lần nữa không ?
+C_AEI_STAGE_7_MESSAGE_8=Kế hoạch của chúa quỷ đã bị thất bại cùng với một tiếng gầm vang khủng khiếp, ông ra lệnh cho quân đội đen tối của mình tấn công Galamar. Vương quốc Thorin sẽ chịu được cuộc tấn công lần này không ? Galamar và Valadorn có thể trục xuất chúa quỷ Saeth độc ác này không ?
