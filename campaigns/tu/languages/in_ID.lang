@@ -1,0 +1,46 @@
+
+C_TU_NAME=Tutorial
+
+C_TU_STAGE_1_NAME=Gerak & Serang
+C_TU_STAGE_1_OBJECTIVE_1=MENANG: Kalahkan semua musuh unit.
+C_TU_STAGE_1_OBJECTIVE_2=KALAH: Komandan Anda terkalahkan.
+C_TU_STAGE_1_MESSAGE_1=Selamat Datang komandan baru! Saya seorang pelatih dari kamp militer. Dalam tahap ini saya akan mengajarkan Anda yang paling dasar dari pertempuran : bergerak dan serangan.
+C_TU_STAGE_1_MESSAGE_2=Seperti yang Anda lihat Anda berada di sisi kiri peta dan ada dua musuh di sisi kanan yang Anda perlu untuk dikalahkan.
+C_TU_STAGE_1_MESSAGE_3=Namun gerakan titik Anda tidak cukup untuk mencapai mereka, sehingga memungkinkan pindah ke desa di tengah peta terlebih dahulu.
+C_TU_STAGE_1_MESSAGE_4=Untuk memindahkan unit, Anda perlu klik pertama dan beberapa kuning kotak akan tampil di peta menunjukkan di mana Anda dapat bergerak.
+C_TU_STAGE_1_MESSAGE_5=Dengan menggerakkan kursor ke salah satu kuning kotak jalan ke tujuan akan muncul. Klik tujuan untuk bergerak di sana.
+C_TU_STAGE_1_MESSAGE_6=Sekarang saatnya untuk praktek, pindahkan komandan Anda ke desa di tengah!
+C_TU_STAGE_1_MESSAGE_7=Baik, sekarang Anda dapat mengklik tombol siaga (tombol dengan ikon panah bawah) untuk membiarkan komandan Anda siaga.
+C_TU_STAGE_1_MESSAGE_8=Baik. Dan karena tidak ada untuk Anda untuk melakukan Anda dapat mengklik status bar di bagian bawah untuk mengakhiri giliran Anda.
+C_TU_STAGE_1_MESSAGE_9=Sekarang saatnya bagi Anda untuk menyerang musuh. untuk menyerang musuh, pindahkan komandan di sampingnya dan sebuah tombol dengan ikon pedang akan muncul.
+C_TU_STAGE_1_MESSAGE_10=Klik tombol ini kemudian pindahkan kursor ke salah satu musuh dalam jangkauan serangan dan klik musuh untuk menyerang.
+C_TU_STAGE_1_MESSAGE_11=Hebat, sekarang Anda memiliki telah belajar bagaimana untuk bergerak dan serangan, tidak ada untuk menahan Anda kembali. Hancurkan semua musuh untuk memenyelesaikan tahap ini!
+
+C_TU_STAGE_2_NAME=Perbaiki, Penaklukkan & Rekrut
+C_TU_STAGE_2_OBJECTIVE_1=MENANG: Kalahkan semua musuh unit.
+C_TU_STAGE_2_OBJECTIVE_2=KALAH: Komandan Anda Terkalahkan.
+C_TU_STAGE_2_MESSAGE_1=Selamat Datang di tahap baru! Dalam tahap ini saya akan mengajarkan semua hal tentang perbaikan, menaklukkan dan merekrut.
+C_TU_STAGE_2_MESSAGE_2=Anda dapat melihat ada banyak unit musuh di sisi lain dari sungai dan mereka terlalu banyak untuk komandan untuk mengalahkan.
+C_TU_STAGE_2_MESSAGE_3=Jadi Anda memerlukan istana untuk merekrut unit untuk membantu Anda melawan musuh. Dan untungnya ada istana dekat bagian bawah peta. Mari kita pergi untuk itu.
+C_TU_STAGE_2_MESSAGE_4=Untuk menaklukkan istana ini, Anda perlu memindahkan komandan di atasnya dan klik yang tombol penaklukkan (tombol dengan ikon rumah).
+C_TU_STAGE_2_MESSAGE_5=Baik, sekarang istana ini adalah milikmu, itu akan memberikan 100 emas per giliran dan Anda dapat menggunakannya untuk merekrut unit untuk melawan musuh.
+C_TU_STAGE_2_MESSAGE_6=Tapi jangan begitu terburu-buru, ada dua desa reruntuhan di dekat istana, jadi mari kita merekrut beberapa prajurit untuk memperbaiki mereka terlebih dahulu.
+C_TU_STAGE_2_MESSAGE_7=Untuk merekrut unit, klik istana kemudian pilih unit Anda yang ingin direkrut dan klik tombol konfirmasi di bagian bawah.
+C_TU_STAGE_2_MESSAGE_8=Sekarang saatnya untuk praktek, karena tindakan perbaikan sangat mirip dengan penaklukkan tindakan, saya pikir Anda dapat mencoba sendiri.
+C_TU_STAGE_2_MESSAGE_9=Hebat, karena setiap tertaklukkan desa dapat memberikan 50 emas per gilirannya, pastikan untuk menaklukkan mereka pada giliran berikutnya.
+C_TU_STAGE_2_MESSAGE_10=Dan tampaknya masih ada beberapa emas lagi jadi cobalah merekrut beberapa unit lebih banyak untuk memperkuat tentara Anda.
+C_TU_STAGE_2_MESSAGE_11=Fantastis, sekarang Anda telah mendapatkan penghasilan lebih banyak dan tidak perlu takut musuh. Hancurkan semua musuh untuk memenyelesaikan tahap ini!
+
+C_TU_STAGE_3_NAME=Siap-Siap Untuk Perang!
+C_TU_STAGE_3_OBJECTIVE_1=MENANG: Kalahkan semua musuh unit and taklukkan istana musuh.
+C_TU_STAGE_3_OBJECTIVE_2=KALAH: Komandan Anda Terkalahkan.
+C_TU_STAGE_3_MESSAGE_1=Sekarang saatnya bagi Anda untuk menempatkan apa yang Anda telah belajar ke dalam pertempuran nyata. Seperti yang Anda lihat musuh juga memiliki komandan dan istana yang berarti mereka lebih sulit untuk mengalahkan kemudian sebelumnya.
+C_TU_STAGE_3_MESSAGE_2=Kunci untuk kemenangan adalah sifat dan kemampuan unit. Jika Anda memperhatikan untuk itu maka pertempuran bisa akan lebih mudah.
+C_TU_STAGE_3_MESSAGE_3=Untuk memberikan penjelasan singkat, ada dua jenis serangan : fisik & sihir dan satu unit hanya dapat memiliki satu jenis serangan. kekuatan serangan fisik akan ditampilkan dalam merah sementara sihir dengan warna biru.
+C_TU_STAGE_3_MESSAGE_4=Dan masing- masing unit juga memiliki pertahanan fisik dan sihir. Pertahanan fisik memiliki ikon perisai merah sementara pertahanan sihir memiliki biru.
+C_TU_STAGE_3_MESSAGE_5=Jadi kalau menyerang, ingatlah untuk memilih lawan dengan bijaksana. Jika Anda memilih musuh lemah untuk unit jenis serangan Anda, maka Anda dapat lebih banyak kerusakan.
+C_TU_STAGE_3_MESSAGE_6=Dan ada dua unit tersedia untuk merekrut di tahap ini : elemental & penyihir.
+C_TU_STAGE_3_MESSAGE_7=Element terbuat dari air murni, sehingga mereka dapat melawan jauh lebih baik ketika di dalam air. Dan penyihir dapat menghidupkan kerangka dari unit mati yang ternyata cukup berguna.
+C_TU_STAGE_3_MESSAGE_8=Jauhkan mereka dalam pikiran, gunakan apa yang Anda telah belajar di tahap sebelumnya untuk mengalahkan semua musuh dan menaklukkan istana mereka!
+C_TU_STAGE_3_MESSAGE_9=Fantastis, tampaknya Anda mendapatkan lebih baik dalam pertempuran. Tapi jangan tumbuh sombong, Anda masih memiliki jalan panjang untuk pergi.
+C_TU_STAGE_3_MESSAGE_10=Ada banyak lebih unit dan kemampuan untuk Anda untuk mengeksplorasi. Ingatlah untuk memeriksa dalam game wiki jika Anda memiliki pertanyaan. perjalanan yang baik untuk Anda!

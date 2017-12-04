@@ -1,0 +1,46 @@
+
+C_WR_NAME=Warroom BW
+
+C_WR_STAGE_1_NAME=Pulau Hantu
+C_WR_STAGE_1_OBJECTIVE_1=MENANG: Kalahkan semua musuh dan taklukkan semua istana musuh all.
+C_WR_STAGE_1_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_WR_STAGE_1_MESSAGE_1=Komandan, pulau ini terlihat aneh, kita harus berhati-hati!
+
+C_WR_STAGE_2_NAME=Hutan kuil
+C_WR_STAGE_2_OBJECTIVE_1=MENANG: Taklukkan istana di bawah kuil.
+C_WR_STAGE_2_OBJECTIVE_2=KALAH: Komandan Anda terkalahkan.
+C_WR_STAGE_2_MESSAGE_1=Mulia, kita mendekati kuil peri, mereka akan membunuh siapa pun yang melewati hutan ini!
+C_WR_STAGE_2_MESSAGE_2=Pengintai kami melihat bahwa ada tentara mayat hidup di barat, mereka tak terkalahkan!
+C_WR_STAGE_2_MESSAGE_3=Taklukkan kuil itu untuk menang!!!
+
+C_WR_STAGE_3_NAME=Tujuan Panjang
+C_WR_STAGE_3_OBJECTIVE_1=MENANG: Kalahkan tim merah untuk menang.
+C_WR_STAGE_3_OBJECTIVE_2=KALAH: Komandan Anda terkalahkan.
+C_WR_STAGE_3_OBJECTIVE_3=KALAH: Jumlah giliran melebihi 50.
+C_WR_STAGE_3_MESSAGE_1=Yang mulia, tujuan kita adalah untuk mengalahkan tim merah, tapi kami hanya memiliki 50 giliran!
+C_WR_STAGE_3_MESSAGE_2=(Kalahkan tim lain untuk menyimpan giliran)
+
+C_WR_STAGE_4_NAME=Dilema
+C_WR_STAGE_4_OBJECTIVE_1=MENANG: Kalahlan tim merah untuk menang.
+C_WR_STAGE_4_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_WR_STAGE_4_MESSAGE_1=Yang mulia, kita telah tiba utara. Sebagian besar segala tuan telah menyerah, kita akan memiliki pertempuran terakhir!
+C_WR_STAGE_4_MESSAGE_2=Serangan musuh!!!
+C_WR_STAGE_4_MESSAGE_3=Musuh taklukkan istana kita! Kita harus pertahankan!
+C_WR_STAGE_4_MESSAGE_4=Yang mulia, kita bisa coba taklukkan istana di depan.
+C_WR_STAGE_4_MESSAGE_5=Atau kita bisa mundur untuk mendapatkan istana kita kembali!
+C_WR_STAGE_4_MESSAGE_6=Tapi kita melihat bahwa musim dingin akan datang, semakin lama kita berdiam di sini, kerusakan kita akan semakin menderita!
+C_WR_STAGE_4_MESSAGE_7=Yang mulia, badai akan datang! Berlindung!
+C_WR_STAGE_4_MESSAGE_8=Ini waktunya! Bunuh mereka semua!
+
+C_WR_STAGE_5_NAME=Tebing Kasar
+C_WR_STAGE_5_OBJECTIVE_1=MENANG: Kalahkan tim merah untuk menang.
+C_WR_STAGE_5_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_WR_STAGE_5_MESSAGE_1=Yang mulia, musuh kita telah mengambil medan, pertempuran akan sulit. Hancurkan ketapel raksasa mereka akan meningkatkan moral kami!
+C_WR_STAGE_5_MESSAGE_2=Yang mulia, ketapel raksasa musuh telah hancur, kita akan memenangkan pertarungan!
+
+C_WR_STAGE_6_NAME=Seorang teman yang membutuhkan
+C_WR_STAGE_6_OBJECTIVE_1=MENANG: Kalahkan tim merah dan tim hitam untuk menang.
+C_WR_STAGE_6_OBJECTIVE_2=KALAH: Tim biru atau tim hijau hilang semua istana dan pasukan
+C_WR_STAGE_6_MESSAGE_1=Komandan, kita harus menolong sekutu kita.
+C_WR_STAGE_6_MESSAGE_2=Galamar: Terima kasih atas bantuan Anda, Aku menyediakan Anda emas dukungan.
+C_WR_STAGE_6_MESSAGE_3=Diterima emas dukungan dari Galamar.

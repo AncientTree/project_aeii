@@ -1,0 +1,39 @@
+
+C_CH_NAME=Tantangan
+
+C_CH_STAGE_1_NAME=Pengepungan Agung
+C_CH_STAGE_1_OBJECTIVE_1=MENANG: Kalahkan semua musuh unit.
+C_CH_STAGE_1_OBJECTIVE_2=KALAH: Komandan Anda terkalahkan.
+C_CH_STAGE_1_MESSAGE_1=Banyak musuh akan datang, persiapkan dirimu!
+
+C_CH_STAGE_2_NAME=Blitzkrieg
+C_CH_STAGE_2_OBJECTIVE_1=MENANG: Taklukkan semua istana musuh.
+C_CH_STAGE_2_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_CH_STAGE_2_OBJECTIVE_3=KALAH: Jumlah giliran melebihi 32.
+C_CH_STAGE_2_MESSAGE_1=Itu salah satu dari kota musuh utama. Musuh penguatan dalam perjalanan, kita harus cepat. Taklukkan semua istana biru dalam 32 giliran untuk meyelesaikan tahap ini!
+
+C_CH_STAGE_3_NAME=Pendirian Terakhir
+C_CH_STAGE_3_OBJECTIVE_1=MENANG: Taklukkan semua istana musuh.
+C_CH_STAGE_3_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_CH_STAGE_3_MESSAGE_1=Sialan, kota musuh telah memperhatikan kita! Serangan operasi telah gagal, kita harus melawan mereka kembali. Taklukkan semua istana mereka!
+
+C_CH_STAGE_4_NAME=Lembah Batu
+C_CH_STAGE_4_OBJECTIVE_1=MENANG: Kalahkan semua musuh dan taklukkan semua istana musuh.
+C_CH_STAGE_4_OBJECTIVE_2=KALAH: Hilang semua istana and pasukan.
+C_CH_STAGE_4_OBJECTIVE_3=KALAH: Jumlah giliran melebihi 200.
+C_CH_STAGE_4_MESSAGE_1=Yang mulia, ada bandit benteng di gunung, kita perlu menghancurkan mereka untuk melindungi desa!
+
+C_CH_STAGE_5_NAME=Percobaan Tak Berujung
+C_CH_STAGE_5_OBJECTIVE_1=MENANG: Kalahkan semua musuh dan taklukkan semua istana musuh.
+C_CH_STAGE_5_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_CH_STAGE_5_MESSAGE_1=Yang mulia, musuh kita mendapatkan daya dari kejahatan ritual, bagaimana kita mengalahkan mereka?
+
+C_CH_STAGE_6_NAME=Tanah Terkutuk
+C_CH_STAGE_6_OBJECTIVE_1=MENANG: Kalahkan semua musuh dan taklukkan semua istana musuh.
+C_CH_STAGE_6_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_CH_STAGE_6_MESSAGE_1=Yang Mulia, tanah ini terkutuk, pasukan yang tidak rusak akan diturunkan peringkatnya setiap gilirannya, berhati-hati!
+
+C_CH_STAGE_7_NAME=Perang Larut
+C_CH_STAGE_7_OBJECTIVE_1=MENANG: Kalahkan semua unit merah.
+C_CH_STAGE_7_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
+C_CH_STAGE_7_MESSAGE_1=Yang Mulia, kita tidak mampu menaklukkan properti saat ini, atau kita akan kehilangan pasukan kita!

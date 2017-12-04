@@ -1,0 +1,92 @@
+
+C_AEII_NAME=Pertempuran Thorin
+
+C_AEII_STAGE_1_NAME=Kuil Keberanian
+C_AEII_STAGE_1_OBJECTIVE=Hentikan si penyerang, Raja Galamar harus bertahan hidup.
+C_AEII_STAGE_1_MESSAGE_1=Tolong kami! Kami diserang! Kerangka perampok telah mencuri Kristal Keberanian yang kita bersumpah untuk melindungi!
+C_AEII_STAGE_1_MESSAGE_2=Aargh... kita gagal!
+C_AEII_STAGE_1_MESSAGE_3=Kapten, kita harus hentikan ancaman ini sekali!
+C_AEII_STAGE_1_MESSAGE_4=Ayo pasukan! Perampok harus membayar untuk itu!
+C_AEII_STAGE_1_MESSAGE_5=Anda penyerang lagi!
+C_AEII_STAGE_1_MESSAGE_6=Tidak ada perampok disekitar! Mereka terlihat seperti pasukan musuh! Hati-hati, Kapten!
+C_AEII_STAGE_1_MESSAGE_7=Terima kasih, Yang Mulia, Anda harus membantu kami mengembalikan Kristal secepat mungkin. penting seperti peninggalan tidak harus jatuh ke tangan yang salah!
+C_AEII_STAGE_1_MESSAGE_8=Saya siap melayani Anda. Siapa yang mungkin bisa memiliki Kristal?
+C_AEII_STAGE_1_MESSAGE_9=Aku takut penjahat ini mungkin bersekutu dengan penjahat lebih besar. Akan bijaksana untuk berkonsultasi dengan Pendeta Besar di Kuil Kebijaksanaan. Dia mungkin tahu lebih banyak hal ini.
+C_AEII_STAGE_1_MESSAGE_10=Aku akan mengirim saudara saya Valadorn segera. Aku akan membawa pasukan saya dan ikuti para penyerang yang berhasil lolos.
+
+C_AEII_STAGE_2_NAME=Kuil Kebijaksanaan
+C_AEII_STAGE_2_OBJECTIVE=Hancurkan semua serangan pasukan musuh, taklukkan istana kedua.
+C_AEII_STAGE_2_MESSAGE_1=Bagaimana ini bisa? Kuil Kebijaksanaan juga diserang!
+C_AEII_STAGE_2_MESSAGE_2=Baik, baik... Valadorn, saya menganggap? Siap-siap untuk dikalahkan!
+C_AEII_STAGE_2_MESSAGE_3=Pak, sebagian dari kekuatan musuh telah mundur!
+C_AEII_STAGE_2_MESSAGE_4=Kristal Kebijaksanaan! Jangan biarkan mereka melarikan diri!
+C_AEII_STAGE_2_MESSAGE_5=Aarrghh!
+C_AEII_STAGE_2_MESSAGE_6=Pak, kita harus ikuti mereka!
+C_AEII_STAGE_2_MESSAGE_7=Mari kita hentikan serangan ini dulu. Jika tidak kuil penjaga tidak akan memberi kesempatan!
+C_AEII_STAGE_2_MESSAGE_8=Mari kita dirikan istana kita di sebelah sana!
+C_AEII_STAGE_2_MESSAGE_9=Bagus, Kapten. tetapi tidak ada waktu untuk beristirahat. Kristal kehidupan juga mungkin dalam bahaya. Kita harus memperingatkan Raja Galamar!
+C_AEII_STAGE_2_MESSAGE_10=Iya, Pak. Saya akan siapkan pasukan.
+
+C_AEII_STAGE_3_NAME=Hutan Kabut
+C_AEII_STAGE_3_OBJECTIVE=Arahkan dengan aman melalui hutan. Hancurkan semua oposisi. Raja Galamar harus bertahan hidup.
+C_AEII_STAGE_3_MESSAGE_1=Yang Mulia, hutan ini dikenal sebagai rumah roh, elemental, dan makhluk ajaib lainnya. Perjalanan di malam hari tidak aman.
+C_AEII_STAGE_3_MESSAGE_2=Kapten, Anda mendengar utusan Valadorn - kita harus menekan! Tidak ada yang harus berdiri antara kita dan Kuil kehidupan.
+C_AEII_STAGE_3_MESSAGE_3=Mengerti. Pasukan, pastikan mata Anda terbuka dan lindungi Raja Galamar!
+C_AEII_STAGE_3_MESSAGE_4=Serigala lagi! Yang mulia, ini terlihat tidak bagus... 
+C_AEII_STAGE_3_MESSAGE_5=Dengan Pencipta! Apa yang hal-hal itu!
+C_AEII_STAGE_3_MESSAGE_6=Salam, pria Thorin! Kami, elemental, telah mendengar dari pencarian Anda untuk melindungi tanah kami dari kejahatan dan menawarkan kami kesetiaan untuk Raja kita.
+C_AEII_STAGE_3_MESSAGE_7=Kami senang hati menerima tawaran Anda. loyalitas Anda ke kerajaan tidak akan dilupakan.
+
+C_AEII_STAGE_4_NAME=Kuil Kehidupan
+C_AEII_STAGE_4_OBJECTIVE=Pertahankan Kuil Kehidupan - hancurkan semua musuh unit, taklukkan istana musuh!
+C_AEII_STAGE_4_MESSAGE_1=Yang mulia, terima kasih sang Pencipta kau disini! Mohon tolong kami pertahankan kristal!
+C_AEII_STAGE_4_MESSAGE_2=Hanya penjaga ketat di benteng Thorin Kristal akan aman. Kita harus mengirimkannya di sana.
+C_AEII_STAGE_4_MESSAGE_3=Yang mulia, pengintai kita melaporkan pasukan musuh mendekat!
+C_AEII_STAGE_4_MESSAGE_4=Mereka menghancurkan bangunan kami untuk melumpuhkan penghasilan emas kami! Mereka harus dihentikan!
+C_AEII_STAGE_4_MESSAGE_5=Kapten, kita harus selamatkan Kristal, siapkan pasukan untuk perang!
+C_AEII_STAGE_4_MESSAGE_6=Yang mulia, kita sudah hentikan serangannya.
+C_AEII_STAGE_4_MESSAGE_7=Bagus, Kapten! Siapkan pasukan untuk menuju Thorin!
+
+C_AEII_STAGE_5_NAME=Jalan Pintas ke Thorin
+C_AEII_STAGE_5_OBJECTIVE=Kirimkan Kristal ke selatan ke kota Thorin. Raja Galamar harus bertahan hidup.
+C_AEII_STAGE_5_MESSAGE_1=Yang Mulia, saya tidak suka tampilan hutan ini, kita harus berhati-hati!
+C_AEII_STAGE_5_MESSAGE_2=Sangat bagus, Kapten. Mari kita ikuti jalan ini dan tinggal pada penjaga ini.
+C_AEII_STAGE_5_MESSAGE_3=Serangan! Pertahankan Kristal sama sekali!
+C_AEII_STAGE_5_MESSAGE_4=Ini tampaknya adalah terakhir untuk mereka...
+
+C_AEII_STAGE_6_NAME=Gerbang Thorin
+C_AEII_STAGE_6_OBJECTIVE=Taklukkan istana musuh dan hancurkan semua pasukan musuh.
+C_AEII_STAGE_6_MESSAGE_1=Musuh berencana untuk menyerang Raja Galamar sebelum ia mencapai Thorin! Kita harus mengalahkan mereka!
+C_AEII_STAGE_6_MESSAGE_2=Kita harus cepat ke Utara untuk menemukan Galamar. Musuh tahu rencana dia dan dia mungkin perlu bantuan!
+
+C_AEII_STAGE_7_NAME=Di Luar Kota
+C_AEII_STAGE_7_OBJECTIVE_1=Bawa Kristal ke selatan ke Kota Thorin. Raja Galamar harus bertahan hidup.
+C_AEII_STAGE_7_OBJECTIVE_2=Ukir jalan ke barat melalui pasukan musuh, kalahkan komandan mereka dan taklukkan semua istana!
+C_AEII_STAGE_7_MESSAGE_1=Yang mulia, pasukan telah lelah! Saya menyarankan kita untuk kamp disini untuk malam ini.
+C_AEII_STAGE_7_MESSAGE_2=Kita harus tidak menunda, Kapten. Semakin cepat kita sampai ke Thorin lebih baik. Pasukan dapat beristirahat ketika kita aman.
+C_AEII_STAGE_7_MESSAGE_3=Serangan lain! Jangan biarkan Kristal meninggalkan pandangan Anda!
+C_AEII_STAGE_7_MESSAGE_4=Pasukan! Naga itu mendekati terhadap kita - pertahankan Raja!
+C_AEII_STAGE_7_MESSAGE_5=Ini adalah kristal itu setelah! Aku harap Sang Pencipta melindungi kita!
+C_AEII_STAGE_7_MESSAGE_6=Lari, manusia menyedihkan, sebelum ini terlambat!
+C_AEII_STAGE_7_MESSAGE_7=Kekuatan musuh kelihatannya lebih hebat, Saya rekomendasikan untuk mundur.
+C_AEII_STAGE_7_MESSAGE_8=Kita tidak punya pilihan tapi melawan kembali - kita harus ikuti setelah kristal!
+C_AEII_STAGE_7_MESSAGE_9=Galamar! Kami datang secepat kami bisa! Mari kita lawan sisi oleh sisi!
+
+C_AEII_STAGE_8_NAME=Benteng Kuno
+C_AEII_STAGE_8_OBJECTIVE=Kalahkan Saeth dan keturunannya!
+C_AEII_STAGE_8_MESSAGE_1=Reruntuhan Benteng Kuno... dan Saeth! Dengan Kristalnya!
+C_AEII_STAGE_8_MESSAGE_2=Akhirnya, Galamar dan Valadorn! Bagaimana sangat berani Anda untuk menghadapi saya!
+C_AEII_STAGE_8_MESSAGE_3=Semua tombol sekarang di tempat, dan segera kekuatan terbesar pernah dibuat di bumi ini mengaum dan membungkuk untuk saya. kehancuran kalian akan kesaksian yang mungkin dan kemuliaan!
+C_AEII_STAGE_8_MESSAGE_4=Anda tipu muslihat tidak bisa lagi menipu kita, Saeth!
+C_AEII_STAGE_8_MESSAGE_5=Anda tidak percaya saya? Bodoh! Aku akan mendukung Anda dengan sekilas kekuatan kuno ini. Lihatlah!
+C_AEII_STAGE_8_MESSAGE_6=Apa atas nama Sang Pencipta itu!
+C_AEII_STAGE_8_MESSAGE_7=Makhluk menyedihkan, ini adalah sesuatu yang kuno bahwa Anda tidak akan memahami bahkan jika Anda tinggal seribu tahun! Saksi kekuatan Surga Api!
+C_AEII_STAGE_8_MESSAGE_8=Galamar! Kita harus cepat jika pasukan kita punya kesempatan!
+C_AEII_STAGE_8_MESSAGE_9=Pak, kita harus menyerang istana mereka sebelum kita menyerang Saeth dan reruntuhannya.
+C_AEII_STAGE_8_MESSAGE_10=Penjahat menyedihkan. Anda tidak akan hidup cukup lama untuk melihat kerajaan berharga Anda dilalap bayangan...
+C_AEII_STAGE_8_MESSAGE_11=Saeth! Kali ini kekalahan Anda selesai!
+C_AEII_STAGE_8_MESSAGE_12=Dalam Anda kehidupan tidak signifikan dan pikiran sempit, mungkin... Namun demikian semuanya sekarang digerakkan - kekuatan tak terlihat yang mengatur waktu berada di luar pengetahuan Anda. Anda tidak bisa menghentikan saya dari kebangkitan lagi!
+C_AEII_STAGE_8_MESSAGE_13=Yang Mulia, reruntuhan akan berantakan! Kita harus segera pergi!
+C_AEII_STAGE_8_MESSAGE_14=Tapi kristal... mereka masih di dalam sana!
+C_AEII_STAGE_8_MESSAGE_15=Satu-satunya hal yang kita dapat menyelamati saat ini adalah diri kita sendiri!
+C_AEII_STAGE_8_MESSAGE_16=Anda telah melayani saya juga. Sekarang bergerak!

@@ -1,0 +1,35 @@
+
+C_HF_NAME=Surga Api
+
+C_HF_STAGE_1_NAME=Terobosan
+C_HF_STAGE_1_OBJECTIVE_1=MENANG: Kalahkan musuh komandan.
+C_HF_STAGE_1_OBJECTIVE_2=KALAH: Galamar atau Valadorn terkalahkan.
+C_HF_STAGE_1_OBJECTIVE_3=KALAH: Jumlah giliran melebihi 35.
+C_HF_STAGE_1_MESSAGE_1=Setelah tiba di benteng kuno Galamar dan Valadorn menyaksikan kuasa yang sangat besar dari Surga Api.
+C_HF_STAGE_1_MESSAGE_2=Pada sementara itu tentara jahat Saeth dikelilingi ujung tombak Galamar. Situasi menjadi sangat intens.
+C_HF_STAGE_1_MESSAGE_3=Buruk Galamar dan Valadorn. Anda hanya datang terlambat, siapkan diri untuk dikalahkan oleh mulia daya dari tuan kami!
+C_HF_STAGE_1_MESSAGE_4=Saudara, kekuatan utama kita belum tiba. Kita harus menembus pengepungan ini atau kita tidak punya kesempatan!
+C_HF_STAGE_1_MESSAGE_5=Setuju. Semua pasukan, persiapkan pertempuran!
+C_HF_STAGE_1_MESSAGE_6=Yang mulia, tempat ini dikepung dan kami tidak bisa mendapatkan penghasilan apapun dari itu. Harap berhati-hati pada setiap pilihan!
+C_HF_STAGE_1_MESSAGE_7=Tidak! Istana kita dihancurkan oleh kekuatan jahat Saeth!
+C_HF_STAGE_1_MESSAGE_8=Sialan! Saeth tidak memberi kita perdamaian. Semuanya, berdiri disini!
+
+C_HF_STAGE_2_NAME=Kegelapan Sebelum Fajar
+C_HF_STAGE_2_OBJECTIVE_1=MENANG: Taklukkan istana musuh.
+C_HF_STAGE_2_OBJECTIVE_2=KALAH: Galamar atau Valadorn terkalahkan.
+C_HF_STAGE_2_MESSAGE_1=Istana di sana! Kita harus menaklukkan itu dan membuatnya sebagai benteng untuk kami sebagai serangan selanjutnya!
+C_HF_STAGE_2_MESSAGE_2=Kami telah memiliki beberapa pasukan utama bergabung dengan kami, tapi kita tidak bisa menunggu lagi. Serang prajurit!
+C_HF_STAGE_2_MESSAGE_3=Yang mulia, karena kami telah menembus musuh pengepungan sekarang kita bisa mendapatkan penghasilan! Saya pikir kita dapat mengambil beberapa keuntungan dari itu!
+
+C_HF_STAGE_3_NAME=Kiamat
+C_HF_STAGE_3_OBJECTIVE_1=MENANG: Kalahkan Saeth!
+C_HF_STAGE_3_OBJECTIVE_2=KALAH: Galamar atau Valadorn Terkalahkan.
+C_HF_STAGE_3_MESSAGE_1=Sangat baik Galamar dan Valadorn! Aku cukup terkesan bahwa Anda telah pergi sejauh ini. Tapi cerita Anda akan tiada lagi, persiapkan diri untuk dikalahkan oleh kekuatan terbesar dari dunia ini!
+C_HF_STAGE_3_MESSAGE_2=Kami tidak takut Anda, kami akan melawan! 
+C_HF_STAGE_3_MESSAGE_3=Penjahat menyedihkan. Anda tidak akan hidup cukup lama untuk melihat kerajaan berharga Anda dilalap bayangan...
+C_HF_STAGE_3_MESSAGE_4=Saeth! Kali ini kekalahan Anda selesai!
+C_HF_STAGE_3_MESSAGE_5=Dalam Anda kehidupan tidak signifikan dan pikiran sempit, mungkin... Namun demikian semuanya sekarang digerakkan - kekuatan tak terlihat yang mengatur waktu berada di luar pengetahuan Anda. Anda tidak bisa menghentikan saya dari kebangkitan lagi!
+C_HF_STAGE_3_MESSAGE_6=Yang Mulia, reruntuhan akan berantakan! Kita harus segera pergi!
+C_HF_STAGE_3_MESSAGE_7=Tapi kristal... mereka masih di dalam sana!
+C_HF_STAGE_3_MESSAGE_8=Satu-satunya hal yang kita dapat menyelamati saat ini adalah diri kita sendiri!
+C_HF_STAGE_3_MESSAGE_9=Anda telah melayani saya juga. Sekarang bergerak!

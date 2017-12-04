@@ -1,0 +1,63 @@
+
+C_AEI_NAME=Pertempuran Thorin Prequel
+
+C_AEI_STAGE_1_NAME=Berkumpul kembali
+C_AEI_STAGE_1_OBJECTIVE=Raja Galamar harus taklukkan istana, pastikan semua pasukan hidup.
+C_AEI_STAGE_1_MESSAGE_1=Kerajaan Thorin dibagi. dikhianati sendiri saudara kembar Valadorn, Raja Galamar telah melarikan diri ke dalam perbatasan dari timur.
+C_AEI_STAGE_1_MESSAGE_2=Hanya penjaga Biru, pasukan pribadi Galamar, tetap setia dan siap berdiri untuk merebut tanah kembali...
+C_AEI_STAGE_1_MESSAGE_3=Pak, pasukan Anda lelah setelah semalam pertempuran. Akan bijaksana untuk berkumpul kembali di istana tertinggal.
+C_AEI_STAGE_1_MESSAGE_4=Suara saran, kapten. Siap pasukan - kita harus tidak membiarkan musuh menangkap kita masih tidak siap.
+C_AEI_STAGE_1_MESSAGE_5=Tentara Valadorn mudah untuk dilihat dengan seragam merah.
+C_AEI_STAGE_1_MESSAGE_6=Mata-mata!! Valadorn dan pasukan merahnya tahu di mana kita! cepat, lindungi Raja!
+
+C_AEI_STAGE_2_NAME=Teman & Musuh
+C_AEI_STAGE_2_OBJECTIVE_1=Taklukkan istana dan paling sedikit satu desa, hasilkan setidaknya satu unit baru dari pasukan.
+C_AEI_STAGE_2_OBJECTIVE_2=Kalahkan semua serigala untuk menolong Kepala Element.
+C_AEI_STAGE_2_MESSAGE_1=Raja Galamar telah selamat dari serangan Valadorn. Namun, sebelum Galamar dapat mencoba untuk merebut kembali kerajaannya ia harus terlebih dahulu perjalanan utara untuk mencari sekutu baru.
+C_AEI_STAGE_2_MESSAGE_2=Ayo, pasukan. Tapi pertama, Taklukkan dua bangunan. Kita bisa beristirahat setelah kita mencapai desa berikutnya.
+C_AEI_STAGE_2_MESSAGE_3=Pak, pengintai kita melaporkan bahwa orang element dari utara telah diserang!
+C_AEI_STAGE_2_MESSAGE_4=Kemudian kita harus bertindak cepat! Kepala Element adalah sekutu tua, dan ia akan pastikan untuk membantu kami jika kita bisa menyelamatkannya.
+C_AEI_STAGE_2_MESSAGE_5=Pak, element ini membawa berita dari desa mereka. Mereka diserang dari hutan serigala!
+C_AEI_STAGE_2_MESSAGE_6=Serigala? Kemudian kita akan harus menggunakan medan untuk keuntungan kita - bergegas untuk menyerang akan bebal.
+C_AEI_STAGE_2_MESSAGE_7=Hati-hati yang mulia - serangan serigala itu beracun!
+
+C_AEI_STAGE_3_NAME=Pengawal
+C_AEI_STAGE_3_OBJECTIVE=Galamar dan Kepala Element harus mencapai ke menara abu-abu.
+C_AEI_STAGE_3_MESSAGE_1=Kepala Element setuju untuk bergabung pasukan Galamar. Sekarang Galamar pikiran beralih ke penyihir dari Menara abu-abu.
+C_AEI_STAGE_3_MESSAGE_2=Jika Kepala Element dapat membujuk mereka untuk membantu, sihir mereka akan menjadi modal besar kepada tumbuh kekuatan.
+C_AEI_STAGE_3_MESSAGE_3=Pak, Jembatan telah hancur!
+C_AEI_STAGE_3_MESSAGE_4=Valadorn mengharapkan kita - kita harus menemukan cara lain di jalan pintas. Ini bisa menjadi perangkap.
+C_AEI_STAGE_3_MESSAGE_5=Pasukan! pastikan Mata Anda tetap terbuka dan lindungi Kepala Elemen sama sekali.
+
+C_AEI_STAGE_4_NAME=Bala Bantuan
+C_AEI_STAGE_4_OBJECTIVE=Selamatkan kota : hancurkan semua musuh unit!
+C_AEI_STAGE_4_MESSAGE_1=Setelah mencapai menara abu-abu Ahli Sihir Tinggi setuju untuk membantu Galamar. Namun, Galamar pasukan tidak memiliki waktu untuk beristirahat, sebagai pesan tiba dari kota terdekat Var Telan, menceritakan serangan kejutan oleh pasukan Merah Valadorn.
+C_AEI_STAGE_4_MESSAGE_2=Yang mulia, pasukan merah! hati-hati dengan ketapel raksasa jarak jauh mereka!
+C_AEI_STAGE_4_MESSAGE_3=Pengkhianatan apa ini! Kota ini menjadi milik melawan kita!
+C_AEI_STAGE_4_MESSAGE_4=Sebagai diprediksi seperti biasa, saudara! Saya telah memiliki Anda sekarang!
+C_AEI_STAGE_4_MESSAGE_5=Mundur!!  Terkutuk kau Galamar! Anda tidak punya kesempatan begitu pada berikutnya!
+
+C_AEI_STAGE_5_NAME=Selamatkan Naga!
+C_AEI_STAGE_5_OBJECTIVE=Hancurkan musuh komandan dan bebaskan naga.
+C_AEI_STAGE_5_MESSAGE_1=Sebagai Galamar pasukan menetap ke kota istana, patroli pengintai menemukan ular terbang yang disebut naga ditahan di musuh perkemahan di dekatnya.
+C_AEI_STAGE_5_MESSAGE_2=Bisakah naga itu digunakan terhadap Valadorn dan pasukannya? Untuk mengetahui, Galamar akan memiliki untuk menyelamatkan mereka.
+C_AEI_STAGE_5_MESSAGE_3=Sumber menunjukkan bahwa naga sedang ditahan di istana ini.
+C_AEI_STAGE_5_MESSAGE_4=Hati-hati, Yang Mulia, naga bisa menjadi musuh tangguh serta sekutu yang kuat.
+C_AEI_STAGE_5_MESSAGE_5=Lihat yang Mulia, naga telah bebas! Mereka sekarang di bawah perintah kita!
+
+C_AEI_STAGE_6_NAME=Kepung!
+C_AEI_STAGE_6_OBJECTIVE=Hancurkan semua musuh unit!
+C_AEI_STAGE_6_MESSAGE_1=Dengan naga kuat menambah pasukannya, Galamar siap untuk melawan kembali terhadap Valadorn. Dia memutuskan untuk melihat serangan mendadak pada perintah utama pos di luar kota Thorin.
+C_AEI_STAGE_6_MESSAGE_2=Kota ini baik dipertahankan, Yang Mulia.
+C_AEI_STAGE_6_MESSAGE_3=Jadi tampaknya. Kita mungkin harus mengubah rencana pertempuran kami.
+
+C_AEI_STAGE_7_NAME=Serangan Terakhir
+C_AEI_STAGE_7_OBJECTIVE=Hancurkan semua musuh unit and selamatkan kerajaan!
+C_AEI_STAGE_7_MESSAGE_1=Galamar masih di ambang merebut kembali kota ketika tiba-tiba ledakan besar membagi tanah.
+C_AEI_STAGE_7_MESSAGE_2=Pasukan Valadorn muncul di mana-mana?! Apa jenis kejahatan sihir ini?
+C_AEI_STAGE_7_MESSAGE_3=Jadi, saudara kembar, tampaknya kita di posisi terbalik! Kirim sekarang atau dihancurkan!
+C_AEI_STAGE_7_MESSAGE_4=Jangan pernah! Apa pun kekuatan gelap sudah mengendalikan Anda, saya akan mengalahkannya!
+C_AEI_STAGE_7_MESSAGE_5=Galamar... apa yang aku lakukan?
+C_AEI_STAGE_7_MESSAGE_6=Mantranya! Telah rusak!
+C_AEI_STAGE_7_MESSAGE_7=Dengan Galamar menang, mantra mengendalikan Valadorn sudah rusak. Si kekuatan jahat tidak lain adalah Saeth, si bayangan iblis!
+C_AEI_STAGE_7_MESSAGE_8=Rencananya dikalahkan, dengan yang mengerikan gemuruh ia berpesan tentara gelap untuk menyerang Galamar. Akan yang baru bersatu Kerajaan Thorin menahan serangan ini? Dapatkah Galamar dan saudaranya menghalau jahat Saeth sekali dan untuk semua?
