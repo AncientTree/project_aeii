@@ -6,7 +6,7 @@ C_CH_STAGE_1_OBJECTIVE_1=MENANG: Kalahkan semua musuh unit.
 C_CH_STAGE_1_OBJECTIVE_2=KALAH: Komandan Anda terkalahkan.
 C_CH_STAGE_1_MESSAGE_1=Banyak musuh akan datang, persiapkan dirimu!
 
-C_CH_STAGE_2_NAME=Blitzkrieg
+C_CH_STAGE_2_NAME=Perang Kilat
 C_CH_STAGE_2_OBJECTIVE_1=MENANG: Taklukkan semua istana musuh.
 C_CH_STAGE_2_OBJECTIVE_2=KALAH: Hilang semua istana dan pasukan.
 C_CH_STAGE_2_OBJECTIVE_3=KALAH: Jumlah giliran melebihi 32.

@@ -124,7 +124,7 @@ P_ABILITY_DESCRIPTION_3=Unit dengan kemampuan ini mendapatkan 10 serangan/ perta
 P_ABILITY_DESCRIPTION_4=Unit dengan kemampuan ini dapat menghancurkan desa.
 P_ABILITY_DESCRIPTION_5=Unit dengan kemampuan ini dapat memindahkan melalui semua medan menggunakan 1 pergerakan titik, dan dapat bergerak melalui tanah unit musuh. Tapi mereka tidak akan menerima pertahanan bonus dari medan.
 P_ABILITY_DESCRIPTION_6=Tukang Sihir dapat menghidupkan kerangka dari unit mati, pada saat yang sama mereka tidak akan [Keracunan] jika mereka siaga pada batu nisan.
-P_ABILITY_DESCRIPTION_7=Unit dengan kemampuan ini dapat menyembuhkan sekutu, dan jumpah penyembuhan akan meningkat ketika naik level. Perhatikan bahwa penyembuh dapat melebihi HP maksimum pada target.
+P_ABILITY_DESCRIPTION_7=Unit dengan kemampuan ini dapat menyembuhkan sekutu, dan jumlah penyembuhan akan meningkat ketika naik level. Perhatikan bahwa penyembuh dapat melebihi HP maksimum pada target.
 P_ABILITY_DESCRIPTION_9=Untuk unit yang memiliki kemampuan ini, serangan mereka akan melampirkan [Keracunan] status untuk musuh saat ini sampai giliran ke 2 dari musuh itu. Namun unit dengan kemampuan ini tidak akan mempengaruhi satu sama lain.
 P_ABILITY_DESCRIPTION_10=Unit dengan kemampuan ini dapat memperbaiki desa yang terhancur.
 P_ABILITY_DESCRIPTION_11=Untuk unit yang memiliki kemampuan ini, batu nisan tidak akan tampil di peta ketika mereka mati. Selain itu, ketika mereka [Keracunan] mereka masih bisa menerima menyembuhkan dari medan dan racun kerusakan akan menjadi menyembuhkan. Namun menyembuhkan dari sekutu akan menjadi kerusakan kepada mereka.
@@ -164,7 +164,7 @@ P_UNIT_DESCRIPTION_8=Binatang terbang besar ini telah menguasai langit sejak zam
 P_UNIT_DESCRIPTION_9=Komandan adalah pemimpin dari tentara. Dia telah cukup kuat keterampilan dalam pertempuran dan dapat menaklukkan istana musuh.
 P_UNIT_DESCRIPTION_10=Kerangka adalah mayat hidup makhluk dihidupkan oleh necromancer. Mereka tidak sangat kuat tetapi memiliki serangan beracun.
 P_UNIT_DESCRIPTION_11=<tidak ada>
-P_UNIT_DESCRIPTION_12=Paladin adalah tentara suci yang terampil penyembuhan dan juga dapat menaklukkan desa seperti prajurit melakukan.
+P_UNIT_DESCRIPTION_12=Paladin adalah tentara suci yang terampil penyembuhan dan juga dapat menaklukkan desa seperti dilakukan prajurit.
 P_UNIT_DESCRIPTION_13=Berserker adalah pejuang yang lahir. Semakin banyak musuh di sekitar mereka semakin kuat mereka menjadi.
 P_UNIT_DESCRIPTION_14=Hantu adalah mayat hidup makhluk mistis. mengambang di atas tanah dan dapat membutakan musuh dengan serangan mereka.
 P_UNIT_DESCRIPTION_15=Archmage terampil menggunakan sihir gelap. Serangan mereka selalu kuat terhadap musuh pertahanan sihir yang rendah.
@@ -354,7 +354,7 @@ M_INFO_FRIEND_REQUEST_ACCEPT=[%s] menerima permintaan teman anda.
 M_INFO_FRIEND_REQUEST_ALREADY_SENT=Kau sudah mengirim permintaan teman ke '%s'.
 M_INFO_FRIEND_REQUEST_REJECT=[%s] menolak permintaan teman anda.
 M_INFO_FRIEND_REQUEST_SENT=Permintaan teman terkirim ke '%s'.
-M_INFO_GAME_CLOSE_HOST_LEAVE=[permainan %s] telah ditutup karena host telah meninggalkan permainah.\n\nResponsible\n[%s]
+M_INFO_GAME_CLOSE_HOST_LEAVE=[permainan %s] telah ditutup karena host telah meninggalkan permainan.\n\nResponsible\n[%s]
 M_INFO_GAME_CLOSE_TIMEOUT=[%s's game] telah ditutup karena pemain kehabisan waktu.\n\nResponsible\n[%s]
 M_INFO_GAME_INVITATION='%s' mau mengundangmu ke permainan.
 M_INFO_GAME_INVITATION_ALREADY_SENT=Kau sudah mengirim undangan permainan ke '%s'.
@@ -366,8 +366,8 @@ M_INFO_INVALID_EMAIL=Email tidak valid.
 M_INFO_INVALID_MAP_NAME=Nama peta tidak valid.
 M_INFO_INVALID_PASSWORD=Kata sandi tidak valid.
 M_INFO_INVALID_USERNAME=Invalid username.
-M_INFO_LOAD_GAME_FAILED=Melanjutkan permainan gagal.
-M_INFO_MAP_DOWNLOADED=Sukses Unduh '%s'.
+M_INFO_LOAD_GAME_FAILED=Gagal melanjutkan permainan.
+M_INFO_MAP_DOWNLOADED='%s' Sukses Terunduh.
 M_INFO_MAP_UPDATED=Peta '%s' sukses Diperbaharui.
 M_INFO_MAP_SAVED=Peta Tersimpan.
 M_INFO_MAP_UPLOAD_LIMIT_REACHED=Kau sudah mencapai batas unggahan peta(20 peta untuk pemakai).
@@ -440,6 +440,6 @@ M_INFO_GAME_CLOSE_ADMIN=[permainan %s] telah tertutup oleh administrator.\n\nRes
 
 P_UNIT_DESCRIPTION_19=Putri Duyung seperti prajurit tetapi dapat bergerak sangat cepat di atas air. Mereka dapat menaklukkan dan memperbaiki desa seperti normal prajurit lakukan, sehingga Anda dapat menggunakannya untuk mendapatkan kontrol atas air!
 
-#2.1.2
+ #2.1.2
 
-P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.
+P_ABILITY_DESCRIPTION_8=Untuk unit yang memiliki kemampuan ini, setelah mereka selesai tindakan mereka, mereka dapat menggunakan sisa gerakan poin untuk bergerak lagi. Tapi mereka mendapatkan 50% kurang dari keahlian.
