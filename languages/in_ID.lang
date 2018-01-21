@@ -440,6 +440,15 @@ M_INFO_GAME_CLOSE_ADMIN=[permainan %s] telah tertutup oleh administrator.\n\nRes
 
 P_UNIT_DESCRIPTION_19=Putri Duyung seperti prajurit tetapi dapat bergerak sangat cepat di atas air. Mereka dapat menaklukkan dan memperbaiki desa seperti normal prajurit lakukan, sehingga Anda dapat menggunakannya untuk mendapatkan kontrol atas air!
 
- #2.1.2
+#2.1.2
 
 P_ABILITY_DESCRIPTION_8=Untuk unit yang memiliki kemampuan ini, setelah mereka selesai tindakan mereka, mereka dapat menggunakan sisa gerakan poin untuk bergerak lagi. Tapi mereka mendapatkan 50% kurang dari keahlian.
+
+#2.1.8
+
+L_UNIT_NAME_20=Druid
+
+L_ABILITY_NAME_30=Supporter
+P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+
+P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.

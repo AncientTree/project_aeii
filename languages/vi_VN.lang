@@ -443,3 +443,12 @@ P_UNIT_DESCRIPTION_19=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)
 #2.1.2
 
 P_ABILITY_DESCRIPTION_8=Đơn vị này khi đánh xong thì họ có thể sử dụng những điểm di chuyển còn lại để đi tiếp. Nhưng kinh nghiệm bị giảm 50%.
+
+#2.1.8
+
+L_UNIT_NAME_20=Druid
+
+L_ABILITY_NAME_30=Supporter
+P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+
+P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.
