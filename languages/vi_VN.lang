@@ -56,7 +56,7 @@ L_ABILITY_NAME_4=Phá hủy
 L_ABILITY_NAME_5=Lơ lửng trên không
 L_ABILITY_NAME_6=Thầy chiêu hồn
 L_ABILITY_NAME_7=Thầy thuốc ưu tú
-L_ABILITY_NAME_8=Đánh và bỏ chạy
+L_ABILITY_NAME_8=Kẻ đột biến
 L_ABILITY_NAME_9=Xát thủ hạ độc
 L_ABILITY_NAME_10=Thợ sửa chữa
 L_ABILITY_NAME_11=Bất tử
@@ -99,7 +99,7 @@ L_UNIT_NAME_9=Chỉ Huy
 L_UNIT_NAME_10=Bộ Xương
 L_UNIT_NAME_11=Pha Lê
 L_UNIT_NAME_12=Hiệp Sĩ
-L_UNIT_NAME_13=Kẻ Cuồng Loạn
+L_UNIT_NAME_13=Sát Thủ Máu Lạnh
 L_UNIT_NAME_14=Bóng Ma
 L_UNIT_NAME_15=Pháp Sư Vĩ Đại
 L_UNIT_NAME_16=Cung Cưỡi Sói
@@ -159,7 +159,7 @@ P_UNIT_DESCRIPTION_3=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Triệu Tập Bộ Xương
 P_UNIT_DESCRIPTION_4=KỸ NĂNG TỰ ĐỘNG:\n((1)) bỏ trạng thái xấu và hồi HP cho đội trong 2 ô.\n((2)) rút HP đơn vị bất tử trong 2 ô.\n((3)) tấn công xa 1 đến 2 ô.
 P_UNIT_DESCRIPTION_5=KỸ NĂNG:\n((1)) Mỗi vết cắn đều có độc.\n((2)) dùng ô di chuyển còn lại để chạy.
 P_UNIT_DESCRIPTION_6=KỸ NĂNG TỰ ĐỘNG:\n((1)) Gắn trạng thái [Tê Liệt] trong vòng 2 ô.\n((2)) Tự hồi HP khi ở trên núi.
-P_UNIT_DESCRIPTION_7=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Tấn công xa 3 đến 7 ô.\n((2)) Phá hủy ngôi làng.\n((3)) Không thể dính trạng thái xấu.\nĐIỂM YẾU: Không thể tấn công khi vừa di chuyển xong.
+P_UNIT_DESCRIPTION_7=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Tấn công xa 4 đến 7 ô.\n((2)) Phá hủy ngôi làng.\n((3)) Không thể dính trạng thái xấu.\nĐIỂM YẾU: Không thể tấn công khi vừa di chuyển xong.
 P_UNIT_DESCRIPTION_8=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Tấn công xa 1 đến 2 ô.\n((2)) Dùng ô di chuyển còn lại để chạy.
 P_UNIT_DESCRIPTION_9=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)) Chiếm giữ làng.\n((3)) Chiếm giữ lâu đài.
 P_UNIT_DESCRIPTION_10=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Hạ Độc đối thủ.\nĐIỂM YẾU: đứng gần Tinh Linh bị trừ HP.
@@ -446,9 +446,9 @@ P_ABILITY_DESCRIPTION_8=Đơn vị này khi đánh xong thì họ có thể sử
 
 #2.1.8
 
-L_UNIT_NAME_20=Druid
+L_UNIT_NAME_20=Tu Sĩ
 
-L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+L_ABILITY_NAME_30=Hỗ Trợ
+P_ABILITY_DESCRIPTION_30=Đơn vị này sẽ khôi phục lượt đi cho đồng minh trong phạm vi 2 ô, nhưng không áp dụng cho Chỉ huy và đồng loại và những [kẻ đột biến]
 
-P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.
+P_UNIT_DESCRIPTION_20=KỸ NĂNG CHỦ ĐỘNG :\n((1)) Khôi phục lượt đi của đồng minh cách 1 đến 2 ô. \n((2)) Đánh xa 1 đến 2 ô. \n((2)) Hồi HP khi ở trên núi
