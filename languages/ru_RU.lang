@@ -123,6 +123,7 @@ P_ABILITY_DESCRIPTION_4=Юниты с этой способностью могу
 P_ABILITY_DESCRIPTION_5=Юниты с этой способностью могут перемещаться по любой местности, затрачивая 1 единицу движения, а также могут проходить по клеткам, занятым вражескими юнитами. Однако они не получают бонуса к защите от местности.
 P_ABILITY_DESCRIPTION_6=Некроманты способны поднимать скелетов из павших юнитов (кроме юнитов нежити), в то же время они не будут отравлены, если закончат ход, стоя на надгробии.
 P_ABILITY_DESCRIPTION_7=Юниты с этой способностью могут лечить союзников, количество восстанавливаемого хп возрастает с повышением уровня хилера. Обратите внимание, если полечить юнит с полным здоровьем, то количество его жизней увеличится, но только на 1 ход.
+P_ABILITY_DESCRIPTION_8=Юниты с этой способностью после атаки могут потратить неизрасходованные очки передвижения.
 P_ABILITY_DESCRIPTION_9=Атаки юнитов с этой способностью накладывают на врагов статус [Отравление] на 2 хода. При встрече 2 таких юнитов ни один из них не будет отравлен.
 P_ABILITY_DESCRIPTION_10=Юниты с этой способностью могут чинить разрушенные домики.
 P_ABILITY_DESCRIPTION_11=После уничтожения юнитов с этой способностью не появляются надгробия. Помимо того, будучи отравленными, эти юниты могут лечиться на местности, урон от яда превращается в лечение, но в то же время лечение от союзников превращается в урон.
@@ -438,15 +439,11 @@ M_INFO_GAME_CLOSE_ADMIN=[%s's game] has been closed by administrator.\n\nRespons
 
 P_UNIT_DESCRIPTION_19=Mermaids are like soldiers but can move really fast on water. They can occupy and repair villages like normal soldiers do, so you can use them to gain control over the water!
 
-#2.1.2
-
-P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.
-
 #2.1.8
 
 L_UNIT_NAME_20=Druid
 
 L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders. And each unit can be supported only once per turn.
 
 P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.

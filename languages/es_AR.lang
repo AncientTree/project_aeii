@@ -441,15 +441,11 @@ M_INFO_GAME_CLOSE_ADMIN=[El juego de %s] Fué cerrado por un administrador.\n\nR
 
 P_UNIT_DESCRIPTION_19=Las sirenas son como los soldados pero pueden moverse muy rápido en el agua. Pueden ocupar y reparar aldeas como los soldados normales, las podés usar para ganar el control de los mares!
 
-#2.1.2
-
-P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.
-
 #2.1.8
 
 L_UNIT_NAME_20=Druid
 
 L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders. And each unit can be supported only once per turn.
 
 P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.

@@ -125,6 +125,7 @@ P_ABILITY_DESCRIPTION_4=Unit dengan kemampuan ini dapat menghancurkan desa.
 P_ABILITY_DESCRIPTION_5=Unit dengan kemampuan ini dapat memindahkan melalui semua medan menggunakan 1 pergerakan titik, dan dapat bergerak melalui tanah unit musuh. Tapi mereka tidak akan menerima pertahanan bonus dari medan.
 P_ABILITY_DESCRIPTION_6=Tukang Sihir dapat menghidupkan kerangka dari unit mati, pada saat yang sama mereka tidak akan [Keracunan] jika mereka siaga pada batu nisan.
 P_ABILITY_DESCRIPTION_7=Unit dengan kemampuan ini dapat menyembuhkan sekutu, dan jumlah penyembuhan akan meningkat ketika naik level. Perhatikan bahwa penyembuh dapat melebihi HP maksimum pada target.
+P_ABILITY_DESCRIPTION_8=Untuk unit yang memiliki kemampuan ini, setelah mereka selesai tindakan mereka, mereka dapat menggunakan sisa gerakan poin untuk bergerak lagi.
 P_ABILITY_DESCRIPTION_9=Untuk unit yang memiliki kemampuan ini, serangan mereka akan melampirkan [Keracunan] status untuk musuh saat ini sampai giliran ke 2 dari musuh itu. Namun unit dengan kemampuan ini tidak akan mempengaruhi satu sama lain.
 P_ABILITY_DESCRIPTION_10=Unit dengan kemampuan ini dapat memperbaiki desa yang terhancur.
 P_ABILITY_DESCRIPTION_11=Untuk unit yang memiliki kemampuan ini, batu nisan tidak akan tampil di peta ketika mereka mati. Selain itu, ketika mereka [Keracunan] mereka masih bisa menerima menyembuhkan dari medan dan racun kerusakan akan menjadi menyembuhkan. Namun menyembuhkan dari sekutu akan menjadi kerusakan kepada mereka.
@@ -440,15 +441,11 @@ M_INFO_GAME_CLOSE_ADMIN=[permainan %s] telah tertutup oleh administrator.\n\nRes
 
 P_UNIT_DESCRIPTION_19=Putri Duyung seperti prajurit tetapi dapat bergerak sangat cepat di atas air. Mereka dapat menaklukkan dan memperbaiki desa seperti normal prajurit lakukan, sehingga Anda dapat menggunakannya untuk mendapatkan kontrol atas air!
 
-#2.1.2
-
-P_ABILITY_DESCRIPTION_8=Untuk unit yang memiliki kemampuan ini, setelah mereka selesai tindakan mereka, mereka dapat menggunakan sisa gerakan poin untuk bergerak lagi. Tapi mereka mendapatkan 50% kurang dari keahlian.
-
 #2.1.8
 
 L_UNIT_NAME_20=Druid
 
-L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+L_ABILITY_NAME_30=Pendukung
+P_ABILITY_DESCRIPTION_30=Untuk unit yg memiliki kemampuan ini, mereka dapat mengatur ulang sekutu siaga dan membiarkannya bertindak sekali lagi. Tidak dapat digunakan pada unit dengan kemampuan yg sama atau kemampuan [Penyerang charger] atau komandan. Setiap pasukan hanya bisa didukung sekali per giliran.
 
-P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.
+P_UNIT_DESCRIPTION_20=Druid adalah anak alam, seorang pendukung yg lahir. Dia bisa bergerak sangat cepat saat berdiri di tanah dan bisa membantu sekutu dengan berkah alami.

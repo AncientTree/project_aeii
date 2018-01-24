@@ -124,6 +124,7 @@ P_ABILITY_DESCRIPTION_3=Units with this ability gain 10 attack/defence bonus whe
 P_ABILITY_DESCRIPTION_4=Units with this ability can destroy villages.
 P_ABILITY_DESCRIPTION_5=Units with this ability can move through all terrains using 1 movement point, and can move through ground enemy units. But they will not receive defence bonuses from terrains.
 P_ABILITY_DESCRIPTION_6=Necromancers can summon skeletons from fallen units, at the same time they will not be [Poisoned] if they standby on tombstones.
+P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again.
 P_ABILITY_DESCRIPTION_7=Units with this ability can heal allies, and the healing amount will increase when leveling up. Note that healer's heal can exceed target's HP cap once.
 P_ABILITY_DESCRIPTION_9=For units who have this ability, their attacks will attach [Poisoned] status to enemies for 2 turns. However units with this ability will not affect each other.
 P_ABILITY_DESCRIPTION_10=Units with this ability can repair ruined villages.
@@ -440,15 +441,11 @@ M_INFO_GAME_CLOSE_ADMIN=[%s's game] has been closed by administrator.\n\nRespons
 
 P_UNIT_DESCRIPTION_19=Mermaids are like soldiers but can move really fast on water. They can occupy and repair villages like normal soldiers do, so you can use them to gain control over the water!
 
-#2.1.2
-
-P_ABILITY_DESCRIPTION_8=For units who have this ability, once they finished their actions they can use their remaining movement points to move again. But they gain 50% less experience.
-
 #2.1.8
 
 L_UNIT_NAME_20=Druid
 
 L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders. And each unit can be supported only once per turn.
 
 P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.

@@ -125,6 +125,7 @@ P_ABILITY_DESCRIPTION_4=Đơn vị này có khả năng phá hủy ngôi làng.
 P_ABILITY_DESCRIPTION_5=Đơn vị này đi tự do qua mọi địa hình và có thể đi xuyên qua các đơn vị đối phương. Nhưng họ sẽ không nhận được gì từ các địa hình.
 P_ABILITY_DESCRIPTION_6=Thầy chiêu hồn có thể triệu tập bộ xương từ các đơn vị tử vong, và họ sẽ không bị [Trúng Độc] khi đứng trên bia mộ.
 P_ABILITY_DESCRIPTION_7=Đơn vị này có khả năng hồi HP cho đồng minh, và lượng hồi HP sẽ tăng khi lên cấp. Và chữa trị sẽ vượt qua giới hạn HP của mục tiêu một lần.
+P_ABILITY_DESCRIPTION_8=Đơn vị này có khả năng đánh xong rồi sử dụng ô di chuyển còn lại để chạy.
 P_ABILITY_DESCRIPTION_9=Đơn vị này khi tấn công sẽ gắn trạng thái [Trúng Độc] lên kẻ thù trong 2 lượt. Nếu đối thủ có cùng kỹ năng sẽ không bị ảnh hưởng.
 P_ABILITY_DESCRIPTION_10=Đơn vị này có khả năng sửa chữa những ngôi làng bị hủy hoại.
 P_ABILITY_DESCRIPTION_11=Đơn vị này khi chết sẽ không xuất hiện bia mộ trên bản đồ. Hơn nữa, khi bị [Trúng Độc] họ vẫn được hồi máu từ các địa hình, nếu chữa trị thì sẽ thành sát thương.
@@ -440,15 +441,11 @@ M_INFO_GAME_CLOSE_ADMIN=Phòng của\n[%s]\nbị đóng bởi quản trị viên
 
 P_UNIT_DESCRIPTION_19=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)) Chiếm giữ làng.\nKỸ NĂNG TỰ ĐỘNG:\n((3)) Hồi HP khi ở dưới nước.\n((4)) Tấn công xa 1 đến 2 ô
 
-#2.1.2
-
-P_ABILITY_DESCRIPTION_8=Đơn vị này khi đánh xong thì họ có thể sử dụng những điểm di chuyển còn lại để đi tiếp. Nhưng kinh nghiệm bị giảm 50%.
-
 #2.1.8
 
-L_UNIT_NAME_20=Druid
+L_UNIT_NAME_20=Tu Sĩ
 
-L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders.
+L_ABILITY_NAME_30=Hỗ Trợ
+P_ABILITY_DESCRIPTION_30=Đơn vị này sẽ khôi phục lượt đi cho đồng minh trong phạm vi 2 ô, nhưng không áp dụng cho Chỉ huy và đồng loại và những [kẻ đột biến]. Mỗi đội chỉ được hỗ trợ mỗi lần lượt.
 
-P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.
+P_UNIT_DESCRIPTION_20=KỸ NĂNG CHỦ ĐỘNG :\n((1)) Khôi phục lượt đi của đồng minh cách 1 đến 2 ô. \n((2)) Đánh xa 1 đến 2 ô. \n((2)) Hồi HP khi ở trên núi
