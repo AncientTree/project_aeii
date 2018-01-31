@@ -177,7 +177,7 @@ T_GAME_TITLE=Ancient Empires Reloaded
 
 #2.0.0
 
-T_ROOM_NAME=Chủ phòng ( %s )
+T_ROOM_NAME=%s của %s
 
 L_ACCEPT=Chấp nhận
 L_ACTIONS=Hành động
@@ -449,3 +449,7 @@ L_ABILITY_NAME_30=Hỗ Trợ
 P_ABILITY_DESCRIPTION_30=Đơn vị này sẽ khôi phục lượt đi cho đồng minh trong phạm vi 2 ô, nhưng không áp dụng cho Chỉ huy và đồng loại và những [kẻ đột biến]. Mỗi đội chỉ được hỗ trợ mỗi lần lượt.
 
 P_UNIT_DESCRIPTION_20=KỸ NĂNG CHỦ ĐỘNG :\n((1)) Khôi phục lượt đi của đồng minh cách 1 đến 2 ô. \n((2)) Đánh xa 1 đến 2 ô. \n((2)) Hồi HP khi ở trên núi
+
+#2.2.0
+
+L_GAME_TYPE=Loại trò chơi

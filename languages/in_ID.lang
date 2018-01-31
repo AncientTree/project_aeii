@@ -177,7 +177,7 @@ T_GAME_TITLE=Ancient Empires Reloaded
 
 #2.0.0
 
-T_ROOM_NAME=Permainan %s
+T_ROOM_NAME=%s %s
 
 L_ACCEPT=Terima
 L_ACTIONS=Tindakan
@@ -449,3 +449,7 @@ L_ABILITY_NAME_30=Pendukung
 P_ABILITY_DESCRIPTION_30=Untuk unit yg memiliki kemampuan ini, mereka dapat mengatur ulang sekutu siaga dan membiarkannya bertindak sekali lagi. Tidak dapat digunakan pada unit dengan kemampuan yg sama atau kemampuan [Penyerang charger] atau komandan. Setiap pasukan hanya bisa didukung sekali per giliran.
 
 P_UNIT_DESCRIPTION_20=Druid adalah anak alam, seorang pendukung yg lahir. Dia bisa bergerak sangat cepat saat berdiri di tanah dan bisa membantu sekutu dengan berkah alami.
+
+#2.2.0
+
+L_GAME_TYPE=Tipe permainan

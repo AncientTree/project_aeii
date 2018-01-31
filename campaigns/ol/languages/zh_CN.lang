@@ -1,0 +1,15 @@
+
+C_OL_NAME=在线
+
+C_OL_STAGE_1_NAME=围攻 合作版 (2)
+C_OL_STAGE_1_OBJECTIVE_1=胜利条件：击败所有来犯的敌军
+C_OL_STAGE_1_OBJECTIVE_2=失败条件：所有玩家单位被击败
+
+C_OL_STAGE_2_NAME=岩石峡谷 合作版 (2)
+C_OL_STAGE_2_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
+C_OL_STAGE_2_OBJECTIVE_2=失败条件: 所有玩家单位被击败
+C_OL_STAGE_2_OBJECTIVE_3=失败条件: 回合数超过200
+
+C_OL_STAGE_3_NAME=无人入海 (2)
+C_OL_STAGE_3_OBJECTIVE_1=胜利条件: 击败所有的敌军并占领敌军的城堡
+C_OL_STAGE_3_OBJECTIVE_2=失败条件: 所有玩家单位被击败

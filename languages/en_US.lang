@@ -177,7 +177,7 @@ T_GAME_TITLE=Ancient Empires Reloaded
 
 #2.0.0
 
-T_ROOM_NAME=%s's game
+T_ROOM_NAME=%s by %s
 
 L_ACCEPT=Accept
 L_ACTIONS=Actions
@@ -449,3 +449,7 @@ L_ABILITY_NAME_30=Supporter
 P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders. And each unit can be supported only once per turn.
 
 P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.
+
+#2.2.0
+
+L_GAME_TYPE=Game Type
