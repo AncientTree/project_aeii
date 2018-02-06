@@ -446,9 +446,9 @@ P_UNIT_DESCRIPTION_19=KỸ NĂNG CHỦ ĐỘNG:\n((1)) Sửa chữa làng.\n((2)
 L_UNIT_NAME_20=Tu Sĩ
 
 L_ABILITY_NAME_30=Hỗ Trợ
-P_ABILITY_DESCRIPTION_30=Đơn vị này sẽ khôi phục lượt đi cho đồng minh trong phạm vi 2 ô, nhưng không áp dụng cho Chỉ huy và đồng loại và những [kẻ đột biến]. Mỗi đội chỉ được hỗ trợ mỗi lần lượt.
+P_ABILITY_DESCRIPTION_30=Đơn vị này sẽ khôi phục lượt đi cho đồng minh, nhưng không áp dụng cho Chỉ huy và đồng loại và những [kẻ đột biến]. và chỉ được khôi phục 1 lần mỗi lượt.
 
-P_UNIT_DESCRIPTION_20=KỸ NĂNG CHỦ ĐỘNG :\n((1)) Khôi phục lượt đi của đồng minh cách 1 đến 2 ô. \n((2)) Đánh xa 1 đến 2 ô. \n((2)) Hồi HP khi ở trên núi
+P_UNIT_DESCRIPTION_20=KỸ NĂNG CHỦ ĐỘNG :\n((1)) Khôi phục lượt đi của đồng minh.\n((2)) Hồi HP khi ở trên núi và trong rừng
 
 #2.2.0
 
