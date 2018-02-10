@@ -343,6 +343,7 @@ M_INFO_CANNOT_JOIN_ROOM=Cannot join this game.
 M_INFO_CANNOT_START_GAME_WITH_EMPTY_SLOTS=Cannot start game when there are empty slots.
 M_INFO_CONNECTION_ERROR=Connection Error
 M_INFO_DISCONNECTED=Disconnected.
+M_INFO_DOWNLOADED=Successfully downloaded '%s'.
 M_INFO_EMAIL_EXISTING=Email '%s' is taken.
 M_INFO_EMAIL_NOT_EXISTING=User with email '%s' does not exist.
 M_INFO_ERROR_CODE=Error Code [%d]
@@ -368,7 +369,6 @@ M_INFO_INVALID_MAP_NAME=Invalid map name.
 M_INFO_INVALID_PASSWORD=Invalid password.
 M_INFO_INVALID_USERNAME=Invalid username.
 M_INFO_LOAD_GAME_FAILED=Load game failed.
-M_INFO_MAP_DOWNLOADED=Successfully downloaded '%s'.
 M_INFO_MAP_UPDATED=Map '%s' successfully updated.
 M_INFO_MAP_SAVED=Map saved.
 M_INFO_MAP_UPLOAD_LIMIT_REACHED=You have reached your map upload limit (20 maps per user).
@@ -453,3 +453,20 @@ P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move 
 #2.2.0
 
 L_GAME_TYPE=Game Type
+
+#2.3.0
+
+L_APPLY=Apply
+L_CREATE_TRANSLATION=Create Translation
+L_LANGUAGE_PACKS=Language Packs
+L_LOCAL=Local
+L_MODIFY_TRANSLATION=Modify Translation
+L_UPDATE=Update
+L_UPLOAD_TRANSLATION=Upload Translation
+
+M_INFO_NOT_SUPPORTED=Not supported.
+M_INFO_TRANSLATION_ENTRY_LACKS=Please translate enough entries before uploading.
+M_INFO_TRANSLATION_NO_UPDATE=No update available for this language pack.
+M_INFO_TRANSLATION_NOT_FOUND=Language pack not found.
+M_INFO_TRANSLATION_UPDATED=Successfully updated translation.
+M_INFO_TRANSLATION_UPLOADED=Successfully uploaded translation.
