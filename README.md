@@ -22,6 +22,5 @@ Login into your in-game online account, if you have already created your transla
 
 ### Keep in Mind
 
-* Reserve an empty line at the top of each language file, or it will cause problem for the game to load it.
 * **DO NOT** replace placeholders (`%s`, `%d`, etc) and you need to **keep their order** during translation.
 * You can use `\n` to create a new line for messages and paragraphs (not recommended for labels).
