@@ -1,0 +1,15 @@
+
+C_OL_NAME=Online
+
+C_OL_STAGE_1_NAME=Vòng Vây Xiết Chặt Co-op (2)
+C_OL_STAGE_1_OBJECTIVE_1=(1): tiêu diệt tất cả kẻ thù.
+C_OL_STAGE_1_OBJECTIVE_2=(2): người chơi còn ít nhất một đơn vị.
+
+C_OL_STAGE_2_NAME=Thung Lũng Rung Chuyển Co-op (2)
+C_OL_STAGE_2_OBJECTIVE_1=(1): tiêu diệt và chiếm tất cả lâu đài của kẻ thù.
+C_OL_STAGE_2_OBJECTIVE_2=(2): người chơi còn ít nhất một đơn vị.
+C_OL_STAGE_2_OBJECTIVE_3=(3): lượt đi không vượt quá 200.
+
+C_OL_STAGE_3_NAME=Biển Câm Lặng (2)
+C_OL_STAGE_3_OBJECTIVE_1=(1): tiêu diệt và chiếm tất cả lâu đài của kẻ thù.
+C_OL_STAGE_3_OBJECTIVE_2=(2): người chơi còn ít nhất một đơn vị.
