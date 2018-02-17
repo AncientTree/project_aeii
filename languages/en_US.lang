@@ -446,7 +446,7 @@ P_UNIT_DESCRIPTION_19=Mermaids are like soldiers but can move really fast on wat
 L_UNIT_NAME_20=Druid
 
 L_ABILITY_NAME_30=Supporter
-P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] or commanders. And each unit can be supported only once per turn.
+P_ABILITY_DESCRIPTION_30=For units who have this ability, they can reset standby allies and let them act one more time. Cannot be used on units with the same ability or ability [Charger] & [Conqueror]. And each unit can be supported only once per turn.
 
 P_UNIT_DESCRIPTION_20=Druid is the son of nature, a born supporter. He can move very quickly while standing on earth and can help allies with his natural bless.
 
@@ -470,3 +470,14 @@ M_INFO_TRANSLATION_NO_UPDATE=No update available for this language pack.
 M_INFO_TRANSLATION_NOT_FOUND=Language pack not found.
 M_INFO_TRANSLATION_UPDATED=Successfully updated translation.
 M_INFO_TRANSLATION_UPLOADED=Successfully uploaded translation.
+
+#2.4.0
+
+L_CAMPAIGN_RANKS=Campaign Ranks
+L_CREDIT_TRANSLATION=See Language Packs
+L_SEND_MESSAGE=Send Message
+
+M_INFO_CONNECTED_TO_CHAT=Connected to chat server.
+M_INFO_RECONNECTING=Reconnecting...
+M_INFO_RECONNECTION_FAIL=Disconnected from chat server.
+M_INFO_USER_DISCONNECT=%s disconnected.
