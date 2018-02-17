@@ -14,7 +14,7 @@ Login into your in-game online account, there will be a button to let you create
 
 ### Language File Structure
 
-Simply speaking, language files only contain `<key>=<text>` pairs. The keys (which are on the left) are not supposed to be modified, and you are only meant to translate the right part. But good thing is that, with in-game translation tool, it will take care of if for you so you can focus on translating the right part.
+Simply speaking, language files only contain `<key>=<text>` pairs. The keys (which are on the left) are not supposed to be modified, and you are only meant to translate the right part. But good thing is that, with in-game translation tool, it will take care of the keys for you so you can focus on translating the right part.
 
 ### How to Submit Translation?
 
